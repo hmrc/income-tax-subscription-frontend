@@ -37,11 +37,11 @@ class GetEligibilityStatusConnectorISpec extends ComponentSpecBase {
   "getEligibilityStatus(sautr)" must {
     "return an eligibility status" when {
       "receiving an OK status with valid json" in {
-        stubEligibilityResponseBoth(utr)(currentYearResponse = true, nextYearResponse = true, exceptionReason= None)
+        stubEligibilityResponseBoth(utr)(currentYearResponse = true, nextYearResponse = true, exemptionReason= None)
 
         val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(utr)
 
-        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
+        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
       }
     }
     "return a http connector error response" when {
@@ -69,7 +69,7 @@ class GetEligibilityStatusConnectorISpec extends ComponentSpecBase {
 
         val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(nino, utr)
 
-        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
+        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
       }
     }
     "return a http connector error response" when {

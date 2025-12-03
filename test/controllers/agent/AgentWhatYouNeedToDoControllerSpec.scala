@@ -83,7 +83,7 @@ class AgentWhatYouNeedToDoControllerSpec
     "return OK with the page content" when {
       "the user is completely voluntary and is eligible for both years" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
@@ -107,7 +107,7 @@ class AgentWhatYouNeedToDoControllerSpec
 
       "the user is voluntary but only eligible for next year" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
@@ -129,7 +129,7 @@ class AgentWhatYouNeedToDoControllerSpec
       }
       "the user is mandated for the current year and eligible for all" in new Setup {
         mockGetMandationService(Mandated, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
@@ -152,7 +152,7 @@ class AgentWhatYouNeedToDoControllerSpec
       }
       "the user is mandated for the next year and eligible for all" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
@@ -177,7 +177,7 @@ class AgentWhatYouNeedToDoControllerSpec
       "user is eligible for both years" when {
         "user is voluntary" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockGetAllSessionData(SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
@@ -201,7 +201,7 @@ class AgentWhatYouNeedToDoControllerSpec
         "user is mandated" in new Setup {
 
           mockGetMandationService(Mandated, Mandated)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockGetAllSessionData(SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
@@ -227,7 +227,7 @@ class AgentWhatYouNeedToDoControllerSpec
       "user is eligible for next year only" when {
         "user is voluntary" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
-           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           mockGetAllSessionData(SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
@@ -250,7 +250,7 @@ class AgentWhatYouNeedToDoControllerSpec
         "user is mandated" in new Setup {
 
           mockGetMandationService(Voluntary, Mandated)
-           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           mockGetAllSessionData(SessionData(Map(
             ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)

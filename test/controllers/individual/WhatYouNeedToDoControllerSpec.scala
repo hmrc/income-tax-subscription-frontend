@@ -88,7 +88,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
     "return OK with the page content" when {
       "the session contains mandated and eligible for only next year" in new Setup {
         mockGetMandationService(Voluntary, Mandated)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
@@ -104,7 +104,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       }
       "the session contains a eligible for both years" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
@@ -120,7 +120,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       }
       "the session contains a eligible for next year only" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
@@ -136,7 +136,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       }
       "the session contains a mandated current year flag of true" in new Setup {
         mockGetMandationService(Mandated, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
@@ -154,7 +154,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       }
       "the session contains a selected software status and tax year " in new Setup {
         mockGetMandationService(Mandated, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)

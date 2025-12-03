@@ -53,7 +53,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
       mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
-       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
 
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
       testResultEventually.map(testResult => {

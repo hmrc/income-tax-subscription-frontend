@@ -30,7 +30,7 @@ object EligibilityStub extends WireMockMethods {
       body = Json.obj("eligibleCurrentYear" -> response, "eligibleNextYear" -> false)
     )
 
-  def stubEligibilityResponseBoth(sautr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean, exceptionReason: Option[String]): Unit =
+  def stubEligibilityResponseBoth(sautr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean, exemptionReason: Option[String]): Unit =
     when(
       method = GET,
       uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
@@ -39,7 +39,7 @@ object EligibilityStub extends WireMockMethods {
       body = Json.obj(
         "eligibleCurrentYear" -> currentYearResponse,
         "eligibleNextYear" -> nextYearResponse,
-        "exceptionReason" -> exceptionReason
+        "exemptionReason" -> exemptionReason
       )
     )
 

@@ -129,7 +129,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(ineligibleStatus)
         ))
-        EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false, exceptionReason = None)
+        EligibilityStub.stubEligibilityResponseBoth(testUtr)(currentYearResponse = false, nextYearResponse = false, exemptionReason = None)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, ineligibleStatus)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -259,9 +259,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     }
   }
 
-  lazy val ineligibleStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, exceptionReason = None)
-  lazy val eligibleNextYearOnly: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None)
-  lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None)
+  lazy val ineligibleStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = false, exemptionReason = None)
+  lazy val eligibleNextYearOnly: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None)
+  lazy val eligibleBothYears: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
 
   lazy val fullPrePopData: PrePopData = PrePopData(
     selfEmployment = Some(Seq(prePopSelfEmployment))

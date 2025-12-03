@@ -128,7 +128,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(accountingYear))
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -142,7 +142,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchProperty(Some(ukProperty.copy(startDateBeforeLimit = Some(true))))
         mockFetchOverseasProperty(Some(foreignProperty.copy(startDateBeforeLimit = Some(true))))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(accountingYear))
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -167,7 +167,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           startDate = Some(DateModel.dateConvert(startDateLimit.minusDays(1)))
         )))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(accountingYear))
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -185,7 +185,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -199,7 +199,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty.copy(confirmed = false)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -213,7 +213,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(confirmed = false)))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -229,7 +229,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         mockFetchProperty(Some(ukProperty))
         mockFetchOverseasProperty(Some(foreignProperty))
         mockGetMandationService(Voluntary, Voluntary)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(None)
 
         val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -244,7 +244,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -258,7 +258,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -272,7 +272,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -286,7 +286,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -302,7 +302,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty.copy(startDate = None)))
           mockFetchOverseasProperty(Some(foreignProperty))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
@@ -318,7 +318,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           mockFetchProperty(Some(ukProperty))
           mockFetchOverseasProperty(Some(foreignProperty.copy(startDate = None)))
           mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(accountingYear))
 
           val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {

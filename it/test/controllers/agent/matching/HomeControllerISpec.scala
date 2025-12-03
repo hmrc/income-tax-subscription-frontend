@@ -78,7 +78,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
               SessionDataConnectorStub.stubGetAllSessionData(Map(
-                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason= None))
+                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason= None))
               ))
 
               val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
@@ -94,7 +94,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
               AuthStub.stubAuthSuccess()
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
               SessionDataConnectorStub.stubGetAllSessionData(Map(
-                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason= None))
+                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
               ))
 
               val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))

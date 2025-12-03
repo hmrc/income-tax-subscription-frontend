@@ -68,7 +68,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       "there is a pre-saved tax year option in Subscription Details " in {
         mockView()
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockGetMandationService(Voluntary, Voluntary)
 
         val result = testWhatYearToSignUpController().show(isEditMode = false)(request)
@@ -81,7 +81,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       "there is a no pre-saved tax year option in Subscription Details " in {
         mockView()
         mockFetchSelectedTaxYear(None)
-        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockGetMandationService(Voluntary, Voluntary)
 
         val result = testWhatYearToSignUpController().show(isEditMode = false)(request)
