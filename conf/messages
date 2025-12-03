@@ -135,25 +135,15 @@ individual.you-can-sign-up-now.paragraph-3 = If you get income from property, we
 individual.you-can-sign-up-now.paragraph-4 = You’ll also need to choose if you want to sign up during the current tax year or from next tax year.
 
 ##  What You Need To Do ##
-what-you-need-to-do.heading                                     = What you are agreeing to
-individual.what-you-need-to-do.para-1.current                   = If you continue to sign up, you’re agreeing to meet your tax obligations using Making Tax Digital for Income Tax. You’ll need to:
-individual.what-you-need-to-do.para-1.next                      = If you continue to sign up, you need to submit your Self Assessment tax return as normal for the current tax year.
-individual.what-you-need-to-do.para-2.should                    = From 6 April {0}, you should:
-individual.what-you-need-to-do.para-2.must                      = From 6 April {0}, you must:
-individual.what-you-need-to-do.bullet-1.has-software            = use software that works with Making Tax Digital for Income Tax
-individual.what-you-need-to-do.bullet-1.no-software             = find and use software that works with Making Tax Digital for Income Tax
-individual.what-you-need-to-do.bullet-1.no-software.href        = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-individual.what-you-need-to-do.bullet-2                         = keep digital records of your business income and expenses
-individual.what-you-need-to-do.bullet-3                         = use software to send us quarterly updates
-individual.what-you-need-to-do.bullet-4.current                 = send any missed quarterly updates for the current tax year
-individual.what-you-need-to-do.bullet-5                         = make your tax return by 31 January after the end of each tax year
-individual.what-you-need-to-do.para-3                           = You’re also agreeing that {0} will apply if you miss deadlines for submitting your tax return or paying your bill.
-individual.what-you-need-to-do.para-3.link                      = our new penalties
-individual.what-you-need-to-do.para-3.href                      = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
-individual.what-you-need-to-do.para-4.current                   = While you’re taking part voluntarily, you will not get penalties for missed quarterly updates.
-individual.what-you-need-to-do.heading-2                        = Opting out
-individual.what-you-need-to-do.para-5                           = Making Tax Digital for Income Tax is voluntary until 6 April 2026. You can opt out of sending quarterly updates. But if we’ve told you that our new penalties apply to you, that will continue.
-individual.what-you-need-to-do.para-6                           = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to you if this applies to you.
+individual.what-you-need-to-do.title                            = What penalties apply to you in Making Tax Digital for Income Tax
+individual.what-you-need-to-do.heading                          = What penalties apply to you in Making Tax Digital for Income Tax
+individual.what-you-need-to-do.h2.1                             = If you are signing up voluntarily
+individual.what-you-need-to-do.p1.1                             = You are agreeing that our new penalties
+individual.what-you-need-to-do.p1.2                             = will apply if you are late sending your tax return or paying your tax bill.
+individual.what-you-need-to-do.p2                               = Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late.
+individual.what-you-need-to-do.p3                               = You can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply.
+individual.what-you-need-to-do.h2.2                             = If you are required to use Making Tax Digital for Income Tax
+individual.what-you-need-to-do.p4                               = The new penalties will apply to you if you are late sending a quarterly update, your tax return or you pay after the due date.
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = When do you want to start using Making Tax Digital for Income Tax?
@@ -693,27 +683,16 @@ error.agent.email-capture.max-length                        = Your email address
 error.agent.email-capture.invalid                           = Enter an email address in the correct format, like name@example.com
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.title                                                  = What you need to do
-agent.what-you-need-to-do.heading                                                = What you need to do
-agent.what-you-are-agreeing-to.heading                                           = What you are agreeing to
+agent.what-you-need-to-do.title                                                  = What penalties apply in Making Tax Digital for Income Tax
+agent.what-you-need-to-do.heading                                                = What penalties apply in Making Tax Digital for Income Tax
 agent.what-you-need-to-do.caption                                                = {0} | {1}
-agent.voluntary.what-you-need-to-do.para-1-current                               = If you continue to sign up this client, you and your client are agreeing to meet their tax obligations using Making Tax Digital for Income Tax. You or your client will need to:
-agent.voluntary.what-you-need-to-do.para-1-next                                  = If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year.
-agent.voluntary.what-you-need-to-do.para-2-should                                = From 6 April {0}, you or your client should:
-agent.voluntary.what-you-need-to-do.para-2-must                                  = From 6 April {0}, you or your client must:
-agent.voluntary.what-you-need-to-do.bullet-1-has-software                        = use software that works with Making Tax Digital for Income Tax
-agent.voluntary.what-you-need-to-do.bullet-1-no-software                         = find and use software that works with Making Tax Digital for Income Tax
-agent.voluntary.what-you-need-to-do.bullet-1-no-software-link                    = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.voluntary.what-you-need-to-do.bullet-2                                     = keep digital records of your client’s business income and expenses
-agent.voluntary.what-you-need-to-do.bullet-3                                     = use software to send us quarterly updates
-agent.voluntary.what-you-need-to-do.bullet-4-current-year                        = send any missed quarterly updates for the current tax year
-agent.voluntary.what-you-need-to-do.bullet-5                                     = make their tax return by 31 January after the end of each tax year
-agent.voluntary.what-you-need-to-do.para-3                                       = You’re also agreeing that {0} will apply to your client if they miss deadlines for submitting their tax return or paying their bill.
-agent.voluntary.what-you-need-to-do.para-3-link                                  = our new penalties
-agent.voluntary.what-you-need-to-do.para-4                                       = While you and your client are taking part voluntarily, your client will not get penalties for missed quarterly updates.
-agent.voluntary.what-you-need-to-do.heading-2                                    = Opting out
-agent.voluntary.what-you-need-to-do.para-5                                       = Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client that our new penalties apply to them, that will continue.
-agent.voluntary.what-you-need-to-do.para-6                                       = From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them.
+agent.what-you-need-to-do.h2.1                                                   = If your client is signing up voluntarily
+agent.what-you-need-to-do.p1.1                                                   = You and your client are agreeing that our new penalties
+agent.what-you-need-to-do.p1.2                                                   = will apply if your client’s tax return is sent late, or their tax bill is paid late.
+agent.what-you-need-to-do.p2                                                     = Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late.
+agent.what-you-need-to-do.p3                                                     = Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply.
+agent.what-you-need-to-do.h2.2                                                   = f your client is required to use Making Tax Digital for Income Tax
+agent.what-you-need-to-do.p4                                                     = The new penalties will apply to your client if their quarterly update or tax return is sent late, or payment is made after the due date.
 
 
 # Client details page
