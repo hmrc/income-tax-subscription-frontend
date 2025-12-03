@@ -19,7 +19,7 @@ package views.agent
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
-import utilities.{AccountingPeriodUtil, ViewSpec}
+import utilities.ViewSpec
 import views.html.agent.WhatYouNeedToDo
 
 import scala.util.Random
@@ -73,175 +73,38 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           docNoSoftwareAndNTYMandated)
       }
 
-      def nextTaxYearScenarios: List[Element] = List(docHasSoftwareAndNTY, docHasSoftwareAndNTYMandated,
-        docNoSoftwareAndNTY, docNoSoftwareAndNTYMandated)
-
-      def currentTaxYearScenarios: List[Element] = List(docHasSoftwareAndCTY, docHasSoftwareAndCTYMandated,
-        docNoSoftwareAndCTY, docNoSoftwareAndCTYMandated)
-
-
-      "use the correct template details" when {
-        "user has software signing up for current tax year" in new TemplateViewTest(
-          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
-            taxYearSelectionIsCurrent = true, usingSoftwareStatus = true, clientName, clientNino),
-          title = WhatYouNeedToDoMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          hasSignOutLink = true
-        )
-
-        "user has software signing up for next tax year" in new TemplateViewTest(
-          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
-            taxYearSelectionIsCurrent = false, usingSoftwareStatus = true, clientName, clientNino),
-          title = WhatYouNeedToDoMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          hasSignOutLink = true
-        )
-
-        "user has no software signing up for current tax year" in new TemplateViewTest(
-          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
-            taxYearSelectionIsCurrent = true, usingSoftwareStatus = false, clientName, clientNino),
-          title = WhatYouNeedToDoMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          hasSignOutLink = true
-        )
-
-        "user has no software signing up for next tax year" in new TemplateViewTest(
-          view = page(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false,
-            taxYearSelectionIsCurrent = false, usingSoftwareStatus = false, clientName, clientNino),
-          title = WhatYouNeedToDoMessages.heading,
-          isAgent = true,
-          backLink = Some(testBackUrl),
-          hasSignOutLink = true
-        )
+      "have a page heading" in {
+        allScenarios.foreach(_.mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading)
       }
 
-      "have a client Name and Nino" in {
-        allScenarios.foreach(_.selectHead(".govuk-caption-l").text contains clientName)
-        allScenarios.foreach(_.selectHead(".govuk-caption-l").text contains clientNino)
+      "have a page first sub-heading" in {
+        allScenarios.foreach(_.mainContent.selectNth("h2", 2).text mustBe WhatYouNeedToDoMessages.h2_1)
       }
 
-      "have a first paragraph" when {
-
-        "user is signing up for current tax year" in {
-          currentTaxYearScenarios.foreach(_.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.ParaOne.currentYear)
-        }
-
-        "user is signing up for next tax year" in {
-          nextTaxYearScenarios.foreach(_.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.ParaOne.nextYear)
+      "have the correct first paragraph" in {
+        allScenarios.foreach { d =>
+          d.mainContent.selectNth("a", 1).text mustBe WhatYouNeedToDoMessages.p1_1
+          d.mainContent.selectNth("p", 1).text mustBe Seq(WhatYouNeedToDoMessages.p1_1, WhatYouNeedToDoMessages.p1_2).mkString(" ")
         }
       }
 
-      "have a second paragraph when signing up for next tax year" when {
-
-        "user is mandated" in {
-          docNoSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(AccountingPeriodUtil.getNextTaxEndYear - 1)
-          docHasSoftwareAndNTYMandated.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.must(AccountingPeriodUtil.getNextTaxEndYear - 1)
-        }
-
-        "user is not mandated" in {
-          docNoSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(AccountingPeriodUtil.getNextTaxEndYear - 1)
-          docHasSoftwareAndNTY.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.ParaTwo.should(AccountingPeriodUtil.getNextTaxEndYear - 1)
-        }
+      "have a second paragraph" when {
+        allScenarios.foreach(_.mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.p2)
       }
 
-      "have a bullet list" which {
-
-        def hasSoftwareScenarios: List[Element] = List(docHasSoftwareAndCTY,
-          docHasSoftwareAndNTY,
-          docHasSoftwareAndCTYMandated,
-          docHasSoftwareAndNTYMandated)
-
-        def noSoftwareScenarios: List[Element] = List(docNoSoftwareAndCTY,
-          docNoSoftwareAndNTY,
-          docNoSoftwareAndCTYMandated,
-          docNoSoftwareAndNTYMandated)
-
-        "has a first point" when {
-          "user has compatible software" in {
-            hasSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet")
-              .selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.BulletOne.hasSoftware)
-          }
-
-          "user has no compatible software with link" in {
-            noSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet")
-              .selectNth("li", 1).text mustBe WhatYouNeedToDoMessages.BulletOne.noSoftwareText)
-
-            noSoftwareScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 1)
-              .selectHead("a").attr("href") mustBe WhatYouNeedToDoMessages.BulletOne.noSoftwareLink)
-          }
-        }
-
-        "has a second point" in {
-          allScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 2).text mustBe WhatYouNeedToDoMessages.bulletTwo)
-        }
-
-        "has a third point" in {
-          allScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 3).text mustBe WhatYouNeedToDoMessages.bulletThree)
-        }
-
-        "has a fourth point" when {
-          "user is signing up for current tax year" in {
-            currentTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFourCTYOnly)
-
-          }
-          "user is signing up for next tax year" in {
-            nextTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 4).text mustBe WhatYouNeedToDoMessages.bulletFive)
-          }
-        }
-
-        "has a fifth point when user is signing up for current tax year" in {
-          currentTaxYearScenarios.foreach(_.selectHead("ul.govuk-list--bullet").selectNth("li", 5).text mustBe WhatYouNeedToDoMessages.bulletFive)
-        }
+      "have the correct third paragraph" in {
+        allScenarios.foreach(_.mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3)
       }
 
-      "have a third paragraph" in {
-        currentTaxYearScenarios.foreach(_.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.paraThree)
-        currentTaxYearScenarios.foreach(_.selectNth("p", 2).selectHead("a").attr("href") mustBe WhatYouNeedToDoMessages.paraThreeLinkHref)
-
-        nextTaxYearScenarios.foreach(_.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraThree)
-        nextTaxYearScenarios.foreach(_.selectNth("p", 3).selectHead("a").attr("href") mustBe WhatYouNeedToDoMessages.paraThreeLinkHref)
-
+      "have a page second sub-heading" in {
+        allScenarios.foreach(_.mainContent.selectNth("h2", 3).text mustBe WhatYouNeedToDoMessages.h2_2)
       }
 
-      "have a fourth paragraph when user is signing up voluntarily" in {
-        docHasSoftwareAndCTY.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.paraFour
-        docHasSoftwareAndNTY.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFour
-
-      }
-
-      "have a sub heading" in {
-        allScenarios.foreach(_.getSubHeading("h2", 1).text mustBe WhatYouNeedToDoMessages.subHeading)
-      }
-
-      "have a fifth paragraph" when {
-        "user is signing up for current tax year" in {
-          docHasSoftwareAndCTY.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFive
-          docNoSoftwareAndCTY.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.paraFive
-        }
-        "user is signing up for next tax year" in {
-          docHasSoftwareAndNTY.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraFive
-          docNoSoftwareAndNTY.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraFive
-        }
-
-      }
-
-      "have a sixth paragraph" when {
-        "user is signing up for current tax year" in {
-          docHasSoftwareAndCTY.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraSix
-          docNoSoftwareAndCTY.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.paraSix
-        }
-        "user is signing up for next tax year" in {
-          docHasSoftwareAndNTY.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.paraSix
-          docNoSoftwareAndNTY.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.paraSix
-        }
-
+      "have the correct fourth paragraph" in {
+        allScenarios.foreach(_.mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.p4)
       }
 
       "have a form" which {
-
         "has the correct attributes" in {
           allScenarios.foreach(_.selectHead("form").attr("method") mustBe testCall.method)
           allScenarios.foreach(_.selectHead("form").attr("action") mustBe testCall.url)
@@ -251,7 +114,6 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
           allScenarios.foreach(_.selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue)
         }
       }
-
     }
   }
 
@@ -281,41 +143,16 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     Jsoup.parse(page(eligibleNextYearOnly, mandatedCurrentYear, mandatedNextYear, taxYearSelectionIsCurrent, usingSoftwareStatus, clientName, clientNino).body)
   }
 
-    object WhatYouNeedToDoMessages {
-      val title: String = "What you need to do"
-      val heading: String = "What you need to do"
-
-      val acceptAndContinue: String = "Accept and continue"
-
-      object ParaOne {
-        val currentYear: String = "If you continue to sign up this client, you and your client are agreeing to meet their tax obligations using Making Tax Digital for Income Tax. You or your client will need to:"
-        val nextYear: String = "If you continue to sign up this client, you need to submit their Self Assessment tax return as normal for the current tax year."
-      }
-
-      object ParaTwo {
-        def should(taxYear: Int): String = s"From 6 April $taxYear, you or your client should:"
-
-        def must(taxYear: Int): String = s"From 6 April $taxYear, you or your client must:"
-      }
-
-      object BulletOne {
-        val noSoftwareText: String = "find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
-        val noSoftwareLink: String = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-        val hasSoftware: String = "use software that works with Making Tax Digital for Income Tax"
-      }
-
-      val bulletTwo: String = "keep digital records of your client’s business income and expenses"
-      val bulletThree: String = "use software to send us quarterly updates"
-      val bulletFourCTYOnly: String = "send any missed quarterly updates for the current tax year"
-      val bulletFive: String = "make their tax return by 31 January after the end of each tax year"
-      val paraThree: String = "You’re also agreeing that our new penalties (opens in new tab) will apply to your client if they miss deadlines for submitting their tax return or paying their bill."
-      val paraThreeLinkText: String = "our new penalties (opens in new tab)"
-      val paraThreeLinkHref: String = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
-      val paraFour: String = "While you and your client are taking part voluntarily, your client will not get penalties for missed quarterly updates."
-
-      val subHeading: String = "Opting out"
-
-      val paraFive: String = "Making Tax Digital for Income Tax is voluntary until 6 April 2026. Your client can opt out of sending quarterly updates. But if we’ve told your client that our new penalties apply to them, that will continue."
-      val paraSix: String = "From 6 April 2026, some people will need to use Making Tax Digital for Income Tax. They will not be able to opt out. We’ll write to your client if this applies to them."
-    }
+  object WhatYouNeedToDoMessages {
+    val title = "What penalties apply in Making Tax Digital for Income Tax"
+    val heading = "What penalties apply in Making Tax Digital for Income Tax"
+    val h2_1 = "If your client is signing up voluntarily"
+    val p1_1 = "You and your client are agreeing that our new penalties"
+    val p1_2 = "will apply if your client’s tax return is sent late, or their tax bill is paid late."
+    val p2 = "Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late."
+    val p3 = "Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply."
+    val h2_2 = "If your client is required to use Making Tax Digital for Income Tax"
+    val p4 = "The new penalties will apply to your client if their quarterly update or tax return is sent late, or payment is made after the due date."
+    val acceptAndContinue: String = "Accept and continue"
+  }
 }
