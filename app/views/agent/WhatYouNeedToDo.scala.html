@@ -28,9 +28,9 @@
     ul: UnorderedList
 )
 
-@(postAction:Call, eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsCurrent: Boolean, usingSoftwareStatus: Boolean, clientName: String, clientNino: String, backUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.what-you-need-to-do.title"), backLink = backUrl) {
+@mainTemplate(title = messages("agent.what-you-need-to-do.title"), backLink = Some(backUrl)) {
 
     @pageHeadingHelper(
         heading = messages("agent.what-you-need-to-do.heading"),

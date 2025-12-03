@@ -51,7 +51,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       Then("The result should be OK with page content")
       result must have(
         httpStatus(OK),
-        pageTitle(messages("what-you-need-to-do.heading") + serviceNameGovUk)
+        pageTitle(messages("individual.what-you-need-to-do.heading") + serviceNameGovUk)
       )
     }
   }

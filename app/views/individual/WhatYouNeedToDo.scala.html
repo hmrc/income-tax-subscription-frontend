@@ -28,7 +28,7 @@
     ul: UnorderedList
 )
 
-@(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, isUsingSoftware:Boolean, signUpNextTaxYear: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("individual.what-you-need-to-do.title"), backLink = Some(backUrl)) {
 

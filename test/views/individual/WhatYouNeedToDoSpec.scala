@@ -26,25 +26,9 @@ class WhatYouNeedToDoSpec extends ViewSpec {
 
   def whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
-  def page(onlyNextYear: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear, mandatedCurrentYear = false, mandatedNextYear = false, isUsingSoftware = true, signUpNextTaxYear = false, backUrl = "backUrl")
+  def page(): HtmlFormat.Appendable = whatYouNeedToDo(testCall, backUrl = "backUrl")
 
-  def document(onlyNextYear: Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
-
-  def pageCurrentMandated(currentYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = false, mandatedCurrentYear = currentYearMandated, mandatedNextYear = false, isUsingSoftware = true, signUpNextTaxYear = false, backUrl = "backUrl")
-
-  def pageNextYearOnlyAndMandated(nextYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = true, mandatedCurrentYear = false, mandatedNextYear = nextYearMandated, isUsingSoftware = true, signUpNextTaxYear = false, backUrl = "backUrl")
-
-  def pageVoluntaryNextYear(onlyNextYear: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = true, mandatedCurrentYear = false, mandatedNextYear = false, isUsingSoftware = true, signUpNextTaxYear = false, backUrl = "backUrl")
-
-  def pagePrePop(isUsingSoftware: Boolean, signUpNextTaxYear:Boolean, currentYearMandated: Boolean, nextYearMandated: Boolean): HtmlFormat.Appendable = whatYouNeedToDo(testCall, onlyNextYear = false, mandatedCurrentYear = currentYearMandated, mandatedNextYear = nextYearMandated, isUsingSoftware = isUsingSoftware, signUpNextTaxYear = signUpNextTaxYear, backUrl = "backUrl")
-
-  def documentCurrentMandated(currentYearMandated: Boolean): Document = Jsoup.parse(pageCurrentMandated(currentYearMandated).body)
-
-  def documentNextYearOnlyAndMandated(nextYearMandated: Boolean): Document = Jsoup.parse(pageNextYearOnlyAndMandated(nextYearMandated).body)
-
-  def documentVoluntaryNextYear(onlyNextYear: Boolean): Document = Jsoup.parse(page(onlyNextYear).body)
-
-  def documentPrePop(isUsingSoftware: Boolean, signUpNextTaxYear:Boolean, currentYearMandated: Boolean = false, nextYearMandated: Boolean = false): Document = Jsoup.parse(pagePrePop(isUsingSoftware, signUpNextTaxYear, currentYearMandated, nextYearMandated).body)
+  def document(): Document = Jsoup.parse(page().body)
 
   object WhatYouNeedToDoMessages {
     val title = "What penalties apply to you in Making Tax Digital for Income Tax"
@@ -59,69 +43,43 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val acceptAndContinue: String = "Accept and continue"
   }
 
-  object PrePopScenarios{
-    private def docHasSoftwareAndCTY: Document = documentPrePop(isUsingSoftware = true, signUpNextTaxYear = false)
-    private def docHasSoftwareAndNTY: Document = documentPrePop(isUsingSoftware = true, signUpNextTaxYear = true)
-
-    private def docHasSoftwareAndCTYMandated: Document = documentPrePop(isUsingSoftware = true, signUpNextTaxYear = false, currentYearMandated = true)
-    private def docHasSoftwareAndNTYMandated: Document = documentPrePop(isUsingSoftware = true, signUpNextTaxYear = true, nextYearMandated = true)
-
-    private def docNoSoftwareAndCTY: Document = documentPrePop(isUsingSoftware = false, signUpNextTaxYear = false)
-    private def docNoSoftwareAndNTY: Document = documentPrePop(isUsingSoftware = false, signUpNextTaxYear = true)
-
-    private def docNoSoftwareAndCTYMandated: Document = documentPrePop(isUsingSoftware = false, signUpNextTaxYear = false, currentYearMandated = true)
-    private def docNoSoftwareAndNTYMandated: Document = documentPrePop(isUsingSoftware = false, signUpNextTaxYear = true, nextYearMandated = true)
-
-    def allScenarios: List[Document] = List(
-      docHasSoftwareAndCTY,
-      docHasSoftwareAndNTY,
-      docHasSoftwareAndCTYMandated,
-      docHasSoftwareAndNTYMandated,
-      docNoSoftwareAndCTY,
-      docNoSoftwareAndNTY,
-      docNoSoftwareAndCTYMandated,
-      docNoSoftwareAndNTYMandated)
-  }
-
   "WhatYouNeedToDo" must {
     "have a page heading" in {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading)
+      document().mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading
     }
 
     "have a page first sub-heading" in {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectNth("h2", 1).text mustBe WhatYouNeedToDoMessages.h2_1)
+      document().mainContent.selectNth("h2", 1).text mustBe WhatYouNeedToDoMessages.h2_1
     }
 
     "have the correct first paragraph" in {
-      PrePopScenarios.allScenarios.foreach { d =>
-        d.mainContent.selectNth("a", 1).text mustBe WhatYouNeedToDoMessages.p1_1
-        d.mainContent.selectNth("p", 1).text mustBe Seq(WhatYouNeedToDoMessages.p1_1, WhatYouNeedToDoMessages.p1_2).mkString(" ")
-      }
+      document().mainContent.selectNth("a", 1).text mustBe WhatYouNeedToDoMessages.p1_1
+      document().mainContent.selectNth("p", 1).text mustBe Seq(WhatYouNeedToDoMessages.p1_1, WhatYouNeedToDoMessages.p1_2).mkString(" ")
     }
 
-    "have a second paragraph" when {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.p2)
+    "have a second paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.p2
     }
 
     "have the correct third paragraph" in {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3)
+      document().mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3
     }
 
     "have a page second sub-heading" in {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectNth("h2", 2).text mustBe WhatYouNeedToDoMessages.h2_2)
+      document().mainContent.selectNth("h2", 2).text mustBe WhatYouNeedToDoMessages.h2_2
     }
 
     "have the correct fourth paragraph" in {
-      PrePopScenarios.allScenarios.foreach(_.mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.p4)
+      document().mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.p4
     }
 
     "have a form" which {
       "has the correct attributes" in {
-        PrePopScenarios.allScenarios.foreach(_.selectHead("form").attr("method") mustBe testCall.method)
-        PrePopScenarios.allScenarios.foreach(_.selectHead("form").attr("action") mustBe testCall.url)
+        document().selectHead("form").attr("method") mustBe testCall.method
+        document().selectHead("form").attr("action") mustBe testCall.url
       }
       "has an accept and continue button to submit the form" in {
-        PrePopScenarios.allScenarios.foreach(_.selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue)
+        document().selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
       }
     }
   }
