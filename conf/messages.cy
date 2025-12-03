@@ -945,7 +945,8 @@ agent.error.remove-sole-trader-business.invalid                     = Dewiswch �
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Cadw a dychwelyd yn nes ymlaen
-agent.business.progress-saved.content.summary                         = Byddwn yn cadw data’ch cleient hyd at {0}.
+agent.business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
+agent.business.progress-saved.content.summary                         = Byddwn yn cadw data’ch cleient hyd at {0}
 agent.business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
 agent.business.progress-saved.content.sign-up-link                    = parhau i gofrestru’r cleient hwn

@@ -949,7 +949,8 @@ agent.error.remove-sole-trader-business.invalid                     = Select yes
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Save and come back later
-agent.business.progress-saved.content.summary                         = We'll save your client's data until {0}.
+agent.business.progress-saved.banner-title                            = Progress saved
+agent.business.progress-saved.content.summary                         = We’ll save your client’s data until {0}
 agent.business.progress-saved.content.subheading                      = What you can do next
 agent.business.progress-saved.content.paragraph1                      = You can:
 agent.business.progress-saved.content.sign-up-link                    = continue signing up this client
