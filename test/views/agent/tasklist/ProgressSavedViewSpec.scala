@@ -26,20 +26,25 @@ class ProgressSavedViewSpec extends ViewSpec {
   private val progressSavedView = app.injector.instanceOf[ProgressSaved]
 
   object ProgressSaved {
-    val title = "Your progress has been saved - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
+    val title = "Save and come back later - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
+    val bannerTitle = " Progress saved"
 
-    def contentSummary(expirationDate: String) = s"We will keep your client’s data until $expirationDate."
+    def contentSummary(expirationDate: String) = s"We’ll save your client’s data until $expirationDate"
 
     val subheading = "What you can do next"
     val paragraph1 = "You can:"
     val bullet1 = "continue signing up this client"
     val bullet2 = "sign up another client"
-    val paragraph2 = "If you sign out, you’ll need to sign in again using the same Government Gateway User ID."
+    val paragraph2 = "If you sign out, you’ll need to sign in again using the user ID and password you use for your agent services account."
   }
 
   "Progress saved view" must {
     "have a title" in {
       document().title mustBe ProgressSaved.title
+    }
+
+    "have a banner title" in {
+      document().select(".govuk-notification-banner__title").text mustBe ProgressSaved.bannerTitle
     }
 
     "have a summary" in {
