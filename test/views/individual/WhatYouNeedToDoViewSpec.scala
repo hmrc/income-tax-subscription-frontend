@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.individual.WhatYouNeedToDo
 
-class WhatYouNeedToDoSpec extends ViewSpec {
+class WhatYouNeedToDoViewSpec extends ViewSpec {
 
   def whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
