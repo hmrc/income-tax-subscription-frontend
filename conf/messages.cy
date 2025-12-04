@@ -944,13 +944,14 @@ agent.business.remove-sole-trader-business.paragraph                = Mae angen 
 agent.error.remove-sole-trader-business.invalid                     = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Agent progress saved
-agent.business.progress-saved.title                                   = Mae eich cynnydd hyd yma wedi ei gadw
-agent.business.progress-saved.content.summary                         = Byddwn yn cadw data eich cleient tan {0}.
+agent.business.progress-saved.title                                   = Cadw a dychwelyd yn nes ymlaen
+agent.business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
+agent.business.progress-saved.content.summary                         = Byddwn yn cadw data’ch cleient hyd at {0}
 agent.business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
-agent.business.progress-saved.content.sign-up-link                    = mynd yn eich blaen i gofrestru y cleient hwn
+agent.business.progress-saved.content.sign-up-link                    = parhau i gofrestru’r cleient hwn
 agent.business.progress-saved.content.sign-up-another-client-link     = cofrestru cleient arall
-agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r un Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth.
+agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich cyfrif gwasanaethau asiant.
 
 ## Cannot go back to previous client
 agent.cannot-go-back-previous-client.title                      = Mae’n ddrwg gennym – mae problem
