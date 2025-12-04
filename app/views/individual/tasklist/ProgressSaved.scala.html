@@ -29,6 +29,12 @@
 
 @mainTemplate(title = messages("business.progress-saved.title")) {
     @govukNotificationBanner(NotificationBanner(
+        title = HtmlContent(
+            s"""
+            <h4 class="govuk-notification-banner__title">
+                ${messages("business.progress-saved.banner-title")}
+            </h4>"""
+        ),
         content = HtmlContent(
             s"""
             <h3 class="govuk-notification-banner__heading">
