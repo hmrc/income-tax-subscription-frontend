@@ -56,11 +56,6 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         val taxYearSelection: Option[AccountingYear] = selectedTaxYear.map(_.accountingYear)
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
-          onlyNextYear = eligibilityStatus.eligibleNextYearOnly,
-          mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-          mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-          isUsingSoftware = usingSoftwareStatus.contains(Yes),
-          signUpNextTaxYear = taxYearSelection.contains(Next),
           backUrl = backUrl(
             eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
             mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,

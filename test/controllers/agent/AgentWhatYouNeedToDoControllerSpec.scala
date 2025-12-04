@@ -92,14 +92,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url))
+          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -112,7 +107,7 @@ class AgentWhatYouNeedToDoControllerSpec
 
       "the user is voluntary but only eligible for next year" in new Setup {
         mockGetMandationService(Voluntary, Voluntary)
-         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exceptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
@@ -120,14 +115,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
+          ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -148,14 +138,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
+          ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -176,14 +161,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
+          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -206,15 +186,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.any(),
-            ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)),
-
+            ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -236,15 +210,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any(),
-            ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(routes.UsingSoftwareController.show().url)),
-
+            ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -267,14 +235,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
+            ArgumentMatchers.eq(controllers.agent.routes.UsingSoftwareController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -295,15 +258,9 @@ class AgentWhatYouNeedToDoControllerSpec
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.any(),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(Some(controllers.agent.routes.UsingSoftwareController.show().url)),
-
+            ArgumentMatchers.eq(controllers.agent.routes.UsingSoftwareController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(

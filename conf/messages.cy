@@ -122,25 +122,16 @@ cannot-sign-up-yet.para2                                          = Yn y dyfodol
 cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ##  What You Need To Do ##
-what-you-need-to-do.heading                                      = Beth y mae angen i chi ei wneud
-individual.what-you-need-to-do.para-1.current                   = Os byddwch yn parhau i gofrestru, rydych yn cytuno i fodloni eich ymrwymiadau treth gan ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae’n rhaid i chi wneud y canlynol:
-individual.what-you-need-to-do.para-1.next                      = Os byddwch yn parhau i gofrestru, bydd angen i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer ar gyfer y flwyddyn dreth bresennol.
-individual.what-you-need-to-do.para-2.should                    = O 6 Ebrill {0} ymlaen, dylech wneud y canlynol:
-individual.what-you-need-to-do.para-2.must                      = O 6 Ebrill {0} ymlaen, mae’n rhaid i chi wneud y canlynol:
-individual.what-you-need-to-do.bullet-1.has-software            = defnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.what-you-need-to-do.bullet-1.no-software             = dod o hyd i a defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.what-you-need-to-do.bullet-1.no-software.href        = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-individual.what-you-need-to-do.bullet-2                         = cadw cofnodion digidol o incwm a threuliau eich busnes
-individual.what-you-need-to-do.bullet-3                         = defnyddio meddalwedd er mwyn anfon diweddariadau chwarterol atom
-individual.what-you-need-to-do.bullet-4.current                 = anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn dreth bresennol
-individual.what-you-need-to-do.bullet-5                         = gwneud eich Ffurflen Dreth erbyn 31 Ionawr ar ôl diwedd pob blwyddyn dreth
-individual.what-you-need-to-do.para-3                           = Rydych hefyd yn cytuno y bydd {0} yn berthnasol os byddwch yn methu’r dyddiadau cau ar gyfer cyflwyno’ch Ffurflen Dreth neu dalu’ch bil.
-individual.what-you-need-to-do.para-3.link                      = ein cosbau newydd
-individual.what-you-need-to-do.para-3.href                      = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
-individual.what-you-need-to-do.para-4.current                   = Er eich bod yn cymryd rhan yn wirfoddol, ni fyddwch yn cael cosbau am ddiweddariadau chwarterol a gollwyd.
-individual.what-you-need-to-do.heading-2                        = Optio allan
-individual.what-you-need-to-do.para-5                           = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gallwch optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i chi fod ein cosbau newydd yn berthnasol i chi, bydd hynny’n parhau.
-individual.what-you-need-to-do.para-6                           = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu atoch os yw hyn yn berthnasol i chi.
+individual.what-you-need-to-do.title                            = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.what-you-need-to-do.heading                          = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.what-you-need-to-do.h2.1                             = Os ydych yn cofrestru’n wirfoddol
+individual.what-you-need-to-do.p1.1                             = Rydych yn cytuno y bydd ein cosbau newydd
+individual.what-you-need-to-do.p1.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
+individual.what-you-need-to-do.p1.2                             = {0} yn berthnasol os ydych yn hwyr yn anfon eich Ffurflen Dreth neu’n talu’ch bil treth.
+individual.what-you-need-to-do.p2                               = Tra byddwch yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
+individual.what-you-need-to-do.p3                               = Gallwch optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Os gwnewch hyn, bydd y cosbau newydd yn dal i fod yn berthnasol i chi.
+individual.what-you-need-to-do.h2.2                             = Os oes rhaid i chi ddefnyddio’r cynllun Troi Treth yn y Ddigidol ar gyfer Treth Incwm
+individual.what-you-need-to-do.p4                               = Bydd y cosbau newydd yn berthnasol i chi os ydych yn hwyr yn anfon diweddariad chwarterol, eich Ffurflen Dreth neu os ydych yn talu ar ôl y dyddiad dyledus.
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
@@ -670,27 +661,17 @@ error.agent.email-capture.max-length                        = Rhaid i’ch cyfei
 error.agent.email-capture.invalid                           = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.title                                                = Beth y mae angen i chi ei wneud
-agent.what-you-need-to-do.heading                                              = Beth y mae angen i chi ei wneud
-agent.what-you-are-agreeing-to.heading                                         = Yr hyn yr ydych yn cytuno iddo
+agent.what-you-need-to-do.title                                                = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.what-you-need-to-do.heading                                              = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.what-you-need-to-do.caption                                              = {0} | {1}
-agent.voluntary.what-you-need-to-do.para-1-current                     = Os byddwch yn parhau i gofrestru’r cleient hwn, rydych chi a’ch cleient yn cytuno i fodloni ei hymrwymiadau treth gan ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm. Bydd angen i chi neu’ch cyflogwr wneud y canlynol:
-agent.voluntary.what-you-need-to-do.para-1-next                        = Os byddwch yn parhau i gofrestru’r cleient hwn, bydd angen i chi gyflwyno eu Ffurflen Dreth Hunanasesiad yn ôl yr arfer ar gyfer y flwyddyn dreth bresennol.
-agent.voluntary.what-you-need-to-do.para-2-should                      = O 6 Ebrill {0} ymlaen, dylech chi neu’ch cleient wneud y canlynol:
-agent.voluntary.what-you-need-to-do.para-2-must                        = O 6 Ebrill {0} ymlaen, mae’n rhaid i chi neu’ch cleient wneud y canlynol:
-agent.voluntary.what-you-need-to-do.bullet-1-has-software              = defnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.voluntary.what-you-need-to-do.bullet-1-no-software               = dod o hyd i a defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.voluntary.what-you-need-to-do.bullet-1-no-software-link          = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-agent.voluntary.what-you-need-to-do.bullet-2                           = cadw cofnodion digidol o incwm a threuliau busnes eich cleient
-agent.voluntary.what-you-need-to-do.bullet-3                           = defnyddio meddalwedd er mwyn anfon diweddariadau chwarterol atom
-agent.voluntary.what-you-need-to-do.bullet-4-current-year              = anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn dreth bresennol
-agent.voluntary.what-you-need-to-do.bullet-5                           = gwneud ei ddatganiad terfynol erbyn 31 Ionawr ar ôl diwedd pob blwyddyn dreth
-agent.voluntary.what-you-need-to-do.para-3                             = Rydych hefyd yn cytuno y bydd {0} yn berthnasol i’ch cleient os yw’n methu dyddiadau cau ar gyfer cyflwyno eu Ffurflen Dreth neu dalu bil.
-agent.voluntary.what-you-need-to-do.para-3-link                        = ein cosbau newydd
-agent.voluntary.what-you-need-to-do.para-4                             = Er eich bod chi a’ch cleient yn cymryd rhan yn wirfoddol, ni fydd eich cleient yn cael cosbau am ddiweddariadau chwarterol a gollwyd.
-agent.voluntary.what-you-need-to-do.heading-2                          = Optio allan
-agent.voluntary.what-you-need-to-do.para-5                             = Mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm yn wirfoddol tan 6 Ebrill 2026. Gall eich cleient optio allan o anfon diweddariadau chwarterol. Ond, os ydym wedi rhoi gwybod i’ch cleient bod ein cosbau newydd yn berthnasol iddynt, bydd hynny’n parhau.
-agent.voluntary.what-you-need-to-do.para-6                             = O 6 Ebrill 2026 ymlaen, bydd yn rhaid i rai pobl ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Ni fyddant yn gallu optio allan. Byddwn yn ysgrifennu at eich cleient os yw hyn yn berthnasol iddynt.
+agent.what-you-need-to-do.h2.1                                                 = Os yw’ch cleient yn cofrestru’n wirfoddol
+agent.what-you-need-to-do.p1.1                                                 = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd
+agent.what-you-need-to-do.p1.link                                              = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
+agent.what-you-need-to-do.p1.2                                                 = {0} yn berthnasol os anfonir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
+agent.what-you-need-to-do.p2                                                   = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
+agent.what-you-need-to-do.p3                                                   = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
+agent.what-you-need-to-do.h2.2                                                 = Os oes angen i’ch cleient ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.what-you-need-to-do.p4                                                   = Bydd y cosbau newydd yn berthnasol i’ch cleient os anfonir ei ddiweddariad chwarterol neu Ffurflen Dreth yn hwyr, neu os gwneir taliad ar ôl y dyddiad dyledus.
 
 ## You can sign up now ##
 individual.you-can-sign-up-now.heading = Gallwch gofrestru nawr

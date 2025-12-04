@@ -51,26 +51,16 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       softwareStatus = sessionData.fetchSoftwareStatus
       consentYesNo = sessionData.fetchConsentStatus
     } yield {
-      val isCurrentYear = taxYearSelection.map(_.accountingYear).contains(Current)
-      val usingSoftwareStatus: Boolean = softwareStatus match {
-        case Some(Yes) => true
-        case _ => false
-      }
       Ok(view(
         postAction = routes.WhatYouNeedToDoController.submit,
-        eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-        mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-        mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-        taxYearSelectionIsCurrent = isCurrentYear,
-        usingSoftwareStatus = usingSoftwareStatus,
         clientName = request.clientDetails.name,
         clientNino = request.clientDetails.formattedNino,
-        backUrl = Some(backUrl(
+        backUrl = backUrl(
           eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
           mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
           captureConsentStatus = consentYesNo,
           taxYearSelection = taxYearSelection.map(_.accountingYear)
-        ))
+        )
       ))
     }
   }

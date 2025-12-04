@@ -93,11 +93,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
@@ -114,11 +109,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
@@ -135,11 +125,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetAllSessionData(SessionData())
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
@@ -158,11 +143,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         )))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.any(),
-          ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)
@@ -181,11 +161,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         )))
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
-          ArgumentMatchers.eq(true),
-          ArgumentMatchers.eq(false),
           ArgumentMatchers.any()
         )(any(), any()))
           .thenReturn(HtmlFormat.empty)

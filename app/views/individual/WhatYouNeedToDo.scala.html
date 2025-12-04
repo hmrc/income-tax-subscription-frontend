@@ -28,80 +28,31 @@
     ul: UnorderedList
 )
 
-@(postAction: Call, onlyNextYear: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, isUsingSoftware:Boolean, signUpNextTaxYear: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("what-you-need-to-do.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.what-you-need-to-do.title"), backLink = Some(backUrl)) {
 
-    @bodyContent
+    <h1 class="govuk-heading-l">@messages("individual.what-you-need-to-do.heading")</h1>
 
-  @form(action = postAction) {
-    @continueButton(alternateText = Some(messages("base.accept-and-continue")))
-  }
+    <h2 class="govuk-heading-m">@messages("individual.what-you-need-to-do.h2.1")</h2>
 
-}
-
-@bodyContent = {
-
-    <h1 class="govuk-heading-xl">@messages("what-you-need-to-do.heading")</h1>
-    @if(signUpNextTaxYear){
-        <p class="govuk-body">@messages("individual.what-you-need-to-do.para-1.next")</p>
-    }
-
-    @ul(
-        leadIn= if(signUpNextTaxYear){
-                    if(mandatedCurrentYear || mandatedNextYear) {
-                        messages("individual.what-you-need-to-do.para-2.must", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
-                    } else {
-                        messages("individual.what-you-need-to-do.para-2.should", (AccountingPeriodUtil.getNextTaxEndYear - 1).toString)
-                    }
-                }else{
-                    messages("individual.what-you-need-to-do.para-1.current")
-                } ,
-        conditionalSeq
-
-    )
-
-    <p class="govuk-body">@Html(messages(
-        key = "individual.what-you-need-to-do.para-3",
-        args = hmrcNewTabLinkHelper(
-        NewTabLinkHelper(messages("individual.what-you-need-to-do.para-3.link"),
-        Some("https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers")))))
+    <p class="govuk-body">
+        @Html(messages(
+            key = "individual.what-you-need-to-do.p1.2",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.what-you-need-to-do.p1.1"), Some(messages("individual.what-you-need-to-do.p1.link"))))
+        ))
     </p>
 
-    @if((!mandatedCurrentYear && !signUpNextTaxYear) || (!mandatedNextYear && signUpNextTaxYear)) {
-        <p class="govuk-body">@messages("individual.what-you-need-to-do.para-4.current")</p>
+    <p class="govuk-body">@messages("individual.what-you-need-to-do.p2")</p>
+
+    <p class="govuk-body">@messages("individual.what-you-need-to-do.p3")</p>
+
+    <h2 class="govuk-heading-m">@messages("individual.what-you-need-to-do.h2.2")</h2>
+
+    <p class="govuk-body">@messages("individual.what-you-need-to-do.p4")</p>
+
+    @form(action = postAction) {
+        @continueButton(alternateText = Some(messages("base.accept-and-continue")))
     }
 
-    <h2 class="govuk-heading-m">@messages("individual.what-you-need-to-do.heading-2")</h2>
-
-    <p class="govuk-body">@messages("individual.what-you-need-to-do.para-5")</p>
-    <p class="govuk-body">@messages("individual.what-you-need-to-do.para-6")</p>
 }
-
-
-@usingSoftware={
-    @if(isUsingSoftware) {
-        @messages("individual.what-you-need-to-do.bullet-1.has-software")
-    } else {
-        @hmrcNewTabLinkHelper(
-            NewTabLinkHelper(
-            messages("individual.what-you-need-to-do.bullet-1.no-software"),
-            Some(messages("individual.what-you-need-to-do.bullet-1.no-software.href"))
-        ))
-}}
-
-@conditionalSeq=@{
-    Seq(
-        Some(HtmlContent(usingSoftware)),
-        Some(Text(messages("individual.what-you-need-to-do.bullet-2"))),
-        Some(Text(messages("individual.what-you-need-to-do.bullet-3"))),
-        if (! signUpNextTaxYear) Some(Text(messages("agent.voluntary.what-you-need-to-do.bullet-4-current-year"))) else None,
-        Some(Text(messages("individual.what-you-need-to-do.bullet-5")))
-    ).flatten
-}
-
-
-
-
-
-
