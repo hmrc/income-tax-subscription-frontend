@@ -34,7 +34,7 @@ class WhatYouNeedToDoSpec extends ViewSpec {
     val title = "What penalties apply to you in Making Tax Digital for Income Tax"
     val heading = "What penalties apply to you in Making Tax Digital for Income Tax"
     val h2_1 = "If you are signing up voluntarily"
-    val p1_1 = "You are agreeing that our new penalties"
+    val p1_1 = "You are agreeing that our new penalties (opens in new tab)"
     val p1_2 = "will apply if you are late sending your tax return or paying your tax bill."
     val p2 = "Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late."
     val p3 = "You can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply."

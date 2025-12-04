@@ -37,8 +37,10 @@
     <h2 class="govuk-heading-m">@messages("individual.what-you-need-to-do.h2.1")</h2>
 
     <p class="govuk-body">
-        <a target="_blank" href="https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers">@messages("individual.what-you-need-to-do.p1.1")</a>
-        @messages("individual.what-you-need-to-do.p1.2")
+        @Html(messages(
+            key = "individual.what-you-need-to-do.p1.2",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.what-you-need-to-do.p1.1"), Some(messages("individual.what-you-need-to-do.p1.link"))))
+        ))
     </p>
 
     <p class="govuk-body">@messages("individual.what-you-need-to-do.p2")</p>

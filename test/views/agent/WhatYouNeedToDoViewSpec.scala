@@ -24,7 +24,7 @@ import views.html.agent.WhatYouNeedToDo
 
 import scala.util.Random
 
-class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
+class WhatYouNeedToDoViewSpec extends ViewSpec {
 
   private val nameLengthCharacters = 10
   private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
@@ -93,7 +93,7 @@ class AgentWhatYouNeedToDoViewSpec extends ViewSpec {
     val title = "What penalties apply in Making Tax Digital for Income Tax"
     val heading = "What penalties apply in Making Tax Digital for Income Tax"
     val h2_1 = "If your client is signing up voluntarily"
-    val p1_1 = "You and your client are agreeing that our new penalties"
+    val p1_1 = "You and your client are agreeing that our new penalties (opens in new tab)"
     val p1_2 = "will apply if your client’s tax return is sent late, or their tax bill is paid late."
     val p2 = "Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late."
     val p3 = "Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply."
