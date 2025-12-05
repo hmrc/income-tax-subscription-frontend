@@ -104,15 +104,6 @@ object MessageLookup {
     val line1 = "You can only sign up if you are an administrator."
   }
 
-  object AddMTDITOverview {
-    val title = "Add Making Tax Digital for Income Tax to your business tax account"
-    val heading: String = title
-    val paragraph1 = "Your agent has signed you up for Making Tax Digital for Income Tax (opens in new tab)"
-    val paragraph2 = "You can now add it to your HMRC online services account and manage it with other taxes."
-    val paragraph3 = "You may need to provide documents to prove your identity to add Making Tax Digital for Income Tax to your HMRC online services account."
-    val insetText = "You need to use your current Government Gateway ID for Self Assessment to add Making Tax Digital for Income Tax. You can check your existing account details on your business tax account (opens in new tab)."
-  }
-
   object ThrottleStartOfJourneyAgent {
     val title = "We are currently experiencing high levels of demand for this service - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     val heading = "We are currently experiencing high levels of demand for this service"
