@@ -16,51 +16,86 @@
 
 package views.individual.claimenrolment
 
-import messagelookup.individual.MessageLookup.{AddMTDITOverview => messages}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
-import play.api.mvc.Call
-import play.api.test.FakeRequest
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.ViewSpecTrait
 import views.html.individual.claimenrolment.AddMTDITOverview
 
 class AddMTDITOverviewSpec extends ViewSpec {
 
   val addMTDITOverview: AddMTDITOverview = app.injector.instanceOf[AddMTDITOverview]
+  val page: HtmlFormat.Appendable = addMTDITOverview(testCall)
+  val document: Document = Jsoup.parse(page.body)
+  val mainContent: Element = document.mainContent
 
-  val action: Call = ViewSpecTrait.testCall
+  "AddMTDITOverview" must {
+    "use the correct page template" in new TemplateViewTest(
+      view = page,
+      title = AddMTDITOverviewMessages.heading,
+      hasSignOutLink = true
+    )
 
-  class Setup {
-    val page: HtmlFormat.Appendable = addMTDITOverview(
-      postAction = action
-    )(FakeRequest(), implicitly)
+    "have a heading" in {
+      mainContent.getH1Element.text mustBe AddMTDITOverviewMessages.heading
+    }
 
-    val document: Document = Jsoup.parse(page.body)
+    "have a initial paragraph" in {
+      mainContent.getNthParagraph(1).text mustBe AddMTDITOverviewMessages.paraOne
+    }
+
+    "have a next steps section heading" in {
+      mainContent.selectHead("h2").text mustBe AddMTDITOverviewMessages.NextSteps.heading
+    }
+
+    "have a next steps first paragraph" in {
+      mainContent.getNthParagraph(2).text mustBe AddMTDITOverviewMessages.NextSteps.paraOne
+    }
+
+    "have a next steps second paragraph" which {
+      "has the correct text" in {
+        mainContent.getNthParagraph(3).text mustBe AddMTDITOverviewMessages.NextSteps.paraTwo
+      }
+      "has a link to the business tax account which opens in a new tab" in {
+        val link: Element = mainContent.getNthParagraph(3).selectHead("a")
+
+        link.text mustBe AddMTDITOverviewMessages.NextSteps.paraTwoLinkText
+        link.attr("href") mustBe "https://www.tax.service.gov.uk/business-account"
+        link.attr("target") mustBe "_blank"
+        link.attr("rel") mustBe "noopener noreferrer"
+      }
+    }
+
+    "have a next steps third paragraph" in {
+      mainContent.getNthParagraph(4).text mustBe AddMTDITOverviewMessages.NextSteps.paraThree
+    }
+
+    "have a form" which {
+      def form: Element = mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe testCall.method
+        form.attr("action") mustBe testCall.url
+      }
+      "has a continue button" in {
+        form.getGovukSubmitButton.text mustBe AddMTDITOverviewMessages.continue
+      }
+    }
   }
 
-  "Add MTD IT Overview" must {
-    "have a title" in new Setup {
-      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-      document.title mustBe messages.title + serviceNameGovUk
+  object AddMTDITOverviewMessages {
+    val heading: String = "Add Making Tax Digital for Income Tax to your business tax account"
+    val paraOne = "Your agent has signed you up for Making Tax Digital for Income Tax."
+
+    object NextSteps {
+      val heading: String = "Next steps"
+      val paraOne: String = "You can now add it to your account and manage it with other taxes. You’ll need the user ID and password you got when you signed up for Self Assessment."
+      val paraTwoLinkText: String = "business tax account (opens in new tab)"
+      val paraTwo: String = s"You can check your existing account details in your $paraTwoLinkText."
+      val paraThree: String = "You may be asked to provide further proof of your identity to add Making Tax Digital for Income Tax to your HMRC online services account."
     }
 
-    "have a heading" in new Setup {
-      document.mainContent.select("h1").text mustBe messages.heading
-    }
-
-    "have content and a hyperlink" in new Setup {
-      val paragraphs: Elements = document.mainContent.select(".govuk-body").select("p")
-      paragraphs.get(0).text() mustBe messages.paragraph1
-      paragraphs.get(0).selectHead("a").attr("href").contains("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")
-      paragraphs.get(1).text() mustBe messages.paragraph2
-      paragraphs.get(2).text() mustBe messages.paragraph3
-    }
-
-    "have a inset text" in new Setup {
-      document.mainContent.select(".govuk-inset-text").text mustBe messages.insetText
-    }
+    val continue: String = "Continue"
   }
+
 }

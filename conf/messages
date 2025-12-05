@@ -543,14 +543,13 @@ affinity-group-error.line2                                      = To sign up for
 affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a class="govuk-link" id="agent-service" href="{0}">use our agent service.</a>
 
 ## ADD MTDIT Overview
-
 mtdit-overview.heading                                          = Add Making Tax Digital for Income Tax to your business tax account
-mtdit-overview.paragraph1                                       = Your agent has signed you up for {0}
-mtdit-overview.link1                                            = Making Tax Digital for Income Tax
-mtdit-overview.paragraph2                                       = You can now add it to your HMRC online services account and manage it with other taxes.
-mtdit-overview.paragraph3                                       = You may need to provide documents to prove your identity to add Making Tax Digital for Income Tax to your HMRC online services account.
-mtdit-overview.inset                                            = You need to use your current Government Gateway ID for Self Assessment to add Making Tax Digital for Income Tax. You can check your existing account details on your {0}.
-mtdit-overview.link2                                            = business tax account
+mtdit-overview.para-one                                         = Your agent has signed you up for Making Tax Digital for Income Tax.
+mtdit-overview.next-steps.heading                               = Next steps
+mtdit-overview.next-steps.para-one                              = You can now add it to your account and manage it with other taxes. You’ll need the user ID and password you got when you signed up for Self Assessment.
+mtdit-overview.next-steps.para-two                              = You can check your existing account details in your {0}.
+mtdit-overview.next-steps.para-two.link-text                    = business tax account
+mtdit-overview.next-steps.para-three                            = You may be asked to provide further proof of your identity to add Making Tax Digital for Income Tax to your HMRC online services account.
 
 ## Agent Base ##
 agent.base.service-name                                         = Sign up your clients for Making Tax Digital for Income Tax
