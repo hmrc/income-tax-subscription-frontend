@@ -125,7 +125,7 @@ cannot-sign-up-yet.para3                                          = Yn y cyfamse
 individual.cannot-take-part-enduring.heading                           = Rydych yn esempt rhag defnyddio Trio Treth yn Ddigidol ar gyfer Treth Incwm
 individual.cannot-take-part-enduring.para1                             = Mae hyn yn golygu nad oes rhaid i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Os bydd eich amgylchiadau’n newid, {0}
 individual.cannot-take-part-enduring.para1.link-text                   = mae’n rhaid i chi roi gwybod i CThEF.
-individual.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
+individual.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
 individual.cannot-take-part-enduring.link                              = Gallwch ddod o hyd i wybodaeth am esemptiadau
 individual.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
@@ -570,7 +570,7 @@ agent.cannot-take-part.para3.link-text                            = gofrestru i 
 agent.cannot-take-part-enduring.heading                         = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.cannot-take-part-enduring.para1                           = Nid oes angen i chi ei ddefnyddio oni bai bod amgylchiadau eich cleient yn newid. Os bydd ei amgylchiadau’n newid, {0}
 agent.cannot-take-part-enduring.para1.link-text                 = mae’n rhaid i chi neu’ch cleient roi gwybod i CThEF.
-agent.cannot-take-part-enduring.para1.link-href                 = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
+agent.cannot-take-part-enduring.para1.link-href                 = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
 agent.cannot-take-part-enduring.link                            = Gallwch ddod o hyd i wybodaeth am esemptiadau
 agent.cannot-take-part-enduring.link-href                       = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
