@@ -16,7 +16,7 @@
 
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
-@import views.html.helpers.SignOutButton
+@import views.html.helpers.{SignOutButton, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
@@ -26,23 +26,51 @@
     mainTemplate: PrincipalMainTemplate,
     appConfig: AppConfig,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    signOutButton: SignOutButton
+    signOutButton: SignOutButton,
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(exemptionReason: Option[String])(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("cannot-sign-up-yet.title")) {
+@defining(exemptionReason.getOrElse("")) { reason =>
 
-    <h1 class="govuk-heading-l">@messages("cannot-sign-up-yet.heading")</h1>
+  @mainTemplate(
+    title = reason match {
+      case "MTD Exempt Enduring" => messages("individual.cannot-take-part-enduring.heading")
+      case _ => messages("cannot-sign-up-yet.title")
+    }
+  ) {
 
-   <p class="govuk-body" id="cannot-sign-up-yet-link">
+    @reason match {
+      case "MTD Exempt Enduring" => {
+
+        <h1 class="govuk-heading-l">@messages("individual.cannot-take-part-enduring.heading")</h1>
+
+        <p class="govuk-body">
+            @Html(messages(
+            key = "individual.cannot-take-part-enduring.para1",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-enduring.para1.link-text"), Some(messages("individual.cannot-take-part-enduring.para1.link-href"))))
+        ))
+        </p>
+
+        <p class="govuk-body">
+          @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-enduring.link"), Some(messages("individual.cannot-take-part-enduring.link-href"))))
+        </p>
+      }
+
+      case _ => {
+
+        <h1 class="govuk-heading-l">@messages("cannot-sign-up-yet.heading")</h1>
+
+        <p class="govuk-body" id="cannot-sign-up-yet-link">
        @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("cannot-sign-up-yet.para1"), Some(appConfig.govukGuidanceITSAWhoCanSignUpVoluntarily)))
-   </p>
+        </p>
 
-    <p class="govuk-body">@messages( "cannot-sign-up-yet.para2")</p>
+        <p class="govuk-body">@messages( "cannot-sign-up-yet.para2")</p>
 
-    <p class="govuk-body">@messages("cannot-sign-up-yet.para3")</p>
-
+        <p class="govuk-body">@messages("cannot-sign-up-yet.para3")</p>
+      }
+    }
     @signOutButton()
-
+  }
 }

@@ -26,21 +26,26 @@ class CannotTakePartViewSpec extends ViewSpec {
 
   val clientName: String = "FirstName LastName"
   val clientNino: String = "AA 11 11 11 A"
-  val exemptionReason: String = ""
 
   private val view = app.injector.instanceOf[CannotTakePart]
 
-  val page: HtmlFormat.Appendable = view(
-    clientName = clientName,
-    clientNino = clientNino,
-    exemptionReason = Some(exemptionReason)
-  )
+  def page(exemptionReason: Option[String]): HtmlFormat.Appendable =
+    view(
+      clientName = clientName,
+      clientNino = clientNino,
+      exemptionReason = exemptionReason
+    )
 
-  val document: Document = Jsoup.parse(page.body)
+  val cannotSignUp: Option[String] = Some("")
+  val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
 
   "CannotSignUp" must {
+
+    lazy val pageView = page(cannotSignUp)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
     "use the correct template" in new TemplateViewTest(
-      view = page,
+      view = pageView,
       title = CannotTakePartMessages.heading,
       isAgent = true,
       hasSignOutLink = true
@@ -94,6 +99,57 @@ class CannotTakePartViewSpec extends ViewSpec {
     }
   }
 
+  "MTD Exempt Enduring" must {
+
+    lazy val pageView = page(enduringExemption)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "use the correct template" in new TemplateViewTest(
+      view = pageView,
+      title = MTDExemptEnduring.heading,
+      isAgent = true,
+      hasSignOutLink = true
+    )
+
+    "have a heading and caption" in {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = MTDExemptEnduring.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
+    }
+
+    "have a first paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 1)
+      paragraph.text mustBe MTDExemptEnduring.paragraph1
+
+      val link: Element = paragraph.selectHead("a")
+      link.text mustBe MTDExemptEnduring.paragraph1LinkText
+      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
+    }
+
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe MTDExemptEnduring.paragraph2
+
+      val link: Element = paragraph.selectHead("a")
+      link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax"
+    }
+
+    "have a form" which {
+      def form: Element = document.mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "GET"
+        form.attr("action") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+
+      "have a sign up another client link" in {
+        form.selectHead(".govuk-button").text() mustBe CannotTakePartMessages.signUpAnotherClientLink
+      }
+    }
+  }
+
   object CannotTakePartMessages {
     val heading = "You cannot sign up this client voluntarily"
     val subheading = "What happens next"
@@ -102,6 +158,14 @@ class CannotTakePartViewSpec extends ViewSpec {
     val paragraph2LinkText = "who can and cannot sign up voluntarily (opens in new tab)"
     val paragraph3 = "You can also sign up to get emails when that page is updated (opens in new tab)."
     val paragraph3LinkText = "sign up to get emails when that page is updated (opens in new tab)"
+    val signUpAnotherClientLink = "Sign up another client"
+  }
+
+  object MTDExemptEnduring {
+    val heading = "Your client is exempt from Making Tax Digital for Income Tax"
+    val paragraph1 = "This means you do not have to use it unless your client’s circumstances change. If their circumstances change, you or your client must let HMRC know. (opens in new tab)"
+    val paragraph1LinkText = "you or your client must let HMRC know. (opens in new tab)"
+    val paragraph2 = "You can find out about exemptions (opens in new tab)"
     val signUpAnotherClientLink = "Sign up another client"
   }
 }

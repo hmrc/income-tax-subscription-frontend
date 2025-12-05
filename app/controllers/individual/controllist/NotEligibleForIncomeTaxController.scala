@@ -41,7 +41,7 @@ class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: N
         sessionData <- sessionDataService.getAllSessionData()
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
       } yield {
-        val maybeReason = eligibilityStatus.exceptionReason
+        val maybeReason = eligibilityStatus.exemptionReason
         Ok(notEligibleForIncomeTax(maybeReason))
       }
   }

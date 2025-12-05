@@ -121,6 +121,14 @@ cannot-sign-up-yet.para1                                          = Ni all pobl 
 cannot-sign-up-yet.para2                                          = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
 cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
+# Cannot sign up Enduring and 28/29
+individual.cannot-take-part-enduring.heading                           = Rydych yn esempt rhag defnyddio Trio Treth yn Ddigidol ar gyfer Treth Incwm
+individual.cannot-take-part-enduring.para1                             = Mae hyn yn golygu nad oes rhaid i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Os bydd eich amgylchiadau’n newid, {0}
+individual.cannot-take-part-enduring.para1.link-text                   = mae’n rhaid i chi roi gwybod i CThEF.
+individual.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
+individual.cannot-take-part-enduring.link                              = Gallwch ddod o hyd i wybodaeth am esemptiadau
+individual.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
+
 ##  What You Need To Do ##
 individual.what-you-need-to-do.title                            = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.what-you-need-to-do.heading                          = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -548,7 +556,6 @@ agent.base.yes                                                  = Iawn
 agent.base.no                                                   = Na
 
 # Agent cannot sign up client page
-# Agent cannot sign up client page
 agent.cannot-take-part.heading                                    = Ni allwch gofrestru’r cleient hwn yn wirfoddol
 agent.cannot-take-part.caption                                    = {0} | {1}
 agent.cannot-take-part.subheading                                 = Yr hyn sy’n digwydd nesaf
@@ -558,6 +565,14 @@ agent.cannot-take-part.para2.link-text                            = pwy sy’n g
 agent.cannot-take-part.para2.link-href                            = https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax.cy#pwy-syn-gallu-cofrestrun-wirfoddol
 agent.cannot-take-part.para3                                      = Gallwch hefyd {0}.
 agent.cannot-take-part.para3.link-text                            = gofrestru i gael negeseuon e-bost pan fydd y dudalen honno’n cael ei diweddaru
+
+# Agent cannot sign up Enduring and 28/29
+agent.cannot-take-part-enduring.heading                         = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.cannot-take-part-enduring.para1                           = Nid oes angen i chi ei ddefnyddio oni bai bod amgylchiadau eich cleient yn newid. Os bydd ei amgylchiadau’n newid, {0}
+agent.cannot-take-part-enduring.para1.link-text                 = mae’n rhaid i chi neu’ch cleient roi gwybod i CThEF.
+agent.cannot-take-part-enduring.para1.link-href                 = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
+agent.cannot-take-part-enduring.link                            = Gallwch ddod o hyd i wybodaeth am esemptiadau
+agent.cannot-take-part-enduring.link-href                       = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen

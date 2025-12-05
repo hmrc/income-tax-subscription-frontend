@@ -36,7 +36,7 @@ class CannotTakePartController @Inject()(view: CannotTakePart,
     for {
       eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(request.request.sessionData)
     } yield {
-      val maybeReason = eligibilityStatus.exceptionReason
+      val maybeReason = eligibilityStatus.exemptionReason
       Ok(view(
         clientName = request.clientDetails.name,
         clientNino = request.clientDetails.formattedNino,

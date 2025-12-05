@@ -30,7 +30,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
     }
 
     "handle old value of 'eligible'" in {
@@ -40,7 +40,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+      Json.parse(valueWithoutPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
     }
 
     "handle empty prepopData" in {
@@ -49,7 +49,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+      Json.parse(valueWithEmptyPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
     }
 
     "handle trivial prepopData" in {
@@ -58,7 +58,7 @@ class EligibilitySpec extends PlaySpec with GuiceOneServerPerSuite {
           |  "eligibleCurrentYear": true,
           |  "eligibleNextYear": true
           |}""".stripMargin
-      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None))
+      Json.parse(valueWithTrivialPrepop).validate[EligibilityStatus] mustBe JsSuccess(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
     }
 
   }

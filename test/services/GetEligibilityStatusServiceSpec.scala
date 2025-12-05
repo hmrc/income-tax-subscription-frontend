@@ -37,7 +37,7 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
 
   val appConfig: AppConfig = MockConfig
 
-  val eligibilityStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exceptionReason = None)
+  val eligibilityStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
 
   val testNino: String = "test-nino"
   val testUtr: String = "test-utr"
