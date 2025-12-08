@@ -38,6 +38,7 @@
       case "MTD Exempt Enduring" => messages("agent.cannot-take-part-enduring.heading")
       case "MTD Exempt 26/27" => messages("agent.cannot-take-part-exempt-26-27.heading")
       case "No Data" => messages("agent.cannot-take-part-no-data.heading")
+      case "Digitally Exempt" => messages("agent.digitally-exempt.heading")
       case _ => messages("agent.cannot-take-part.heading")
     }
   ) {
@@ -45,6 +46,7 @@
     @pageHeadingHelper(
       heading = reason match {
         case "MTD Exempt Enduring" => messages("agent.cannot-take-part-enduring.heading")
+        case "Digitally Exempt" => messages("agent.digitally-exempt.heading")
         case "MTD Exempt 26/27" => messages("agent.cannot-take-part-exempt-26-27.heading")
         case "No Data" => messages("agent.cannot-take-part-no-data.heading")
         case _ => messages("agent.cannot-take-part.heading")
@@ -58,8 +60,8 @@
 
         <p class="govuk-body">
             @Html(messages(
-            key = "agent.cannot-take-part-enduring.para1",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.cannot-take-part-enduring.para1.link-text"), Some(messages("agent.cannot-take-part-enduring.para1.link-href"))))
+            "agent.cannot-take-part-enduring.para1",
+             hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.cannot-take-part-enduring.para1.link-text"), Some(messages("agent.cannot-take-part-enduring.para1.link-href"))))
         ))
         </p>
 
@@ -76,6 +78,25 @@
 
         <p class="govuk-body">
           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.cannot-take-part-exempt-26-27.link"), Some(messages("agent.cannot-take-part-exempt-26-27.link-href"))))
+        </p>
+      }
+
+      case "Digitally Exempt" => {
+
+        <p class="govuk-body">
+            @Html(messages("agent.digitally-exempt.para"))
+        </p>
+
+        <p class="govuk-body">
+            @Html(messages(
+            "agent.digitally-exempt.para1",
+             hmrcNewTabLinkHelper(
+                NewTabLinkHelper(
+                    messages("agent.digitally-exempt.para1.link-text"),
+                    Some(messages("agent.digitally-exempt.para1.link-href"))
+                    )
+                )
+            ))
         </p>
       }
 

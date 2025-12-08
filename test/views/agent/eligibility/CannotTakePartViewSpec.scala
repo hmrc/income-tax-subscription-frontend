@@ -39,6 +39,7 @@ class CannotTakePartViewSpec extends ViewSpec {
   val cannotSignUp: Option[String] = Some("")
   val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
   val mtdExempt2627: Option[String] = Some("MTD Exempt 26/27")
+  val digitalExemption: Option[String] = Some("Digitally Exempt")
   val noData: Option[String] = Some("No Data")
 
   "CannotSignUp" must {
@@ -270,6 +271,53 @@ class CannotTakePartViewSpec extends ViewSpec {
     }
   }
 
+  "Digitally Exempt" must {
+
+    lazy val pageView = page(digitalExemption)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "use the correct template" in new TemplateViewTest(
+      view = pageView,
+      title = DigitallyExempt.heading,
+      isAgent = true,
+      hasSignOutLink = true
+    )
+
+    "have a heading and caption" in {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = DigitallyExempt.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
+    }
+
+    "have a first paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 1)
+      paragraph.text mustBe DigitallyExempt.paragraph
+    }
+
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe DigitallyExempt.paragraph1
+
+      val link: Element = paragraph.selectHead("a")
+      link.attr("href") mustBe DigitallyExempt.paragraph1LinkHref
+    }
+
+    "have a form" which {
+      def form: Element = document.mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "GET"
+        form.attr("action") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+
+      "have a sign up another client link" in {
+        form.selectHead(".govuk-button").text() mustBe CannotTakePartMessages.signUpAnotherClientLink
+      }
+    }
+  }
+
   object CannotTakePartMessages {
     val heading = "You cannot sign up this client voluntarily"
     val subheading = "What happens next"
@@ -306,5 +354,13 @@ class CannotTakePartViewSpec extends ViewSpec {
     val list3 = "are insolvent"
     val paragraph3 = "If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
     val paragraph3LinkText = "contact us (opens in new tab)"
+  }
+
+  object DigitallyExempt {
+    val heading = "Your client is exempt from Making Tax Digital for Income Tax"
+    val paragraph = "HMRC has agreed that your client is digitally excluded. This means you do not need to use it unless your circumstances change."
+    val paragraph1 = "If your client’s circumstances change, you or your client must let HMRC know. (opens in new tab)"
+    val paragraph1LinkHref = "https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied"
+    val signUpAnotherClientLink = "Sign up another client"
   }
 }

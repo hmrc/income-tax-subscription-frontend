@@ -446,10 +446,11 @@ sign-up-confirmation.contact-support.link-href                       = https://w
 sign-up-confirmation.preference-set.online.heading                   = Eich dewis o ohebiaeth
 sign-up-confirmation.preference-set.online.para-one                  = Os ydych wedi dewis cael eich llythyrau treth ar-lein, gwnewch yn siŵr eich bod wedi dilysu’ch cyfeiriad e-bost.
 
-individual.digitally-exempt.title                                    = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.digitally-exempt.para                                     = Mae CThEF wedi cytuno eich bod wedi`ch cau allan o`r byd digidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
-individual.digitally-exempt.para2                                    = Os bydd eich amgylchiadau`n newid, mae`n rhaid i chi roi gwybod i CThEF.
-individual.digitally-exempt.link                                     = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+individual.digitally-exempt.para1                                    = Os bydd eich amgylchiadau`n newid, mae`n rhaid i chi roi gwybod i CThEF.
+individual.digitally-exempt.para2.link-text                          = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
 
 ## Errors ##
 
@@ -1174,7 +1175,8 @@ agent.signing-up.check-sign-up.bullet-2                                 = rhif Y
 agent.signing-up.check-sign-up.bullet-3                                 = dyddiad geni
 agent.signing-up.check-sign-up.para-2                                   = Byddwn yn gwirio cofnod y cleient hwnnw ac yn rhoi gwybod i chi a allwch eu cofrestru.
 
-agent.digitally-exempt.title                                            = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.digitally-exempt.heading                                           = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.digitally-exempt.para                                             = Mae CThEF wedi cytuno bod eich cleient wedi`i gau allan o`r byd ddigidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
-agent.digitally-exempt.para2                                            = Os bydd amgylchiadau eich cleient yn newid, mae`n rhaid i chi neu eich cleient roi gwybod i CThEF.
-agent.digitally-exempt.link                                             = Gallwch ddod o hyd i wybodaeth am esemptiadau
+agent.digitally-exempt.para1                                            = Os bydd amgylchiadau eich cleient yn newid, {0}
+agent.digitally-exempt.para1.link-text                                  = mae`n rhaid i chi neu eich cleient roi gwybod i CThEF.
+agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
