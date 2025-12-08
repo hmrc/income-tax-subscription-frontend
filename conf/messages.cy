@@ -985,10 +985,11 @@ business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o
 error.remove-sole-trader-business.invalid         = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Progress saved
-business.progress-saved.title                                   = Rydym wedi cadw’ch cynnydd
+business.progress-saved.title                                   = Cadw a dod yn ôl yn nes ymlaen
+business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
 business.progress-saved.content.summary                         = Byddwn yn cadw’ch data tan {0}
-business.progress-saved.content.subheading                      = Yr hyn sy’n digwydd nesaf
-business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r un Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth.
+business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
+business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich Hunanasesiad.
 business.progress-saved.content.paragraph2                      = Fel arall, gallwch
 business.progress-saved.content.sign-up-link                    = fynd yn eich blaen i gofrestru
 

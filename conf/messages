@@ -990,10 +990,11 @@ business.remove-sole-trader-business.paragraph    = All your current sole trader
 error.remove-sole-trader-business.invalid         = Select yes if you want to remove business
 
 ## Progress saved
-business.progress-saved.title                                   = We have saved your progress
+business.progress-saved.title                                   = Save and come back later
+business.progress-saved.banner-title                            = Progress saved
 business.progress-saved.content.summary                         = We’ll save your data until {0}
-business.progress-saved.content.subheading                      = What happens next
-business.progress-saved.content.paragraph1                      = If you sign out, you’ll need to sign in again using the same Government Gateway user ID.
+business.progress-saved.content.subheading                      = What you can do next
+business.progress-saved.content.paragraph1                      = If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment.
 business.progress-saved.content.paragraph2                      = Or you can
 business.progress-saved.content.sign-up-link                    = continue signing up
 
