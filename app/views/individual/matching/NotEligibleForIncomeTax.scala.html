@@ -37,6 +37,7 @@
   @mainTemplate(
     title = reason match {
       case "MTD Exempt Enduring" => messages("individual.cannot-take-part-enduring.heading")
+      case "MTD Exempt 26/27" => messages("individual.cannot-take-part-exempt-26-27.heading")
       case _ => messages("cannot-sign-up-yet.title")
     }
   ) {
@@ -55,6 +56,19 @@
 
         <p class="govuk-body">
           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-enduring.link"), Some(messages("individual.cannot-take-part-enduring.link-href"))))
+        </p>
+      }
+
+     case "MTD Exempt 26/27" => {
+
+        <h1 class="govuk-heading-l">@messages("individual.cannot-take-part-exempt-26-27.heading")</h1>
+
+        <p class="govuk-body">@messages("individual.cannot-take-part-exempt-26-27.para1")</p>
+
+        <p class="govuk-body">@messages("individual.cannot-take-part-exempt-26-27.para2")</p>
+
+        <p class="govuk-body">
+          @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-exempt-26-27.link"), Some(messages("individual.cannot-take-part-exempt-26-27.link-href"))))
         </p>
       }
 

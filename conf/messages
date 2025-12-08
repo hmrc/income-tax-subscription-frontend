@@ -128,8 +128,15 @@ individual.cannot-take-part-enduring.heading                           = You are
 individual.cannot-take-part-enduring.para1                             = This means you do not have to use it unless your circumstances change. If your circumstances change, {0}
 individual.cannot-take-part-enduring.para1.link-text                   = you must let HMRC know.
 individual.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
-individual.cannot-take-part-enduring.link                              = You can find out about exemptions
+individual.cannot-take-part-enduring.link                              = You can find out about exemptions.
 individual.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
+
+# Cannot sign up MTD Exempt 26/27
+individual.cannot-take-part-exempt-26-27.heading                     = You are exempt from Making Tax Digital for Income Tax
+individual.cannot-take-part-exempt-26-27.para1                       = You are exempt from using Making Tax Digital for Income Tax for the 2026 to 2027 tax year.
+individual.cannot-take-part-exempt-26-27.para2                       = This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change.
+individual.cannot-take-part-exempt-26-27.link                        = Find out if and when you may be able to use Making Tax Digital for Income Tax in the future.
+individual.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
 
 ## You can sign up now ##
 individual.you-can-sign-up-now.heading = You can sign up now
@@ -594,8 +601,15 @@ agent.cannot-take-part-enduring.heading                           = Your client 
 agent.cannot-take-part-enduring.para1                             = This means you do not have to use it unless your client’s circumstances change. If their circumstances change, {0}
 agent.cannot-take-part-enduring.para1.link-text                   = you or your client must let HMRC know.
 agent.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
-agent.cannot-take-part-enduring.link                              = You can find out about exemptions
+agent.cannot-take-part-enduring.link                              = You can find out about exemptions.
 agent.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
+
+# Cannot sign up MTD Exempt 26/27
+agent.cannot-take-part-exempt-26-27.heading                     = Your client is exempt from Making Tax Digital for Income Tax
+agent.cannot-take-part-exempt-26-27.para1                       = Your client is exempt from using Making Tax Digital for Income Tax for the 2026 to 2027 tax year.
+agent.cannot-take-part-exempt-26-27.para2                       = This means you do not need to use it unless your circumstances change. You or your client must let HMRC know if their circumstances change.
+agent.cannot-take-part-exempt-26-27.link                        = Find out if and when your client may be able to use Making Tax Digital for Income Tax in the future.
+agent.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
 
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = You can sign up this client from next tax year

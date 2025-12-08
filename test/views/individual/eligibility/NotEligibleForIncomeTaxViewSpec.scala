@@ -28,6 +28,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   val cannotSignUp: Option[String] = Some("")
   val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
+  val mtdExempt2627: Option[String] = Some("MTD Exempt 26/27")
 
   "Cannot Sign Up View" should {
 
@@ -97,6 +98,40 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
   }
 
+  "MTD Exempt 26/27" must {
+
+    lazy val pageView = page(mtdExempt2627)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "have a title" in {
+      document.title mustBe s"${MTDExempt2627.heading} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+    }
+
+    "have a heading" in {
+      document.mainContent.select("h1").text() mustBe MTDExempt2627.heading
+    }
+
+    "have a first paragraph" in {
+      document.mainContent.selectNth("p", 1).text mustBe MTDExempt2627.paragraph1
+    }
+
+    "have a second paragraph" in {
+      document.mainContent.selectNth("p", 2).text mustBe MTDExempt2627.paragraph2
+    }
+
+    "have a third paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 3)
+      paragraph.text mustBe MTDExempt2627.paragraph3
+
+      val link: Element = paragraph.selectHead("a")
+      link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax"
+    }
+
+    "has a sign out button" in {
+      document.mainContent.selectHead(".govuk-button").text mustBe MTDExempt2627.signoutButton
+    }
+  }
+
   object CannotSignUpYetMessages {
     val heading = "You cannot sign up yet"
     val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
@@ -110,7 +145,15 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val heading = "You are exempt from Making Tax Digital for Income Tax"
     val paragraph1 = "This means you do not have to use it unless your circumstances change. If your circumstances change, you must let HMRC know. (opens in new tab)"
     val paragraph1LinkText = "you must let HMRC know. (opens in new tab)"
-    val paragraph2 = "You can find out about exemptions (opens in new tab)"
+    val paragraph2 = "You can find out about exemptions. (opens in new tab)"
+    val signoutButton = "Sign out"
+  }
+
+  object MTDExempt2627 {
+    val heading = "You are exempt from Making Tax Digital for Income Tax"
+    val paragraph1 = "You are exempt from using Making Tax Digital for Income Tax for the 2026 to 2027 tax year."
+    val paragraph2 = "This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change."
+    val paragraph3 = "Find out if and when you may be able to use Making Tax Digital for Income Tax in the future. (opens in new tab)"
     val signoutButton = "Sign out"
   }
 }
