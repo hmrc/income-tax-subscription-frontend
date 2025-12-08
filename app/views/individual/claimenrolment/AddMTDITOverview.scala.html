@@ -32,29 +32,28 @@
     title = messages("mtdit-overview.heading")
 ) {
 
-<h1 class="govuk-heading-l">@messages("mtdit-overview.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("mtdit-overview.heading")</h1>
 
-<p class="govuk-body">
-    @Html(messages(
-    key = "mtdit-overview.paragraph1",
-    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("mtdit-overview.link1"), Some("https://www.gov.uk/government/collections/making-tax-digital-for-income-tax")))
-    ))
-</p>
+    <p class="govuk-body">@messages("mtdit-overview.para-one")</p>
 
-<p class="govuk-body"> @messages("mtdit-overview.paragraph2")</p>
+    <h2 class="govuk-heading-m">@messages("mtdit-overview.next-steps.heading")</h2>
 
-<p class="govuk-body"> @messages("mtdit-overview.paragraph3")</p>
+    <p class="govuk-body">@messages("mtdit-overview.next-steps.para-one")</p>
 
-<div class="govuk-inset-text" id="inset-text">
-    @Html(messages(
-    key = "mtdit-overview.inset",
-    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("mtdit-overview.link2"), Some("https://www.tax.service.gov.uk/business-account")))
-    ))
+    <p class="govuk-body">
+        @Html(messages(
+            key = "mtdit-overview.next-steps.para-two",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                text = messages("mtdit-overview.next-steps.para-two.link-text"),
+                href = Some("https://www.tax.service.gov.uk/business-account")
+            ))
+        ))
+    </p>
 
-</div>
+    <p class="govuk-body">@messages("mtdit-overview.next-steps.para-three")</p>
 
-@form(action = postAction){
-    @continueButton()
+    @form(action = postAction){
+        @continueButton()
     }
 
 }
