@@ -38,6 +38,7 @@
     title = reason match {
       case "MTD Exempt Enduring" => messages("individual.cannot-take-part-enduring.heading")
       case "MTD Exempt 26/27" => messages("individual.cannot-take-part-exempt-26-27.heading")
+      case "No Data" => messages("individual.cannot-take-part-no-data.heading")
       case _ => messages("cannot-sign-up-yet.title")
     }
   ) {
@@ -71,6 +72,29 @@
           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-exempt-26-27.link"), Some(messages("individual.cannot-take-part-exempt-26-27.link-href"))))
         </p>
       }
+
+    case "No Data" => {
+
+    <h1 class="govuk-heading-l">@messages("individual.cannot-take-part-no-data.heading")</h1>
+
+    <p class="govuk-body">@messages("individual.cannot-take-part-no-data.para1")</p>
+
+    <p class="govuk-body">@messages("individual.cannot-take-part-no-data.para2")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("individual.cannot-take-part-no-data.list1")</li>
+        <li>@messages("individual.cannot-take-part-no-data.list2")</li>
+        <li>@messages("individual.cannot-take-part-no-data.list3")</li>
+    </ul>
+
+    <p class="govuk-body">
+        @Html(messages(
+        key = "individual.cannot-take-part-no-data.para3",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-no-data.link"), Some(messages("individual.cannot-take-part-no-data.link-href"))))
+        )).
+    </p>
+    }
+
+
 
       case _ => {
 

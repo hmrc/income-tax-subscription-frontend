@@ -136,6 +136,17 @@ individual.cannot-take-part-exempt-26-27.para2                       = Mae hyn y
 individual.cannot-take-part-exempt-26-27.link                        = Darganfyddwch a fyddwch chi’n gallu defnyddio Digideiddio Treth ar gyfer Treth Incwm yn y dyfodol, a phryd i’w ddefnyddio.
 individual.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
+# Cannot cannot sign up No Data
+individual.cannot-take-part-no-data.heading                           = Ni allwch ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.cannot-take-part-no-data.para1                             = Mae ein cofnodion yn dangos na allwch ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.cannot-take-part-no-data.para2                             = Gallai hyn fod oherwydd y canlynol:
+individual.cannot-take-part-no-data.list1                             = nid ydych wedi cyflwyno Ffurflen Dreth yn ystod y 2 flynedd ddiwethaf. Gallwch gofrestru ar ôl i chi gyflwyno’ch Ffurflen Dreth gyntaf
+individual.cannot-take-part-no-data.list2                             = nid ydych erioed wedi cyflwyno Ffurflen Dreth
+individual.cannot-take-part-no-data.list3                             = rydych yn ansolfent
+individual.cannot-take-part-no-data.para3                             = Os ydych wedi cael llythyr gan CThEF yn gofyn i chi gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, {0}
+individual.cannot-take-part-no-data.link                              = cysylltwch â ni
+individual.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
+
 ##  What You Need To Do ##
 individual.what-you-need-to-do.title                            = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.what-you-need-to-do.heading                          = Pa gosbau sy’n berthnasol i chi yn y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -586,6 +597,17 @@ agent.cannot-take-part-exempt-26-27.para1                       = Mae eich cleie
 agent.cannot-take-part-exempt-26-27.para2                       = Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Mae’n rhaid i chi neu eich cleient roi gwybod i CThEF os bydd ei amgylchiadau’n newid.
 agent.cannot-take-part-exempt-26-27.link                        = Dysgwch a fydd modd i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y dyfodol, a phryd i’w ddefnyddiol.
 agent.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy#pwy-syn-esempt-rhag-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+
+# Agent cannot sign up No Data
+agent.cannot-take-part-no-data.heading                           = Ni all eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.cannot-take-part-no-data.para1                             = Mae ein cofnodion yn dangos na all eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.cannot-take-part-no-data.para2                             = Gallai hyn fod oherwydd y canlynol:
+agent.cannot-take-part-no-data.list1                             = nid yw wedi cyflwyno Ffurflen Dreth yn ystod y 2 flynedd ddiwethaf. Gallwch gofrestru ar ôl i chi gyflwyno’ch Ffurflen Dreth gyntaf
+agent.cannot-take-part-no-data.list2                             = nid yw erioed wedi cyflwyno Ffurflen Dreth
+agent.cannot-take-part-no-data.list3                             = mae’n ansolfent
+agent.cannot-take-part-no-data.para3                             = Os yw eich cleient wedi cael llythyr gan CThEF yn gofyn iddo gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, {0}
+agent.cannot-take-part-no-data.link                              = cysylltwch â ni
+agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
 
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
