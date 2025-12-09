@@ -349,7 +349,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     val heading = "Your client cannot use Making Tax Digital for Income Tax"
     val paragraph1 = "Our records show your client cannot use Making Tax Digital for Income Tax."
     val paragraph2 = "This could be because they:"
-    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return"
+    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted their first tax return"
     val list2 = "have never submitted a tax return"
     val list3 = "are insolvent"
     val paragraph3 = "If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
