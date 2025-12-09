@@ -470,6 +470,13 @@ sign-up-confirmation.contact-support.link-href                       = https://w
 sign-up-confirmation.preference-set.online.heading                   = Your communication preferences
 sign-up-confirmation.preference-set.online.para-one                  = If you’ve chosen to get your tax letters online, make sure you have verified your email address.
 
+
+individual.digitally-exempt.heading                                  = You are exempt from Making Tax Digital for Income Tax
+individual.digitally-exempt.para                                     = HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change.
+individual.digitally-exempt.para1                                    = If your circumstances change, you must let HMRC know.
+individual.digitally-exempt.para2.link-text                          = Find out more about exemptions 
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+
 ## Errors ##
 
 error.business.what-year-to-sign-up.empty                         = Select the tax year you want to sign up for
@@ -1172,3 +1179,10 @@ agent.signing-up.check-sign-up.bullet-1                                 = name
 agent.signing-up.check-sign-up.bullet-2                                 = National Insurance number
 agent.signing-up.check-sign-up.bullet-3                                 = date of birth
 agent.signing-up.check-sign-up.para-2                                   = We’ll check that client’s record and tell you if you can sign them up.
+
+## Agent Digitally Exempt Page ##
+agent.digitally-exempt.heading                                          = Your client is exempt from Making Tax Digital for Income Tax
+agent.digitally-exempt.para                                             = HMRC has agreed that your client is digitally excluded. This means you do not need to use it unless your circumstances change.
+agent.digitally-exempt.para1                                            = If your client’s circumstances change, {0}
+agent.digitally-exempt.para1.link-text                                  = you or your client must let HMRC know.
+agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied

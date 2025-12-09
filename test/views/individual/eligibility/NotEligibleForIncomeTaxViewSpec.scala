@@ -29,6 +29,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
   val cannotSignUp: Option[String] = Some("")
   val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
   val mtdExempt2627: Option[String] = Some("MTD Exempt 26/27")
+  val digitalExemption: Option[String] = Some("Digitally Exempt")
   val noData: Option[String] = Some("No Data")
 
   "Cannot Sign Up View" should {
@@ -92,6 +93,42 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
       val link: Element = paragraph.selectHead("a")
       link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax"
+    }
+
+    "has a sign out button" in {
+      document.mainContent.selectHead(".govuk-button").text mustBe MTDExemptEnduring.signoutButton
+    }
+  }
+
+  "Digitally Exempt" must {
+
+    lazy val pageView = page(digitalExemption)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "have a title" in {
+      document.title mustBe s"${DigitallyExempt.heading} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+    }
+
+    "have a heading" in {
+      document.mainContent.select("h1").text() mustBe DigitallyExempt.heading
+    }
+
+    "have a first paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 1)
+      paragraph.text mustBe DigitallyExempt.paragraph
+    }
+
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe DigitallyExempt.paragraph1
+    }
+
+    "have a third paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 3)
+      paragraph.text mustBe DigitallyExempt.paragraph2
+
+      val link: Element = paragraph.selectHead("a")
+      link.attr("href") mustBe "https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied"
     }
 
     "has a sign out button" in {
@@ -219,5 +256,14 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val list3 = "are insolvent"
     val paragraph3 = "If you have received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
     val paragraph3LinkText = "contact us (opens in new tab)"
+  }
+
+  object DigitallyExempt {
+    val heading = "You are exempt from Making Tax Digital for Income Tax"
+    val paragraph = "HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change."
+    val paragraph1 = "If your circumstances change, you must let HMRC know."
+    val paragraph2 = "Find out more about exemptions (opens in new tab)"
+    val linkRef = "https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied"
+    val signoutButton = "Sign out"
   }
 }
