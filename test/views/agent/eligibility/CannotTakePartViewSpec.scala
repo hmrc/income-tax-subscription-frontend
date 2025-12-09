@@ -39,6 +39,7 @@ class CannotTakePartViewSpec extends ViewSpec {
   val cannotSignUp: Option[String] = Some("")
   val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
   val mtdExempt2627: Option[String] = Some("MTD Exempt 26/27")
+  val noData: Option[String] = Some("No Data")
 
   "CannotSignUp" must {
 
@@ -201,6 +202,74 @@ class CannotTakePartViewSpec extends ViewSpec {
     }
   }
 
+  "No Data" must {
+
+    lazy val pageView = page(noData)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "use the correct template" in new TemplateViewTest(
+      view = pageView,
+      title = NoDataFound.heading,
+      isAgent = true,
+      hasSignOutLink = true
+    )
+
+    "have a heading and caption" in {
+      document.mainContent.mustHaveHeadingAndCaption(
+        heading = NoDataFound.heading,
+        caption = s"$clientName | $clientNino",
+        isSection = false
+      )
+    }
+
+    "have a first paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 1)
+      paragraph.text mustBe NoDataFound.paragraph1
+    }
+
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe NoDataFound.paragraph2
+    }
+
+    "have a first list" in {
+      val list: Element = document.mainContent.selectNth("li", 1)
+      list.text mustBe NoDataFound.list1
+    }
+
+    "have a second list" in {
+      val list: Element = document.mainContent.selectNth("li", 2)
+      list.text mustBe NoDataFound.list2
+    }
+
+    "have a third list" in {
+      val list: Element = document.mainContent.selectNth("li", 3)
+      list.text mustBe NoDataFound.list3
+    }
+
+    "have a third paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 3)
+      paragraph.text mustBe NoDataFound.paragraph3
+
+      val link: Element = paragraph.selectHead("a")
+      link.text mustBe NoDataFound.paragraph3LinkText
+      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
+    }
+
+    "have a form" which {
+      def form: Element = document.mainContent.getForm
+
+      "has the correct attributes" in {
+        form.attr("method") mustBe "GET"
+        form.attr("action") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+
+      "have a sign up another client link" in {
+        form.selectHead(".govuk-button").text() mustBe CannotTakePartMessages.signUpAnotherClientLink
+      }
+    }
+  }
+
   object CannotTakePartMessages {
     val heading = "You cannot sign up this client voluntarily"
     val subheading = "What happens next"
@@ -226,5 +295,16 @@ class CannotTakePartViewSpec extends ViewSpec {
     val paragraph2 = "This means you do not need to use it unless your circumstances change. You or your client must let HMRC know if their circumstances change."
     val paragraph3 = "Find out if and when your client may be able to use Making Tax Digital for Income Tax in the future. (opens in new tab)"
     val signUpAnotherClientLink = "Sign up another client"
+  }
+
+  object NoDataFound {
+    val heading = "Your client cannot use Making Tax Digital for Income Tax"
+    val paragraph1 = "Our records show your client cannot use Making Tax Digital for Income Tax."
+    val paragraph2 = "This could be because they:"
+    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return"
+    val list2 = "have never submitted a tax return"
+    val list3 = "are insolvent"
+    val paragraph3 = "If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
+    val paragraph3LinkText = "contact us (opens in new tab)"
   }
 }

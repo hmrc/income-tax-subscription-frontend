@@ -16,7 +16,7 @@
 
 @import play.api.i18n.Messages
 @import play.api.mvc.Request
-@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
 @import views.html.templates.AgentMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -25,7 +25,8 @@
         form: FormWithCSRF,
         continueButton: ContinueButton,
         pageHeadingHelper: PageHeadingHelper,
-        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+        ul: UnorderedList
 )
 
 @(clientName: String, clientNino: String, exemptionReason: Option[String])(implicit request: Request[_], messages: Messages)
@@ -36,6 +37,7 @@
     title = reason match {
       case "MTD Exempt Enduring" => messages("agent.cannot-take-part-enduring.heading")
       case "MTD Exempt 26/27" => messages("agent.cannot-take-part-exempt-26-27.heading")
+      case "No Data" => messages("agent.cannot-take-part-no-data.heading")
       case _ => messages("agent.cannot-take-part.heading")
     }
   ) {
@@ -44,6 +46,7 @@
       heading = reason match {
         case "MTD Exempt Enduring" => messages("agent.cannot-take-part-enduring.heading")
         case "MTD Exempt 26/27" => messages("agent.cannot-take-part-exempt-26-27.heading")
+        case "No Data" => messages("agent.cannot-take-part-no-data.heading")
         case _ => messages("agent.cannot-take-part.heading")
       },
       caption = messages("agent.cannot-take-part.caption", clientName, clientNino),
@@ -75,6 +78,28 @@
           @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.cannot-take-part-exempt-26-27.link"), Some(messages("agent.cannot-take-part-exempt-26-27.link-href"))))
         </p>
       }
+
+      case "No Data" => {
+
+        <p class="govuk-body">@messages("agent.cannot-take-part-no-data.para1")</p>
+
+        @ul(
+            leadIn=messages("agent.cannot-take-part-no-data.para2"),
+            Seq(
+                Text(messages("agent.cannot-take-part-no-data.list1")),
+                Text(messages("agent.cannot-take-part-no-data.list2")),
+                Text(messages("agent.cannot-take-part-no-data.list3"))
+            )
+        )
+
+        <p class="govuk-body">
+            @Html(messages(
+            key = "agent.cannot-take-part-no-data.para3",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.cannot-take-part-no-data.link"), Some(messages("agent.cannot-take-part-no-data.link-href"))))
+            )).
+        </p>
+      }
+
 
       case _ => {
 

@@ -29,6 +29,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
   val cannotSignUp: Option[String] = Some("")
   val enduringExemption: Option[String] = Some("MTD Exempt Enduring")
   val mtdExempt2627: Option[String] = Some("MTD Exempt 26/27")
+  val noData: Option[String] = Some("No Data")
 
   "Cannot Sign Up View" should {
 
@@ -132,6 +133,58 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
   }
 
+  "No Data" must {
+
+    lazy val pageView = page(noData)
+    lazy val document: Document = Jsoup.parse(pageView.body)
+
+    "have a title" in {
+      document.title mustBe s"${NoDataFound.heading} - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+    }
+
+    "have a heading" in {
+      document.mainContent.select("h1").text() mustBe NoDataFound.heading
+    }
+
+    "have a first paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 1)
+      paragraph.text mustBe NoDataFound.paragraph1
+    }
+
+    "have a second paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe NoDataFound.paragraph2
+    }
+
+    "have a first list" in {
+      val list: Element = document.mainContent.selectNth("li", 1)
+      list.text mustBe NoDataFound.list1
+    }
+
+    "have a second list" in {
+      val list: Element = document.mainContent.selectNth("li", 2)
+      list.text mustBe NoDataFound.list2
+    }
+
+    "have a third list" in {
+      val list: Element = document.mainContent.selectNth("li", 3)
+      list.text mustBe NoDataFound.list3
+    }
+
+    "have a third paragraph" in {
+      val paragraph: Element = document.mainContent.selectNth("p", 3)
+      paragraph.text mustBe NoDataFound.paragraph3
+
+      val link: Element = paragraph.selectHead("a")
+      link.text mustBe NoDataFound.paragraph3LinkText
+      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
+    }
+
+    "has a sign out button" in {
+      document.mainContent.selectHead(".govuk-button").text mustBe MTDExempt2627.signoutButton
+    }
+  }
+
   object CannotSignUpYetMessages {
     val heading = "You cannot sign up yet"
     val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
@@ -155,5 +208,16 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val paragraph2 = "This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change."
     val paragraph3 = "Find out if and when you may be able to use Making Tax Digital for Income Tax in the future. (opens in new tab)"
     val signoutButton = "Sign out"
+  }
+
+  object NoDataFound {
+    val heading = "You cannot use Making Tax Digital for Income Tax"
+    val paragraph1 = "Our records show you cannot use Making Tax Digital for Income Tax."
+    val paragraph2 = "This could be because you:"
+    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return"
+    val list2 = "have never submitted a tax return"
+    val list3 = "are insolvent"
+    val paragraph3 = "If you have received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
+    val paragraph3LinkText = "contact us (opens in new tab)"
   }
 }

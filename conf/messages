@@ -138,6 +138,17 @@ individual.cannot-take-part-exempt-26-27.para2                       = This mean
 individual.cannot-take-part-exempt-26-27.link                        = Find out if and when you may be able to use Making Tax Digital for Income Tax in the future.
 individual.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
 
+# Cannot cannot sign up No Data
+individual.cannot-take-part-no-data.heading                           = You cannot use Making Tax Digital for Income Tax
+individual.cannot-take-part-no-data.para1                             = Our records show you cannot use Making Tax Digital for Income Tax.
+individual.cannot-take-part-no-data.para2                             = This could be because you:
+individual.cannot-take-part-no-data.list1                             = haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return
+individual.cannot-take-part-no-data.list2                             = have never submitted a tax return
+individual.cannot-take-part-no-data.list3                             = are insolvent
+individual.cannot-take-part-no-data.para3                             = If you have received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, please {0}
+individual.cannot-take-part-no-data.link                              = contact us
+individual.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
+
 ## You can sign up now ##
 individual.you-can-sign-up-now.heading = You can sign up now
 individual.you-can-sign-up-now.paragraph-1 = If you continue, we’ll ask you about your sole trader business and income from property.
@@ -603,6 +614,17 @@ agent.cannot-take-part-enduring.para1.link-text                   = you or your 
 agent.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
 agent.cannot-take-part-enduring.link                              = You can find out about exemptions.
 agent.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax
+
+# Agent cannot sign up No Data
+agent.cannot-take-part-no-data.heading                           = Your client cannot use Making Tax Digital for Income Tax
+agent.cannot-take-part-no-data.para1                             = Our records show your client cannot use Making Tax Digital for Income Tax.
+agent.cannot-take-part-no-data.para2                             = This could be because they:
+agent.cannot-take-part-no-data.list1                             = haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return
+agent.cannot-take-part-no-data.list2                             = have never submitted a tax return
+agent.cannot-take-part-no-data.list3                             = are insolvent
+agent.cannot-take-part-no-data.para3                             = If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please {0}
+agent.cannot-take-part-no-data.link                              = contact us
+agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
 
 # Cannot sign up MTD Exempt 26/27
 agent.cannot-take-part-exempt-26-27.heading                     = Your client is exempt from Making Tax Digital for Income Tax
