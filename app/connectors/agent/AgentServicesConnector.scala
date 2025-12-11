@@ -88,7 +88,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   }
 
   private def agentClientURL(nino: String): URL = {
-    url"/itsa-post-signup/create-relationship/$nino"
+    url"${appConfig.agentClientRelationshipsUrl}/itsa-post-signup/create-relationship/$nino"
   }
 
   def isMTDAgentRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
