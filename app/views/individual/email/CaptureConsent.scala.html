@@ -33,8 +33,6 @@ ul: UnorderedList
 
     <h1 class="govuk-heading-l">@messages("individual.capture-consent.heading")</h1>
 
-    <p class="govuk-body">@messages("individual.capture-consent.para-1")</p>
-
     <h2 class="govuk-heading-m">@messages("individual.capture-consent.subheading")</h2>
 
     @ul(
@@ -69,7 +67,7 @@ ul: UnorderedList
     @form(action = postAction) {
         @yesNoRadioHelper(
             field = captureConsentForm(fieldName),
-            legend = messages("individual.capture-consent.heading"),
+            legend = messages("individual.capture-consent.subheading-2"),
             headingClasses = "govuk-fieldset__legend--m",
             isPageHeading = false
         )

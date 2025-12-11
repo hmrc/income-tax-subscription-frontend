@@ -411,7 +411,7 @@ error.individual.email-capture.invalid                      = Enter an email add
 error.individual.email-capture.max-length                   = Your email address must be 254 characters or less
 
 ## Capture Consent Page ##
-individual.capture-consent.heading                  = Can HMRC contact you by email about Making Tax Digital for Income Tax?
+individual.capture-consent.heading                  = Help HMRC improve Making Tax Digital for Income Tax
 individual.capture-consent.subheading               = What we will contact you about
 individual.capture-consent.para-1                   = We would like to ask for your help to improve Making Tax Digital for Income Tax.
 individual.capture-consent.para-2                   = We will ask:
@@ -427,6 +427,7 @@ individual.capture-consent.para-4                   = We will never:
 individual.capture-consent.bullet-8                 = contact you to ask for your personal information
 individual.capture-consent.bullet-9                 = send you a direct link to sign into Making Tax Digital for Income Tax
 individual.capture-consent.para-5                   = If you change your mind about us contacting you, you can withdraw your consent at any time. Information on how to withdraw your consent will be included in the emails we send to you.
+individual.capture-consent.subheading-2             = Can HMRC contact you by email about Making Tax Digital for Income Tax?
 individual.capture-consent.form-error               = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
 
 ## Sign Up Confirmation page ##
@@ -713,7 +714,7 @@ agent.no-software.para4                                          = When you have
 agent.no-software.para5                                          = Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal.
 
 ## Agent Capture Consent Page ##
-agent.capture-consent.heading                               = Can HMRC contact you by email about Making Tax Digital for Income Tax?
+agent.capture-consent.heading                               = Help HMRC improve Making Tax Digital for Income Tax
 agent.capture-consent.para-one                              = We would like to ask for your help to improve Making Tax Digital for Income Tax.
 agent.capture-consent.contact-about.heading                 = What we will contact you about
 agent.capture-consent.contact-about.ask.para                = We will ask:
@@ -729,6 +730,7 @@ agent.capture-consent.contact-about.never.para              = We will never:
 agent.capture-consent.contact-about.never.bullet-one        = contact you or your client to ask for your personal information
 agent.capture-consent.contact-about.never.bullet-two        = send you or your client a direct link to sign into Making Tax Digital for Income Tax
 agent.capture-consent.para-two                              = If you change your mind about us contacting you, you can withdraw your consent at any time. Information on how to withdraw your consent will be included in the emails we send to you.
+agent.capture-consent.contact-about.heading-two             = Can HMRC contact you by email about Making Tax Digital for Income Tax?
 agent.capture-consent.form-error                            = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
 
 ## Agent email capture page ##

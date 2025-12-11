@@ -56,12 +56,8 @@ class CaptureConsentViewSpec extends ViewSpec {
         document().mainContent.select("h2").text() mustBe CaptureConsentMessages.subheading
       }
 
-      "contains the first paragraph" in {
-        document().mainContent.selectNth("p", 1).text mustBe CaptureConsentMessages.para1
-      }
-
       "contains the second paragraph" in {
-        document().mainContent.selectNth("p", 2).text mustBe CaptureConsentMessages.para2
+        document().mainContent.selectNth("p", 1).text mustBe CaptureConsentMessages.para2
       }
 
       "contains a bullet list of what we will ask" which {
@@ -79,7 +75,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       }
 
       "contains a third paragraph" in {
-        document().mainContent.selectNth("p", 3).text mustBe CaptureConsentMessages.para3
+        document().mainContent.selectNth("p", 2).text mustBe CaptureConsentMessages.para3
       }
 
       "contains a bullet list of what we will update" which {
@@ -100,7 +96,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       }
 
       "contains a fourth paragraph" in {
-        document().mainContent.selectNth("p", 4).text mustBe CaptureConsentMessages.para4
+        document().mainContent.selectNth("p", 3).text mustBe CaptureConsentMessages.para4
       }
 
       "contains a bullet list of what we will never do" which {
@@ -115,7 +111,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       }
 
       "contains a fifth paragraph" in {
-        document().mainContent.selectNth("p", 5).text mustBe CaptureConsentMessages.para5
+        document().mainContent.selectNth("p", 4).text mustBe CaptureConsentMessages.para5
       }
 
       "has the correct radio inputs" in {
@@ -153,7 +149,7 @@ class CaptureConsentViewSpec extends ViewSpec {
     Jsoup.parse(page(hasError).body)
 
   private object CaptureConsentMessages {
-    val heading: String = "Can HMRC contact you by email about Making Tax Digital for Income Tax?"
+    val heading: String = "Help HMRC improve Making Tax Digital for Income Tax"
     val errorInvalid: String = "Select yes if we can contact you by email about Making Tax Digital for Income Tax."
     val radioName: String = "yes-no"
     val radioLegend: String = "Can HMRC contact you by email about Making Tax Digital for Income Tax?"
