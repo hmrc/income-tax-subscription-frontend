@@ -53,4 +53,8 @@ object FeatureSwitch {
     override val displayText: String = "Use the signal control gateway eligibility result"
   }
 
+  case object AgentRelationshipSingleCall extends FeatureSwitch {
+    override val name: String = s"$prefix.agent-relationship-as-single-call"
+    override val displayText: String = "Use single call for agent client relationship check"
+  }
 }

@@ -21,9 +21,10 @@ import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, Unexpe
 import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
+import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -82,6 +83,24 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
         case res if res.status == Status.OK => Right(true)
         case res =>
           logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
+          Left(UnexpectedStatus(res.status))
+      }
+  }
+
+  private def agentClientURL(nino: String): URL = {
+    url"/itsa-post-signup/create-relationship/$nino"
+  }
+
+  def isMTDAgentRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    val url = agentClientURL(nino)
+
+    http
+      .post(url)
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => Right(true)
+        case res =>
+          logger.warn(s"[AgentServicesConnector][isMTDAgentRelationship] - Unexpected status returned - ${res.status}")
           Left(UnexpectedStatus(res.status))
       }
   }

@@ -37,5 +37,9 @@ class ClientRelationshipService @Inject()(val agentServicesConnector: AgentServi
   def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     agentServicesConnector.isMTDSuppAgentRelationship(arn, nino)
   }
+  
+  def isMTDAgentRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    agentServicesConnector.isMTDAgentRelationship(nino)
+  }
 
 }
