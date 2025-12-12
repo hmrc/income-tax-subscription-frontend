@@ -27,7 +27,8 @@ object FeatureSwitch {
   val switches: Set[FeatureSwitch] = Set(
     ThrottlingFeature,
     EmailCaptureConsent,
-    SignalControlGatewayEligibility
+    SignalControlGatewayEligibility,
+    AgentRelationshipSingleCall
   )
 
   def apply(str: String): FeatureSwitch =
