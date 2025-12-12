@@ -24,9 +24,9 @@ import controllers.utils.ReferenceRetrieval
 import models.SessionData
 import models.common.subscription.CreateIncomeSourcesModel
 import models.individual.JourneyStep.Confirmation
-import play.api.mvc._
+import play.api.mvc.*
+import services.*
 import services.GetCompleteDetailsService.CompleteDetails
-import services._
 import services.individual.SignUpOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.GlobalCheckYourAnswers
@@ -42,7 +42,8 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
                                                  utrService: UTRService,
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
-                                                 sessionDataService: SessionDataService)
+                                                 sessionDataService: SessionDataService,
+                                                 throttlingService: ThrottlingService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val appConfig: AppConfig)
@@ -72,7 +73,7 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
       sessionDataService.getAllSessionData().flatMap { sessionData =>
         referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
           withCompleteDetails(reference) { completeDetails =>
-            sessionDataService.getAllSessionData().flatMap { sessionData =>
+            throttlingService.throttled(IndividualEndOfJourneyThrottle, sessionData) {
               signUp(sessionData, completeDetails)(
                 onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)
               )
