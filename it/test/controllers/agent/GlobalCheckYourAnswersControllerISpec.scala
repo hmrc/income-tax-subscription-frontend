@@ -17,25 +17,34 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
-import connectors.stubs._
-import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
+import connectors.stubs.*
+import helpers.IntegrationTestConstants.*
+import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
-import helpers.agent._
+import helpers.agent.*
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
-import helpers.servicemocks.EnrolmentStoreProxyStub
+import helpers.servicemocks.{EnrolmentStoreProxyStub, ThrottlingStub}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import models._
+import models.*
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
-import utilities.SubscriptionDataKeys._
+import services.AgentEndOfJourneyThrottle
+import services.EndOfJourneyThrottleId
+import play.api.http.Status.*
+import play.api.libs.json.{JsBoolean, JsString, Json}
+import services.AgentStartOfJourneyThrottle
+import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(ThrottlingFeature)
+  }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
     nino = testNino,
@@ -408,6 +417,34 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             httpStatus(INTERNAL_SERVER_ERROR)
           )
         }
+      }
+    }
+    "redirect to the end of journey throttle page" when {
+      "the throttle is enabled and the user hit the limit" in {
+        enable(ThrottlingFeature)
+
+        AuthStub.stubAuthSuccess()
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.throttlePassed(AgentEndOfJourneyThrottle) -> JsBoolean(true),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
+        ThrottlingStub.stubThrottle(EndOfJourneyThrottleId)(throttled = true)
+
+        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.endOfJourneyThrottleURI)
+        )
+
+        ThrottlingStub.verifyThrottle(EndOfJourneyThrottleId)()
       }
     }
   }
