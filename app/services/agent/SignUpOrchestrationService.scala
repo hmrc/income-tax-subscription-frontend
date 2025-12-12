@@ -16,6 +16,9 @@
 
 package services.agent
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.AgentRelationshipSingleCall
+import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import connectors.{CreateIncomeSourcesConnector, SignUpConnector}
 import models.AccountingYear
@@ -32,8 +35,9 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                                            createIncomeSourcesConnector: CreateIncomeSourcesConnector,
                                            autoEnrolmentService: AutoEnrolmentService,
                                            clientRelationshipService: ClientRelationshipService,
-                                           agentSPSConnector: AgentSPSConnector)
-                                          (implicit ec: ExecutionContext) {
+                                           agentSPSConnector: AgentSPSConnector,
+                                           val appConfig: AppConfig)
+                                          (implicit ec: ExecutionContext) extends FeatureSwitching {
 
   import services.agent.SignUpOrchestrationService._
   def orchestrateSignUp(arn: String,
@@ -88,9 +92,13 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
 
   private def checkClientRelationships(arn: String, nino: String)
                                       (implicit hc: HeaderCarrier): Future[Unit] = {
-    clientRelationshipService.isMTDPreExistingRelationship(arn, nino) flatMap {
-      case Right(false) => clientRelationshipService.isMTDSuppAgentRelationship(arn, nino).map(_ => ())
-      case _ => Future.successful(())
+    if (isEnabled(AgentRelationshipSingleCall)) {
+      clientRelationshipService.isMTDAgentRelationship(nino).map(_ => ())
+    } else {
+      clientRelationshipService.isMTDPreExistingRelationship(arn, nino) flatMap {
+        case Right(false) => clientRelationshipService.isMTDSuppAgentRelationship(arn, nino).map(_ => ())
+        case _ => Future.successful(())
+      }
     }
   }
 }

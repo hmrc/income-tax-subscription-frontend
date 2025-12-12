@@ -22,7 +22,7 @@
 
 @(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean], eligibilityFeatureSwitches: Map[String, Boolean], action: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("Feature switch")) {
+@mainTemplate(title = "Feature switch", showSignOutLink = false, hasWelsh = false) {
     <form method="@action.method" action="@action.url">
         @CSRF.formField
         <h2 class="govuk-heading-l">Which features would you like to have enabled?</h2>

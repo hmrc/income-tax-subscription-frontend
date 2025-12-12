@@ -16,6 +16,9 @@
 
 package services.agent
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.AgentRelationshipSingleCall
+import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.mocks.{MockCreateIncomeSourcesConnector, MockSignUpConnector}
 import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
@@ -36,7 +39,8 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
   with MockCreateIncomeSourcesConnector
   with MockAutoEnrolmentService
   with MockClientRelationshipService
-  with MockAgentSPSConnector {
+  with MockAgentSPSConnector
+  with FeatureSwitching {
 
   "orchestrateSignUp" must {
     "return a sign up orchestration success response" when {
@@ -52,6 +56,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
         verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
         verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
       "sign up and creation of income sources was successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
@@ -69,6 +74,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyAutoClaimEnrolment(utr, nino, mtditid)
         verifyCheckPreExistingMTDRelationship(arn, nino)
         verifyAgentSpsConnector(arn, utr, nino, mtditid)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
       "the auto claim enrolment process was not successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
@@ -85,6 +91,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyAutoClaimEnrolment(utr, nino, mtditid)
         verifyCheckPreExistingMTDRelationship(arn, nino)
         verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
       "there was no relationship found for mtd" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
@@ -104,6 +111,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyCheckPreExistingMTDRelationship(arn, nino)
         verifyCheckMTDSuppAgentRelationship(arn, nino)
         verifyAgentSpsConnector(arn, utr, nino, mtditid)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
       "there was no relationship found for mtd supporting" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
@@ -123,6 +131,23 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyCheckPreExistingMTDRelationship(arn, nino)
         verifyCheckMTDSuppAgentRelationship(arn, nino)
         verifyAgentSpsConnector(arn, utr, nino, mtditid)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+      "the single call feature switch is on" in {
+        enable(AgentRelationshipSingleCall)
+        mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
+        mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
+        mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
+        mockAgentSpsConnectorSuccess(arn, utr, nino, mtditid)
+        agentRelationship(nino)(isMTDAgentRelationship = false)
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
+
+        verifyCheckPreExistingMTDRelationship(arn, nino, 0)
+        verifyCheckMTDSuppAgentRelationship(arn, nino, 0)
+        verifyCheckMTDAgentRelationship(nino)
       }
     }
     "return a sign up failure" when {
@@ -139,6 +164,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
         verifyCheckMTDSuppAgentRelationship(arn, nino, count = 0)
         verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
     }
     "return a create income sources failure" when {
@@ -160,8 +186,14 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyCheckPreExistingMTDRelationship(arn, nino)
         verifyCheckMTDSuppAgentRelationship(arn, nino)
         verifyAgentSpsConnector(arn, utr, nino, mtditid)
+        verifyCheckMTDAgentRelationship(nino, 0)
       }
     }
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(AgentRelationshipSingleCall)
   }
 
   lazy val nino: String = "test-nino"
@@ -185,7 +217,9 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
     mockCreateIncomeSourcesConnector,
     mockAutoEnrolmentService,
     mockClientRelationshipService,
-    mockAgentSpsConnector
+    mockAgentSpsConnector,
+    appConfig
   )
 
+  override val appConfig: AppConfig = mock[AppConfig]
 }

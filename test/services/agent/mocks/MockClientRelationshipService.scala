@@ -16,9 +16,10 @@
 
 package services.agent.mocks
 
+import config.featureswitch.FeatureSwitching
 import connectors.agent.mocks.MockAgentServicesConnector
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.agent.ClientRelationshipService
@@ -68,7 +69,12 @@ trait MockClientRelationshipService extends MockitoSugar with BeforeAndAfterEach
     )(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(isMTDSuppAgentRelationship)))
 
-
+  def agentRelationship(nino: String)(isMTDAgentRelationship: Boolean): Unit =
+    when(mockClientRelationshipService.isMTDAgentRelationship(
+      ArgumentMatchers.eq(nino)
+    )(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(Right(isMTDAgentRelationship)))
+  
   def verifyCheckPreExistingMTDRelationship(arn: String, nino: String, count: Int = 1): Unit = {
     verify(mockClientRelationshipService, times(count))
       .isMTDPreExistingRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
@@ -77,6 +83,11 @@ trait MockClientRelationshipService extends MockitoSugar with BeforeAndAfterEach
   def verifyCheckMTDSuppAgentRelationship(arn: String, nino: String, count: Int = 1): Unit = {
     verify(mockClientRelationshipService, times(count))
       .isMTDSuppAgentRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
+  }
+
+  def verifyCheckMTDAgentRelationship(nino: String, count: Int = 1): Unit = {
+    verify(mockClientRelationshipService, times(count))
+      .isMTDAgentRelationship(ArgumentMatchers.eq(nino))(ArgumentMatchers.any())
   }
 }
 
