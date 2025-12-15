@@ -170,6 +170,8 @@ object IntegrationTestConstants {
     val addAnotherClient = s"$baseURI/add-another"
     val youCanSignUpNow = s"$baseURI/you-can-sign-up-now"
     val signingUp = "/report-quarterly/income-and-expenses/sign-up/eligibility/client/signing-up"
+    val startOfJourneyThrottleURI = s"$baseURI/throttle-start"
+    val endOfJourneyThrottleURI = s"$baseURI/throttle-end"
   }
 
   def basGatewaySignIn(continueTo: String): String = {

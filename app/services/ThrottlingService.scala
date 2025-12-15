@@ -82,6 +82,7 @@ sealed abstract class ThrottleId(val name: String) {
 }
 
 case object StartOfJourneyThrottleId extends ThrottleId("start-of-journey")
+case object EndOfJourneyThrottleId extends ThrottleId("end-of-journey")
 
 case object IndividualStartOfJourneyThrottle extends Throttle {
   override val throttleId: ThrottleId = StartOfJourneyThrottleId
@@ -89,8 +90,20 @@ case object IndividualStartOfJourneyThrottle extends Throttle {
   override val callOnFail: Call = controllers.individual.routes.ThrottlingController.start()
 }
 
+case object IndividualEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.individual.routes.ThrottlingController.end()
+}
+
 case object AgentStartOfJourneyThrottle extends Throttle {
   override val throttleId: ThrottleId = StartOfJourneyThrottleId
   override val failOpen: Boolean = false
   override val callOnFail: Call = controllers.agent.routes.ThrottlingController.start()
+}
+
+case object AgentEndOfJourneyThrottle extends Throttle {
+  override val throttleId: ThrottleId = EndOfJourneyThrottleId
+  override val failOpen: Boolean = false
+  override val callOnFail: Call = controllers.agent.routes.ThrottlingController.end()
 }
