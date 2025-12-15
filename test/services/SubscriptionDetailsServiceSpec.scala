@@ -96,7 +96,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
       val testResult = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
 
       testResult.map { result =>
-        result mustBe defined
+        result.isEmpty mustBe false
         result.get.accountingYear mustBe Next
         result.get.confirmed mustBe true
         result.get.editable mustBe false
@@ -111,7 +111,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
       val testResult = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
 
       testResult.map { result =>
-        result mustBe defined
+        result.isEmpty mustBe false
         result.get.accountingYear mustBe Current
         result.get.editable mustBe false
       }
