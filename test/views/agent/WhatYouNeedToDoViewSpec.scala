@@ -17,7 +17,7 @@
 package views.agent
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.WhatYouNeedToDo

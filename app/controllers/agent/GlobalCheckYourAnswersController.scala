@@ -25,10 +25,10 @@ import models.SessionData
 import models.agent.JourneyStep.Confirmation
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.Html
+import services.*
 import services.GetCompleteDetailsService.CompleteDetails
-import services._
 import services.agent.SignUpOrchestrationService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.ClientDetails
@@ -44,7 +44,8 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
-                                                 signUpOrchestrationService: SignUpOrchestrationService)
+                                                 signUpOrchestrationService: SignUpOrchestrationService,
+                                                 throttlingService: ThrottlingService)
                                                 (val appConfig: AppConfig,
                                                  val subscriptionDetailsService: SubscriptionDetailsService,
                                                  val sessionDataService: SessionDataService)
@@ -69,9 +70,11 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      signUp(completeDetails) {
-        Redirect(controllers.agent.routes.ConfirmationController.show)
-          .addingToSession(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
+      throttlingService.throttled(AgentEndOfJourneyThrottle) {
+        signUp(completeDetails) {
+          Redirect(controllers.agent.routes.ConfirmationController.show)
+            .addingToSession(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
+        }
       }
     }
   }
