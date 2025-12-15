@@ -16,11 +16,11 @@
 
 package services
 
-import models._
+import models.*
 import models.common.AccountingYearModel
-import models.status.MandationStatus.Voluntary
+import models.status.MandationStatus.{Mandated, Voluntary}
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.crypto.ApplicationCrypto
@@ -86,6 +86,35 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
         testResult.get.editable mustBe true
         testResult.get.accountingYear mustBe Next
       })
+    }
+
+    "return next year when both ELIGIBLE_NEXT_YEAR_ONLY and mandated current year are true" in {
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(Some(AccountingYearModel(Current)))
+      mockGetMandationService(Mandated, Mandated)
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
+
+      val testResult = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
+
+      testResult.map { result =>
+        result.isEmpty mustBe false
+        result.get.accountingYear mustBe Next
+        result.get.confirmed mustBe true
+        result.get.editable mustBe false
+      }
+    }
+
+    "return current year when mandated current year is true and not eligible next year only" in {
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
+      mockGetMandationService(Mandated, Mandated)
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false, exemptionReason = None))
+
+      val testResult = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
+
+      testResult.map { result =>
+        result.isEmpty mustBe false
+        result.get.accountingYear mustBe Current
+        result.get.editable mustBe false
+      }
     }
   }
 

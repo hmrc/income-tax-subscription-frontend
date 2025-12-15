@@ -69,11 +69,11 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       mandatedCurrentYear <- getMandationForCurrentYear(sessionData)
       eligibleNextYearOnly <- getEligibilityNextYearOnly(sessionData)
     } yield {
-      if (mandatedCurrentYear) {
-        Some(AccountingYearModel(Current, confirmed = true, editable = false))
-      } else if (eligibleNextYearOnly) {
+      if (eligibleNextYearOnly) {
         Some(AccountingYearModel(Next, confirmed = true, editable = false))
-      } else {
+      } else if (mandatedCurrentYear) {
+        Some(AccountingYearModel(Current, confirmed = true, editable = false))
+      }  else {
         storedTaxYear
       }
     }
