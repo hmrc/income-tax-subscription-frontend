@@ -114,7 +114,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     }
     "the user submits 'Yes'" should {
       "redirect to the what you need to do page" when {
-        "the user is eligible for next year only" in new Setup {
+        "the email capture consent feature switch is disabled the user is eligible for next year only" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
@@ -124,7 +124,17 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
-        "the email capture consent feature switch is disabled and the user is mandated for the current tax year" in new Setup {
+        "the email capture consent feature switch is disabled and the user is mandated for the current tax year only" in new Setup {
+          mockGetMandationService(Mandated, Voluntary)
+          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false, exemptionReason = None))
+          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
+
+          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+        }
+        "the email capture consent feature switch is disabled and the user is mandated for the current tax year and eligible for next year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
