@@ -94,11 +94,12 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
               case Right(_) =>
                 if (editMode) {
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+                } else if (isDisabled(EmailCaptureConsent) && (isMandatedCurrentYear || isEligibleNextYearOnly)) {
+                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
                 } else if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
                   Redirect(controllers.individual.email.routes.CaptureConsentController.show())
-                } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                } else {
+                }
+                else {
                   Redirect(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show())
                 }
               }
