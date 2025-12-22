@@ -157,7 +157,7 @@ individual.what-you-need-to-do.h2.2                             = Os ydych yn co
 individual.what-you-need-to-do.p3                               = Rydych yn cytuno y bydd ein cosbau newydd yn berthnasol os ydych yn hwyr yn anfon eich Ffurflen Dreth neu’n talu’ch bil treth.
 individual.what-you-need-to-do.p4                               = Tra byddwch yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
 individual.what-you-need-to-do.p5                               = Gallwch optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Os gwnewch hyn, bydd y cosbau newydd yn dal i fod yn berthnasol i chi.
-individual.what-you-need-to-do.p6                               = Read more about penalties that apply if you are volunteering.
+individual.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli.
 individual.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 # What tax year to sign up
@@ -728,7 +728,7 @@ agent.what-you-need-to-do.h2.2                             = Os yw’ch cleient 
 agent.what-you-need-to-do.p3                               = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd yn berthnasol os anfonir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
 agent.what-you-need-to-do.p4                               = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
 agent.what-you-need-to-do.p5                               = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
-agent.what-you-need-to-do.p6                               = Read more about penalties that apply if you are volunteering.
+agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli.
 agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 ## You can sign up now ##
