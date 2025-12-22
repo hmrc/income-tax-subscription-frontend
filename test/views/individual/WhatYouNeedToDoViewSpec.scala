@@ -39,7 +39,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     val h2_2 = "If you are signing up voluntarily"
     val p3 = "You are agreeing that our new penalties will apply if you are late sending your tax return or paying your tax bill."
     val p4 = "Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late."
-    val p5 = "You can opt out of Making Tax Digital For Income Tax at any time. If you do this, the new penalties will still apply to you."
+    val p5 = "You can opt out of Making Tax Digital for Income Tax at any time. If you do this, the new penalties will still apply to you."
     val p6 = "Read more about penalties that apply if you are volunteering. (opens in new tab)"
     val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
     val agreeAndContinue: String = "Agree and continue"
