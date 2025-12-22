@@ -163,14 +163,15 @@ individual.you-can-sign-up-now.paragraph-4 = You’ll also need to choose if you
 ##  What You Need To Do ##
 individual.what-you-need-to-do.title                            = What penalties apply to you in Making Tax Digital for Income Tax
 individual.what-you-need-to-do.heading                          = What penalties apply to you in Making Tax Digital for Income Tax
-individual.what-you-need-to-do.h2.1                             = If you are signing up voluntarily
-individual.what-you-need-to-do.p1.1                             = You are agreeing that our new penalties
-individual.what-you-need-to-do.p1.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
-individual.what-you-need-to-do.p1.2                             = {0} will apply if you are late sending your tax return or paying your tax bill.
-individual.what-you-need-to-do.p2                               = Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late.
-individual.what-you-need-to-do.p3                               = You can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply.
-individual.what-you-need-to-do.h2.2                             = If you are required to use Making Tax Digital for Income Tax
-individual.what-you-need-to-do.p4                               = The new penalties will apply to you if you are late sending a quarterly update, your tax return or you pay after the due date.
+individual.what-you-need-to-do.h2.1                             = If you are required to use Making Tax Digital for Income Tax
+individual.what-you-need-to-do.p1                               = If you’re required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027).
+individual.what-you-need-to-do.p2                               = Penalties will still apply for late tax returns or if you pay your tax bill after the due date.
+individual.what-you-need-to-do.h2.2                             = If you are signing up voluntarily
+individual.what-you-need-to-do.p3                               = You are agreeing that our new penalties will apply if you are late sending your tax return or paying your tax bill.
+individual.what-you-need-to-do.p4                               = Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late.
+individual.what-you-need-to-do.p5                               = You can opt out of Making Tax Digital For Income Tax at any time. If you do this, the new penalties will still apply to you.
+individual.what-you-need-to-do.p6                               = Read more about penalties that apply if you are volunteering.
+individual.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = When do you want to start using Making Tax Digital for Income Tax?
@@ -742,18 +743,18 @@ error.agent.email-capture.max-length                        = Your email address
 error.agent.email-capture.invalid                           = Enter an email address in the correct format, like name@example.com
 
 ## Agent what you need to do page ##
-agent.what-you-need-to-do.title                                                  = What penalties apply in Making Tax Digital for Income Tax
-agent.what-you-need-to-do.heading                                                = What penalties apply in Making Tax Digital for Income Tax
-agent.what-you-need-to-do.caption                                                = {0} | {1}
-agent.what-you-need-to-do.h2.1                                                   = If your client is signing up voluntarily
-agent.what-you-need-to-do.p1.1                                                   = You and your client are agreeing that our new penalties
-agent.what-you-need-to-do.p1.link                                                = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
-agent.what-you-need-to-do.p1.2                                                   = {0} will apply if your client’s tax return is sent late, or their tax bill is paid late.
-agent.what-you-need-to-do.p2                                                     = Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late.
-agent.what-you-need-to-do.p3                                                     = Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply.
-agent.what-you-need-to-do.h2.2                                                   = If your client is required to use Making Tax Digital for Income Tax
-agent.what-you-need-to-do.p4                                                     = The new penalties will apply to your client if their quarterly update or tax return is sent late, or payment is made after the due date.
-
+agent.what-you-need-to-do.title                            = What penalties apply in Making Tax Digital for Income Tax
+agent.what-you-need-to-do.heading                          = What penalties apply in Making Tax Digital for Income Tax
+agent.what-you-need-to-do.caption                          = {0} | {1}
+agent.what-you-need-to-do.h2.1                             = If your client is required to use Making Tax Digital for Income Tax
+agent.what-you-need-to-do.p1                               = If your client is required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027).
+agent.what-you-need-to-do.p2                               = Penalties will still apply for late tax returns or if a tax bill is paid after the due date.
+agent.what-you-need-to-do.h2.2                             = If your client is signing up voluntarily
+agent.what-you-need-to-do.p3                               = You and your client are agreeing that our new penalties will apply if your client’s tax return is sent late, or their tax bill is paid late.
+agent.what-you-need-to-do.p4                               = Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late.
+agent.what-you-need-to-do.p5                               = Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply.
+agent.what-you-need-to-do.p6                               = Read more about penalties that apply if you are volunteering.
+agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
 
 # Client details page
 agent.client-details-error.heading                              = There is a problem with your client details

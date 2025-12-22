@@ -17,7 +17,7 @@
 package views.agent
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.agent.WhatYouNeedToDo
@@ -26,41 +26,55 @@ import scala.util.Random
 
 class WhatYouNeedToDoViewSpec extends ViewSpec {
 
-  private val nameLengthCharacters = 10
-  private val clientName = Random.alphanumeric.take(nameLengthCharacters).mkString
-  private val clientNino = Random.alphanumeric.take(nameLengthCharacters).mkString
+  val clientName: String = "FirstName LastName"
+  val clientNino: String = "AA 11 11 11 A"
 
   val whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
   "WhatYouNeedToDo" when {
     "the body of the content" should {
-      "have a page heading" in {
-        document().mainContent.selectHead("h1").text mustBe WhatYouNeedToDoMessages.heading
+      "have a heading and caption" in {
+        document().mainContent.mustHaveHeadingAndCaption(
+          heading = WhatYouNeedToDoMessages.heading,
+          caption = s"$clientName | $clientNino",
+          isSection = false
+        )
       }
 
       "have a page first sub-heading" in {
         document().mainContent.selectNth("h2", 2).text mustBe WhatYouNeedToDoMessages.h2_1
       }
 
-      "have the correct first paragraph" in {
-        document().mainContent.selectNth("a", 1).text mustBe WhatYouNeedToDoMessages.p1_1
-        document().mainContent.selectNth("p", 1).text mustBe Seq(WhatYouNeedToDoMessages.p1_1, WhatYouNeedToDoMessages.p1_2).mkString(" ")
+      "have the first paragraph" in {
+        document().mainContent.selectNth("p", 1).text mustBe WhatYouNeedToDoMessages.p1
       }
 
       "have a second paragraph" in {
         document().mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.p2
       }
 
-      "have the correct third paragraph" in {
-        document().mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3
-      }
-
       "have a page second sub-heading" in {
         document().mainContent.selectNth("h2", 3).text mustBe WhatYouNeedToDoMessages.h2_2
       }
 
-      "have the correct fourth paragraph" in {
+      "have the third paragraph" in {
+        document().mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3
+      }
+
+      "have the fourth paragraph" in {
         document().mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.p4
+      }
+
+      "have the fifth paragraph" in {
+        document().mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.p5
+      }
+
+      "have the sixth paragraph" in {
+        val paragraph: Element = document().mainContent.selectNth("p", 6)
+        paragraph.text mustBe WhatYouNeedToDoMessages.p6
+
+        val link: Element = paragraph.selectHead("a")
+        link.attr("href") mustBe WhatYouNeedToDoMessages.p6_link
       }
 
       "have a form" which {
@@ -70,7 +84,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
         }
 
         "has an accept and continue button to submit the form" in {
-          document().selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.acceptAndContinue
+          document().selectHead("form").selectHead("button").text mustBe WhatYouNeedToDoMessages.agreeAndContinue
         }
       }
     }
@@ -92,13 +106,15 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
   object WhatYouNeedToDoMessages {
     val title = "What penalties apply in Making Tax Digital for Income Tax"
     val heading = "What penalties apply in Making Tax Digital for Income Tax"
-    val h2_1 = "If your client is signing up voluntarily"
-    val p1_1 = "You and your client are agreeing that our new penalties (opens in new tab)"
-    val p1_2 = "will apply if your client’s tax return is sent late, or their tax bill is paid late."
-    val p2 = "Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late."
-    val p3 = "Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply."
-    val h2_2 = "If your client is required to use Making Tax Digital for Income Tax"
-    val p4 = "The new penalties will apply to your client if their quarterly update or tax return is sent late, or payment is made after the due date."
-    val acceptAndContinue: String = "Accept and continue"
+    val h2_1 = "If your client is required to use Making Tax Digital for Income Tax"
+    val p1 = "If your client is required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027)."
+    val p2 = "Penalties will still apply for late tax returns or if a tax bill is paid after the due date."
+    val h2_2 = "If your client is signing up voluntarily"
+    val p3 = "You and your client are agreeing that our new penalties will apply if your client’s tax return is sent late, or their tax bill is paid late."
+    val p4 = "Whilst your client is a volunteer, penalties will not apply for submitting quarterly updates late."
+    val p5 = "Your client can opt out of Making Tax Digital For Income Tax at any time. If they do this, the new penalties will still apply."
+    val p6 = "Read more about penalties that apply if you are volunteering. (opens in new tab)"
+    val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
+    val agreeAndContinue: String = "Agree and continue"
   }
 }

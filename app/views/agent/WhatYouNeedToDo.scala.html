@@ -40,23 +40,24 @@
 
     <h2 class="govuk-heading-m">@messages("agent.what-you-need-to-do.h2.1")</h2>
 
-    <p class="govuk-body">
-        @Html(messages(
-            key = "agent.what-you-need-to-do.p1.2",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.what-you-need-to-do.p1.1"), Some(messages("agent.what-you-need-to-do.p1.link"))))
-        ))
-    </p>
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.p1")</p>
 
     <p class="govuk-body">@messages("agent.what-you-need-to-do.p2")</p>
 
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.p3")</p>
-
     <h2 class="govuk-heading-m">@messages("agent.what-you-need-to-do.h2.2")</h2>
+
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.p3")</p>
 
     <p class="govuk-body">@messages("agent.what-you-need-to-do.p4")</p>
 
+    <p class="govuk-body">@messages("agent.what-you-need-to-do.p5")</p>
+
+    <p class="govuk-body">
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.what-you-need-to-do.p6"), Some(messages("agent.what-you-need-to-do.p6.link"))))
+    </p>
+
     @form(action = postAction) {
-        @continueButton(alternateText = Some(messages("base.accept-and-continue")))
+        @continueButton(alternateText = Some(messages("base.agree-and-continue")))
     }
 
 }
