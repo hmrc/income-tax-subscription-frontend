@@ -35,7 +35,7 @@ class AccountingPeriodNotSupportedControllerISpec extends ComponentSpecBase with
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/accounting-period-not-supported"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }

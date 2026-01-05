@@ -42,7 +42,7 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/accounting-period-check"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -101,7 +101,7 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/accounting-period-check"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }

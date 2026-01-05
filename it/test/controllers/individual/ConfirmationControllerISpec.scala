@@ -45,7 +45,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/confirmation"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -117,7 +117,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/confirmation"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
