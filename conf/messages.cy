@@ -403,6 +403,7 @@ individual.capture-consent.para-4                   = Ni fyddwn byth yn:
 individual.capture-consent.bullet-8                 = cysylltu â chi er mwyn gofyn am eich gwybodaeth bersonol
 individual.capture-consent.bullet-9                 = anfon cysylltiad uniongyrchol atoch chi ar gyfer mewngofnodi i’r gwasanaeth Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.capture-consent.para-5                   = Os byddwch yn newid eich meddwl ynglŷn â ni yn cysylltu â chi, gallwch dynnu’ch caniatâd yn ôl ar unrhyw adeg. Manylion am sut i dynnu’ch caniatâd yn ôl yn cael eu cynnwys ar yr e-byst a anfonwn atoch.
+individual.capture-consent.subheading-2             = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 individual.capture-consent.form-error               = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Sign Up Confirmation page ##
@@ -704,6 +705,7 @@ agent.capture-consent.contact-about.never.para              = Ni fyddwn byth yn:
 agent.capture-consent.contact-about.never.bullet-one        = cysylltu â chi neu â’ch cleient er mwyn gofyn am eich gwybodaeth bersonol
 agent.capture-consent.contact-about.never.bullet-two        = anfon cysylltiad uniongyrchol atoch chi neu at eich cleient ar gyfer mewngofnodi i’r gwasanaeth Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.capture-consent.para-two                              = Os byddwch yn newid eich meddwl ynglŷn â ni yn cysylltu â chi, gallwch dynnu’ch caniatâd yn ôl ar unrhyw adeg. Manylion am sut i dynnu’ch caniatâd yn ôl yn cael eu cynnwys ar yr e-byst a anfonwn atoch.
+agent.capture-consent.contact-about.heading-two             = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 agent.capture-consent.form-error                            = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Agent email capture page ##
