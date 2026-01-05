@@ -387,7 +387,7 @@ error.individual.email-capture.invalid                      = Nodwch gyfeiriad e
 error.individual.email-capture.max-length                   = Rhaid i’ch cyfeiriad e-bost fod yn 254 o gymeriadau neu lai
 
 ## Capture Consent Page ##
-individual.capture-consent.heading                  = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+individual.capture-consent.heading                  = Helpu CThEF i wella Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.capture-consent.subheading               = Beth fyddwn yn cysylltu â chi amdano
 individual.capture-consent.para-1                   = Hoffwn ofyn am eich help i wella’r gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm.
 individual.capture-consent.para-2                   = Byddwn yn gofyn y canlynol:
@@ -689,7 +689,7 @@ agent.no-software.para4                                          = Pan gewch fed
 agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 ## Agent Capture Consent Page ##
-agent.capture-consent.heading                               = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.capture-consent.heading                               = Helpu CThEF i wella Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.capture-consent.para-one                              = Hoffwn ofyn am eich help i wella’r gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm.
 agent.capture-consent.contact-about.heading                 = Beth fyddwn yn cysylltu â chi amdano
 agent.capture-consent.contact-about.ask.para                = Byddwn yn gofyn y canlynol:
