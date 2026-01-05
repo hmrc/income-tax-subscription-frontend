@@ -258,7 +258,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
         }(FakeRequest(method = "GET", path = "/test-url"))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/bas-gateway/sign-in?continue_url=%2Ftest-url&origin=${MockConfig.appName}")
+        val url = controllers.individual.matching.routes.HomeController.index.url.replace("/", "%2F")
+        redirectLocation(result) mustBe Some(s"/bas-gateway/sign-in?continue_url=$url&origin=${MockConfig.appName}")
       }
     }
   }

@@ -34,7 +34,7 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/details/income-sources-incomplete"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -74,7 +74,7 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/details/income-sources-incomplete"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }

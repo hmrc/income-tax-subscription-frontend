@@ -76,7 +76,7 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
     } recover {
       case _: AuthorisationException =>
         logger.info(s"[Individual][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
-        appConfig.redirectToLogin(request.path)
+        appConfig.redirectToLogin(controllers.individual.matching.routes.HomeController.index.url)
     }
   }
 

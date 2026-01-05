@@ -39,7 +39,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/capture-consent"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -97,7 +97,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/capture-consent"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }

@@ -49,7 +49,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }

@@ -34,7 +34,7 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/email-capture"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -73,7 +73,7 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/email-capture"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
