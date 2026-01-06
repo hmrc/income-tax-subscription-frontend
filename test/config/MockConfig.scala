@@ -98,13 +98,13 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 
-  override lazy val ggLoginUrl: String = "/bas-gateway/sign-in"
+  override lazy val ggLoginUrl: String = "/gg/sign-in"
 
   override def redirectToLogin(continueUrl: String): play.api.mvc.Result =
     play.api.mvc.Results.Redirect(
       url = ggLoginUrl,
       queryStringParams = Map(
-        "continue_url" -> Seq(continueUrl),
+        "continue" -> Seq(continueUrl),
         "origin" -> Seq(appName)
       )
     )

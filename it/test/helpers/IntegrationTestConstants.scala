@@ -176,7 +176,7 @@ object IntegrationTestConstants {
 
   def basGatewaySignIn(continueTo: String = ""): String = {
     val updatedContinue: String = continueTo.replace("/", "%2F")
-    s"http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
+    s"http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 
   val wrongAffinityURI = s"${IndividualURI.baseURI}/error/affinity-group"
