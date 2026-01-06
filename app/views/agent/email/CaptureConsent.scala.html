@@ -35,8 +35,6 @@
 
         <h1 class="govuk-heading-l">@messages("agent.capture-consent.heading")</h1>
 
-        <p class="govuk-body">@messages("agent.capture-consent.para-one")</p>
-
         <h2 class="govuk-heading-m">@messages("agent.capture-consent.contact-about.heading")</h2>
 
         @ul(
@@ -70,7 +68,7 @@
 
         @yesNoRadioHelper(
             field = captureConsentForm(fieldName),
-            legend = messages("agent.capture-consent.heading"),
+            legend = messages("agent.capture-consent.contact-about.heading-two"),
             headingClasses = "govuk-fieldset__legend--m",
             isPageHeading = false
         )

@@ -33,22 +33,18 @@ class CaptureConsentViewSpec extends ViewSpec {
       "the page has no error" in new TemplateViewTest(
         view = page(),
         isAgent = true,
-        title = CaptureConsentMessages.radioLegend
+        title = CaptureConsentMessages.heading
       )
       "the page has an error" in new TemplateViewTest(
         view = page(hasError = true),
         isAgent = true,
-        title = CaptureConsentMessages.radioLegend,
+        title = CaptureConsentMessages.heading,
         error = Some(testFormError)
       )
     }
 
     "have a heading" in {
       document().mainContent.getH1Element.text mustBe CaptureConsentMessages.heading
-    }
-
-    "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe CaptureConsentMessages.paraOne
     }
 
     "have a subheading" in {
@@ -59,7 +55,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       def bulletList: Element = document().mainContent.selectNth("ul", 1)
 
       "has a paragraph before describing the bullets" in {
-        document().mainContent.selectNth("p", 2).text mustBe CaptureConsentMessages.AskAbout.para
+        document().mainContent.selectNth("p", 1).text mustBe CaptureConsentMessages.AskAbout.para
       }
       "has a first bullet point" in {
         bulletList.selectNth("li", 1).text mustBe CaptureConsentMessages.AskAbout.bulletOne
@@ -76,7 +72,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       def bulletList: Element = document().mainContent.selectNth("ul", 2)
 
       "has a paragraph before describing the bullets" in {
-        document().mainContent.selectNth("p", 3).text mustBe CaptureConsentMessages.UpdateOn.para
+        document().mainContent.selectNth("p", 2).text mustBe CaptureConsentMessages.UpdateOn.para
       }
       "has a first bullet point" in {
         bulletList.selectNth("li", 1).text mustBe CaptureConsentMessages.UpdateOn.bulletOne
@@ -96,7 +92,7 @@ class CaptureConsentViewSpec extends ViewSpec {
       def bulletList: Element = document().mainContent.selectNth("ul", 3)
 
       "has a paragraph before describing the bullets" in {
-        document().mainContent.selectNth("p", 4).text mustBe CaptureConsentMessages.WillNever.para
+        document().mainContent.selectNth("p", 3).text mustBe CaptureConsentMessages.WillNever.para
       }
       "has a first bullet point" in {
         bulletList.selectNth("li", 1).text mustBe CaptureConsentMessages.WillNever.bulletOne
@@ -107,7 +103,7 @@ class CaptureConsentViewSpec extends ViewSpec {
     }
 
     "have a end paragraph" in {
-      document().mainContent.selectNth("p", 5).text mustBe CaptureConsentMessages.paraEnd
+      document().mainContent.selectNth("p", 4).text mustBe CaptureConsentMessages.paraEnd
     }
 
     "have a form" which {
@@ -168,7 +164,7 @@ class CaptureConsentViewSpec extends ViewSpec {
     Jsoup.parse(page(hasError).body)
 
   private object CaptureConsentMessages {
-    val heading: String = "Can HMRC contact you by email about Making Tax Digital for Income Tax?"
+    val heading: String = "Help HMRC improve Making Tax Digital for Income Tax"
     val paraOne: String = "We would like to ask for your help to improve Making Tax Digital for Income Tax."
     val subheading: String = "What we will contact you about"
 
