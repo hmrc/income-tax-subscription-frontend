@@ -32,7 +32,7 @@ class IVFailureControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI("http://localhost:9553/bas-gateway/sign-in?continue_url=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-failure&origin=income-tax-subscription-frontend")
+          redirectURI("http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-failure&origin=income-tax-subscription-frontend")
         )
       }
     }

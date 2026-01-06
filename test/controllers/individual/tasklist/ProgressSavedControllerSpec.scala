@@ -89,7 +89,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
   "signInUrl" should {
     "return the sign in url" in withController { (controller, _) =>
-      controller.signInUrl mustBe "/bas-gateway/sign-in"
+      controller.signInUrl mustBe "/gg/sign-in"
     }
   }
 

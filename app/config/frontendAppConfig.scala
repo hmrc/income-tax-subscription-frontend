@@ -149,19 +149,19 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   def redirectToLogin(continueUrl: String): Result = {
     val basGatewayBaseUrl = config.getString("bas-gateway-frontend.url")
-    val basGatewaySignInURI = "/bas-gateway/sign-in"
+    val basGatewaySignInURI = "/gg/sign-in"
     val origin = config.getString("appName")
 
     Redirect(
       url = basGatewayBaseUrl + basGatewaySignInURI,
       queryStringParams = Map(
-        "continue_url" -> Seq(continueUrl),
+        "continue" -> Seq(continueUrl),
         "origin" -> Seq(origin)
       )
     )
   }
 
-  override lazy val ggLoginUrl: String = s"${config.getString("bas-gateway-frontend.url")}/bas-gateway/sign-in"
+  override lazy val ggLoginUrl: String = s"${config.getString("bas-gateway-frontend.url")}/gg/sign-in"
 
   // BTA link
   override lazy val btaUrl: String = config.getString(s"bta.url")
