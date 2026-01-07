@@ -222,20 +222,20 @@ error.property.invalid                                          = Mae’n rhaid 
 
 # Agent Property Start Date Date
 agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
-agent.property.start-date.heading.caption                       = {0} | {1}
+agent.property.start-date.heading.caption                       = {0} – {1}
 agent.property.start-date.para-one                              = Mae angen i ni wybod yr union ddyddiad dechrau.
 agent.property.start-date.hint                                  = Er enghraifft, 27 9 {0}
 
 # Agent uk property start date before limit
 agent.uk-property.start-date-before-limit.heading                   = Eiddo eich cleient yn y DU
-agent.uk-property.start-date-before-limit.caption                   = {0} | {1}
+agent.uk-property.start-date-before-limit.caption                   = {0} – {1}
 agent.uk-property.start-date-before-limit.legend                    = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
 
 agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 # Agent Property Start Date Before Limit
 agent.property.start-date-before-limit.heading                  = Eiddo eich cleient yn y DU
-agent.property.start-date-before-limit.heading.caption          = {0} | {1}
+agent.property.start-date-before-limit.heading.caption          = {0} – {1}
 agent.property.start-date-before-limit.heading.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
 agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
@@ -272,7 +272,7 @@ error.individual.foreign-property.start-date-before-limit.invalid       = Dewisw
 # Agent Overseas Property Start Date
 agent.overseas-property.start-date.title                         = Dyddiad dechrau ar gyfer incwm o eiddo tramor
 agent.overseas-property.start-date.heading                       = Dyddiad dechrau ar gyfer incwm o eiddo tramor
-agent.overseas-property.start-date.heading.caption               = {0} | {1}
+agent.overseas-property.start-date.heading.caption               = {0} – {1}
 agent.overseas-property.start-date.para1                         = Mae angen i ni wybod yr union ddyddiad dechrau.
 agent.overseas-property.start-date.hint                          = Er enghraifft, 27 9 {0}
 
@@ -582,7 +582,7 @@ agent.base.no                                                   = Na
 
 # Agent cannot sign up client page
 agent.cannot-take-part.heading                                    = Ni allwch gofrestru’r cleient hwn yn wirfoddol
-agent.cannot-take-part.caption                                    = {0} | {1}
+agent.cannot-take-part.caption                                    = {0} – {1}
 agent.cannot-take-part.subheading                                 = Yr hyn sy’n digwydd nesaf
 agent.cannot-take-part.para1                                      = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 agent.cannot-take-part.para2                                      = Gallwch weld {0}.
@@ -620,7 +620,7 @@ agent.cannot-take-part-no-data.link-href                         = https://www.g
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
 agent.cannot-sign-up.heading                                    = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
-agent.cannot-sign-up.caption                                    = {0} | {1}
+agent.cannot-sign-up.caption                                    = {0} – {1}
 agent.cannot-sign-up.para1                                      = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru o’r flwyddyn dreth nesaf ymlaen ({0} i {1}).
 agent.cannot-sign-up.inset-text.para                            = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol ({0} i {1}) yn ôl yr arfer.
 agent.cannot-sign-up.subheading1                                = Yr hyn sy’n digwydd nesaf
@@ -639,7 +639,7 @@ agent.cannot-sign-up.check-another.link                         = wirio a allwch
 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
-agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.caption                                = {0} – {1}
 agent.client-can-sign-up.para1                                  = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr.
 agent.client-can-sign-up.subheading1                            = Yr hyn sy’n digwydd nesaf
 agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau eich cleient neu ei incwm o eiddo, bydd angen y dyddiad dechrau arnoch – os gwnaeth hyn ddechrau o fewn y 2 flynedd dreth ddiwethaf.
@@ -667,7 +667,7 @@ declined-sign-up-next-year.para                                 = Rydych wedi de
 
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Gwirio bod gennych feddalwedd sy’n cydweddu
-agent.using-software.caption                                    = {0} | {1}
+agent.using-software.caption                                    = {0} – {1}
 agent.using-software.para1                                      = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi neu’ch cleient ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.using-software.para2                                      = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol eich cleientiaid, efallai y bydd angen i chi ofyn i’ch darparwr meddalwedd os yw’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.using-software.subheading                                 = A ydych chi neu’ch cleient yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
@@ -678,7 +678,7 @@ agent.using-software.no                                         = Na, byddaf yn 
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = Mae angen i chi gael meddalwedd sy’n cydweddu
-agent.no-software.caption                                        = {0} | {1}
+agent.no-software.caption                                        = {0} – {1}
 agent.no-software.para1                                          = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm a’i defnyddio.
 agent.no-software.subheading1                                    = Os ydych eisoes yn defnyddio meddalwedd
 agent.no-software.para2                                          = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol i’ch cleientiaid, mae angen i chi ofyn i’ch darparwr meddalwedd os yw’n gweithio gyda Throi Treth yn Ddigidol ar gyfer Treth Incwm.
@@ -722,7 +722,7 @@ error.agent.email-capture.invalid                           = Nodwch gyfeiriad e
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                            = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.what-you-need-to-do.heading                          = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.what-you-need-to-do.caption                          = {0} | {1}
+agent.what-you-need-to-do.caption                          = {0} – {1}
 agent.what-you-need-to-do.h2.1                             = Os oes angen i’ch cleient ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.what-you-need-to-do.p1                               = Os oes gofyn i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill 2026 ymlaen, ni fydd CThEF yn rhoi pwyntiau cosb am ddiweddariadau chwarterol hwyr ar gyfer y flwyddyn gyntaf (2026 i 2027).
 agent.what-you-need-to-do.p2                               = Bydd cosbau yn dal i fod yn berthnasol am gyflwyno Ffurflenni Treth yn hwyr neu os telir bil treth ar ôl y dyddiad cau.
@@ -767,9 +767,9 @@ agent.client-details.summary.dob                                = Dyddiad geni
 agent.your-income-source.heading                                    = Ffynonellau incwm eich cleient
 agent.your-income-source.para-1                                     = Nid oes angen i chi ychwanegu incwm o bartneriaethau.
 agent.your-income-source.lead                                       = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
-agent.your-income-source.caption                                    = {0} | {1}
+agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Busnesau unig fasnachwr
-agent.your-income-source.self-employed.label-full                   = {0} - {1}
+agent.your-income-source.self-employed.label-full                   = {0} – {1}
 agent.your-income-source.self-employed.name                         = {0}
 agent.your-income-source.self-employed.trade                        = {0}
 agent.your-income-source.self-employed.business-name-para           = Enw’r busnes
@@ -788,7 +788,7 @@ agent.your-income-source.before-you-continue                        = Cyn i chi 
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = Mae problem gyda ffynonellau incwm eich cleient
-agent.income-sources-incomplete.caption                             = {0} | {1}
+agent.income-sources-incomplete.caption                             = {0} – {1}
 agent.income-sources-incomplete.para-one                            = Mae angen i chi wirio’ch bod wedi nodi’r holl wybodaeth ar gyfer ffynonellau incwm eich cleient.
 agent.income-sources-incomplete.para-two                            = Mae hyn yn cynnwys y canlynol:
 agent.income-sources-incomplete.bullet-one                          = ffynonellau incwm rydych wedi’u hychwanegu
@@ -803,7 +803,7 @@ agent.property.income.line-1                                    = Dyma’r swm a
 
 # Accounting Year page
 agent.business.what-year-to-sign-up.heading                     = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
-agent.business.what-year-to-sign-up.caption                     = {0} | {1}
+agent.business.what-year-to-sign-up.caption                     = {0} – {1}
 agent.business.what-year-to-sign-up.para                        = Gallwch gofrestru eich cleient yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0}) neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
 agent.business.what-year-to-sign-up.para-two                    = Dysgwch ragor am {0}.
 agent.business.what-year-to-sign-up.para-two.link-text          = sut a phryd i anfon diweddariadau chwarterol
@@ -816,7 +816,7 @@ agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flw
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
-agent.overseas.property.start-date-before-limit.caption          = {0} | {1}
+agent.overseas.property.start-date-before-limit.caption          = {0} – {1}
 agent.overseas.property.start-date-before-limit.heading          = Eiddo tramor eich cleient
 agent.overseas.property.start-date-before-limit.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
 agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
@@ -839,7 +839,7 @@ agent.client-already-subscribed.para1                           = Mae manylion y
 ## No client relationship page ##
 agent.no-client-relationship.title                              = Mae problem wedi codi
 agent.no-client-relationship.heading                            = Mae problem wedi codi
-agent.no-client-relationship.caption                            = {0} | {1}
+agent.no-client-relationship.caption                            = {0} – {1}
 agent.no-client-relationship.para1                              = Ni allwn ddod o hyd i awdurdodiad eich cleient yn eich cyfrif gwasanaethau asiant.
 agent.no-client-relationship.para2                              = Mae angen i chi wneud y canlynol:
 agent.no-client-relationship.bullet1                            = Gwirio’ch {0}
@@ -966,14 +966,14 @@ agent.business.check-your-answers.content.tax-year.caption            = Y flwydd
 ## Agent UK property check your answers
 agent.property.check-your-answers.title                               = Gwirio’ch atebion – Eiddo yn y DU
 agent.property.check-your-answers.heading                             = Gwirio’ch atebion
-agent.property.check-your-answers.heading.caption                     = {0} | {1}
+agent.property.check-your-answers.heading.caption                     = {0} – {1}
 agent.property.check-your-answers.start-date.question                 = Dyddiad dechrau’r eiddo
 agent.property.check-your-answers.start-date-before-limit.answer      = Cyn 6 Ebrill {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Gwirio’ch atebion – Eiddo tramor
 agent.overseas-property.check-your-answers.heading                              = Gwirio’ch atebion
-agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
+agent.overseas-property.check-your-answers.heading.caption                      = {0} – {1}
 agent.overseas-property.check-your-answers.start-date.question                  = Dyddiad dechrau’r eiddo
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Cyn 6 Ebrill {0}
 
@@ -1107,7 +1107,7 @@ individual.global-check-your-answers.print-link                                 
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Datganiad
-agent.global-check-your-answers.caption                                                         = {0} | {1}
+agent.global-check-your-answers.caption                                                         = {0} – {1}
 agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn cofrestru
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr

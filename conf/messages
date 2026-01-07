@@ -235,21 +235,21 @@ error.property.year.length                                      = Year must incl
 error.property.invalid                                          = The date must be a real date
 
 # Agent Property Start Date Date
-agent.property.start-date.heading.caption                       = {0} | {1}
+agent.property.start-date.heading.caption                       = {0} – {1}
 agent.property.start-date.heading                               = Start date for income from UK property
 agent.property.start-date.para-one                              = We need to know the exact start date.
 agent.property.start-date.hint                                  = For example, 27 9 {0}
 
 # Agent uk property start date before limit
 agent.uk-property.start-date-before-limit.heading                   = Your client’s UK property
-agent.uk-property.start-date-before-limit.caption                   = {0} | {1}
+agent.uk-property.start-date-before-limit.caption                   = {0} – {1}
 agent.uk-property.start-date-before-limit.legend                    = Did this income start before 6 April {0}?
 
 agent.error.property.income-source.start-date-before-limit.invalid  = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
 
 # Agent Property Start Date Before Limit
 agent.property.start-date-before-limit.heading                  = Your client’s UK property
-agent.property.start-date-before-limit.heading.caption          = {0} | {1}
+agent.property.start-date-before-limit.heading.caption          = {0} – {1}
 agent.property.start-date-before-limit.heading.legend           = Did this income start before 6 April {0}?
 agent.error.property.start-date-before-limit.invalid            = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
 
@@ -286,7 +286,7 @@ error.individual.foreign-property.start-date-before-limit.invalid       = Select
 # Agent Overseas Property Start Date
 agent.overseas-property.start-date.title                        = Start date for income from foreign property
 agent.overseas-property.start-date.heading                      = Start date for income from foreign property
-agent.overseas-property.start-date.heading.caption              = {0} | {1}
+agent.overseas-property.start-date.heading.caption              = {0} – {1}
 agent.overseas-property.start-date.para1                        = We need to know the exact start date.
 agent.overseas-property.start-date.hint                         = For example, 27 9 {0}
 
@@ -607,7 +607,7 @@ agent.base.no                                                   = No
 
 # Agent cannot sign up client page
 agent.cannot-take-part.heading                                    = You cannot sign up this client voluntarily
-agent.cannot-take-part.caption                                    = {0} | {1}
+agent.cannot-take-part.caption                                    = {0} – {1}
 agent.cannot-take-part.subheading                                 = What happens next
 agent.cannot-take-part.para1                                      = You’ll need to make sure your client submits their Self Assessment tax return as normal.
 agent.cannot-take-part.para2                                      = You can find out {0}.
@@ -645,7 +645,7 @@ agent.cannot-take-part-exempt-26-27.link-href                   = https://www.go
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = You can sign up this client from next tax year
 agent.cannot-sign-up.heading                                    = You can sign up this client from next tax year
-agent.cannot-sign-up.caption                                    = {0} | {1}
+agent.cannot-sign-up.caption                                    = {0} – {1}
 agent.cannot-sign-up.para1                                      = You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up from next tax year ({0} to {1}).
 agent.cannot-sign-up.inset-text.para                            = You’ll need to make sure your client submits their Self Assessment tax return for the current tax year ({0} to {1}) as normal.
 agent.cannot-sign-up.subheading1                                = What happens next
@@ -664,7 +664,7 @@ agent.cannot-sign-up.check-another.link                         = check if you c
 
 # Agent Client Can Sign Up Page
 agent.client-can-sign-up.heading                                = You can sign up this client
-agent.client-can-sign-up.caption                                = {0} | {1}
+agent.client-can-sign-up.caption                                = {0} – {1}
 agent.client-can-sign-up.para1                                  = You can sign up this client for Making Tax Digital for Income Tax now.
 agent.client-can-sign-up.subheading1                            = What happens next
 agent.client-can-sign-up.para2                                  = For each of your client’s businesses or income from property, you’ll need their start date if it started within the last 2 tax years.
@@ -692,7 +692,7 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Check you have compatible software
-agent.using-software.caption                                    = {0} | {1}
+agent.using-software.caption                                    = {0} – {1}
 agent.using-software.para1                                      = To use this service, you or your client must use software that works with Making Tax Digital for Income Tax.
 agent.using-software.para2                                      = If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
 agent.using-software.subheading                                 = Are you or your client using software that works with Making Tax Digital for Income Tax?
@@ -703,7 +703,7 @@ agent.using-software.no                                         = No, I’ll get
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = You need compatible software
-agent.no-software.caption                                        = {0} | {1}
+agent.no-software.caption                                        = {0} – {1}
 agent.no-software.para1                                          = To use this service, you must find and use software that works with Making Tax Digital for Income Tax.
 agent.no-software.subheading1                                    = If you already use software
 agent.no-software.para2                                          = If you already use software to keep digital records for your clients, you need to ask your software provider if it works with Making Tax Digital for Income Tax.
@@ -747,7 +747,7 @@ error.agent.email-capture.invalid                           = Enter an email add
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                            = What penalties apply in Making Tax Digital for Income Tax
 agent.what-you-need-to-do.heading                          = What penalties apply in Making Tax Digital for Income Tax
-agent.what-you-need-to-do.caption                          = {0} | {1}
+agent.what-you-need-to-do.caption                          = {0} – {1}
 agent.what-you-need-to-do.h2.1                             = If your client is required to use Making Tax Digital for Income Tax
 agent.what-you-need-to-do.p1                               = If your client is required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027).
 agent.what-you-need-to-do.p2                               = Penalties will still apply for late tax returns or if a tax bill is paid after the due date.
@@ -781,9 +781,9 @@ agent.client-details.summary.dob                                = Date of birth
 agent.your-income-source.heading                                    = Your client’s income sources
 agent.your-income-source.para-1                                     = You do not need to add income from partnerships.
 agent.your-income-source.lead                                       = Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April {0}.
-agent.your-income-source.caption                                    = {0} | {1}
+agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Sole trader businesses
-agent.your-income-source.self-employed.label-full                   = {0} - {1}
+agent.your-income-source.self-employed.label-full                   = {0} – {1}
 agent.your-income-source.self-employed.name                         = {0}
 agent.your-income-source.self-employed.trade                        = {0}
 agent.your-income-source.self-employed.business-name-para           = Business name
@@ -802,7 +802,7 @@ agent.your-income-source.before-you-continue                        = Before you
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = There is a problem with your client’s income sources
-agent.income-sources-incomplete.caption                             = {0} | {1}
+agent.income-sources-incomplete.caption                             = {0} – {1}
 agent.income-sources-incomplete.para-one                            = You need to check that you have entered all the information for your client’s income sources.
 agent.income-sources-incomplete.para-two                            = This includes income sources:
 agent.income-sources-incomplete.bullet-one                          = that you added
@@ -817,7 +817,7 @@ agent.property.income.line-1                                    = This is the am
 
 # Accounting Year page
 agent.business.what-year-to-sign-up.heading                     = When do you want to start using Making Tax Digital for Income Tax?
-agent.business.what-year-to-sign-up.caption                     = {0} | {1}
+agent.business.what-year-to-sign-up.caption                     = {0} – {1}
 agent.business.what-year-to-sign-up.para                        = You can sign up your client during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
 agent.business.what-year-to-sign-up.para-two                    = Find out more about {0}.
 agent.business.what-year-to-sign-up.para-two.link-text          = how and when to send quarterly updates
@@ -830,7 +830,7 @@ agent.error.business.what-year-to-sign-up.invalid               = Select the tax
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
-agent.overseas.property.start-date-before-limit.caption         = {0} | {1}
+agent.overseas.property.start-date-before-limit.caption         = {0} – {1}
 agent.overseas.property.start-date-before-limit.heading         = Your client’s foreign property
 agent.overseas.property.start-date-before-limit.legend          = Did this income start before 6 April {0}?
 agent.error.overseas.property.start-date-before-limit.invalid   = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
@@ -853,7 +853,7 @@ agent.client-already-subscribed.para1                           = This client’
 ## No client relationship page ##
 agent.no-client-relationship.title                              = There is a problem
 agent.no-client-relationship.heading                            = There is a problem
-agent.no-client-relationship.caption                            = {0} | {1}
+agent.no-client-relationship.caption                            = {0} – {1}
 agent.no-client-relationship.para1                              = We cannot find your client’s authorisation in your agent services account.
 agent.no-client-relationship.para2                              = You need to:
 agent.no-client-relationship.bullet1                            = Check your {0}
@@ -962,7 +962,7 @@ agent.no-sa.line-1                                              = To use this se
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.heading                             = Check your answers
 agent.business.check-your-answers.content.tax-year.title              = Check your answers - tax year
-agent.business.check-your-answers.content.tax-year.caption            = {0} | {1}
+agent.business.check-your-answers.content.tax-year.caption            = {0} – {1}
 agent.business.check-your-answers.content.tax-year.question           = Tax year
 agent.business.check-your-answers.content.tax-year.question.hidden    = Change tax year you are signing up for
 agent.business.check-your-answers.content.tax-year.current-tax-year   = Current tax year (6 April {0} to 5 April {1})
@@ -971,14 +971,14 @@ agent.business.check-your-answers.content.tax-year.next-tax-year      = Next tax
 ## Agent UK property check your answers
 agent.property.check-your-answers.title                               = Check your answers - UK property
 agent.property.check-your-answers.heading                             = Check your answers
-agent.property.check-your-answers.heading.caption                     = {0} | {1}
+agent.property.check-your-answers.heading.caption                     = {0} – {1}
 agent.property.check-your-answers.start-date.question                 = Property start date
 agent.property.check-your-answers.start-date-before-limit.answer      = Before 6 April {0}
 
 ## Agent Overseas property check your answers
 agent.overseas-property.check-your-answers.title                                = Check your answers - Foreign property
 agent.overseas-property.check-your-answers.heading                              = Check your answers
-agent.overseas-property.check-your-answers.heading.caption                      = {0} | {1}
+agent.overseas-property.check-your-answers.heading.caption                      = {0} – {1}
 agent.overseas-property.check-your-answers.start-date.question                  = Property start date
 agent.overseas-property.check-your-answers.start-date-before-limit.answer       = Before 6 April {0}
 
@@ -1111,7 +1111,7 @@ individual.global-check-your-answers.print-link                                 
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.heading                                                         = Declaration
-agent.global-check-your-answers.caption                                                         = {0} | {1}
+agent.global-check-your-answers.caption                                                         = {0} – {1}
 agent.global-check-your-answers.para                                                            = Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect data.
 agent.global-check-your-answers.subheading                                                      = Check your answers before signing up
 agent.global-check-your-answers.income-sources.subheading                                       = Sole trader businesses
