@@ -685,7 +685,9 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val formGroup: Element = element.selectHead(selector)
       val textInput: Element = formGroup.selectHead(s"input[name=$name]")
 
-      validateTextInputLabel(name, label, isPageHeading, isLabelHidden, checkpoint)
+      if (label.nonEmpty) {
+        validateTextInputLabel(name, label, isPageHeading, isLabelHidden, checkpoint)
+      }
 
       checkpoint {
         textInput.attr("type") mustBe inputType

@@ -64,15 +64,11 @@ class EmailCaptureViewSpec extends ViewSpec {
       document().mainContent.getH1Element.text mustBe EmailCaptureMessages.heading
     }
 
-    "have an first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe EmailCaptureMessages.paraOne
-    }
-
-    "have a second paragraph" which {
-      def paragraph: Element = document().mainContent.selectNth("p", 2)
+    "have a paragraph" which {
+      def paragraph: Element = document().mainContent.selectNth("p", 1)
 
       "has the correct text" in {
-        paragraph.text mustBe EmailCaptureMessages.paraTwo
+        paragraph.text mustBe EmailCaptureMessages.para
       }
       "has a link which opens in a new tab" in {
         val link = paragraph.selectHead("a")
@@ -95,7 +91,7 @@ class EmailCaptureViewSpec extends ViewSpec {
         "there is no error on the text field" in {
           form().mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.legend,
+            label = "",
             isLabelHidden = false,
             isPageHeading = false,
             error = None,
@@ -107,7 +103,7 @@ class EmailCaptureViewSpec extends ViewSpec {
         "there is an error in the text field" in {
           form(error = true).mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = EmailCaptureMessages.legend,
+            label = "",
             isLabelHidden = false,
             isPageHeading = false,
             error = Some(EmailCaptureMessages.errorInvalid),
@@ -144,10 +140,8 @@ class EmailCaptureViewSpec extends ViewSpec {
 
   object EmailCaptureMessages {
     val heading: String = "Enter your contact email address"
-    val paraOne: String = "Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax."
-    val legend: String = "Email address"
     val hmrcPrivacyNotice: String = "HMRC Privacy Notice (opens in new tab)"
-    val paraTwo: String = s"Full details of how we use contact information are in the $hmrcPrivacyNotice"
+    val para: String = s"Full details of how we use contact information are in the $hmrcPrivacyNotice"
     val continue: String = "Continue"
     val errorInvalid: String = "Enter an email address in the correct format, like name@example.com"
   }

@@ -377,9 +377,7 @@ individual.no-software.para-6.href              = https://www.gov.uk/ffurflenni-
 
 # Email capture page
 individual.email-capture.heading                            = Nodwch eich cyfeiriad e-bost cyswllt
-individual.email-capture.para-1                             = Nodwch y cyfeiriad e-bost yr hoffech i CThEF i’w ddefnyddio wrth gysylltu gyda chi am Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-individual.email-capture.legend                             = Cyfeiriad e-bost
-individual.email-capture.para-2                             = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}
+individual.email-capture.para                               = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}
 individual.email-capture.hmrc-privacy-notice.link-text      = Hysbysiad Preifatrwydd CThEF
 individual.email-capture.hmrc-privacy-notice.link-href      = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/63cba3e4-c360-41e5-ab8d-c34e6ddfb256
 error.individual.email-capture.empty                        = Nodwch gyfeiriad e-bost
@@ -710,9 +708,7 @@ agent.capture-consent.form-error                            = Dewiswch ‘Iawn�
 
 ## Agent email capture page ##
 agent.email-capture.heading                                 = Nodwch eich cyfeiriad e-bost cyswllt
-agent.email-capture.para-one                                = Nodwch y cyfeiriad e-bost yr hoffech i CThEF i’w ddefnyddio wrth gysylltu gyda chi am Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.email-capture.legend                                  = Cyfeiriad e-bost
-agent.email-capture.para-two                                = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}.
+agent.email-capture.para                                    = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}.
 agent.email-capture.hmrc-privacy-notice.link-text           = Hysbysiad Preifatrwydd CThEF
 agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/63cba3e4-c360-41e5-ab8d-c34e6ddfb256
 error.agent.email-capture.empty                             = Nodwch gyfeiriad e-bost

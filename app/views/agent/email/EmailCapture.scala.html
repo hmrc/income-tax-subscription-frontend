@@ -33,13 +33,11 @@
 
     <h1 class="govuk-heading-l">@messages("agent.email-capture.heading")</h1>
 
-    <p class="govuk-body">@messages("agent.email-capture.para-one")</p>
-
     @form(postAction) {
 
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = messages("agent.email-capture.legend"),
+            label = "",
             inputType = "email",
             spellcheck = Some(false),
             autoComplete = Some("email"),
@@ -48,7 +46,7 @@
 
         <p class="govuk-body">
             @Html(messages(
-                key = "agent.email-capture.para-two",
+                key = "agent.email-capture.para",
                 args = hmrcPrivacyNoticeLink
             ))
         </p>

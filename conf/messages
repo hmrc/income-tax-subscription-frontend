@@ -401,9 +401,7 @@ individual.no-software.para-6.href                  = https://www.gov.uk/self-as
 
 # Email capture page
 individual.email-capture.heading                            = Enter your contact email address
-individual.email-capture.para-1                             = Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax.
-individual.email-capture.legend                             = Email address
-individual.email-capture.para-2                             = Full details of how we use contact information are in the {0}
+individual.email-capture.para                               = Full details of how we use contact information are in the {0}
 individual.email-capture.hmrc-privacy-notice.link-text      = HMRC Privacy Notice
 individual.email-capture.hmrc-privacy-notice.link-href      = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you
 error.individual.email-capture.empty                        = Enter an email address
@@ -735,9 +733,7 @@ agent.capture-consent.form-error                            = Select yes if we c
 
 ## Agent email capture page ##
 agent.email-capture.heading                                 = Enter your contact email address
-agent.email-capture.para-one                                = Enter the email address you would like HMRC to use when contacting you about Making Tax Digital for Income Tax.
-agent.email-capture.legend                                  = Email address
-agent.email-capture.para-two                                = Full details of how we use contact information are in the {0}
+agent.email-capture.para                                    = Full details of how we use contact information are in the {0}
 agent.email-capture.hmrc-privacy-notice.link-text           = HMRC Privacy Notice
 agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you
 error.agent.email-capture.empty                             = Enter an email address
