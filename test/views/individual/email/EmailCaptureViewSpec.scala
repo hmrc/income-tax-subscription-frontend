@@ -58,9 +58,9 @@ class EmailCaptureViewSpec extends ViewSpec {
         "there is no error on the text field" in {
           form().mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = "",
+            label = EmailCaptureMessages.heading,
             isLabelHidden = false,
-            isPageHeading = false,
+            isPageHeading = true,
             error = None,
             autoComplete = Some("email"),
             spellcheck = Some(false),
@@ -70,9 +70,9 @@ class EmailCaptureViewSpec extends ViewSpec {
         "there is an error on the text field" in {
           form(error = true).mustHaveTextInput(".govuk-form-group")(
             name = EmailCaptureForm.formKey,
-            label = "",
+            label = EmailCaptureMessages.heading,
             isLabelHidden = false,
-            isPageHeading = false,
+            isPageHeading = true,
             error = Some(EmailCaptureMessages.errorInvalid),
             autoComplete = Some("email"),
             spellcheck = Some(false),
