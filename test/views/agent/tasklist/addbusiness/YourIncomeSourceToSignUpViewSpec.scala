@@ -68,7 +68,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "have a heading and caption" in new ViewTest {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = AgentIncomeSource.heading,
-        caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+        caption = s"${clientDetails.name} – ${clientDetails.formattedNino}",
         isSection = false
       )
     }
@@ -606,7 +606,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a heading and caption" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.mustHaveHeadingAndCaption(
           heading = AgentIncomeSource.heading,
-          caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+          caption = s"${clientDetails.name} – ${clientDetails.formattedNino}",
           isSection = false
         )
       }

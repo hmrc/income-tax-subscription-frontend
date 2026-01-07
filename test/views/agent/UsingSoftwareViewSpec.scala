@@ -122,7 +122,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
     val paraOne = "To use this service, you or your client must use software that works with Making Tax Digital for Income Tax."
     val paraTwo = "If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax."
     val subheading = "Are you or your client using software that works with Making Tax Digital for Income Tax?"
-    val caption = s"$fullName | $nino"
+    val caption = s"$fullName – $nino"
     val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
     val radioName = "yes-no"

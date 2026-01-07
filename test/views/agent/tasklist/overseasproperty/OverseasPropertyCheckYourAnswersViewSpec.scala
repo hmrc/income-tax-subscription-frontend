@@ -33,7 +33,7 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
 
   object OverseasPropertyCheckYourAnswers {
     val title = "Check your answers - Foreign property"
-    val caption = "FirstName LastName | ZZ 11 11 11 Z"
+    val caption = "FirstName LastName – ZZ 11 11 11 Z"
     val heading = "Check your answers"
     val startDate = "Property start date"
     val addStartDate = "Add start date"

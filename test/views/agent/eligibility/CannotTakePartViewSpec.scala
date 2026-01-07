@@ -57,7 +57,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = CannotTakePartMessages.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }
@@ -117,7 +117,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = MTDExemptEnduring.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }
@@ -168,7 +168,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = MTDExempt2627.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }
@@ -218,7 +218,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = NoDataFound.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }
@@ -286,7 +286,7 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a heading and caption" in {
       document.mainContent.mustHaveHeadingAndCaption(
         heading = DigitallyExempt.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }

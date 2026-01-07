@@ -59,7 +59,7 @@ class ClientCanSignUpViewSpec extends ViewSpec {
     "have a heading and caption" in new ViewTest {
       mainContent.mustHaveHeadingAndCaption(
         heading = ClientCanSignUpMessages.heading,
-        caption = s"$clientName | $clientNino",
+        caption = s"$clientName – $clientNino",
         isSection = false
       )
     }

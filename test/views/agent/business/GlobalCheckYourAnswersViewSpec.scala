@@ -405,7 +405,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   object GlobalCheckYourAnswersMessages {
     val heading: String = "Check your answers before signing up"
-    val caption = "FirstName LastName | ZZ 11 11 11 Z"
+    val caption = "FirstName LastName – ZZ 11 11 11 Z"
     val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect data."
     val printLink = "Print this page"
     val subheading = "Check your answers before signing up"
