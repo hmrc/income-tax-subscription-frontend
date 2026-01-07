@@ -31,24 +31,19 @@
 
 @mainTemplate(title = messages("agent.email-capture.heading"), optForm = Some(emailForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.email-capture.heading")</h1>
-
-    <p class="govuk-body">@messages("agent.email-capture.para-one")</p>
-
     @form(postAction) {
-
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = messages("agent.email-capture.legend"),
+            label = messages("agent.email-capture.heading"),
             inputType = "email",
             spellcheck = Some(false),
             autoComplete = Some("email"),
-            isPageHeading = false
+            isPageHeading = true
         )
 
         <p class="govuk-body">
             @Html(messages(
-                key = "agent.email-capture.para-two",
+                key = "agent.email-capture.para",
                 args = hmrcPrivacyNoticeLink
             ))
         </p>

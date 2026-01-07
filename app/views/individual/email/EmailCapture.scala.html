@@ -32,24 +32,20 @@
 
 @mainTemplate(title = messages("individual.email-capture.heading"), optForm = Some(emailForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("individual.email-capture.heading")</h1>
-
-    <p class="govuk-body">@messages("individual.email-capture.para-1")</p>
-
     @form(postAction) {
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = messages("individual.email-capture.legend"),
+            label = messages("individual.email-capture.heading"),
             inputType = "email",
             spellcheck = Some(false),
             autoComplete = Some("email"),
-            isPageHeading = false
+            isPageHeading = true
         )
 
         <p class="govuk-body">
             @Html(messages(
-            key = "individual.email-capture.para-2",
-            args = hmrcPrivacyNoticeLink
+                key = "individual.email-capture.para",
+                args = hmrcPrivacyNoticeLink
             ))
         </p>
 
