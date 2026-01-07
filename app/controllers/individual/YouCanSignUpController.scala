@@ -42,6 +42,6 @@ class YouCanSignUpController @Inject()(view: YouCanSignUp)
   }
 
   def backUrl: String = {
-    appConfig.individualSigningUpUrl
+    appConfig.govukGuidanceITSASignUpIndivLink
   }
 }

@@ -1130,23 +1130,6 @@ agent.global-check-your-answers.tax-year.next                                   
 agent.global-check-your-answers.para2                                                           = Drwy fynd yn eich blaen, rydych yn cadarnhau bod yr wybodaeth rydych wedi’i rhoi’n gywir ac yn gyflawn hyd eithaf eich gwybodaeth.
 agent.global-check-your-answers.para3                                                           = Pan fyddwch chi’n parhau, byddwn ni’n cofrestru’ch cleient. Gall hyn gymryd ychydig o eiliadau.
 
-# Individual Signing Up Page
-individual.signing-up.heading                                           = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.signing-up.before-you-signup.heading                         = Cyn i chi gofrestru
-individual.signing-up.before-you-signup.para-1                          = I gofrestru, mae’n rhaid i chi fod yn unig fasnachwr neu’n cael incwm naill ai o eiddo yn y DU neu o eiddo tramor.
-individual.signing-up.before-you-signup.para-2                          = Mae’n rhaid i chi hefyd defnyddio {0}.
-individual.signing-up.before-you-signup.para-2.link-text                = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.signing-up.before-you-signup.para-2.link-href                = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-individual.signing-up.sole-trader.heading                               = Unig fasnachwr
-individual.signing-up.sole-trader.para-1                                = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig.
-individual.signing-up.sole-trader.para-2                                = Nid ydych yn unig fasnachwr os daw eich incwm busnes o gwmni cyfyngedig yn unig.
-individual.signing-up.income-property.heading                           = Incwm o eiddo
-individual.signing-up.income-property.para-1                            = Gallwch gofrestru os ydych yn cael incwm o eiddo yn y DU neu o’r eiddo sydd mewn gwlad arall. Er enghraifft, incwm o roi tai, fflatiau, neu gartrefi gwyliau ar osod, a hynny ar sail tymor hir neu dymor byr.
-individual.signing-up.identity-verification.heading                            = Mae’n bosibl y bydd angen i ni wirio pwy ydych
-individual.signing-up.identity-verification.para-1                             = I gadarnhau pwy ydych, gallwch wneud y naill neu’r llal o’r canlynol:
-individual.signing-up.identity-verification.bullet-1                           = defnyddio ap i’ch paru â’ch ID ffotograffig
-individual.signing-up.identity-verification.bullet-2                           = ateb cwestiynau ynghylch yr wybodaeth sydd gennym amdanoch
-
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = Mae’n bosibl y byddwch yn gallu cofrestru
 sign-up.para-1                                                          = Yn seiliedig ar eich cyfnod cyfrifyddu busnes, mae’n bosibl y byddwch yn gallu cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
@@ -1154,26 +1137,6 @@ sign-up.para-2                                                          = Pan fy
 sign-up.inset                                                      = Mae’n bosibl y bydd lwfansau eraill neu ffynonellau eraill o incwm yn eich rhwystro rhag cofrestru
 sign-up.inset.href                                                 = https://www.gov.uk/guidance/sign-up-your-client-for-making-tax-digital-for-income-tax.cy#pwy-na-all-gofrestrun-wirfoddol
 sign-up.para-3                                                          = I fynd yn eich blaen, mewngofnodwch gan ddefnyddio’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth yr ydych yn ei ddefnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad. Byddwn yn gwirio’ch cofnod treth ac yn rhoi gwybod i chi os gallwch barhau i gofrestru.
-
-## Agent Signing Up Page ##
-agent.signing-up.heading                                                = Cofrestru’ch cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.signing-up.before-sign-up.heading                                 = Cyn i chi gofrestru’ch cleientiaid
-agent.signing-up.before-sign-up.para-1                                  = I gofrestru’ch cleientiaid, mae’n rhaid i chi gael eu hawdurdodiad yn eich cyfrif gwasanaethau asiant.
-agent.signing-up.before-sign-up.para-2                                  = Gwnewch yn siŵr eich bod chi neu’ch cleientiaid yn defnyddio {0}.
-agent.signing-up.before-sign-up.para-2.link-text                        = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.signing-up.before-sign-up.para-2.link-href                        = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.signing-up.before-sign-up.para-3                                  = Gwnewch yn siŵr bod eich cleient yn unig fasnachwr neu’n cael incwm o eiddo (y tu mewn neu’r tu allan i’r DU).
-agent.signing-up.accounting-period.heading                              = Cyfnod cyfrifyddu
-agent.signing-up.accounting-period.para-1                               = Gwnewch yn siŵr bod eich cleient yn defnyddio y naill neu’r llall o’r canlynol:
-agent.signing-up.accounting-period.bullet-1                             = cyfnod cyfrifyddu sy’n rhedeg o 6 Ebrill i 5 Ebrill
-agent.signing-up.accounting-period.bullet-2                             = cyfnod cyfrifyddu sy’n rhedeg o 1 Ebrill i 31 Mawrth (a bod modd defnyddio cyfnodau diweddaru calendr gyda’i feddalwedd sy’n cydweddu)
-agent.signing-up.accounting-period.para-2                               = O flwyddyn dreth 2026 i 2027, bydd y gwasanaeth hwn yn cael ei ymestyn i bobl ag unrhyw gyfnod cyfrifyddu. Mae’n rhaid i chi gyflwyno Ffurflenni Treth Hunanasesiad eich cleient ar gyfer y blynyddoedd treth hyd at 5 Ebrill 2025 yn ôl yr arfer.
-agent.signing-up.check-sign-up.heading                                  = Byddwn yn gwirio a all eich cleient gofrestru pan fyddwch yn mynd ati i’w gofrestru
-agent.signing-up.check-sign-up.para-1                                   = Pan fyddwch yn mynd yn eich blaen, bydd angen i chi nodi’r manylion canlynol ar gyfer un o’ch cleientiaid:
-agent.signing-up.check-sign-up.bullet-1                                 = enw
-agent.signing-up.check-sign-up.bullet-2                                 = rhif Yswiriant Gwladol
-agent.signing-up.check-sign-up.bullet-3                                 = dyddiad geni
-agent.signing-up.check-sign-up.para-2                                   = Byddwn yn gwirio cofnod y cleient hwnnw ac yn rhoi gwybod i chi a allwch eu cofrestru.
 
 agent.digitally-exempt.heading                                           = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.digitally-exempt.para                                             = Mae CThEF wedi cytuno bod eich cleient wedi`i gau allan o`r byd ddigidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
