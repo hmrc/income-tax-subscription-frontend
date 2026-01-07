@@ -31,17 +31,14 @@
 
 @mainTemplate(title = messages("agent.email-capture.heading"), optForm = Some(emailForm), backLink = Some(backUrl)) {
 
-    <h1 class="govuk-heading-l">@messages("agent.email-capture.heading")</h1>
-
     @form(postAction) {
-
         @textInput(
             field = emailForm(EmailCaptureForm.formKey),
-            label = "",
+            label = messages("agent.email-capture.heading"),
             inputType = "email",
             spellcheck = Some(false),
             autoComplete = Some("email"),
-            isPageHeading = false
+            isPageHeading = true
         )
 
         <p class="govuk-body">
