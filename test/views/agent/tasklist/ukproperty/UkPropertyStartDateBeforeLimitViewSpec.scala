@@ -111,7 +111,7 @@ class UkPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
   object PropertyStartDateBeforeLimitMessages {
     val title = "Your client’s UK property"
     val heading: String = title
-    val caption = "FirstName LastName | ZZ 11 11 11 Z"
+    val caption = "FirstName LastName – ZZ 11 11 11 Z"
     val dateBeforeLimitLegend = s"Did this income start before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}?"
     val yes = "Yes"
     val no = "No"
