@@ -153,7 +153,7 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
   private object WhatYearToSignUp {
     val heading = "When do you want to start using Making Tax Digital for Income Tax?"
-    val agentCaption: String = fullName + " | " + nino
+    val agentCaption: String = fullName + " – " + nino
     val paragraph1 = s"You can sign up your client during the current tax year (from 6 April ${taxYearEnd - 1}) or from next tax year (from 6 April $taxYearEnd)."
     val paragraph2LinkText = "how and when to send quarterly updates (opens in new tab)"
     val paragraph2 = s"Find out more about $paragraph2LinkText."

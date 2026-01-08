@@ -49,7 +49,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     "have a heading and caption" in {
       mainContent.mustHaveHeadingAndCaption(
         heading = CannotSignUpMessages.heading,
-        caption = s"${clientDetails.name} | ${clientDetails.formattedNino}",
+        caption = s"${clientDetails.name} – ${clientDetails.formattedNino}",
         isSection = false
       )
     }

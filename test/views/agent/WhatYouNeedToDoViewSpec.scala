@@ -36,7 +36,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
       "have a heading and caption" in {
         document().mainContent.mustHaveHeadingAndCaption(
           heading = WhatYouNeedToDoMessages.heading,
-          caption = s"$clientName | $clientNino",
+          caption = s"$clientName – $clientNino",
           isSection = false
         )
       }

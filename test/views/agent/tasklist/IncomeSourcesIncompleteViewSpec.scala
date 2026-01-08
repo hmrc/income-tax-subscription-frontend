@@ -81,7 +81,7 @@ class IncomeSourcesIncompleteViewSpec extends ViewSpec {
 
   private object IncomeSourcesIncompleteMessages {
     val heading = "There is a problem with your client’s income sources"
-    val caption = s"${testClientDetails.name} | ${testClientDetails.formattedNino}"
+    val caption = s"${testClientDetails.name} – ${testClientDetails.formattedNino}"
     val paraOne = "You need to check that you have entered all the information for your client’s income sources."
     val paraTwo = "This includes income sources:"
     val bulletOne = "that you added"

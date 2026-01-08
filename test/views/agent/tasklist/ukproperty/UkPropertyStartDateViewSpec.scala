@@ -52,7 +52,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
   object PropertyStartDateMessages {
     val title = "Start date for income from UK property"
     val heading: String = title
-    val caption: String = "FirstName LastName | ZZ 11 11 11 Z"
+    val caption: String = "FirstName LastName – ZZ 11 11 11 Z"
     val para1 = "We need to know the exact start date."
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Continue"
