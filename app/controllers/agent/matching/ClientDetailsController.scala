@@ -90,7 +90,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
   }
 
   def backUrl: String = {
-    appConfig.agentSigningUpUrl
+    appConfig.govukGuidanceITSASignUpAgentLink
   }
 
 }
