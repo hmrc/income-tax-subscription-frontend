@@ -57,6 +57,10 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.para1
     }
 
+    "have a subheading" in {
+      document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.subheading
+    }
+
     "have a summary of answers" when {
       "display the yes for using software" in {
         def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 1)
@@ -150,7 +154,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       "all income sources are present" should {
 
         "display the sole trader income sources heading" in {
-          document().mainContent.getSubHeading("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
         }
 
         "display the first sole trader business" when {
@@ -257,7 +261,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         }
 
         "display the property income sources heading" in {
-          document().mainContent.getSubHeading("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+          document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+
         }
 
         "display the uk property income" when {
@@ -360,7 +365,15 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
+    "have a second subheading" in {
+      document().mainContent.selectNth("h2", 5).text mustBe GlobalCheckYourAnswersMessages.declarationHeading
+    }
+
     "have a second paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.para2
+    }
+
+    "have a third paragraph" in {
       document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para3
     }
 
@@ -408,7 +421,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val caption = "FirstName LastName – ZZ 11 11 11 Z"
     val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
     val printLink = "Print this page"
-    val subheading = "Check your answers before signing up"
+    val subheading = "Information you have given to us about your client"
 
     object UsingSoftwareSection {
       val key: String = "Software works with Making Tax Digital for Income Tax"
@@ -462,7 +475,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     }
 
-    val para2: String = "By continuing, you’re confirming that the information you have given is correct to the best of your knowledge."
+    val declarationHeading: String = "Declaration"
+    val para2: String = "The information you have given must be correct to the best of your knowledge."
     val para3: String = "By confirming, you will be signed up to Making Tax Digital for Income Tax."
     val confirmAndSend: String = "Confirm and send"
     val saveAndComeback: String = "Save and come back later"
