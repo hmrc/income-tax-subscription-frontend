@@ -1074,7 +1074,7 @@ agent.throttle-end.line-2                                          = Byddwn yn c
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
-individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw ddata sy’n anghywir.
+individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaethddata sy’n anghywir.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
@@ -1103,9 +1103,8 @@ individual.global-check-your-answers.para-three                                 
 individual.global-check-your-answers.print-link                                                 = Argraffwch y dudalen hon
 
 # Agent Global Check Your Answers
-agent.global-check-your-answers.heading                                                         = Datganiad
 agent.global-check-your-answers.caption                                                         = {0} – {1}
-agent.global-check-your-answers.para                                                            = Welsh Paragraph: Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
+agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
 agent.global-check-your-answers.subheading-two                                                  = Information you have given to us about your client
 agent.global-check-your-answers.declaration.subheading                                          = Datganiad
@@ -1132,6 +1131,7 @@ agent.global-check-your-answers.tax-year.current                                
 agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
 agent.global-check-your-answers.para2                                                           = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
 agent.global-check-your-answers.para3                                                           = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.global-check-your-answers.print-link                                                      = Argraffwch y dudalen hon
 
 # Individual Signing Up Page
 individual.signing-up.heading                                           = Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm

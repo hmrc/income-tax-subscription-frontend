@@ -73,6 +73,12 @@
                 saveAndReturnReference = Some("global-check-your-answers")
             )
     }
+
+    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
+        <a href="#" data-module="hmrc-print-link" class="govuk-link">
+            @messages("individual.global-check-your-answers.print-link")
+        </a>
+    </p>
 }
 
 @incomeSourcesSection(incomeSources: IncomeSources) = {
