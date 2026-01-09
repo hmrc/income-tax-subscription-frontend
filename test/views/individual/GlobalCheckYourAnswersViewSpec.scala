@@ -409,9 +409,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     val heading: String = "Check your answers before signing up"
 
-    val paraOne: String = "Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect data."
+    val paraOne: String = "Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
 
-    val printLink = "Print this page"
+    val printLink = "You can print this page for your records"
 
     val beforeSigningUpHeading: String = "Information we hold for you"
 
@@ -463,7 +463,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val paraThree: String = "By confirming, you will be signed up to Making Tax Digital for Income Tax."
 
     object Form {
-      val confirmAndContinue: String = "Confirm and continue"
+      val confirmAndContinue: String = "Confirm and send"
       val saveAndComeBack: String = "Save and come back later"
     }
 
