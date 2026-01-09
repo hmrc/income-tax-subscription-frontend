@@ -48,7 +48,7 @@ base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-base.print-page                                                 = Argraffwch y dudalen hon
+base.print-page                                                 = Argraffu neu gadw’r dudalen hon.
 base.section-caption.hidden                                     = Teitl yr adran hon yw
 base.or                                                         = neu
 
@@ -406,46 +406,44 @@ individual.capture-consent.subheading-2             = A all CThEF gysylltu â ch
 individual.capture-consent.form-error               = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Sign Up Confirmation page ##
-sign-up-confirmation.heading                                         = Rydych wedi cofrestru’n llwyddiannus
-sign-up-confirmation.heading.panel.current                           = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth bresennol ({0})
-sign-up-confirmation.heading.panel.next                              = Mae wedi llwyddo i gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, o ran y flwyddyn dreth nesaf ({0})
+sign-up-confirmation.title                                           = Confirmation page - Sign up complete
+sign-up-confirmation.heading                                         = Rydych wedi gorffen cofrestru
+sign-up-confirmation.heading.panel.current                           = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o ({0}) ymlaen
+sign-up-confirmation.heading.panel.next                              = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o ({0}) ymlaen
 
-sign-up-confirmation.what-you-must-do.heading                        = Yr hyn y mae’n rhaid i chi ei wneud nawr
+sign-up-confirmation.what-you-must-do.heading                        = Yr hyn sy’n digwydd nesa
 
-sign-up-confirmation.read-how-to                                     = Darllenwch sut i {0}
-sign-up-confirmation.read-how-to.link-text                           = ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.read-how-to.link-href                           = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+sign-up-confirmation.what-you-must-do.yes.this.year                  = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad drwy ddefnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
-sign-up-confirmation.what-you-must-do.yes.this.year                  = Mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 sign-up-confirmation.what-you-must-do.no.this.year                   = Mae’n rhaid i chi ddefnyddio {0}
-sign-up-confirmation.what-you-must-do.no.this.year.link.text         = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+sign-up-confirmation.what-you-must-do.no.this.year.link.text         = meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 sign-up-confirmation-what-you-must-do.link-href                      = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+sign-up-confirmation-what-you-must-do.software-choices-para          = Mae’n rhaid i chi ddefnyddio’r feddalwedd hon i wneud y canlynol:
+sign-up-confirmation-what-you-must-do.software-choices-bullet1       = creu, cadw, a chywiro cofnodion digidol o’ch incwm o hunangyflogaeth ac eiddo a’ch treuliau
+sign-up-confirmation-what-you-must-do.software-choices-bullet2       = anfon eich diweddariadau chwarterol at CThEF
+sign-up-confirmation-what-you-must-do.software-choices-bullet3       = cyflwyno’ch Ffurflen Dreth a thalu’r dreth sy’n ddyledus erbyn 31 Ionawr y flwyddyn ganlynol
 
-sign-up-confirmation.what-you-must-do.yes.next.year                  = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-sign-up-confirmation.what-you-must-do.no.next.year                   = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio {1}
-sign-up-confirmation.what-you-must-do.no.next.year.link.text         = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.what-you-must-do.no.next.year.link-href         = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+sign-up-confirmation-what-you-must-do.software-choices.heading       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+sign-up-confirmation-what-you-must-do.software-choices-para2         = Darllenwch  {0} i gael rhagor o wybodaeth am y canlynol:
+sign-up-confirmation-what-you-must-do.no-para2.link-text             = "Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
+sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax.cy
+sign-up-confirmation-what-you-must-do.software-choices-bullet4       = yr hyn i’w ddisgwyl ar ôl i chi gofrestru
+sign-up-confirmation-what-you-must-do.software-choices-bullet5       = y gwahanol gamau y bydd angen i chi eu cymryd yn ystod y flwyddyn dreth
+sign-up-confirmation-what-you-must-do.software-choices-bullet6       = help a chymorth
 
-sign-up-confirmation.what-you-must-do.para1                          = Bydd y feddalwedd rydych yn ei dewis yn rhoi gwybod i chi beth arall mae angen i chi ei wneud, gan gynnwys:
-sign-up-confirmation.what-you-must-do.bullet1                        = sut i awdurdodi a chysylltu’r feddalwedd â’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth rydych yn ei ddefnyddio ar gyfer eich Hunanasesiad
-sign-up-confirmation.what-you-must-do.bullet2                        = sut i gadw cofnodion digidol
-sign-up-confirmation.what-you-must-do.bullet3                        = pryd a sut i anfon diweddariadau chwarterol
-sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = a oes angen i chi anfon unrhyw ddiweddariadau a gollwyd neu ddiweddariadau ôl-ddyddiedig ar gyfer y flwyddyn dreth bresennol – a sut i’w hanfon
-sign-up-confirmation.what-you-must-do.bullet5                        = pryd a sut i wneud eich Ffurflen Dreth ar ôl diwedd y flwyddyn dreth
-sign-up-confirmation.what-you-must-do.para2                          = A bydd angen i chi dalu’r dreth sydd arnoch.
-
-sign-up-confirmation.report-previous-tax-year.heading                = Rhoi gwybod am flynyddoedd treth blaenorol
-sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Rhoi gwybod am y flwyddyn dreth bresennol a blynyddoedd treth blaenorol
-sign-up-confirmation.report-previous-tax-year.para                   = Mae’n rhaid i chi barhau i gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebril {0} yn ôl yr arfer.
+sign-up-confirmation.what-you-must-do.para1                          = Ni allwch ddefnyddio’ch gwasanaethau ar-lein CThEF i gyflwyno’ch ffynonellau incwm eraill ar gyfer:
+sign-up-confirmation.what-you-must-do.bullet1                        = gweddill blwyddyn dreth 2025 i 2026
+sign-up-confirmation.what-you-must-do.bullet2                        = y flwyddyn dreth sydd i ddod, sef 2026 i 2027
+sign-up-confirmation.what-you-must-do.para2                          = Fodd bynnag, mae’n rhaid i chi gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebrill 2025 yn ôl yr arfer.
 
 sign-up-confirmation.contact-support.heading                         = Cael help gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.contact-support.phone-number                    = Ffôn: 0300 200 1900
-sign-up-confirmation.contact-support.para                            = Dydd Llun i Ddydd Gwener, 8am hyd at 5pm (heblaw am wyliau cyhoeddus)
-sign-up-confirmation.contact-support.link-text                       = Dysgwch am gostau galwadau
+sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03003 200 1900
+sign-up-confirmation.contact-support.para                            = 08:30 i 17:00, o ddydd Llun i ddydd Gwener, (heblaw am wyliau banc)
+sign-up-confirmation.contact-support.link-text                       = Cael gwybodaeth am gostau galwadau
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
 
-sign-up-confirmation.preference-set.online.heading                   = Eich dewis o ohebiaeth
-sign-up-confirmation.preference-set.online.para-one                  = Os ydych wedi dewis cael eich llythyrau treth ar-lein, gwnewch yn siŵr eich bod wedi dilysu’ch cyfeiriad e-bost.
+sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
+sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.
 
 individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.digitally-exempt.para                                     = Mae CThEF wedi cytuno eich bod wedi`ch cau allan o`r byd digidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.

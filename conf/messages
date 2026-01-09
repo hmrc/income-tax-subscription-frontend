@@ -48,7 +48,7 @@ base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
-base.print-page                                                 = Print this page
+base.print-page                                                 = Print or save this page.
 base.section-caption.hidden                                     = This section is
 base.or                                                         = or
 
@@ -451,15 +451,9 @@ sign-up-confirmation-what-you-must-do.software-choices.heading       = Using Mak
 sign-up-confirmation-what-you-must-do.software-choices-para2         = Read {0} to find out more information about:
 sign-up-confirmation-what-you-must-do.no-para2.link-text             = use Making Tax Digital for Income Tax
 sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
-sign-up-confirmation-what-you-must-do.software-choices-para2.link-text2= (opens in new tab) to find out more information about:
 sign-up-confirmation-what-you-must-do.software-choices-bullet4       = what to expect after you sign up
 sign-up-confirmation-what-you-must-do.software-choices-bullet5       = the different steps you will need to take during the tax year
 sign-up-confirmation-what-you-must-do.software-choices-bullet6       = help and support
-
-sign-up-confirmation.what-you-must-do.yes.next.year                  = From 6 April {0}, you must use your software that works with Making Tax Digital for Income Tax.
-sign-up-confirmation.what-you-must-do.no.next.year                   = From 6 April {0}, you must find and use {1}
-sign-up-confirmation.what-you-must-do.no.next.year.link.text         = software that works with Making Tax Digital for Income Tax
-sign-up-confirmation.what-you-must-do.no.next.year.link-href         = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 
 sign-up-confirmation.what-you-must-do.para1                          = You cannot use your HMRC online services to submit your other income sources for:
 sign-up-confirmation.what-you-must-do.bullet1                        = the remainder of the 2025 to 2026 tax year
@@ -474,7 +468,6 @@ sign-up-confirmation.contact-support.link-href                       = https://w
 
 sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
 sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
-
 
 individual.digitally-exempt.heading                                  = You are exempt from Making Tax Digital for Income Tax
 individual.digitally-exempt.para                                     = HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change.
