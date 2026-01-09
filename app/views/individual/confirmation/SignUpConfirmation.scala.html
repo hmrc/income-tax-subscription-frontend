@@ -22,6 +22,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import config.featureswitch.FeatureSwitchingImpl
 @import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+@import java.time.LocalDate
+@import utilities.ImplicitDateFormatterImpl
 
 @this(
     principalMainTemplate: PrincipalMainTemplate,
@@ -32,7 +34,7 @@
     ul: UnorderedList
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean)(implicit request: Request[_], messages: Messages)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.title")) {
 
@@ -47,9 +49,10 @@ classes = "govuk-!-margin-bottom-4"
     <a href="#" data-module="hmrc-print-link" class="govuk-link hmrc-!-js-visible govuk-!-display-none-print">@messages("base.print-page")</a>
   </p>
 
-  <p class="govuk-body">
-    <strong class="govuk-!-font-weight-bold">Date:</strong> 1 November 2025
-  </p>
+    <p class="govuk-body">
+        <strong class="govuk-!-font-weight-bold">Date:</strong>
+        @implicitDateFormatter.LongDate(signedUpDate).toLongDate
+    </p>
 
   <h2 class="govuk-heading-m">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
 

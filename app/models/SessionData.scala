@@ -18,8 +18,10 @@ package models
 
 import _root_.common.Constants.ITSASessionKeys
 import models.status.MandationStatusModel
-import play.api.libs.json._
+import play.api.libs.json.*
 import services.Throttle
+
+import java.time.LocalDate
 
 case class SessionData(data: Map[String, JsValue] = Map()) {
   
@@ -42,6 +44,10 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
 
   def fetchMandationStatus: Option[MandationStatusModel] = {
     data.get(ITSASessionKeys.MANDATION_STATUS).map(_.toObject[MandationStatusModel])
+  }
+
+  def fetchSignedUpDate: Option[LocalDate] = {
+    data.get(ITSASessionKeys.SIGNED_UP_DATE).map(_.toObject[LocalDate])
   }
 
   def fetchEligibilityStatus: Option[EligibilityStatus] = {

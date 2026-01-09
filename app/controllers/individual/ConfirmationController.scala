@@ -24,21 +24,26 @@ import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services._
 import views.html.individual.confirmation.SignUpConfirmation
+import java.time.LocalDate
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import utilities.ImplicitDateFormatterImpl
 
 @Singleton
 class ConfirmationController @Inject()(identify: IdentifierAction,
                                        journeyRefiner: ConfirmationJourneyRefiner,
                                        preferencesFrontendConnector: PreferencesFrontendConnector,
                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                       signedUpDateService: SignedUpDateService,
                                        view: SignUpConfirmation)
                                       (implicit mcc: MessagesControllerComponents,
-                                       ec: ExecutionContext) extends SignUpBaseController {
+                                       ec: ExecutionContext,
+                                       implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
+      signedUpDate <- signedUpDateService.getSignedUpDate(request.sessionData)
       preference <- preferencesFrontendConnector.getOptedInStatus
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {
@@ -50,7 +55,8 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
         individualUserNameMaybe = IncomeTaxSAUser.fullName,
         individualUserNino = request.nino,
         preference = preference,
-        usingSoftwareStatus = request.usingSoftware
+        usingSoftwareStatus = request.usingSoftware,
+        signedUpDate = signedUpDate
       ))
     }
   }
