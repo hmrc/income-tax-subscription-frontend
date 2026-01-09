@@ -29,6 +29,7 @@ base.go-back                                                    = Go back
 base.save-and-continue                                          = Save and continue
 base.save-and-come-back-later                                   = Save and come back later
 base.confirm-and-continue                                       = Confirm and continue
+base.confirm-and-send                                           = Confirm and send
 base.agree-and-continue                                         = Agree and continue
 base.remove                                                     = Remove
 base.add                                                        = Add
@@ -1106,10 +1107,11 @@ individual.global-check-your-answers.para-three                                 
 individual.global-check-your-answers.print-link                                                 = Print this page
 
 # Agent Global Check Your Answers
-agent.global-check-your-answers.heading                                                         = Declaration
 agent.global-check-your-answers.caption                                                         = {0} – {1}
-agent.global-check-your-answers.para                                                            = Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect data.
-agent.global-check-your-answers.subheading                                                      = Check your answers before signing up
+agent.global-check-your-answers.para                                                            =  Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information.
+agent.global-check-your-answers.subheading                                                      = Check your answers before signing up your client
+agent.global-check-your-answers.subheading-two                                                  = Information you have given to us about your client
+agent.global-check-your-answers.declaration.subheading                                          = Declaration
 agent.global-check-your-answers.income-sources.subheading                                       = Sole trader businesses
 agent.global-check-your-answers.income-sources.self-employment.change                           = Change details
 agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = of sole trader business {0}, {1}
@@ -1123,7 +1125,7 @@ agent.global-check-your-answers.income-sources.uk-property.label                
 agent.global-check-your-answers.income-sources.foreign-property.label                           = Foreign property
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Start date
 agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Before 6 April {0}
-agent.global-check-your-answers.income-sources.property.heading                                 = Income from property
+agent.global-check-your-answers.income-sources.property.heading                                 = Properties
 agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Start date
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
@@ -1131,8 +1133,8 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
-agent.global-check-your-answers.para2                                                           = By continuing, you’re confirming that the information you have given is correct to the best of your knowledge.
-agent.global-check-your-answers.para3                                                           = When you continue, we’ll sign up your client. This may take a few seconds.
+agent.global-check-your-answers.para2                                                           = The information you have given must be correct to the best of your knowledge.
+agent.global-check-your-answers.para3                                                           = By confirming, you will be signed up to Making Tax Digital for Income Tax.
 
 # Individual Signing Up Page
 individual.signing-up.heading                                           = Signing up for Making Tax Digital for Income Tax

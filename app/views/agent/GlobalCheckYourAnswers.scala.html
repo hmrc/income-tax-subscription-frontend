@@ -53,11 +53,15 @@
 
     <p class="govuk-body">@messages("agent.global-check-your-answers.para")</p>
 
+    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.subheading-two")</h2>
+
     @usingSoftwareSection(softwareStatus)
 
     @taxYearSection(completeDetails.taxYear)
 
     @incomeSourcesSection(completeDetails.incomeSources)
+
+    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.declaration.subheading")</h2>
 
     <p class="govuk-body">@messages("agent.global-check-your-answers.para2")</p>
     <p class="govuk-body">@messages("agent.global-check-your-answers.para3")</p>
@@ -65,7 +69,7 @@
     @form(action = postAction) {
             @saveAndContinueButtonHelper(
                 isIndividual = false,
-                saveAndContinueText = Some(messages("base.confirm-and-continue")),
+                saveAndContinueText = Some(messages("base.confirm-and-send")),
                 saveAndReturnReference = Some("global-check-your-answers")
             )
     }
