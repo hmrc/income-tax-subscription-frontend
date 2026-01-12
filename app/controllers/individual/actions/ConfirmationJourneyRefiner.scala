@@ -69,7 +69,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
             ),
             usingSoftware = usingSoftware,
             mandationStatus = mandationStatus,
-            sessionData = sessionData
+            sessionData = Some(sessionData)
           ))
         }
       case state@(None | Some(PreSignUp | SignUp)) =>

@@ -40,7 +40,7 @@ trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEac
     mock[ReferenceRetrieval], mock[MandationStatusService]
   ) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
-      Future.successful(Right(ConfirmationRequest(request, reference, nino, utr, usingSoftware = true, mandationStatus)))
+      Future.successful(Right(ConfirmationRequest(request, reference, nino, utr, usingSoftware = true, mandationStatus, sessionData = None)))
     }
   }
 

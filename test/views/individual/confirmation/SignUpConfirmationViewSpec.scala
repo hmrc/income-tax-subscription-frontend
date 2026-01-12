@@ -25,10 +25,13 @@ import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.confirmation.SignUpConfirmation
 
+import java.time.LocalDate
+import utilities.ImplicitDateFormatterImpl
+
 //scalastyle:off
 class SignUpConfirmationViewSpec extends ViewSpec {
-
-  val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
+  
+  implicit val implicitDateFormatter: ImplicitDateFormatterImpl = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
@@ -41,20 +44,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean], usingSoftwareStatus: Boolean): Html =
-    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference, usingSoftwareStatus)
+  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate): Html =
+    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference, usingSoftwareStatus, signedUpDate)
 
   def document(mandatedCurrentYear: Boolean,
                selectedTaxYearIsNext: Boolean,
                userNameMaybe: Option[String] = Some(testName),
                preference: Option[Boolean] = None,
-               usingSoftwareStatus: Boolean): Document = {
-    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus).body)
+               usingSoftwareStatus: Boolean,
+               signedUpDate: LocalDate): Document = {
+    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus, signedUpDate).body)
   }
 
   "The sign up confirmation view" when {
     "the user has software and eligible for current year" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "has a header panel" which {
         "contains the panel heading" in {
@@ -167,7 +171,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     "the user has software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = true).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -271,7 +275,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     "the user has no software and for this year" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = false).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -372,7 +376,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     "the user has no software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = false).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
