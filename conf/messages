@@ -1125,7 +1125,7 @@ agent.global-check-your-answers.income-sources.uk-property.label                
 agent.global-check-your-answers.income-sources.foreign-property.label                           = Foreign property
 agent.global-check-your-answers.income-sources.uk-property.start-date                           = Start date
 agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Before 6 April {0}
-agent.global-check-your-answers.income-sources.property.heading                                 = Properties
+agent.global-check-your-answers.income-sources.property.heading                                 = Property income
 agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Start date
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
