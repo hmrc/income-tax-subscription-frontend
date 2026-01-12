@@ -454,7 +454,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       object Property {
-        val heading: String = "Properties"
+        val heading: String = "Property income"
       }
 
       object UKProperty {
