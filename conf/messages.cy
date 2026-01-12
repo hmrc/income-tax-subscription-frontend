@@ -1106,7 +1106,7 @@ individual.global-check-your-answers.print-link                                 
 agent.global-check-your-answers.caption                                                         = {0} – {1}
 agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
 agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
-agent.global-check-your-answers.subheading-two                                                  = Information you have given to us about your client
+agent.global-check-your-answers.subheading-two                                                  = Gwybodaeth am eich cleient rydych wedi’i rhoi i ni
 agent.global-check-your-answers.declaration.subheading                                          = Datganiad
 agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
 agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
