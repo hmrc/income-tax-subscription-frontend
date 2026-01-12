@@ -406,10 +406,11 @@ individual.capture-consent.subheading-2             = A all CThEF gysylltu â ch
 individual.capture-consent.form-error               = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Sign Up Confirmation page ##
-sign-up-confirmation.title                                           = Confirmation page - Sign up complete
 sign-up-confirmation.heading                                         = Rydych wedi gorffen cofrestru
 sign-up-confirmation.heading.panel.current                           = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o ({0}) ymlaen
 sign-up-confirmation.heading.panel.next                              = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o ({0}) ymlaen
+
+sign-up-confirmation.date                                            = Dyddiad:
 
 sign-up-confirmation.what-you-must-do.heading                        = Yr hyn sy’n digwydd nesa
 
@@ -426,7 +427,7 @@ sign-up-confirmation-what-you-must-do.software-choices-bullet3       = cyflwyno�
 sign-up-confirmation-what-you-must-do.software-choices.heading       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 sign-up-confirmation-what-you-must-do.software-choices-para2         = Darllenwch  {0} i gael rhagor o wybodaeth am y canlynol:
 sign-up-confirmation-what-you-must-do.no-para2.link-text             = "Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
-sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax.cy
+sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
 sign-up-confirmation-what-you-must-do.software-choices-bullet4       = yr hyn i’w ddisgwyl ar ôl i chi gofrestru
 sign-up-confirmation-what-you-must-do.software-choices-bullet5       = y gwahanol gamau y bydd angen i chi eu cymryd yn ystod y flwyddyn dreth
 sign-up-confirmation-what-you-must-do.software-choices-bullet6       = help a chymorth
@@ -441,6 +442,30 @@ sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03
 sign-up-confirmation.contact-support.para                            = 08:30 i 17:00, o ddydd Llun i ddydd Gwener, (heblaw am wyliau banc)
 sign-up-confirmation.contact-support.link-text                       = Cael gwybodaeth am gostau galwadau
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
+sign-up-confirmation.contact-support.link-text-2                     = Rhoi adborth ar y gwasanaeth hwn
+
+sign-up-confirmation.quarterly.updates.heading                       = Anfon eich diweddariadau chwarterol
+sign-up-confirmation.quarterly.updates.para1                         = Mae angen i chi anfon eich diweddariad chwarterol ar gyfer pob un o’ch ffynonellau incwm o fod yn unig fasnachwr a’ch ffynonellau incwm o eiddo erbyn:
+sign-up-confirmation.quarterly.updates.para2                         = Gallwch ddarllen rhagor am ddiweddariadau chwarterol
+sign-up-confirmation.quarterly.updates.para2.link                    = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
+
+sign-up-confirmation.quarterly.updates.deadline                      = Dyddiad cau diweddaru
+sign-up-confirmation.quarterly.updates.deadline.1                    = 7 Awst
+sign-up-confirmation.quarterly.updates.deadline.2                    = 7 Tachwedd
+sign-up-confirmation.quarterly.updates.deadline.3                    = 7 Chwefror
+sign-up-confirmation.quarterly.updates.deadline.4                    = 7 Mai
+
+sign-up-confirmation.quarterly.updates.calendar                      = Cyfnod diweddaru
+sign-up-confirmation.quarterly.updates.calendar.1                    = 1 Ebrill i 30 Mehefin
+sign-up-confirmation.quarterly.updates.calendar.2                    = 1 Ebrill i 30 Medi
+sign-up-confirmation.quarterly.updates.calendar.3                    = 1 Ebrill i 31 Rhagfyr
+sign-up-confirmation.quarterly.updates.calendar.4                    = 1 Ebrill i 31 Mawrth
+
+sign-up-confirmation.quarterly.updates.standard                      = Cyfnod safonol
+sign-up-confirmation.quarterly.updates.standard.1                    = 6 Ebrill i 5 Gorffennaf
+sign-up-confirmation.quarterly.updates.standard.2                    = 6 Ebrill i 5 Hydref
+sign-up-confirmation.quarterly.updates.standard.3                    = 6 Ebrill i 5 Ionawr
+sign-up-confirmation.quarterly.updates.standard.4                    = 6 Ebrill i 5 Ebrill
 
 sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
 sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.

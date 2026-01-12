@@ -24,6 +24,7 @@
 @import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 @import java.time.LocalDate
 @import utilities.ImplicitDateFormatterImpl
+@import config.FrontendAppConfig
 
 @this(
     principalMainTemplate: PrincipalMainTemplate,
@@ -31,12 +32,15 @@
     accountingPeriodHelper: AccountingPeriodHelper,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     featureSwitching: FeatureSwitchingImpl,
-    ul: UnorderedList
+    ul: UnorderedList,
+    govukTabs : GovukTabs,
+    govukTable : GovukTable,
+    appConfig: AppConfig
 )
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
-@principalMainTemplate(title = messages("sign-up-confirmation.title")) {
+@principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
 
 @govukPanel(Panel(
 title = Text(messages("sign-up-confirmation.heading")),
@@ -50,7 +54,7 @@ classes = "govuk-!-margin-bottom-4"
   </p>
 
     <p class="govuk-body">
-        <strong class="govuk-!-font-weight-bold">Date:</strong>
+        <strong class="govuk-!-font-weight-bold">@messages("sign-up-confirmation.date")</strong>
         @implicitDateFormatter.LongDate(signedUpDate).toLongDate
     </p>
 
@@ -60,13 +64,27 @@ classes = "govuk-!-margin-bottom-4"
 
   @if(usingSoftwareStatus) {
     @yesSoftware
+    @if(!taxYearSelectionIsNext) {
+        @currentYear
+    }
     } else {
-        @noSoftware
+        @noSoftware1
+        @if(!taxYearSelectionIsNext) {
+            @currentYear
+        }
+        @noSoftware2
 }
 
-  @if(!taxYearSelectionIsNext) {
-    @currentYear
-}
+<div>
+    <h3 class="govuk-heading-m">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
+    <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
+    @QuaterlyUpdatesHtml
+    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+        text = messages("sign-up-confirmation.quarterly.updates.para2"),
+        href = Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))
+        ))
+    </p>
+</div>
 
 <div>
   @if(preference.contains(false)) {
@@ -74,6 +92,70 @@ classes = "govuk-!-margin-bottom-4"
   <p class="govuk-body">@messages("sign-up-confirmation.preference-set.postal.para-one")</p>
   }
 </div>
+
+@voluntary
+}
+
+@QuaterlyUpdatesHtml = {
+    @govukTable(Table(
+    rows = Seq(
+    Seq(
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
+    )
+    ),
+    Seq(
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
+    )
+    ),
+    Seq(
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+    )
+    ),
+    Seq(
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+    ),
+    TableRow(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+    )
+    )
+    ),
+    head = Some(Seq(
+    HeadCell(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
+    ),
+    HeadCell(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+    ),
+    HeadCell(
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+    )
+    ))
+    ))
 }
 
 @userDetails = @{
@@ -107,29 +189,34 @@ classes = "govuk-!-margin-bottom-4"
 )
 
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
-
-
-@if(featureSwitching.isEnabled(EmailCaptureConsent)) {
-    <h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
-    <p class="govuk-body">
-        @messages("sign-up-confirmation.contact-support.phone-number")
-        <br>
-        @messages("sign-up-confirmation.contact-support.para")
-    </p>
-    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-        text = messages("sign-up-confirmation.contact-support.link-text"),
-        href = Some(messages("sign-up-confirmation.contact-support.link-href"))
-    ))
-    </p>
 }
 
+@voluntary = {
+@if(!taxYearSelectionIsNext) {
+<h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
+<p class="govuk-body">
+    @messages("sign-up-confirmation.contact-support.phone-number")
+    <br>
+    @messages("sign-up-confirmation.contact-support.para")
+</p>
+<p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+    text = messages("sign-up-confirmation.contact-support.link-text"),
+    href = Some(messages("sign-up-confirmation.contact-support.link-href"))
+    ))
+</p>
+<p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+    text = messages("sign-up-confirmation.contact-support.link-text-2"),
+    href = Some(appConfig.feedbackFrontendRedirectUrl)
+    ))
+</p>
+}
 }
 
 @yesSoftware = {
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.yes.this.year")</p>
 }
 
-@noSoftware = {
+@noSoftware1 = {
 
 <p class="govuk-body">@Html(messages(
     key = "sign-up-confirmation.what-you-must-do.no.this.year",
@@ -144,6 +231,9 @@ Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet2"))
 Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet3"))
 )
 )
+}
+
+@noSoftware2 = {
 
 <h2 class="govuk-heading-m">@messages("sign-up-confirmation-what-you-must-do.software-choices.heading")</h2>
 

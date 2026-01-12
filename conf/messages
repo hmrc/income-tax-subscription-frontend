@@ -430,10 +430,11 @@ individual.capture-consent.subheading-2             = Can HMRC contact you by em
 individual.capture-consent.form-error               = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
 
 ## Sign Up Confirmation page ##
-sign-up-confirmation.title                                           = Confirmation page - Sign up complete
 sign-up-confirmation.heading                                         = Sign up complete
 sign-up-confirmation.heading.panel.current                           = You’re signed up for Making Tax Digital for Income Tax from ({0}) onwards
 sign-up-confirmation.heading.panel.next                              = You’re signed up for Making Tax Digital for Income Tax from ({0}) onwards
+
+sign-up-confirmation.date                                            = Date:
 
 sign-up-confirmation.what-you-must-do.heading                        = What happens next steps
 
@@ -465,6 +466,30 @@ sign-up-confirmation.contact-support.phone-number                    = Telephone
 sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
 sign-up-confirmation.contact-support.link-text                       = Find out about call charges
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
+sign-up-confirmation.contact-support.link-text-2                     = What did you think of this service
+
+sign-up-confirmation.quarterly.updates.heading                       = Sending your quarterly updates
+sign-up-confirmation.quarterly.updates.para1                         = You need to send your quarterly updates for each of your sole trader and property income sources by:
+sign-up-confirmation.quarterly.updates.para2                         = You can read more about quarterly updates
+sign-up-confirmation.quarterly.updates.para2.link                    = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+
+sign-up-confirmation.quarterly.updates.deadline                      = Update deadline
+sign-up-confirmation.quarterly.updates.deadline.1                    = 7 August
+sign-up-confirmation.quarterly.updates.deadline.2                    = 7 November
+sign-up-confirmation.quarterly.updates.deadline.3                    = 7 February
+sign-up-confirmation.quarterly.updates.deadline.4                    = 7 May
+
+sign-up-confirmation.quarterly.updates.calendar                      = Calendar period
+sign-up-confirmation.quarterly.updates.calendar.1                    = 1 April to 30 June
+sign-up-confirmation.quarterly.updates.calendar.2                    = 1 April to 30 September
+sign-up-confirmation.quarterly.updates.calendar.3                    = 1 April to 31 December
+sign-up-confirmation.quarterly.updates.calendar.4                    = 1 April to 31 March
+
+sign-up-confirmation.quarterly.updates.standard                      = Standard period
+sign-up-confirmation.quarterly.updates.standard.1                    = 6 April to 5 July
+sign-up-confirmation.quarterly.updates.standard.2                    = 6 April to 5 October
+sign-up-confirmation.quarterly.updates.standard.3                    = 6 April to 5 January
+sign-up-confirmation.quarterly.updates.standard.4                    = 6 April to 5 April
 
 sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
 sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
