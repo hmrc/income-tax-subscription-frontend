@@ -18,12 +18,15 @@ package config.featureswitch
 
 import config.FrontendAppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import org.mockito.Mockito.{reset, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.UnitTestTrait
+
+import java.time.LocalDate
 
 class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
@@ -73,6 +76,26 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
       isEnabled(ThrottlingFeature) mustBe true
     }
+  }
+
+  "auto toggle" in {
+
+    case object TestFeature extends FeatureSwitch {
+      override val name: String = "test.feature"
+      override val displayText: String = "Test feature switch"
+    }
+
+    val allSwitches: Set[FeatureSwitch] =
+      Set(TestFeature)
+
+    when(mockConfig.getOptional[String](TestFeature.name)).thenReturn(
+      Some(LocalDate.now.minusDays(1).toString)
+    )
+
+    isDisabled(TestFeature) mustBe true
+    featureSwitching.init(allSwitches)
+    verify(mockConfig, times(1)).getOptional[String](TestFeature.name)
+    isEnabled(TestFeature) mustBe true
   }
 
 }

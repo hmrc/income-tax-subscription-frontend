@@ -17,10 +17,13 @@
 package config.featureswitch
 
 import config.AppConfig
+import play.api.Logging
 
+import java.time.LocalDate
+import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 import javax.inject.{Inject, Singleton}
 
-trait FeatureSwitching {
+trait FeatureSwitching extends Logging {
 
   val appConfig: AppConfig
 
@@ -38,7 +41,35 @@ trait FeatureSwitching {
 
   def disable(featureSwitch: FeatureSwitch): Unit =
     sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+
+  protected def autoToggle(featureSwitch: FeatureSwitch): Unit =
+    featureSwitch.autoToggleDate.map {date =>
+      val value = !LocalDate.now.isBefore(date)
+      sys.props += featureSwitch.name -> value.toString
+    }
+
+  def init(featureSwitches: Set[FeatureSwitch] = FeatureSwitch.switches): Unit = {
+    featureSwitches.foreach { featureSwitch =>
+      appConfig.configuration.getOptional[String](featureSwitch.name).map { value =>
+        logger.info(s"${featureSwitch.name} = $value")
+        try {
+          val date = LocalDate.parse(value)
+          featureSwitch.autoToggleDate = Some(date)
+          autoToggle(featureSwitch)
+        } catch {
+          case e: Exception =>
+        }
+      }
+    }
+  }
 }
 
 @Singleton
-class FeatureSwitchingImpl @Inject()(val appConfig: AppConfig) extends FeatureSwitching
+class FeatureSwitchingImpl @Inject()(val appConfig: AppConfig) extends FeatureSwitching with Runnable {
+  init()
+  new ScheduledThreadPoolExecutor(1)
+    .scheduleAtFixedRate(this, 1, 1, TimeUnit.HOURS)
+
+  override def run(): Unit =
+    FeatureSwitch.switches.foreach(autoToggle)
+}
