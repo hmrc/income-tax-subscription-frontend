@@ -71,8 +71,10 @@ trait FeatureSwitching {
 @Singleton
 class FeatureSwitchingImpl @Inject()(val appConfig: AppConfig) extends FeatureSwitching with Runnable {
   private val autoToggleSwitches = init()
-  new ScheduledThreadPoolExecutor(1)
-    .scheduleAtFixedRate(this, 1, 1, TimeUnit.HOURS)
+  if (autoToggleSwitches.nonEmpty) {
+    new ScheduledThreadPoolExecutor(1)
+      .scheduleAtFixedRate(this, 1, 1, TimeUnit.HOURS)
+  }
 
   override def run(): Unit =
     autoToggle(autoToggleSwitches)
