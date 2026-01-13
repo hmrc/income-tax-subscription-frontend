@@ -99,11 +99,17 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       override val displayText: String = "Test feature switch four"
     }
 
+    case object TestFeature5 extends FeatureSwitch {
+      override val name: String = "test.feature5"
+      override val displayText: String = "Test feature switch five"
+    }
+
     val allSwitches: Set[FeatureSwitch] = Set(
       TestFeature1,
       TestFeature2,
       TestFeature3,
-      TestFeature4
+      TestFeature4,
+      TestFeature5
     )
 
     val now = LocalDate.now
@@ -132,10 +138,16 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       Some(FEATURE_SWITCH_ON)
     )
 
+    // This one is set to be disabled
+    when(mockConfig.getOptional[String](TestFeature5.name)).thenReturn(
+      Some(FEATURE_SWITCH_OFF)
+    )
+
     featureSwitching.isDisabled(TestFeature1) mustBe true
     featureSwitching.isDisabled(TestFeature2) mustBe true
     featureSwitching.isDisabled(TestFeature3) mustBe true
     featureSwitching.isEnabled(TestFeature4) mustBe true
+    featureSwitching.isDisabled(TestFeature5) mustBe true
 
     val autoToggleSwitches = featureSwitching.init(allSwitches)
 
@@ -156,6 +168,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     // Those are constant
     featureSwitching.isDisabled(TestFeature3) mustBe true
     featureSwitching.isEnabled(TestFeature4) mustBe true
+    featureSwitching.isDisabled(TestFeature5) mustBe true
 
     // Those are parsed into memory so config is used
     // -  for initial checking
@@ -167,6 +180,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     // Those are never parsed into memory so config is used all the time
     verify(mockConfig, times(3)).getOptional[String](TestFeature3.name)
     verify(mockConfig, times(3)).getOptional[String](TestFeature4.name)
+    verify(mockConfig, times(3)).getOptional[String](TestFeature5.name)
   }
 
 }
