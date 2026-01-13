@@ -77,7 +77,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "Auto toggle feature switches" in {
+  "Auto toggle feature switches set as such and ignore others" in {
 
     case object TestFeature1 extends FeatureSwitch {
       override val name: String = "test.feature1"
