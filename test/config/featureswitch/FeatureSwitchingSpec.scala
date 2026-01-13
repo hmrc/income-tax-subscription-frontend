@@ -157,14 +157,14 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     featureSwitching.isDisabled(TestFeature3) mustBe true
     featureSwitching.isEnabled(TestFeature4) mustBe true
 
-    // Those are parsed into memory so config is checked
+    // Those are parsed into memory so config is used
     // -  for initial checking
     // -  when parsing occurs
-    // Memory is checked for final checking
+    // Memory is used for final checking
     verify(mockConfig, times(2)).getOptional[String](TestFeature1.name)
     verify(mockConfig, times(2)).getOptional[String](TestFeature2.name)
 
-    // Those are never parsed into memory so config is checked all the time
+    // Those are never parsed into memory so config is used all the time
     verify(mockConfig, times(3)).getOptional[String](TestFeature3.name)
     verify(mockConfig, times(3)).getOptional[String](TestFeature4.name)
   }
