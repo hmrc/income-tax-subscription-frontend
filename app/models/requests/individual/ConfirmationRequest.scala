@@ -26,5 +26,5 @@ case class ConfirmationRequest[A](request: Request[A],
                                   utr: String,
                                   usingSoftware: Boolean,
                                   mandationStatus: MandationStatusModel,
-                                  sessionData: Option[SessionData] = None) extends WrappedRequest[A](request)
+                                  sessionData: SessionData) extends WrappedRequest[A](request)
 

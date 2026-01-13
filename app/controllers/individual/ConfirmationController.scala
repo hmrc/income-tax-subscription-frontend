@@ -43,7 +43,7 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
-      signedUpDate <- signedUpDateService.getSignedUpDate(request.sessionData.get)
+      signedUpDate <- signedUpDateService.getSignedUpDate(request.sessionData)
       preference <- preferencesFrontendConnector.getOptedInStatus
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {

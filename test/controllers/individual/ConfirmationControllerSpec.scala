@@ -21,7 +21,7 @@ import connectors.individual.PreferencesFrontendConnector
 import controllers.ControllerSpec
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
 import models.common.AccountingYearModel
-import models.{Current, Next}
+import models.{Current, Next, SessionData}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.Result
@@ -30,9 +30,11 @@ import play.twirl.api.HtmlFormat
 import services.mocks.*
 import views.html.individual.confirmation.SignUpConfirmation
 import services.SignedUpDateService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import utilities.ImplicitDateFormatterImpl
+
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJourneyRefiner with MockSubscriptionDetailsService {
@@ -43,6 +45,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paperless preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(false),
@@ -61,6 +65,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paper preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(false),
@@ -79,6 +85,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "no preference could be retrieved" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
 
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
@@ -100,6 +108,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paperless preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(true),
@@ -118,6 +128,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paper preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(true),
@@ -136,6 +148,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "no preference could be retrieved" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
 
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
