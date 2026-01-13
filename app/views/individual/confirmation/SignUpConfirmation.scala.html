@@ -94,6 +94,14 @@ classes = "govuk-!-margin-bottom-4"
 </div>
 
 @voluntary
+
+<div>
+    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+        text = messages("sign-up-confirmation.contact-support.link-text-2"),
+        href = Some(appConfig.feedbackFrontendRedirectUrl)
+        ))
+    </p>
+</div>
 }
 
 @QuaterlyUpdatesHtml = {
@@ -134,13 +142,13 @@ classes = "govuk-!-margin-bottom-4"
     ),
     Seq(
     TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
+    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
     ),
     TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
     ),
     TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
     )
     )
     ),
@@ -149,10 +157,10 @@ classes = "govuk-!-margin-bottom-4"
     content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
     ),
     HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
     ),
     HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+    content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
     )
     ))
     ))
@@ -202,11 +210,6 @@ classes = "govuk-!-margin-bottom-4"
 <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
     text = messages("sign-up-confirmation.contact-support.link-text"),
     href = Some(messages("sign-up-confirmation.contact-support.link-href"))
-    ))
-</p>
-<p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-    text = messages("sign-up-confirmation.contact-support.link-text-2"),
-    href = Some(appConfig.feedbackFrontendRedirectUrl)
     ))
 </p>
 }

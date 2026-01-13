@@ -412,7 +412,7 @@ sign-up-confirmation.heading.panel.next                              = Rydych we
 
 sign-up-confirmation.date                                            = Dyddiad:
 
-sign-up-confirmation.what-you-must-do.heading                        = Yr hyn sy’n digwydd nesa
+sign-up-confirmation.what-you-must-do.heading                        = Yr hyn sy’n digwydd nesaf
 
 sign-up-confirmation.what-you-must-do.yes.this.year                  = Mae’n rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad drwy ddefnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
