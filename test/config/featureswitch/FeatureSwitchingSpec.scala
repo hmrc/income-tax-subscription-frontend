@@ -109,12 +109,14 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
     val now = LocalDate.now
 
-    // This one is set to toggle
+    // This one is set to toggle in the past
+    // so will be disabled until parsed
     when(mockConfig.getOptional[String](TestFeature1.name)).thenReturn(
       Some(now.minusDays(1).toString)
     )
 
-    // This one is set to toggle
+    // This one is set to toggle in the future
+    // so will be disabled until parsed
     when(mockConfig.getOptional[String](TestFeature2.name)).thenReturn(
       Some(now.plusDays(1).toString)
     )
@@ -124,7 +126,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       None
     )
 
-    // This one is set to ne enabled
+    // This one is set to be enabled
     when(mockConfig.getOptional[String](TestFeature4.name)).thenReturn(
       Some(FEATURE_SWITCH_ON)
     )
@@ -133,6 +135,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     featureSwitching.isDisabled(TestFeature2) mustBe true
     featureSwitching.isDisabled(TestFeature3) mustBe true
     featureSwitching.isEnabled(TestFeature4) mustBe true
+
     featureSwitching.init(allSwitches)
 
     // This one has toggled

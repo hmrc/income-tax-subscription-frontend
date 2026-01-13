@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}
 import javax.inject.{Inject, Singleton}
 
-trait FeatureSwitching extends Logging {
+trait FeatureSwitching {
 
   val appConfig: AppConfig
 
@@ -42,34 +42,39 @@ trait FeatureSwitching extends Logging {
   def disable(featureSwitch: FeatureSwitch): Unit =
     sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
 
-  protected def autoToggle(featureSwitch: FeatureSwitch): Unit =
-    featureSwitch.autoToggleDate.map {date =>
-      val value = !LocalDate.now.isBefore(date)
-      sys.props += featureSwitch.name -> value.toString
+  protected def autoToggle(autoToggleSwitches: Map[FeatureSwitch, LocalDate]): Map[FeatureSwitch, LocalDate] = {
+    autoToggleSwitches.foreach { entry =>
+      val state = !LocalDate.now.isBefore(entry._2)
+      sys.props += entry._1.name -> state.toString
     }
+    autoToggleSwitches
+  }
 
-  def init(featureSwitches: Set[FeatureSwitch] = FeatureSwitch.switches): Unit = {
-    featureSwitches.foreach { featureSwitch =>
-      appConfig.configuration.getOptional[String](featureSwitch.name).map { value =>
-        logger.info(s"${featureSwitch.name} = $value")
-        try {
-          val date = LocalDate.parse(value)
-          featureSwitch.autoToggleDate = Some(date)
-          autoToggle(featureSwitch)
-        } catch {
-          case e: Exception =>
-        }
+  private def getAutoToggleDate(featureSwitch: FeatureSwitch): Option[LocalDate] = {
+    val maybeDate = appConfig.configuration.getOptional[String](featureSwitch.name).map { value =>
+      try {
+        Some(LocalDate.parse(value))
+      } catch {
+        case e: Exception => None
       }
     }
+    maybeDate.flatten
+  }
+
+  def init(featureSwitches: Set[FeatureSwitch] = FeatureSwitch.switches): Map[FeatureSwitch, LocalDate] = {
+    autoToggle(
+      Map(featureSwitches.toSeq.map { s => (s, getAutoToggleDate(s)) }: _*)
+        .filter(e => e._2.isDefined).map {e => (e._1, e._2.get)}
+    )
   }
 }
 
 @Singleton
 class FeatureSwitchingImpl @Inject()(val appConfig: AppConfig) extends FeatureSwitching with Runnable {
-  init()
+  private val autoToggleSwitches = init()
   new ScheduledThreadPoolExecutor(1)
     .scheduleAtFixedRate(this, 1, 1, TimeUnit.HOURS)
 
   override def run(): Unit =
-    FeatureSwitch.switches.foreach(autoToggle)
+    autoToggle(autoToggleSwitches)
 }

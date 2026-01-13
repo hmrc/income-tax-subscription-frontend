@@ -21,7 +21,6 @@ import java.time.LocalDate
 trait FeatureSwitch {
   val name: String
   val displayText: String
-  var autoToggleDate: Option[LocalDate] = None
 }
 
 object FeatureSwitch {
