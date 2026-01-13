@@ -139,7 +139,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
     val autoToggleSwitches = featureSwitching.init(allSwitches)
 
-    // These switches are set to toggle
+    // These switches are set to auto-toggle
     autoToggleSwitches mustBe Map(
       TestFeature1 -> date1,
       TestFeature2 -> date2
