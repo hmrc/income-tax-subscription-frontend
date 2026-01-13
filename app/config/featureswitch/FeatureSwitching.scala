@@ -51,14 +51,13 @@ trait FeatureSwitching {
   }
 
   private def getAutoToggleDate(featureSwitch: FeatureSwitch): Option[LocalDate] = {
-    val maybeDate = appConfig.configuration.getOptional[String](featureSwitch.name).map { value =>
+    appConfig.configuration.getOptional[String](featureSwitch.name).flatMap { value =>
       try {
         Some(LocalDate.parse(value))
       } catch {
         case e: Exception => None
       }
     }
-    maybeDate.flatten
   }
 
   def init(featureSwitches: Set[FeatureSwitch] = FeatureSwitch.switches): Map[FeatureSwitch, LocalDate] = {
