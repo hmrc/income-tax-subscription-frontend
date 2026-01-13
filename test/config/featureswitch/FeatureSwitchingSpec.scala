@@ -90,8 +90,13 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       override val displayText: String = "Test feature switch two"
     }
 
+    case object TestFeature3 extends FeatureSwitch {
+      override val name: String = "test.feature3"
+      override val displayText: String = "Test feature switch three"
+    }
+
     val allSwitches: Set[FeatureSwitch] =
-      Set(TestFeature1, TestFeature2)
+      Set(TestFeature1, TestFeature2, TestFeature3)
 
     when(mockConfig.getOptional[String](TestFeature1.name)).thenReturn(
       Some(LocalDate.now.minusDays(1).toString)
@@ -101,13 +106,20 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       Some(LocalDate.now.plusDays(1).toString)
     )
 
+    when(mockConfig.getOptional[String](TestFeature3.name)).thenReturn(
+      None
+    )
+
     isDisabled(TestFeature1) mustBe true
     isDisabled(TestFeature2) mustBe true
+    isDisabled(TestFeature3) mustBe true
     featureSwitching.init(allSwitches)
     isEnabled(TestFeature1) mustBe true
     isDisabled(TestFeature2) mustBe true
+    isDisabled(TestFeature3) mustBe true
     verify(mockConfig, times(1)).getOptional[String](TestFeature1.name)
     verify(mockConfig, times(1)).getOptional[String](TestFeature2.name)
+    verify(mockConfig, times(1)).getOptional[String](TestFeature3.name)
   }
 
 }
