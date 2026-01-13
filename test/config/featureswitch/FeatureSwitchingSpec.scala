@@ -95,31 +95,66 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       override val displayText: String = "Test feature switch three"
     }
 
-    val allSwitches: Set[FeatureSwitch] =
-      Set(TestFeature1, TestFeature2, TestFeature3)
+    case object TestFeature4 extends FeatureSwitch {
+      override val name: String = "test.feature4"
+      override val displayText: String = "Test feature switch four"
+    }
 
+    val allSwitches: Set[FeatureSwitch] = Set(
+      TestFeature1,
+      TestFeature2,
+      TestFeature3,
+      TestFeature4
+    )
+
+    val now = LocalDate.now
+
+    // This one is set to toggle
     when(mockConfig.getOptional[String](TestFeature1.name)).thenReturn(
-      Some(LocalDate.now.minusDays(1).toString)
+      Some(now.minusDays(1).toString)
     )
 
+    // This one is set to toggle
     when(mockConfig.getOptional[String](TestFeature2.name)).thenReturn(
-      Some(LocalDate.now.plusDays(1).toString)
+      Some(now.plusDays(1).toString)
     )
 
+    // This one is not set so assumed to be disabled
     when(mockConfig.getOptional[String](TestFeature3.name)).thenReturn(
       None
     )
 
-    isDisabled(TestFeature1) mustBe true
-    isDisabled(TestFeature2) mustBe true
-    isDisabled(TestFeature3) mustBe true
+    // This one is set to ne enabled
+    when(mockConfig.getOptional[String](TestFeature4.name)).thenReturn(
+      Some(FEATURE_SWITCH_ON)
+    )
+
+    featureSwitching.isDisabled(TestFeature1) mustBe true
+    featureSwitching.isDisabled(TestFeature2) mustBe true
+    featureSwitching.isDisabled(TestFeature3) mustBe true
+    featureSwitching.isEnabled(TestFeature4) mustBe true
     featureSwitching.init(allSwitches)
-    isEnabled(TestFeature1) mustBe true
-    isDisabled(TestFeature2) mustBe true
-    isDisabled(TestFeature3) mustBe true
-    verify(mockConfig, times(1)).getOptional[String](TestFeature1.name)
-    verify(mockConfig, times(1)).getOptional[String](TestFeature2.name)
-    verify(mockConfig, times(1)).getOptional[String](TestFeature3.name)
+
+    // This one has toggled
+    featureSwitching.isEnabled(TestFeature1) mustBe true
+
+    // This one has not toggled
+    featureSwitching.isDisabled(TestFeature2) mustBe true
+
+    // Those are constant
+    featureSwitching.isDisabled(TestFeature3) mustBe true
+    featureSwitching.isEnabled(TestFeature4) mustBe true
+
+    // Those are parsed into memory so config is checked
+    // -  for initial checking
+    // -  when parsing occurs
+    // Memory is checked for final checking
+    verify(mockConfig, times(2)).getOptional[String](TestFeature1.name)
+    verify(mockConfig, times(2)).getOptional[String](TestFeature2.name)
+
+    // Those are never parsed into memory so config is checked all the time
+    verify(mockConfig, times(3)).getOptional[String](TestFeature3.name)
+    verify(mockConfig, times(3)).getOptional[String](TestFeature4.name)
   }
 
 }
