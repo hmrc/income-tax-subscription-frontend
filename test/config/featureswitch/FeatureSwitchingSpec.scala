@@ -77,7 +77,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "auto toggle" in {
+  "Auto toggle feature switches" in {
 
     case object TestFeature1 extends FeatureSwitch {
       override val name: String = "test.feature1"
@@ -110,14 +110,16 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
     // This one is set to toggle in the past
     // so will be disabled until parsed
+    val date1 = now.minusDays(1)
     when(mockConfig.getOptional[String](TestFeature1.name)).thenReturn(
-      Some(now.minusDays(1).toString)
+      Some(date1.toString)
     )
 
     // This one is set to toggle in the future
     // so will be disabled until parsed
+    val date2 = now.plusDays(1)
     when(mockConfig.getOptional[String](TestFeature2.name)).thenReturn(
-      Some(now.plusDays(1).toString)
+      Some(date2.toString)
     )
 
     // This one is not set so assumed to be disabled
@@ -135,12 +137,20 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     featureSwitching.isDisabled(TestFeature3) mustBe true
     featureSwitching.isEnabled(TestFeature4) mustBe true
 
-    featureSwitching.init(allSwitches)
+    val autoToggleSwitches = featureSwitching.init(allSwitches)
+
+    // These switches are set to toggle
+    autoToggleSwitches mustBe Map(
+      TestFeature1 -> date1,
+      TestFeature2 -> date2
+    )
 
     // This one has toggled
+    // because the toggle date is in the past
     featureSwitching.isEnabled(TestFeature1) mustBe true
 
     // This one has not toggled
+    // because the toggle date is in the future
     featureSwitching.isDisabled(TestFeature2) mustBe true
 
     // Those are constant
