@@ -18,7 +18,6 @@ package config.featureswitch
 
 import config.FrontendAppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock

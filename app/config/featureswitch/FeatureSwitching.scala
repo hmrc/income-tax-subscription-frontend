@@ -17,7 +17,6 @@
 package config.featureswitch
 
 import config.AppConfig
-import play.api.Logging
 
 import java.time.LocalDate
 import java.util.concurrent.{ScheduledThreadPoolExecutor, TimeUnit}

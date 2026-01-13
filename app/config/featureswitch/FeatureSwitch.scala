@@ -15,8 +15,6 @@
  */
 
 package config.featureswitch
-
-import java.time.LocalDate
  
 trait FeatureSwitch {
   val name: String
