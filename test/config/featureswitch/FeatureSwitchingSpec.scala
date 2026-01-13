@@ -80,22 +80,34 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
   "auto toggle" in {
 
-    case object TestFeature extends FeatureSwitch {
-      override val name: String = "test.feature"
-      override val displayText: String = "Test feature switch"
+    case object TestFeature1 extends FeatureSwitch {
+      override val name: String = "test.feature1"
+      override val displayText: String = "Test feature switch one"
+    }
+
+    case object TestFeature2 extends FeatureSwitch {
+      override val name: String = "test.feature2"
+      override val displayText: String = "Test feature switch two"
     }
 
     val allSwitches: Set[FeatureSwitch] =
-      Set(TestFeature)
+      Set(TestFeature1, TestFeature2)
 
-    when(mockConfig.getOptional[String](TestFeature.name)).thenReturn(
+    when(mockConfig.getOptional[String](TestFeature1.name)).thenReturn(
       Some(LocalDate.now.minusDays(1).toString)
     )
 
-    isDisabled(TestFeature) mustBe true
+    when(mockConfig.getOptional[String](TestFeature2.name)).thenReturn(
+      Some(LocalDate.now.plusDays(1).toString)
+    )
+
+    isDisabled(TestFeature1) mustBe true
+    isDisabled(TestFeature2) mustBe true
     featureSwitching.init(allSwitches)
-    verify(mockConfig, times(1)).getOptional[String](TestFeature.name)
-    isEnabled(TestFeature) mustBe true
+    isEnabled(TestFeature1) mustBe true
+    isDisabled(TestFeature2) mustBe true
+    verify(mockConfig, times(1)).getOptional[String](TestFeature1.name)
+    verify(mockConfig, times(1)).getOptional[String](TestFeature2.name)
   }
 
 }
