@@ -146,24 +146,33 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       Some(FEATURE_SWITCH_OFF)
     )
 
-    def areCallsToConfigAsExpected(featureSwitch: FeatureSwitch, expected: Int): Boolean = {
-      try
-        verify(mockConfig, times(expected)).getOptional[String](featureSwitch.name)
-      catch {
-        case e: MockitoAssertionError => return false
+    val expectedConfigCalls = Map(
+      TestFeature1 -> 2,
+      TestFeature2 -> 2,
+      TestFeature3 -> 3,
+      TestFeature4 -> 3,
+      TestFeature5 -> 3
+    )
+    
+    def areCallsToConfigAsExpected(featureSwitch: FeatureSwitch): Boolean = {
+      expectedConfigCalls.get(featureSwitch) match {
+        case Some(expected) =>
+          try
+            verify(mockConfig, times(expected)).getOptional[String](featureSwitch.name)
+          catch {
+            case e: MockitoAssertionError => return false
+          }
+          true
+        case None =>
+          false
       }
-      true
     }
 
     val statesBefore = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val autoToggleSwitches = featureSwitching.init(allSwitches)
     val statesAfter = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val correctCallsToConfig = Map(
-      TestFeature1 -> areCallsToConfigAsExpected(TestFeature1, expected = 2),
-      TestFeature2 -> areCallsToConfigAsExpected(TestFeature2, expected = 2),
-      TestFeature3 -> areCallsToConfigAsExpected(TestFeature3, expected = 3),
-      TestFeature4 -> areCallsToConfigAsExpected(TestFeature4, expected = 3),
-      TestFeature5 -> areCallsToConfigAsExpected(TestFeature5, expected = 3)
+      allSwitches.toSeq.map {s => (s, areCallsToConfigAsExpected(s)) }: _*
     ).filter(_._2).keys.toSeq
 
     def test(featureSwitch: FeatureSwitch, stateBefore: Boolean, stateAfter: Boolean): Unit = {
