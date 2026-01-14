@@ -442,7 +442,9 @@ sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03
 sign-up-confirmation.contact-support.para                            = 08:30 i 17:00, o ddydd Llun i ddydd Gwener, (heblaw am wyliau banc)
 sign-up-confirmation.contact-support.link-text                       = Cael gwybodaeth am gostau galwadau
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
-sign-up-confirmation.contact-support.link-text-2                     = Rhoi adborth ar y gwasanaeth hwn
+
+sign-up-confirmation.survey.link-text                                = Rhoi adborth ar y gwasanaeth hwn
+sign-up-confirmation.survey.after                                    = (mae’n cymryd 30 eiliad)
 
 sign-up-confirmation.quarterly.updates.heading                       = Anfon eich diweddariadau chwarterol
 sign-up-confirmation.quarterly.updates.para1                         = Mae angen i chi anfon eich diweddariad chwarterol ar gyfer pob un o’ch ffynonellau incwm o fod yn unig fasnachwr a’ch ffynonellau incwm o eiddo erbyn:

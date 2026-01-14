@@ -17,18 +17,16 @@
 package views.individual.confirmation
 
 
-import config.AppConfig
 import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.individual.confirmation.SignUpConfirmation
 
 import java.time.LocalDate
-import utilities.ImplicitDateFormatterImpl
 
 //scalastyle:off
 class SignUpConfirmationViewSpec extends ViewSpec {
@@ -185,24 +183,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a CST contact section" which {
         "has a heading" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth("h2", 2).text mustBe SignUpConfirmationMessages.cstContactHeading
         }
         "has the contact details" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.cstContactPara
         }
         "has a link for call charges" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 3).text mustBe SignUpConfirmationMessages.cstContactLinkText
           mainContent().selectNth(".govuk-link", 3).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
         }
       }
       "contains survey link" which {
         "has a link for survey" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 10).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -313,15 +308,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "does not contain a CST contact section" in {
-        enable(EmailCaptureConsent)
         mainContent().selectOptionalNth("h2", 3) mustBe None
         mainContent().selectOptionalNth("p.govuk-body", 7) mustBe None
       }
       "contains survey link" which {
         "has a link for survey" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 3).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 3).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 6).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -507,15 +501,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a CST contact section" which {
         "has a heading" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth("h2", 3).text mustBe SignUpConfirmationMessages.cstContactHeading
         }
         "has the contact details" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth("p.govuk-body", 11).text mustBe SignUpConfirmationMessages.cstContactPara
         }
         "has a link for call charges" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.cstContactLinkText
           mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
         }
@@ -525,6 +516,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 6).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 6).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 13).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -690,9 +682,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "does not contain a CST contact section" in {
-        enable(EmailCaptureConsent)
         mainContent().selectOptionalNth("h2", 3) mustBe None
-        mainContent().selectOptionalNth("p.govuk-body", 11) mustBe None
+        mainContent().selectOptionalNth("p.govuk-body", 10) mustBe None
       }
 
       "contains survey link" which {
@@ -700,6 +691,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 9).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -806,6 +798,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val standardPeriod4 = "6 April to 5 April"
 
     val surveyText = "What did you think of this service (opens in new tab)"
+    val surveyTextEnd = " (takes 30 seconds)"
     val surveyLink = appConfig.feedbackFrontendRedirectUrl
 
     val postalPreferenceHeading = "Deadline reminders"

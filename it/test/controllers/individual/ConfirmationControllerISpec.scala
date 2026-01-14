@@ -25,10 +25,12 @@ import helpers.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.AccountingPeriodUtil
-import utilities.SubscriptionDataKeys._
+import utilities.SubscriptionDataKeys.*
+
+import java.time.LocalDate
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -73,7 +75,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
             ITSASessionKeys.UTR -> JsString(testUtr),
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString)
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString),
+            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
           ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()
@@ -93,7 +96,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
             ITSASessionKeys.UTR -> JsString(testUtr),
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString)
+            ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString),
+            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
           ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()

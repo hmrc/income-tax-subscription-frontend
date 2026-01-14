@@ -466,7 +466,9 @@ sign-up-confirmation.contact-support.phone-number                    = Telephone
 sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
 sign-up-confirmation.contact-support.link-text                       = Find out about call charges
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
-sign-up-confirmation.contact-support.link-text-2                     = What did you think of this service
+
+sign-up-confirmation.survey.link-text                                = What did you think of this service
+sign-up-confirmation.survey.after                                    =    (takes 30 seconds)
 
 sign-up-confirmation.quarterly.updates.heading                       = Sending your quarterly updates
 sign-up-confirmation.quarterly.updates.para1                         = You need to send your quarterly updates for each of your sole trader and property income sources by:

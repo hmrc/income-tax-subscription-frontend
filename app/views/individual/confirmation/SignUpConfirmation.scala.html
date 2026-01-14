@@ -96,10 +96,11 @@ classes = "govuk-!-margin-bottom-4"
 @voluntary
 
 <div>
-    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-        text = messages("sign-up-confirmation.contact-support.link-text-2"),
+    <p class="govuk-body">
+        @hmrcNewTabLinkHelper(NewTabLinkHelper(
+        text = messages("sign-up-confirmation.survey.link-text"),
         href = Some(appConfig.feedbackFrontendRedirectUrl)
-        ))
+        )) <span>@messages("sign-up-confirmation.survey.after")</span>
     </p>
 </div>
 }
