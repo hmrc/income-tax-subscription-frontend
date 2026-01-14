@@ -153,16 +153,16 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       TestFeature4 -> 3,
       TestFeature5 -> 3
     )
-    
+
     def areCallsToConfigAsExpected(featureSwitch: FeatureSwitch): Boolean = {
       expectedConfigCalls.get(featureSwitch) match {
         case Some(expected) =>
-          try
+          try {
             verify(mockConfig, times(expected)).getOptional[String](featureSwitch.name)
-          catch {
-            case e: MockitoAssertionError => return false
+            true
+          } catch {
+            case e: MockitoAssertionError => false
           }
-          true
         case None =>
           false
       }
