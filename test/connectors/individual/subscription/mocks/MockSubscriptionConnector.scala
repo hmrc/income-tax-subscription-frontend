@@ -39,7 +39,7 @@ trait MockSubscriptionConnector extends UnitTestTrait with MockitoSugar {
       .thenReturn(result)
 
   def setupMockGetSubscriptionFound(nino: String): Unit =
-    setupMockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID)))))
+    setupMockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID, None)))))
 
   def setupMockGetSubscriptionNotFound(nino: String): Unit =
     setupMockGetSubscription(nino)(Future.successful(Right(None)))

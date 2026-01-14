@@ -37,7 +37,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "return the safeId when the subscription is returned" in {
       setupMockGetSubscriptionFound(testNino)
-      call.value shouldBe Some(SubscriptionSuccess(testMTDID))
+      call.value shouldBe Some(SubscriptionSuccess(testMTDID, None))
     }
 
     "return the None when the subscription is returned as None" in {
