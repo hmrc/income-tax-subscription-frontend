@@ -19,9 +19,11 @@ package config.featureswitch
 import config.FrontendAppConfig
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.exceptions.base.MockitoAssertionError
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
+import play.twirl.api.TwirlFeatureImports.twirlOptionToBoolean
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.UnitTestTrait
 
@@ -144,25 +146,30 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       Some(FEATURE_SWITCH_OFF)
     )
 
-    val before = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
+    def areCallsToConfigAsExpected(featureSwitch: FeatureSwitch, expected: Int): Boolean = {
+      try
+        verify(mockConfig, times(expected)).getOptional[String](featureSwitch.name)
+      catch {
+        case e: MockitoAssertionError => return false
+      }
+      true
+    }
+
+    val statesVefore = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val autoToggleSwitches = featureSwitching.init(allSwitches)
-    val after = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
-
-    // Those are parsed into memory so config is used
-    // -  for initial checking
-    // -  when parsing occurs
-    // Memory is used for final checking
-    verify(mockConfig, times(2)).getOptional[String](TestFeature1.name)
-    verify(mockConfig, times(2)).getOptional[String](TestFeature2.name)
-
-    // Those are never parsed into memory so config is used all the time
-    verify(mockConfig, times(3)).getOptional[String](TestFeature3.name)
-    verify(mockConfig, times(3)).getOptional[String](TestFeature4.name)
-    verify(mockConfig, times(3)).getOptional[String](TestFeature5.name)
+    val statesAfter = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
+    val correctCallsToConfig = Map(
+      TestFeature1 -> areCallsToConfigAsExpected(TestFeature1, expected = 2),
+      TestFeature2 -> areCallsToConfigAsExpected(TestFeature2, expected = 2),
+      TestFeature3 -> areCallsToConfigAsExpected(TestFeature3, expected = 3),
+      TestFeature4 -> areCallsToConfigAsExpected(TestFeature4, expected = 3),
+      TestFeature5 -> areCallsToConfigAsExpected(TestFeature5, expected = 3)
+    ).filter(_._2).keys.toSeq
 
     def test(featureSwitch: FeatureSwitch, stateBefore: Boolean, stateAfter: Boolean): Unit = {
-      before.get(featureSwitch) mustBe Some(stateBefore)
-      after.get(featureSwitch) mustBe Some(stateAfter)
+      statesVefore.get(featureSwitch) mustBe Some(stateBefore)
+      statesAfter.get(featureSwitch) mustBe Some(stateAfter)
+      correctCallsToConfig.contains(featureSwitch) mustBe true
     }
 
     "Set switches that have a date in config to auto-toggle" in {
