@@ -55,6 +55,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       enable(ThrottlingFeature)
       isEnabled(ThrottlingFeature) mustBe true
     }
+
     "return false if Throttle feature switch is disabled in sys.props" in {
       disable(ThrottlingFeature)
       isEnabled(ThrottlingFeature) mustBe false
