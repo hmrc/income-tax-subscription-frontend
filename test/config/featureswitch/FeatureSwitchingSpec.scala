@@ -155,7 +155,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       true
     }
 
-    val statesVefore = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
+    val statesBefore = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val autoToggleSwitches = featureSwitching.init(allSwitches)
     val statesAfter = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val correctCallsToConfig = Map(
@@ -167,7 +167,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     ).filter(_._2).keys.toSeq
 
     def test(featureSwitch: FeatureSwitch, stateBefore: Boolean, stateAfter: Boolean): Unit = {
-      statesVefore.get(featureSwitch) mustBe Some(stateBefore)
+      statesBefore.get(featureSwitch) mustBe Some(stateBefore)
       statesAfter.get(featureSwitch) mustBe Some(stateAfter)
       correctCallsToConfig.contains(featureSwitch) mustBe true
     }
