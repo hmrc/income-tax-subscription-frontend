@@ -77,7 +77,7 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
-  "Auto toggle feature switches set as such and ignore others" in {
+  "Auto toggle" should {
 
     case object TestFeature1 extends FeatureSwitch {
       override val name: String = "test.feature1"
@@ -143,32 +143,9 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       Some(FEATURE_SWITCH_OFF)
     )
 
-    featureSwitching.isDisabled(TestFeature1) mustBe true
-    featureSwitching.isDisabled(TestFeature2) mustBe true
-    featureSwitching.isDisabled(TestFeature3) mustBe true
-    featureSwitching.isEnabled(TestFeature4) mustBe true
-    featureSwitching.isDisabled(TestFeature5) mustBe true
-
+    val before = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
     val autoToggleSwitches = featureSwitching.init(allSwitches)
-
-    // These switches are set to auto-toggle
-    autoToggleSwitches mustBe Map(
-      TestFeature1 -> date1,
-      TestFeature2 -> date2
-    )
-
-    // This one has toggled
-    // because the toggle date is in the past
-    featureSwitching.isEnabled(TestFeature1) mustBe true
-
-    // This one has not toggled
-    // because the toggle date is in the future
-    featureSwitching.isDisabled(TestFeature2) mustBe true
-
-    // Those are constant
-    featureSwitching.isDisabled(TestFeature3) mustBe true
-    featureSwitching.isEnabled(TestFeature4) mustBe true
-    featureSwitching.isDisabled(TestFeature5) mustBe true
+    val after = Map(allSwitches.toSeq.map {s => (s, featureSwitching.isEnabled(s))}: _*)
 
     // Those are parsed into memory so config is used
     // -  for initial checking
@@ -181,6 +158,58 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     verify(mockConfig, times(3)).getOptional[String](TestFeature3.name)
     verify(mockConfig, times(3)).getOptional[String](TestFeature4.name)
     verify(mockConfig, times(3)).getOptional[String](TestFeature5.name)
+
+    def test(featureSwitch: FeatureSwitch, stateBefore: Boolean, stateAfter: Boolean): Unit = {
+      before.get(featureSwitch) mustBe Some(stateBefore)
+      after.get(featureSwitch) mustBe Some(stateAfter)
+    }
+
+    "Set switches that have a date in config to auto-toggle" in {
+      autoToggleSwitches mustBe Map(
+        TestFeature1 -> date1,
+        TestFeature2 -> date2
+      )
+    }
+
+    "Toggle switch set to toggle in the past" in {
+      test(
+        featureSwitch = TestFeature1,
+        stateBefore = false,
+        stateAfter = true
+      )
+    }
+
+    "Leave switch set to toggle in the future alone" in {
+      test(
+        featureSwitch = TestFeature2,
+        stateBefore = false,
+        stateAfter = false
+      )
+    }
+
+    "Ignore switch not present in config" in {
+      test(
+        featureSwitch = TestFeature3,
+        stateBefore = false,
+        stateAfter = false
+      )
+    }
+
+    "Ignore switch set in config to be on" in {
+      test(
+        featureSwitch = TestFeature4,
+        stateBefore = true,
+        stateAfter = true
+      )
+    }
+
+    "Ignore switch set ib config to be off" in {
+      test(
+        featureSwitch = TestFeature5,
+        stateBefore = false,
+        stateAfter = false
+      )
+    }
   }
 
 }
