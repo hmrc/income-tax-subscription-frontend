@@ -201,19 +201,19 @@ classes = "govuk-!-margin-bottom-4"
 }
 
 @voluntary = {
-@if(!taxYearSelectionIsNext) {
-<h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
-<p class="govuk-body">
-    @messages("sign-up-confirmation.contact-support.phone-number")
-    <br>
-    @messages("sign-up-confirmation.contact-support.para")
-</p>
-<p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-    text = messages("sign-up-confirmation.contact-support.link-text"),
-    href = Some(messages("sign-up-confirmation.contact-support.link-href"))
-    ))
-</p>
-}
+    @if(!taxYearSelectionIsNext) {
+        <h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
+        <p class="govuk-body">
+            @messages("sign-up-confirmation.contact-support.phone-number")
+            <br>
+            @messages("sign-up-confirmation.contact-support.para")
+        </p>
+        <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
+            text = messages("sign-up-confirmation.contact-support.link-text"),
+            href = Some(messages("sign-up-confirmation.contact-support.link-href"))
+            ))
+        </p>
+    }
 }
 
 @yesSoftware = {
@@ -247,11 +247,11 @@ Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet3"))
 </p>
 
 @ul(
-leadIn = messages("sign-up-confirmation-what-you-must-do.software-choices-para"),
-Seq(
-Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
-Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
-Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
-)
+    leadIn = messages("sign-up-confirmation-what-you-must-do.software-choices-para"),
+    Seq(
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
+    )
 )
 }
