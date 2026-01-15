@@ -64,7 +64,7 @@ object TestConstants {
 
   val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
 
-  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID)))
+  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID, None)))
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 

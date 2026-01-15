@@ -45,7 +45,7 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
       .thenReturn(result)
 
   def setupMockGetSubscriptionFound(nino: String): Unit =
-    mockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID)))))
+    mockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID, None)))))
 
   def setupMockGetSubscriptionNotFound(nino: String): Unit =
     mockGetSubscription(nino)(Future.successful(Right(None)))

@@ -39,7 +39,7 @@ object SubscriptionStub extends WireMockMethods {
       .thenReturn(Status.INTERNAL_SERVER_ERROR, failureSubscriptionResponse)
   }
 
-  val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId)
+  val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId, None)
   val failureSubscriptionResponse = Json.obj()
   val successfulNoSubscriptionResponse = Json.obj()
 }

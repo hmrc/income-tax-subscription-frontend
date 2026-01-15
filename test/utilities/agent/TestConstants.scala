@@ -47,7 +47,7 @@ object TestConstants {
 
   val testCredId = UUID.randomUUID().toString
 
-  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID)))
+  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID, None)))
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
