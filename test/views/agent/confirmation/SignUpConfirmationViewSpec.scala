@@ -432,7 +432,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-    val printLink = "Print this page"
+    val printLink = "Print or save this page."
 
     val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
 
@@ -459,7 +459,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val manageAccountsPara = "Go to your agent services account (opens in new tab)"
 
     val cstContactHeading = "Get help with Making Tax Digital for Income Tax"
-    val cstContactPara = "Phone: 03003 229 619 Monday to Friday, 8am to 6pm (except public holidays)"
+    val cstContactPara = "Telephone: 03003 229 619 Monday to Friday, 8am to 6pm (except public holidays)"
     val cstContactLinkText = "Find out about call charges (opens in new tab)"
     val cstContactLinkHref = "https://www.gov.uk/call-charges"
 

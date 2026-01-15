@@ -68,7 +68,8 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
               throw new InternalServerException("[Individual][ConfirmationJourneyRefiner] - User without utr available in confirmation state")
             ),
             usingSoftware = usingSoftware,
-            mandationStatus = mandationStatus
+            mandationStatus = mandationStatus,
+            sessionData = sessionData
           ))
         }
       case state@(None | Some(PreSignUp | SignUp)) =>

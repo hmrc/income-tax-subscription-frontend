@@ -16,6 +16,7 @@
 
 package models.requests.individual
 
+import models.SessionData
 import models.status.MandationStatusModel
 import play.api.mvc.{Request, WrappedRequest}
 
@@ -24,4 +25,6 @@ case class ConfirmationRequest[A](request: Request[A],
                                   nino: String,
                                   utr: String,
                                   usingSoftware: Boolean,
-                                  mandationStatus: MandationStatusModel) extends WrappedRequest[A](request)
+                                  mandationStatus: MandationStatusModel,
+                                  sessionData: SessionData) extends WrappedRequest[A](request)
+

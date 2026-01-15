@@ -21,14 +21,19 @@ import connectors.individual.PreferencesFrontendConnector
 import controllers.ControllerSpec
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
 import models.common.AccountingYearModel
-import models.{Current, Next}
+import models.{Current, Next, SessionData}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import views.html.individual.confirmation.SignUpConfirmation
+import services.SignedUpDateService
+import uk.gov.hmrc.http.HeaderCarrier
+
+import java.time.LocalDate
+import utilities.ImplicitDateFormatterImpl
 
 import scala.concurrent.Future
 
@@ -40,14 +45,17 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paperless preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(true)),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -57,14 +65,17 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paper preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(false)),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -74,6 +85,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "no preference could be retrieved" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
 
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
@@ -81,8 +94,9 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(None),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -94,14 +108,17 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paperless preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(true),
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(true)),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -111,14 +128,17 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "the user has a paper preference" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
             ArgumentMatchers.eq(true),
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(false)),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -128,6 +148,8 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
         "no preference could be retrieved" in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
           when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
+          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
 
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
@@ -135,8 +157,9 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(Some("FirstName LastName")),
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(None),
-            ArgumentMatchers.eq(true)
-          )(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
+            ArgumentMatchers.eq(true),
+            ArgumentMatchers.any[LocalDate]()
+          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
 
@@ -158,9 +181,12 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
 
   lazy val mockPreferencesFrontendConnector: PreferencesFrontendConnector = mock[PreferencesFrontendConnector]
   lazy val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
+  lazy val mockSignedUpDateService: SignedUpDateService = mock[SignedUpDateService]
+  implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = mock[ImplicitDateFormatterImpl]
 
   override def beforeEach(): Unit = {
     reset(mockSignUpConfirmation)
+    reset(mockSignedUpDateService)
     reset(mockPreferencesFrontendConnector)
     super.beforeEach()
   }
@@ -170,6 +196,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
     fakeConfirmationJourneyRefiner,
     mockPreferencesFrontendConnector,
     mockSubscriptionDetailsService,
+    mockSignedUpDateService,
     mockSignUpConfirmation
   )
 
