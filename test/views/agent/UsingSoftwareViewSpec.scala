@@ -16,11 +16,9 @@
 
 package views.agent
 
-import forms.agent.UsingSoftwareForm
 import messagelookup.agent.MessageLookup
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.api.data.FormError
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.UsingSoftware
@@ -28,35 +26,15 @@ import views.html.agent.UsingSoftware
 class UsingSoftwareViewSpec extends ViewSpec {
 
   private val usingSoftware: UsingSoftware = app.injector.instanceOf[UsingSoftware]
-  private val fullName = "FirstName LastName"
-  private val nino = "ZZ 11 11 11 Z"
-
-  private val testFormError: FormError = FormError(UsingSoftwareForm.fieldName, "agent.using-software.form-error")
 
   "using software" must {
-    import UsingSoftware._
+    import UsingSoftware.*
 
     "have the correct template details" when {
-
-      "the page has no error" in new TemplateViewTest(
+      "the page has a heading" in new TemplateViewTest(
         view = page(),
         isAgent = true,
         title = heading
-      )
-
-      "the page has an error" in new TemplateViewTest(
-        view = page(hasError = true),
-        isAgent = true,
-        title = heading,
-        error = Some(testFormError)
-      )
-    }
-
-    "have a heading" in {
-      document().mustHaveHeadingAndCaption(
-        heading,
-        caption,
-        isSection = false
       )
     }
 
@@ -76,57 +54,28 @@ class UsingSoftwareViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 3).selectHead("a").attr("href") mustBe linkHref
     }
 
-    "have a form" which {
-      def form: Element = document().selectHead("form")
-
-      "has correct attributes" in {
-        form.attr("method") mustBe testCall.method
-        form.attr("action") mustBe testCall.url
-      }
-
-      "has the correct radio inputs" in {
-        form.mustHaveYesNoRadioInputs(selector = "fieldset")(
-          name = radioName,
-          legend = subheading,
-          isHeading = false,
-          isLegendHidden = false,
-          hint = None,
-          errorMessage = None,
-          inline = false,
-          noText = Some(UsingSoftware.radioNo)
-        )
-      }
-
-      "has a continue button" in {
-        form.select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
-      }
+    "has a continue button" in {
+      document().select("button[id=continue-button]").text mustBe MessageLookup.Base.continue
     }
 
   }
 
-  private def page(hasError: Boolean = false, clientName: String = fullName, clientNino: String = nino): Html = {
+  private def page(): Html = {
     usingSoftware(
-      if (hasError) UsingSoftwareForm.usingSoftwareForm.withError(testFormError) else UsingSoftwareForm.usingSoftwareForm,
       testCall,
-      clientName,
-      clientNino,
       backUrl = testBackUrl
     )
   }
 
-  private def document(hasError: Boolean = false): Document =
-    Jsoup.parse(page(hasError).body)
+  private def document(): Document =
+    Jsoup.parse(page().body)
 
   private object UsingSoftware {
     val heading = "Check you have compatible software"
     val paraOne = "To use this service, you or your client must use software that works with Making Tax Digital for Income Tax."
     val paraTwo = "If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax."
-    val subheading = "Are you or your client using software that works with Making Tax Digital for Income Tax?"
-    val caption = s"$fullName – $nino"
     val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-    val radioName = "yes-no"
-    val radioNo: String = "No, I’ll get software after I sign up my client"
   }
 
 }

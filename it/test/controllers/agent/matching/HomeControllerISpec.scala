@@ -50,61 +50,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(routes.ClientDetailsController.show().url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
           )
-        }
-      }
-      "the agent is in a sign up state" when {
-        "the user has previously started signing up this client" should {
-          "redirect to the using software page" in {
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
-            ))
-
-            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
-            )
-          }
-        }
-        "the user has not previously started signing up this client" when {
-          "the client can sign up for next year only" should {
-            "redirect to the cannot sign up this year page" in {
-              AuthStub.stubAuthSuccess()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-              SessionDataConnectorStub.stubGetAllSessionData(Map(
-                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason= None))
-              ))
-
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
-
-              res must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-              )
-            }
-          }
-          "the client can sign up for both years" should {
-            "redirect to the client can sign up page" in {
-              AuthStub.stubAuthSuccess()
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-              SessionDataConnectorStub.stubGetAllSessionData(Map(
-                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
-              ))
-
-              val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentSignUp))
-
-              res must have(
-                httpStatus(SEE_OTHER),
-                redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-              )
-            }
-          }
         }
       }
       "the agent is in no state" should {
@@ -115,7 +62,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+            redirectURI(controllers.agent.routes.UsingSoftwareController.show().url)
           )
         }
       }

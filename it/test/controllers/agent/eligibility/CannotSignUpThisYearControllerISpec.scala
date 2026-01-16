@@ -95,7 +95,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
       }
     }
     "the user is authenticated and in a confirmed client state" must {
-      "redirect the user to the using software page" in {
+      "redirect the user to the ORM page" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
@@ -106,7 +106,7 @@ class CannotSignUpThisYearControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.routes.UsingSoftwareController.show(false).url)
+          redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
         )
       }
     }

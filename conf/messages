@@ -715,14 +715,10 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Check you have compatible software
-agent.using-software.caption                                    = {0} – {1}
 agent.using-software.para1                                      = To use this service, you or your client must use software that works with Making Tax Digital for Income Tax.
 agent.using-software.para2                                      = If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
-agent.using-software.subheading                                 = Are you or your client using software that works with Making Tax Digital for Income Tax?
 agent.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
-agent.using-software.no                                         = No, I’ll get software after I sign up my client
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = You need compatible software
@@ -1154,7 +1150,6 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
 agent.global-check-your-answers.tax-year.label                                                  = When you’re signing up from
-agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
 agent.global-check-your-answers.para2                                                           = The information you have given must be correct to the best of your knowledge.
