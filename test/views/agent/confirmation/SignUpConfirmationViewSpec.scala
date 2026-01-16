@@ -25,6 +25,9 @@ import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter, ImplicitDateFormatterImpl, ViewSpec}
 import views.html.agent.confirmation.SignUpConfirmation
 
+import java.time.LocalDate
+import utilities.ImplicitDateFormatterImpl
+
 class SignUpConfirmationViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
@@ -44,11 +47,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], usingSoftwareStatus: Boolean): Html =
-    signUpConfirmation(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel, usingSoftwareStatus)
+  def page(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], usingSoftwareStatus: Boolean, signedUpDate: LocalDate): Html =
+    signUpConfirmation(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, testNino, testAccountingPeriodModel, usingSoftwareStatus, signedUpDate)
 
-  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName), usingSoftwareStatus: Boolean): Document =
-    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, usingSoftwareStatus).body)
+  def document(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String] = Some(testName), usingSoftwareStatus: Boolean, signedUpDate: LocalDate): Document =
+    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, usingSoftwareStatus, signedUpDate).body)
 
   "The sign up confirmation view" when {
     "the user has software and for current year" should {

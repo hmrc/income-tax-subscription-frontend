@@ -323,29 +323,26 @@ sign-up-complete.what-now.submit-annual                         = Cyflwynwch eic
 
 ## Agent Sign Up Confirmation Page ##
 agent.sign-up-confirmation.heading                                                  = Rydych wedi gorffen cofrestru
-agent.sign-up-confirmation.heading.panel.current                                    = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
-agent.sign-up-confirmation.heading.panel.next                                       = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r {0} ymlaen
+agent.sign-up-confirmation.heading.panel.current                                    = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} ymlaen
+agent.sign-up-confirmation.heading.panel.next                                       = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} ymlaen
 
-agent.sign-up-confirmation.what-must-do.heading                                     = Yr hyn y mae’n rhaid i chi ei wneud nawr
-agent.sign-up-confirmation.what-you-must-do.para1                                   = Darllenwch sut i {0}
-agent.sign-up-confirmation.what-you-must-do.para1.link.text                         = ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.what-you-must-do.para1.link.href                         = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
-agent.sign-up-confirmation.what-you-must-do.yes.this.year                           = Mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.sign-up-confirmation.what-you-must-do.no.this.year                            = Mae’n rhaid i chi ddefnyddio {0}
-agent.sign-up-confirmation.what-you-must-do.no.this.year.link.text                  = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.what-you-must-do.no.this.year.link.href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-agent.sign-up-confirmation.what-you-must-do.yes.next.year                           = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio’ch meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.sign-up-confirmation.what-you-must-do.no.next.year                            = O 6 Ebril {0}, ymlaen, mae’n rhaid i chi ddefnyddio {1}
-agent.sign-up-confirmation.what-you-must-do.no.next.year.link.text                  = meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.what-you-must-do.no.next.year.link-href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+agent.sign-up-confirmation.date                                                     = Dyddiad:
 
-agent.sign-up-confirmation.what-you-must-do.para2                                   = Bydd y feddalwedd rydych yn ei dewis yn rhoi gwybod i chi beth arall mae angen i chi ei wneud, gan gynnwys:
-agent.sign-up-confirmation.what-you-must-do.bullet1                                 = sut i awdurdodi a chysylltu’r feddalwedd â’ch cyfrif gwasanaethau asiant
-agent.sign-up-confirmation.what-you-must-do.bullet2                                 = sut i gadw cofnodion digidol
-agent.sign-up-confirmation.what-you-must-do.bullet3                                 = pryd a sut i anfon diweddariadau chwarterol
-agent.sign-up-confirmation.what-you-must-do.current.year.bullet4                    = a oes angen i chi anfon unrhyw ddiweddariadau a gollwyd neu ddiweddariadau ôl-ddyddiedig ar gyfer y flwyddyn dreth bresennol – a sut i’w hanfon
-agent.sign-up-confirmation.what-you-must-do.bullet5                                 = pryd a sut i wneud datganiad terfynol eich cleient ar ôl diwedd y flwyddyn dreth
-agent.sign-up-confirmation.what-you-must-do.para3                                   = A bydd angen i’ch cleient dalu’r dreth sydd arno.
+agent.sign-up-confirmation.what-must-do.heading                                     = Yr hyn sy’n digwydd nesaf
+
+agent.sign-up-confirmation.you-must-use.para                                        = Mae’n rhaid i chi ddefnyddio {0} i gyflwyno Ffurflen Dreth Hunanasesiad eich cleient.
+agent.sign-up-confirmation.you-must-use.para.link-text                              = meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.you-must-use.para.link-href                              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+
+agent.sign-up-confirmation.mtd.heading                                              = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.mtd.para                                                 = Darllenwch {0}  i gael rhagor o wybodaeth am y canlynol:
+agent.sign-up-confirmation.mtd.para.link-text                                       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+agent.sign-up-confirmation.mtd.bullet1                                              = sut i gyflwyno Ffurflen Dreth Hunanasesiad eich cleient
+agent.sign-up-confirmation.mtd.bullet2                                              = yr hyn i’w ddisgwyl ar ôl i chi gofrestru eich cleient
+agent.sign-up-confirmation.mtd.bullet3                                              = y gwahanol gamau y bydd angen i chi eu cymryd yn ystod y flwyddyn dreth
+agent.sign-up-confirmation.mtd.bullet4                                              = help a chymorth
+agent.sign-up-confirmation.mtd.para2                                                = Bydd y feddalwedd rydych wedi’i dewis yn esbonio’r hyn y bydd angen i chi ei wneud nesaf.
 
 agent.sign-up-confirmation.manage-client-account.heading                            = Rheoli cyfrifon eich cleient
 agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}

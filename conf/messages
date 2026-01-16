@@ -353,7 +353,7 @@ agent.sign-up-confirmation.date                                                 
 
 agent.sign-up-confirmation.what-must-do.heading                                     = What happens next
 
-agent.sign-up-confirmation.you-must-use.para                                        = You must use {0} software that works with Making Tax Digital for Income Tax
+agent.sign-up-confirmation.you-must-use.para                                        = You must use {0} to submit your client’s Self Assessment tax return.
 agent.sign-up-confirmation.you-must-use.para.link-text                              = software that works with Making Tax Digital for Income Tax
 agent.sign-up-confirmation.you-must-use.para.link-href                              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 

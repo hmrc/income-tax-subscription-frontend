@@ -18,6 +18,7 @@ package controllers.agent.actions.mocks
 
 import controllers.agent.actions.ConfirmationJourneyRefiner
 import controllers.utils.ReferenceRetrieval
+import models.SessionData
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,6 +37,7 @@ trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEac
   val nino: String = "ZZ111111Z"
   val utr: String = "1234567890"
   val reference: String = "test-reference"
+  val sessionData = SessionData()
 
   val clientDetails: ClientDetails = ClientDetails(clientName, nino)
 
@@ -43,7 +45,7 @@ trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEac
     mock[UTRService], mock[ClientDetailsRetrieval], mock[ReferenceRetrieval]
   ) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
-      Future.successful(Right(ConfirmedClientRequest(request, clientDetails, utr, reference)))
+      Future.successful(Right(ConfirmedClientRequest(request, clientDetails, utr, reference, sessionData)))
     }
   }
 

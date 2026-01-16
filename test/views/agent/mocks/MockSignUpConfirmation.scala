@@ -16,6 +16,7 @@
 
 package views.agent.mocks
 
+import models.SessionData
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -23,6 +24,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.twirl.api.HtmlFormat
 import utilities.AccountingPeriodUtil
 import views.html.agent.confirmation.SignUpConfirmation
+
+import java.time.LocalDate
+import utilities.ImplicitDateFormatterImpl
 
 trait MockSignUpConfirmation extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
@@ -34,7 +38,7 @@ trait MockSignUpConfirmation extends MockitoSugar with BeforeAndAfterEach {
 
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
-  def mockView(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext: Boolean, name: String, nino: String, usingSoftware: Boolean): Unit = {
+  def mockView(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext: Boolean, name: String, nino: String, usingSoftware: Boolean, sessionData: SessionData): Unit = {
     when(mockSignUpConfirmation(
       ArgumentMatchers.eq(mandatedCurrentYear),
       ArgumentMatchers.eq(mandatedNextYear),
@@ -42,8 +46,9 @@ trait MockSignUpConfirmation extends MockitoSugar with BeforeAndAfterEach {
       ArgumentMatchers.eq(Some(name)),
       ArgumentMatchers.eq(nino),
       ArgumentMatchers.eq(if (taxYearSelectionIsNext) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear),
-      ArgumentMatchers.eq(usingSoftware)
-    )(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      ArgumentMatchers.eq(usingSoftware),
+      ArgumentMatchers.any[LocalDate]()
+    )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)
   }
 
