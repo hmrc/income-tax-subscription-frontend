@@ -62,26 +62,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a summary of answers" when {
-      "display the yes for using software" in {
-        def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 1)
-
-        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = GlobalCheckYourAnswersMessages.UsingSoftwareSection.key,
-            value = Some(""),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.routes.UsingSoftwareController.show(editMode = true).url,
-                text = s"${GlobalCheckYourAnswersMessages.SelectedTaxYear.change} ${GlobalCheckYourAnswersMessages.UsingSoftwareSection.key}",
-                visuallyHidden = GlobalCheckYourAnswersMessages.UsingSoftwareSection.key
-              )
-            )
-          )
-        ))
-      }
 
       "display the tax year when the client has selected current tax year" in {
-        def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 2)
+        def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 1)
 
         summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
           SummaryListRowValues(
@@ -99,7 +82,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "display the tax year when the client has selected next tax year" in {
-        def summaryList: Element = document(details = completeDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
+        def summaryList: Element = document(details = completeDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 1)
 
         summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
           SummaryListRowValues(
@@ -117,7 +100,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "display the tax year with no change link when the user did not have a tax year choice" in {
-        def summaryList: Element = document(details = minDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
+        def summaryList: Element = document(details = minDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 1)
 
         summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
           SummaryListRowValues(
@@ -159,7 +142,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
         "display the first sole trader business" when {
           "there is a table present present" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
+            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 2)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -193,7 +176,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           "there is no start date present" in {
             def summaryList: Element = document(
               details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 3)
+            ).mainContent.selectNth(".govuk-summary-list", 2)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -228,7 +211,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
         "display the next sole trader business" in {
 
-          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 4)
+          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
 
           summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
             SummaryListRowValues(
@@ -267,7 +250,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
         "display the uk property income" when {
           "there is a stored start date" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 5)
+            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 4)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -291,7 +274,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           "there is no stored start date" in {
             def summaryList: Element = document(
               details = completeDetails(ukProperty = Some(ukPropertyIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 5)
+            ).mainContent.selectNth(".govuk-summary-list", 4)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -316,7 +299,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
         "display the foreign property income" when {
           "there is a stored start date" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 6)
+            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 5)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -340,7 +323,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           "there is no stored start date" in {
             def summaryList: Element = document(
               details = completeDetails(foreignProperty = Some(foreignPropertyIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 6)
+            ).mainContent.selectNth(".govuk-summary-list", 5)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
@@ -422,11 +405,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
     val printLink = "Print this page"
     val subheading = "Information you have given to us about your client"
-
-    object UsingSoftwareSection {
-      val key: String = "Software works with Making Tax Digital for Income Tax"
-      val value: String = "Yes"
-    }
 
     object SelectedTaxYear {
       val key: String = "Selected tax year"
