@@ -34,7 +34,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     super.beforeEach()
   }
 
-  val implicitDateFormatter: ImplicitDateFormatter = app.injector.instanceOf[ImplicitDateFormatterImpl]
+  implicit val implicitDateFormatter: ImplicitDateFormatterImpl = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
 
@@ -55,7 +55,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and for current year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false, usingSoftwareStatus = true).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -163,7 +163,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     "the user has software and is for next year" should {
 
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true, usingSoftwareStatus = true).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -250,7 +250,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     "the user has no software and for this year" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false, usingSoftwareStatus = false).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = false, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = false, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -338,7 +338,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     "the user has no software and for next year only" should {
-      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true, usingSoftwareStatus = false).mainContent
+      def mainContent: Element = document(eligibleNextYearOnly = true, mandatedCurrentYear = false, mandatedNextYear = false, selectedTaxYearIsNext = true, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
