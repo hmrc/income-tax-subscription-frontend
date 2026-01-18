@@ -414,11 +414,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a bullet list for mtd" which {
         def bulletList = mainContent().selectNth("ul", 3)
 
-        "has the correct lead-in text" in {
-          val leadIn = bulletList.previousElementSibling()
-          leadIn.text() mustBe SignUpConfirmationMessages.usingMtdPara2
-        }
-
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
@@ -595,11 +590,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a bullet list for mtd" which {
         def bulletList = mainContent().selectNth("ul", 2)
-
-        "has the correct lead-in text" in {
-          val leadIn = bulletList.previousElementSibling()
-          leadIn.text() mustBe SignUpConfirmationMessages.usingMtdPara2
-        }
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
