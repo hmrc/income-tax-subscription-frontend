@@ -37,7 +37,7 @@ trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEac
   val nino: String = "ZZ111111Z"
   val utr: String = "1234567890"
   val reference: String = "test-reference"
-  val sessionData = SessionData()
+  val sessionData: SessionData = SessionData()
 
   val clientDetails: ClientDetails = ClientDetails(clientName, nino)
 
