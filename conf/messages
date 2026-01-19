@@ -468,7 +468,8 @@ sign-up-confirmation.survey.after                                    =    (takes
 
 sign-up-confirmation.quarterly.updates.heading                       = Sending your quarterly updates
 sign-up-confirmation.quarterly.updates.para1                         = You need to send your quarterly updates for each of your sole trader and property income sources by:
-sign-up-confirmation.quarterly.updates.para2                         = You can read more about quarterly updates
+sign-up-confirmation.quarterly.updates.para2.start                   = You can {0}
+sign-up-confirmation.quarterly.updates.para2                         = read more about quarterly updates
 sign-up-confirmation.quarterly.updates.para2.link                    = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
 
 sign-up-confirmation.quarterly.updates.deadline                      = Update deadline

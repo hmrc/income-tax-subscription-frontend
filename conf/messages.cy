@@ -445,7 +445,8 @@ sign-up-confirmation.survey.after                                    = (mae’n 
 
 sign-up-confirmation.quarterly.updates.heading                       = Anfon eich diweddariadau chwarterol
 sign-up-confirmation.quarterly.updates.para1                         = Mae angen i chi anfon eich diweddariad chwarterol ar gyfer pob un o’ch ffynonellau incwm o fod yn unig fasnachwr a’ch ffynonellau incwm o eiddo erbyn:
-sign-up-confirmation.quarterly.updates.para2                         = Gallwch ddarllen rhagor am ddiweddariadau chwarterol
+sign-up-confirmation.quarterly.updates.para2.start                   = Gallwch {0}
+sign-up-confirmation.quarterly.updates.para2                         = ddarllen rhagor am ddiweddariadau chwarterol
 sign-up-confirmation.quarterly.updates.para2.link                    = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
 
 sign-up-confirmation.quarterly.updates.deadline                      = Dyddiad cau diweddaru

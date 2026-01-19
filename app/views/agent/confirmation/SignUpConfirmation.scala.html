@@ -70,10 +70,9 @@
         <h3 class="govuk-heading-m">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
         <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
         @QuaterlyUpdatesHtml
-        <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-            text = messages("sign-up-confirmation.quarterly.updates.para2"),
-            href = Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))
-            ))
+        <p class="govuk-body">@Html(messages(
+            key = "sign-up-confirmation.quarterly.updates.para2.start",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.quarterly.updates.para2"), Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))))))
         </p>
     </div>
 
