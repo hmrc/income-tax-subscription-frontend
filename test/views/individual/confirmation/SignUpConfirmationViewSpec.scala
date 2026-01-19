@@ -399,10 +399,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains mtd heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
+        
         val usingMtdPara = mainContent().selectNth("p", 8)
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
         usingMtdPara.text() mustBe expectedText
@@ -508,7 +509,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
       "contains survey link" which {
         "has a link for survey" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 6).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 6).attr("href") mustBe SignUpConfirmationMessages.surveyLink
           mainContent().selectNth("p.govuk-body", 13).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
@@ -576,7 +576,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains mtd heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
@@ -691,12 +691,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val whatYouMustDoHeading = "What happens next"
     val panelHeading = "Sign up complete"
     val panelUserDetails = s"$testName | $testNino"
-    val panelDescriptionThis: String = {
+    private val panelDescriptionThis: String = {
       val yearStart = AccountingPeriodUtil.getCurrentTaxYear.startDate.year
       val yearEnd = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
       s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
     }
-    val panelDescriptionNext: String = {
+    private val panelDescriptionNext: String = {
       val yearStart = AccountingPeriodUtil.getNextTaxYear.startDate.year
       val yearEnd = AccountingPeriodUtil.getNextTaxYear.endDate.year
       s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
@@ -710,7 +710,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val printLink = "Print or save this page."
 
     val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
-    val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
+    private val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
 
     val paraOne = s"You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax."
 
@@ -759,7 +759,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val usingMtdParaEnd = "to find out more information about:"
     val usingMtdLink = "use Making Tax Digital for Income Tax (opens in new tab)"
     val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
-    val usingMtdPara2 = "You must then use the software to:"
     val usingMtdBullet1 = "what to expect after you sign up"
     val usingMtdBullet2 = "the different steps you will need to take during the tax year"
     val usingMtdBullet3 = "help and support"
