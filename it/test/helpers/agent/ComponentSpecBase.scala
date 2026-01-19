@@ -269,13 +269,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/using-software", sessionData)
 
-    def submitUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData, request: Option[YesNo]): WSResponse = {
-      post("/using-software", sessionData)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
+    def submitUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/using-software", sessionData)(Map.empty)
 
     def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
 

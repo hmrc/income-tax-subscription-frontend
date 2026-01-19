@@ -691,14 +691,10 @@ declined-sign-up-next-year.para                                 = Rydych wedi de
 
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Gwirio bod gennych feddalwedd sy’n cydweddu
-agent.using-software.caption                                    = {0} – {1}
 agent.using-software.para1                                      = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi neu’ch cleient ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.using-software.para2                                      = Os ydych eisoes yn defnyddio meddalwedd i gadw cofnodion digidol eich cleientiaid, efallai y bydd angen i chi ofyn i’ch darparwr meddalwedd os yw’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.using-software.subheading                                 = A ydych chi neu’ch cleient yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 agent.using-software.link                                       = Dod o hyd i feddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
-agent.using-software.form-error                                 = Dewiswch ‘Iawn’ os ydych chi neu’ch cleient yn defnyddio meddalwedd i gadw cofnodion digidol a bod meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.using-software.no                                         = Na, byddaf yn cael meddalwedd ar ôl i mi gofrestru fy nghleient
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = Mae angen i chi gael meddalwedd sy’n cydweddu
@@ -1151,7 +1147,6 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Cyn 6 Ebrill {0}
 agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
 agent.global-check-your-answers.tax-year.label                                                  = Blwydden treth
-agent.global-check-your-answers.using-software                                                  = Mae meddalwedd yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.global-check-your-answers.tax-year.current                                                = Blwyddyn dreth bresennol
 agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
 agent.global-check-your-answers.para2                                                           = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.

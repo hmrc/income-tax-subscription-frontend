@@ -203,8 +203,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       }
     }
     "not in edit mode" must {
-      s"return ${controllers.agent.routes.UsingSoftwareController.show().url}" in {
-        testWhatYearToSignUpController().backUrl(false) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
+      s"return ${controllers.agent.eligibility.routes.ClientCanSignUpController.show().url}" in {
+        testWhatYearToSignUpController().backUrl(false) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
       }
     }
   }

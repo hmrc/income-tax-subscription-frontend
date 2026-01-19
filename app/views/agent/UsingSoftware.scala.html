@@ -14,54 +14,37 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, YesNoRadioHelper, PageHeadingHelper}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
-@import forms.agent.UsingSoftwareForm.fieldName
 
 @this(
-    mainTemplate: AgentMainTemplate,
-    yesNoRadioHelper: YesNoRadioHelper,
-    continueButton: ContinueButton,
-    pageHeadingHelper: PageHeadingHelper,
-    form: FormWithCSRF,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+        mainTemplate: AgentMainTemplate,
+        continueButton: ContinueButton,
+        pageHeadingHelper: PageHeadingHelper,
+        form: FormWithCSRF,
+        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(usingSoftwareForm: Form[YesNo], postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.using-software.heading"), optForm = Some(usingSoftwareForm), backLink = Some(backUrl)) {
-  @form(action = postAction) {
+    @mainTemplate(title = messages("agent.using-software.heading"), backLink = Some(backUrl)) {
 
-    @pageHeadingHelper(
-        heading = messages("agent.using-software.heading"),
-        caption = messages("agent.using-software.caption", clientName, clientNino),
-        isSection = false
-    )
+        <h1 class="govuk-heading-l">@messages("agent.using-software.heading")</h1>
+        <p class="govuk-body">@messages("agent.using-software.para1")</p>
+        <p class="govuk-body">@messages("agent.using-software.para2")</p>
 
-    <p class="govuk-body">@messages("agent.using-software.para1")</p>
-    <p class="govuk-body">@messages("agent.using-software.para2")</p>
-
-    <p class="govuk-body">
+        <p class="govuk-body">
         @findSoftwareNewTabLink()
-    </p>
+        </p>
 
-    @yesNoRadioHelper(
-        field = usingSoftwareForm(fieldName),
-        legend = messages("agent.using-software.subheading"),
-        headingClasses = "govuk-fieldset__legend--m",
-        isPageHeading = false,
-        noText = Some(messages("agent.using-software.no")),
-        inline = false
-    )
-    @continueButton()
-  }
-}
+        @form(action = postAction) {
+            @continueButton()
+        }
+    }
 
-@findSoftwareNewTabLink() = @{
-    hmrcNewTabLinkHelper(
-        NewTabLinkHelper(messages("agent.using-software.link"),
-        Some(messages("agent.using-software.link-href"))))
-}
-
-
+    @findSoftwareNewTabLink() = @{
+        hmrcNewTabLinkHelper(
+            NewTabLinkHelper(messages("agent.using-software.link"),
+                Some(messages("agent.using-software.link-href"))))
+    }

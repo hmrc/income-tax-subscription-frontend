@@ -58,7 +58,6 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitc
         ITSASessionKeys.UTR -> JsString(testUtr)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-      SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, Yes)(OK)
 
       When(s"GET ${routes.WhatYouNeedToDoController.show().url} is called")
       val result = IncomeTaxSubscriptionFrontend.whatYouNeedToDo()

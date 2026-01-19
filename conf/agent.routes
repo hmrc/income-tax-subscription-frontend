@@ -63,8 +63,8 @@ GET         /business/what-year-to-sign-up                      controllers.agen
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 # Using software
-GET         /using-software                                     controllers.agent.UsingSoftwareController.show(editMode: Boolean ?= false)
-POST        /using-software                                     controllers.agent.UsingSoftwareController.submit(editMode: Boolean ?= false)
+GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
+POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()
 
 # Capture consent routes
 GET         /capture-consent                                    controllers.agent.email.CaptureConsentController.show()
