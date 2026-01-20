@@ -25,21 +25,27 @@ import services._
 import uk.gov.hmrc.http.InternalServerException
 import utilities.AccountingPeriodUtil
 import views.html.agent.confirmation.SignUpConfirmation
+import java.time.LocalDate
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+import utilities.ImplicitDateFormatterImpl
 
 @Singleton
 class ConfirmationController @Inject()(view: SignUpConfirmation,
                                        identify: IdentifierAction,
                                        journeyRefiner: ConfirmationJourneyRefiner,
                                        subscriptionDetailsService: SubscriptionDetailsService,
+                                       signedUpDateService: SignedUpDateService,
                                        mandationStatusService: MandationStatusService)
-                                      (implicit ec: ExecutionContext, cc: MessagesControllerComponents) extends SignUpBaseController {
+                                      (implicit ec: ExecutionContext,
+                                       cc: MessagesControllerComponents,
+                                       implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     val sessionData = request.request.sessionData
     for {
+      signedupDate <- signedUpDateService.getSignedUpDate(request.sessionData)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
       mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
       softwareStatus = sessionData.fetchSoftwareStatus
@@ -58,7 +64,8 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
         userNameMaybe = Some(request.clientDetails.name),
         individualUserNino = request.clientDetails.formattedNino,
         accountingPeriodModel = accountingPeriodModel,
-        usingSoftwareStatus = softwareStatus.contains(Yes)
+        usingSoftwareStatus = softwareStatus.contains(Yes),
+        signedUpDate = signedupDate
       ))
     }
   }

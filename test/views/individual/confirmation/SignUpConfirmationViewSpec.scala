@@ -112,8 +112,32 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
       }
 
+      "contains a mtd paragraph with a link" in {
+
+        val usingMtdPara = mainContent().selectNth("p", 7)
+        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
+        usingMtdPara.text() mustBe expectedText
+        val link = usingMtdPara.select("a")
+        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
+        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
+      }
+
+      "contains a bullet list for mtd" which {
+        def bulletList = mainContent().selectNth("ul", 2)
+
+        "has a first item" in {
+          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
+        }
+        "has a second item" in {
+          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
+        }
+        "has a third item" in {
+          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
+        }
+      }
+
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection = mainContent().selectNth("div", 6)
+        def quarterlyUpdatesSection = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
           quarterlyUpdatesSection.select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -169,7 +193,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -186,18 +210,18 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           mainContent().selectNth("h2", 2).text mustBe SignUpConfirmationMessages.cstContactHeading
         }
         "has the contact details" in {
-          mainContent().selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.cstContactPara
+          mainContent().selectNth("p.govuk-body", 10).text mustBe SignUpConfirmationMessages.cstContactPara
         }
         "has a link for call charges" in {
-          mainContent().selectNth(".govuk-link", 3).text mustBe SignUpConfirmationMessages.cstContactLinkText
-          mainContent().selectNth(".govuk-link", 3).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
+          mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.cstContactLinkText
+          mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
         }
       }
       "contains survey link" which {
         "has a link for survey" in {
-          mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", 10).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
+          mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
+          mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 12).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -238,8 +262,32 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
       }
 
+      "contains a mtd paragraph with a link" in {
+
+        val usingMtdPara = mainContent().selectNth("p", 5)
+        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
+        usingMtdPara.text() mustBe expectedText
+        val link = usingMtdPara.select("a")
+        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
+        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
+      }
+
+      "contains a bullet list for mtd" which {
+        def bulletList = mainContent().selectNth("ul", 1)
+
+        "has a first item" in {
+          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
+        }
+        "has a second item" in {
+          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
+        }
+        "has a third item" in {
+          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
+        }
+      }
+
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection = mainContent().selectNth("div", 6)
+        def quarterlyUpdatesSection = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
           quarterlyUpdatesSection.select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -295,7 +343,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -309,13 +357,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "does not contain a CST contact section" in {
         mainContent().selectOptionalNth("h2", 3) mustBe None
-        mainContent().selectOptionalNth("p.govuk-body", 7) mustBe None
+        mainContent().selectOptionalNth("p.govuk-body", 9) mustBe None
       }
       "contains survey link" which {
         "has a link for survey" in {
-          mainContent().selectNth(".govuk-link", 3).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", 3).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", 6).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
+          mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
+          mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -399,10 +447,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains mtd heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
+
         val usingMtdPara = mainContent().selectNth("p", 8)
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
         usingMtdPara.text() mustBe expectedText
@@ -413,11 +462,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a bullet list for mtd" which {
         def bulletList = mainContent().selectNth("ul", 3)
-
-        "has the correct lead-in text" in {
-          val leadIn = bulletList.previousElementSibling()
-          leadIn.text() mustBe SignUpConfirmationMessages.usingMtdPara2
-        }
 
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
@@ -431,7 +475,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection = mainContent().selectNth("div", 6)
+        def quarterlyUpdatesSection = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
           quarterlyUpdatesSection.select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -487,7 +531,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -513,7 +557,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
       "contains survey link" which {
         "has a link for survey" in {
-          enable(EmailCaptureConsent)
           mainContent().selectNth(".govuk-link", 6).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 6).attr("href") mustBe SignUpConfirmationMessages.surveyLink
           mainContent().selectNth("p.govuk-body", 13).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
@@ -581,7 +624,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains mtd heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
+        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
@@ -596,11 +639,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a bullet list for mtd" which {
         def bulletList = mainContent().selectNth("ul", 2)
 
-        "has the correct lead-in text" in {
-          val leadIn = bulletList.previousElementSibling()
-          leadIn.text() mustBe SignUpConfirmationMessages.usingMtdPara2
-        }
-
         "has a first item" in {
           bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
@@ -613,7 +651,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection = mainContent().selectNth("div", 6)
+        def quarterlyUpdatesSection = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
           quarterlyUpdatesSection.select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
@@ -669,7 +707,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
           preferenceSection().selectOptionalNth("p", 1) mustBe None
@@ -701,12 +739,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val whatYouMustDoHeading = "What happens next"
     val panelHeading = "Sign up complete"
     val panelUserDetails = s"$testName | $testNino"
-    val panelDescriptionThis: String = {
+    private val panelDescriptionThis: String = {
       val yearStart = AccountingPeriodUtil.getCurrentTaxYear.startDate.year
       val yearEnd = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
       s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
     }
-    val panelDescriptionNext: String = {
+    private val panelDescriptionNext: String = {
       val yearStart = AccountingPeriodUtil.getNextTaxYear.startDate.year
       val yearEnd = AccountingPeriodUtil.getNextTaxYear.endDate.year
       s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
@@ -720,7 +758,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val printLink = "Print or save this page."
 
     val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
-    val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
+    private val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
 
     val paraOne = s"You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax."
 
@@ -769,7 +807,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val usingMtdParaEnd = "to find out more information about:"
     val usingMtdLink = "use Making Tax Digital for Income Tax (opens in new tab)"
     val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
-    val usingMtdPara2 = "You must then use the software to:"
     val usingMtdBullet1 = "what to expect after you sign up"
     val usingMtdBullet2 = "the different steps you will need to take during the tax year"
     val usingMtdBullet3 = "help and support"

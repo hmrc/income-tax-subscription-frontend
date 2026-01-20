@@ -76,13 +76,28 @@ classes = "govuk-!-margin-bottom-4"
 }
 
 <div>
+    <p class="govuk-body">@Html(messages(
+        key = "sign-up-confirmation-what-you-must-do.software-choices-para2",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation-what-you-must-do.no-para2.link-text"), Some(messages("sign-up-confirmation-what-you-must-do.no-para2.link-href"))))))
+    </p>
+
+    @ul(
+    leadIn = "",
+    Seq(
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
+    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
+    )
+    )
+</div>
+
+<div>
     <h3 class="govuk-heading-m">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
     <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
     @QuaterlyUpdatesHtml
-    <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-        text = messages("sign-up-confirmation.quarterly.updates.para2"),
-        href = Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))
-        ))
+    <p class="govuk-body">@Html(messages(
+        key = "sign-up-confirmation.quarterly.updates.para2.start",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.quarterly.updates.para2"), Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))))))
     </p>
 </div>
 
@@ -238,20 +253,5 @@ classes = "govuk-!-margin-bottom-4"
 }
 
 @noSoftware2 = {
-
     <h2 class="govuk-heading-m">@messages("sign-up-confirmation-what-you-must-do.software-choices.heading")</h2>
-
-    <p class="govuk-body">@Html(messages(
-        key = "sign-up-confirmation-what-you-must-do.software-choices-para2",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation-what-you-must-do.no-para2.link-text"), Some(messages("sign-up-confirmation-what-you-must-do.no-para2.link-href"))))))
-    </p>
-
-    @ul(
-        leadIn = messages("sign-up-confirmation-what-you-must-do.software-choices-para"),
-        Seq(
-          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
-          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
-          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
-        )
-    )
 }

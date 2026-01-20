@@ -25,10 +25,12 @@ import helpers.agent.servicemocks.AuthStub
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import utilities.SubscriptionDataKeys._
+import utilities.SubscriptionDataKeys.*
 import utilities.agent.TestConstants.testUtr
+
+import java.time.LocalDate
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -57,7 +59,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
         ))
 
         When("I call GET /confirmation")
