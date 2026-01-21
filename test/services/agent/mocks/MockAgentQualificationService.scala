@@ -50,7 +50,7 @@ trait MockAgentQualificationService extends PlaySpec
     }
 
     expectedResult match {
-      case ClientAlreadySubscribed => setupMockGetSubscriptionFound(testNino)
+      case ClientAlreadySubscribed(_) => setupMockGetSubscriptionFound(testNino)
       case UnexpectedFailure => setupMockGetSubscriptionFailure(testNino)
       case _ => setupMockGetSubscriptionNotFound(testNino)
     }

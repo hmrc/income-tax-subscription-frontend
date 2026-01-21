@@ -16,21 +16,22 @@
 
 package controllers.individual.matching
 
-import auth.individual.JourneyState._
+import auth.individual.JourneyState.*
 import auth.individual.SignUp
 import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, PreSignUpJourneyRefiner}
+import controllers.individual.resolvers.AlreadySignedUpResolver
 import controllers.utils.ReferenceRetrieval
-import models.EligibilityStatus
-import models.SessionData
+import models.{Channel, EligibilityStatus, SessionData}
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
+import models.common.subscription.SubscriptionSuccess
 import models.requests.individual.PreSignUpRequest
-import play.api.mvc._
+import play.api.mvc.*
 import services.PrePopDataService.PrePopResult
-import services._
-import services.individual._
+import services.*
+import services.individual.*
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
@@ -47,6 +48,7 @@ class HomeController @Inject()(identity: IdentifierAction,
                                auditingService: AuditingService,
                                eligibilityStatusService: GetEligibilityStatusService,
                                referenceRetrieval: ReferenceRetrieval,
+                               resolver: AlreadySignedUpResolver,
                                prePopDataService: PrePopDataService)
                               (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
@@ -72,7 +74,7 @@ class HomeController @Inject()(identity: IdentifierAction,
     sessionDataService.getAllSessionData().flatMap { sessionData =>
       throttlingService.throttled(IndividualStartOfJourneyThrottle, sessionData) {
         subscriptionService.getSubscription(request.nino) flatMap {
-          case Right(Some(_)) => Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
+          case Right(Some(SubscriptionSuccess(_, channel))) => Future.successful(Redirect(resolver.resolve(Channel.fromString(channel))))
           case Right(None) => handleNoSubscriptionFound(sessionData, utr)
           case Left(error) => throw new InternalServerException(s"[HomeController][handlePresentUTR] - Error fetching subscription: $error")
         }

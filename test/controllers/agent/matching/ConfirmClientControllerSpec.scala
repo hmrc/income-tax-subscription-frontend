@@ -22,16 +22,17 @@ import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
+import controllers.agent.resolvers.MockAlreadySignedUpResolver
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, _}
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
-import services.agent._
-import services.mocks._
+import services.agent.*
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingTestSupport
 import utilities.agent.TestConstants.{testNino, testUtr}
@@ -47,6 +48,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
   with MockSessionDataService
   with MockIdentifierAction
   with MockClientDetailsJourneyRefiner
+  with MockAlreadySignedUpResolver
   with UserMatchingTestSupport {
 
   lazy val mockAgentQualificationService: AgentQualificationService = mock[AgentQualificationService]
@@ -54,6 +56,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAgentQualificationService)
+    mockResolverNoChannel()
   }
 
   def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String], preExistingRelationship: Boolean = true): Unit =
@@ -193,14 +196,14 @@ class ConfirmClientControllerSpec extends ControllerSpec
           }
         }
         "the client entered has already been signed up" should {
-          "redirect to the client already signed up page" in withController { controller =>
+          "redirect to resolver" in withController { controller =>
             setupMockNotLockedOut(testARN)
-            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed)
+            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None))
 
             val result: Future[Result] = controller.submit()(builtRequest)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(routes.ClientAlreadySubscribedController.show.url)
+            redirectLocation(result) mustBe Some(resolverUrl)
           }
         }
         "there was an unexpected failure checking the agent qualification" should {
@@ -296,6 +299,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
     mockedView,
     mockAgentQualificationService,
     mockSessionDataService,
+    mockResolver,
     mockUserLockoutService
   )
 
