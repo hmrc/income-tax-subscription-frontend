@@ -74,7 +74,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       agentClientResponse <- subscriptionService.getSubscription(matchedClient.clientNino)
         .collect {
           case Right(None) => Right(matchedClient)
-          case Right(Some(SubscriptionSuccess(_, channel))) => Left(ClientAlreadySubscribed(Channel.fromString(channel)))
+          case Right(Some(SubscriptionSuccess(_, channel))) => Left(ClientAlreadySubscribed(channel))
         }
     } yield agentClientResponse
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }

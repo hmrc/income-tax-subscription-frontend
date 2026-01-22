@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{JsSuccess, Reads}
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, Reads, Writes}
 
 sealed trait Channel
 
@@ -27,12 +27,22 @@ case object HmrcLedUnconfirmed extends Channel
 case object HmrcLedConfirmed extends Channel
 
 object Channel {
-  def fromString(channel: Option[String]): Option[Channel] =
-    channel.map {
-      case "1" => CustomerLed
-      case "2" => HmrcLedUnconfirmed
-      case "3" => HmrcLedConfirmed
-      case _ => throw new Exception("Invalid channel")
-    }
+  private val CUSTOMERLED = JsString("1")
+  private val HMRCLEDUNCONFIRMED = JsString("2")
+  private val HMRCLEDCONFIRMED = JsString("3")
 
+  private val reads: Reads[Channel] = Reads[Channel] {
+    case CUSTOMERLED => JsSuccess(CustomerLed)
+    case HMRCLEDUNCONFIRMED => JsSuccess(HmrcLedUnconfirmed)
+    case HMRCLEDCONFIRMED => JsSuccess(HmrcLedConfirmed)
+    case _ => JsError("Invalid channel")
+  }
+
+  private val writes: Writes[Channel] = Writes[Channel] {
+    case CustomerLed => CUSTOMERLED
+    case HmrcLedUnconfirmed => HMRCLEDUNCONFIRMED
+    case HmrcLedConfirmed => HMRCLEDCONFIRMED
+  }
+
+  implicit val format: Format[Channel] = Format[Channel](reads, writes)
 }
