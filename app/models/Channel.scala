@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, Reads, Writes}
+import play.api.libs.json.*
 
 sealed trait Channel
 
