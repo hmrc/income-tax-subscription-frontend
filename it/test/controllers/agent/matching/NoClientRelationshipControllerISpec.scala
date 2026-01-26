@@ -42,15 +42,13 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
   }
 
   object NoClientRelationshipMessages {
-    val title: String = "There is a problem"
-    val heading: String = "There is a problem"
-    val para1: String = "We cannot find your client’s authorisation in your agent services account."
-    val para2: String = "You need to:"
-    val bullet1: String = "Check your " + "agent services account (opens in new tab)"
-    val bullet2: String = "Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs."
-    val bullet3: String = "If you still do not have this client’s authorisation, you’ll need to get a new authorisation from them."
-    val para3: String = "When you have your client’s authorisation, you can come back to sign them up."
-    val button: String = "Sign up another client"
+    val title: String = "You are not authorised by your client"
+    val heading: String = "You are not authorised by your client"
+    val para1: String = "You need to add your client’s authorisation to your agent services account before you can continue signing them up to Making Tax Digital for Income Tax."
+    val para2: String = "You can either:"
+    val bullet1: String = "add your client’s authorisation (opens in new tab)"
+    val bullet2: String = "Sign up another client"
+    val para3: String = "You cannot sign up clients if they have not already registered for Self Assessment."
   }
 
   "GET /error/no-client/relationship" should {
@@ -101,26 +99,23 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     }
 
     "have a list of bullet points" in new Setup() {
-      private val bulletPoints = doc.body().select(".govuk-list.govuk-list--number li")
-      bulletPoints.size mustBe 3
+      private val bulletPoints = doc.body().select(".govuk-list.govuk-list--bullet li")
+      bulletPoints.size mustBe 2
       bulletPoints.get(0).text mustBe NoClientRelationshipMessages.bullet1
       bulletPoints.get(1).text mustBe NoClientRelationshipMessages.bullet2
-      bulletPoints.get(2).text mustBe NoClientRelationshipMessages.bullet3
     }
 
-    "have the third paragraph" in new Setup() {
+    "have the third inset paragraph" in new Setup() {
       private val content = doc.body().getElementById("main-content")
-      content.getNthParagraph(3).text mustBe NoClientRelationshipMessages.para3
-    }
-
-    "have a Sign up another client button" in new Setup() {
-      private val content = doc.body().getElementById("main-content")
-      val submitButton: Element = content.getForm.getGovUkSubmitButton
-      submitButton.text mustBe NoClientRelationshipMessages.button
+      content.select("div").get(3).text mustBe NoClientRelationshipMessages.para3
     }
 
     "have a view with a link" in new Setup() {
-      doc.mainContent.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/agent-services-account/home#tax-services-accordion-content-1"
+      doc.mainContent.selectHead("a").attr("href") mustBe "https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request"
+    }
+
+    "have a view with a link 2" in new Setup() {
+      doc.mainContent.selectNth("a", 2).attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
