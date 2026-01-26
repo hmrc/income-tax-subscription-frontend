@@ -865,16 +865,14 @@ agent.client-already-subscribed.heading                         = Your client ha
 agent.client-already-subscribed.para1                           = This client’s details are already in use.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                              = There is a problem
-agent.no-client-relationship.heading                            = There is a problem
+agent.no-client-relationship.title                              = You are not authorised by your client
+agent.no-client-relationship.heading                            = You are not authorised by your client
 agent.no-client-relationship.caption                            = {0} – {1}
-agent.no-client-relationship.para1                              = We cannot find your client’s authorisation in your agent services account.
-agent.no-client-relationship.para2                              = You need to:
-agent.no-client-relationship.bullet1                            = Check your {0}
-agent.no-client-relationship.bullet2                            = Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs.
-agent.no-client-relationship.bullet3                            = If you still do not have this client’s authorisation, you’ll need to get a new authorisation from them.
-agent.no-client-relationship.para3                              = When you have your client’s authorisation, you can come back to sign them up.
-agent.no-client-relationship.link                               = agent services account
+agent.no-client-relationship.para1                              = You need to add your client’s authorisation to your agent services account before you can continue signing them up to Making Tax Digital for Income Tax.
+agent.no-client-relationship.para2                              = You can either:
+agent.no-client-relationship.bullet1.link                       = add your client’s authorisation
+agent.no-client-relationship.bullet1.link-href                  = https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request
+agent.no-client-relationship.para3                              = You cannot sign up clients if they have not already registered for Self Assessment.
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet

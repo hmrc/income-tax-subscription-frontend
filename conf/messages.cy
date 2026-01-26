@@ -853,16 +853,14 @@ agent.client-already-subscribed.heading                         = Mae’ch cleie
 agent.client-already-subscribed.para1                           = Mae manylion y cleient hwn eisoes yn cael eu defnyddio.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                              = Mae problem wedi codi
-agent.no-client-relationship.heading                            = Mae problem wedi codi
+agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi gan eich cleient
+agent.no-client-relationship.heading                            = Nid ydych wedi’ch awdurdodi gan eich cleient
 agent.no-client-relationship.caption                            = {0} – {1}
-agent.no-client-relationship.para1                              = Ni allwn ddod o hyd i awdurdodiad eich cleient yn eich cyfrif gwasanaethau asiant.
-agent.no-client-relationship.para2                              = Mae angen i chi wneud y canlynol:
-agent.no-client-relationship.bullet1                            = Gwirio’ch {0}
-agent.no-client-relationship.bullet2                            = Sicrhau eich bod wedi copïo ar draws yr holl awdurdodiadau presennol ar gyfer eich holl gleientiaid a’ch holl IDs ar gyfer Porth y Llywodraeth.
-agent.no-client-relationship.bullet3                            = Os nad oes gennych awdurdodiad y cleient hwn o hyd, bydd angen i chi gael awdurdodiad newydd oddi wrtho.
-agent.no-client-relationship.para3                              = Pan gewch awdurdodiad eich cleient, gallwch ddod yn ôl i’w gofrestru.
-agent.no-client-relationship.link                               = cyfrif gwasanaethau asiant
+agent.no-client-relationship.para1                              = Mae angen i chi ychwanegu awdurdodiad eich cleient i’ch cyfrif gwasanaethau asiant cyn y gallwch barhau i’w cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.no-client-relationship.para2                              = Gallwch wneud y naill neu’r llall o’r canlynol:
+agent.no-client-relationship.bullet1.link                       = ychwanegu awdurdodiad gan eich cleient
+agent.no-client-relationship.bullet1.link-href                  = https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request
+agent.no-client-relationship.para3                              = Ni allwch gofrestru cleient os nad yw eisoes wedi cofrestru ar gyfer Hunanasesiad.
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
