@@ -17,6 +17,7 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
+import controllers.individual.resolvers.MockAlreadyEnrolledResolver
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
@@ -29,12 +30,13 @@ import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PreSignUpJourneyRefinerSpec extends PlaySpec {
+class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResolver {
 
   "PreSignUpJourneyRefiner" when {
     "the user is in a PreSignUp state" should {
       "redirect to the already enrolled page" when {
         "the user already has an MTDITID on their cred" in {
+          mockAlreadyEnrolledResolver()
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
             identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
               Future.successful(Results.Ok)
@@ -42,7 +44,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+          redirectLocation(result) mustBe Some("")
         }
       }
       "execute the provided code" when {
@@ -97,7 +99,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
     }
   }
 
-  lazy val preSignUpJourneyRefiner: PreSignUpJourneyRefiner = new PreSignUpJourneyRefiner
+  lazy val preSignUpJourneyRefiner: PreSignUpJourneyRefiner = new PreSignUpJourneyRefiner(mockResolver)
 
   lazy val testNino: String = "AA000000A"
   lazy val testUtr: String = "1234567890"
