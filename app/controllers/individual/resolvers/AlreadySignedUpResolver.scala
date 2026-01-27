@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package models.common.subscription
+package controllers.individual.resolvers
 
-import models.{Channel, ConnectorError}
-import play.api.libs.json.{Json, OFormat, Reads}
+import models.Channel
+import play.api.mvc.Call
 
-case class SubscriptionSuccess(
-  mtditId: String,
-  channel: Option[Channel]
-)
+import javax.inject.Singleton
 
-object SubscriptionSuccess {
-  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
+@Singleton
+class AlreadySignedUpResolver {
+
+  def resolve(reason: Option[Channel]): Call =
+    controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show
+
 }
-
-sealed trait SubscriptionFailure extends ConnectorError
-
-case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

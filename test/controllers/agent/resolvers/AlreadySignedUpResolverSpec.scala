@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models.common.subscription
+package controllers.agent.resolvers
 
-import models.{Channel, ConnectorError}
-import play.api.libs.json.{Json, OFormat, Reads}
+import config.MockConfig.mustBe
+import org.scalatest.wordspec.AnyWordSpec
 
-case class SubscriptionSuccess(
-  mtditId: String,
-  channel: Option[Channel]
-)
+class AlreadySignedUpResolverSpec extends AnyWordSpec {
 
-object SubscriptionSuccess {
-  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
+  private val resolver = new AlreadySignedUpResolver()
+  
+  "resolve" should {
+    "Go to the already signed up page" in {
+      resolver.resolve(None) mustBe
+        controllers.agent.matching.routes.ClientAlreadySubscribedController.show
+    }
+  }
 }
-
-sealed trait SubscriptionFailure extends ConnectorError
-
-case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

@@ -16,7 +16,6 @@
 
 package services.agent
 
-
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
@@ -87,7 +86,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val response = await(call)
 
-      response mustBe Left(ClientAlreadySubscribed)
+      response mustBe Left(ClientAlreadySubscribed(None))
     }
 
     "return ApprovedAgent if the client does not have a subscription" in {
@@ -155,11 +154,11 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return ClientAlreadySubscribed if the client already has subscription" in {
       preExistingRelationship(testARN, testClientDetails.nino)(true)
 
-      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed)
+      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None))
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Left(ClientAlreadySubscribed)
+      await(result) mustBe Left(ClientAlreadySubscribed(None))
 
       verifyClientMatchingSuccessAudit()
     }

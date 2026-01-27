@@ -20,14 +20,16 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
+import controllers.agent.resolvers.AlreadySignedUpResolver
+import models.Channel
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.requests.agent.IdentifierRequest
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.Html
-import services._
-import services.agent._
+import services.*
+import services.agent.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 import views.html.agent.matching.CheckYourClientDetails
@@ -42,6 +44,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
                                         checkYourClientDetails: CheckYourClientDetails,
                                         agentQualificationService: AgentQualificationService,
                                         sessionDataService: SessionDataService,
+                                        resolver: AlreadySignedUpResolver,
                                         lockOutService: UserLockoutService)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
@@ -60,7 +63,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       withClientDetails { clientDetails =>
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
-          case Left(ClientAlreadySubscribed) => Future.successful(handleClientAlreadySubscribed(clientDetails))
+          case Left(ClientAlreadySubscribed(channel)) => Future.successful(handleClientAlreadySubscribed(clientDetails, channel))
           case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
           case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
@@ -141,7 +144,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel)
+  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel])
                                            (implicit request: IdentifierRequest[_]): Result = {
     auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
@@ -151,8 +154,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       eligibility = "ineligible",
       failureReason = Some("client-already-signed-up")
     ))
-    Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show)
-      .removingFromSession(FailedClientMatching)
+    Redirect(resolver.resolve(reason)).removingFromSession(FailedClientMatching)
   }
 
   private def handleUnexpectedFailure(clientDetails: UserDetailsModel)

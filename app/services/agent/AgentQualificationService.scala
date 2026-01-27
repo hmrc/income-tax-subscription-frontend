@@ -16,6 +16,7 @@
 
 package services.agent
 
+import models.Channel
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.common.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
@@ -30,7 +31,7 @@ sealed trait UnqualifiedAgent
 
 case object NoClientMatched extends UnqualifiedAgent
 
-case object ClientAlreadySubscribed extends UnqualifiedAgent
+case class ClientAlreadySubscribed(channel: Option[Channel]) extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
@@ -73,7 +74,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       agentClientResponse <- subscriptionService.getSubscription(matchedClient.clientNino)
         .collect {
           case Right(None) => Right(matchedClient)
-          case Right(Some(SubscriptionSuccess(_, _))) => Left(ClientAlreadySubscribed)
+          case Right(Some(SubscriptionSuccess(_, channel))) => Left(ClientAlreadySubscribed(channel))
         }
     } yield agentClientResponse
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
