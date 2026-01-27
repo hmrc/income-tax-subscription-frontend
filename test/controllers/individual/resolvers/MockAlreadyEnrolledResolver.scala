@@ -20,13 +20,20 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.mvc.Call
 
-trait MockAlreadyEnrolledResolver {
+trait BaseMockResolver {
+
+  val resolverUrl = "http://localhost:8080/"
+
+  protected val call: Call = Call("", resolverUrl)
+}
+
+trait MockAlreadyEnrolledResolver extends BaseMockResolver {
 
   val mockResolver: AlreadyEnrolledResolver = mock[AlreadyEnrolledResolver]
   
   def mockAlreadyEnrolledResolver(): Unit = {
     when(mockResolver.resolve()).thenReturn(
-      Call("", "")
+      call
     )
   }
 }

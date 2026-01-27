@@ -34,7 +34,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
 
   "PreSignUpJourneyRefiner" when {
     "the user is in a PreSignUp state" should {
-      "redirect to the already enrolled page" when {
+      "redirect to the resolver page" when {
         "the user already has an MTDITID on their cred" in {
           mockAlreadyEnrolledResolver()
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
@@ -44,7 +44,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some("")
+          redirectLocation(result) mustBe Some(resolverUrl)
         }
       }
       "execute the provided code" when {
