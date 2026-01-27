@@ -16,16 +16,9 @@
 
 package controllers.individual.resolvers
 
+import controllers.BaseMockResolver
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.mvc.Call
-
-trait BaseMockResolver {
-
-  val resolverUrl = "http://localhost:8080/"
-
-  protected val call: Call = Call("", resolverUrl)
-}
 
 trait MockAlreadyEnrolledResolver extends BaseMockResolver {
 
