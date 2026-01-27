@@ -18,16 +18,17 @@ package services.mocks
 
 import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
+import models.Channel
 import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status._
+import play.api.http.Status.*
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.Future
 
@@ -46,6 +47,9 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
 
   def setupMockGetSubscriptionFound(nino: String): Unit =
     mockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID, None)))))
+
+  def setupMockGetSubscriptionFoundWithChannel(nino: String, channel: Channel): Unit =
+    mockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID, Some(channel))))))
 
   def setupMockGetSubscriptionNotFound(nino: String): Unit =
     mockGetSubscription(nino)(Future.successful(Right(None)))

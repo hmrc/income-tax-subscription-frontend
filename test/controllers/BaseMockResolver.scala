@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package models.common.subscription
+package controllers
 
-import models.{Channel, ConnectorError}
-import play.api.libs.json.{Json, OFormat, Reads}
+import play.api.mvc.Call
 
-case class SubscriptionSuccess(
-  mtditId: String,
-  channel: Option[Channel]
-)
+trait BaseMockResolver {
 
-object SubscriptionSuccess {
-  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
+  val resolverUrl = "http://localhost:8080/"
+  
+  protected val call: Call = Call("", resolverUrl)
 }
-
-sealed trait SubscriptionFailure extends ConnectorError
-
-case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

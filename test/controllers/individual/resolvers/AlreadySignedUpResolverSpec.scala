@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package models.common.subscription
+package controllers.individual.resolvers
 
-import models.{Channel, ConnectorError}
-import play.api.libs.json.{Json, OFormat, Reads}
+import config.MockConfig.mustBe
+import org.scalatestplus.play.PlaySpec
 
-case class SubscriptionSuccess(
-  mtditId: String,
-  channel: Option[Channel]
-)
+class AlreadySignedUpResolverSpec extends PlaySpec {
 
-object SubscriptionSuccess {
-  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
+  private val resolver = new AlreadySignedUpResolver()
+  
+  "resolve" should {
+    "Go to the already signed up page" in {
+      resolver.resolve(None) mustBe
+        controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show
+    }
+  }
 }
-
-sealed trait SubscriptionFailure extends ConnectorError
-
-case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure
