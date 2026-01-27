@@ -17,9 +17,9 @@
 package controllers.individual.resolvers
 
 import config.MockConfig.mustBe
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.PlaySpec
 
-class AlreadySignedUpResolverSpec extends AnyWordSpec {
+class AlreadySignedUpResolverSpec extends PlaySpec {
 
   private val resolver = new AlreadySignedUpResolver()
   
