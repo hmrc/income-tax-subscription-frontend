@@ -22,6 +22,7 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.{JsValue, Json}
 
 object MandationStatusStub extends WireMockMethods {
+
   def stubGetMandationStatus(expectedBody: JsValue)(status: Int, body: JsValue): StubMapping = {
     when(
       method = POST,

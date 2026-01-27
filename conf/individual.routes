@@ -135,7 +135,7 @@ GET         /business/progress-saved                             controllers.ind
 GET         /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 
-# remove UK property buisness confirmation page
+# remove UK property business confirmation page
 GET         /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.show
 POST        /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.submit
 
