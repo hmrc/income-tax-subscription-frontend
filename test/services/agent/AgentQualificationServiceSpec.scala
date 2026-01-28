@@ -19,13 +19,15 @@ package services.agent
 
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.usermatching.UserDetailsModel
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.agent.mocks.MockAgentQualificationService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.agent.TestConstants._
-import utilities.agent.TestModels._
+import utilities.agent.TestConstants.*
+import utilities.agent.TestModels.*
 import utilities.agent.{TestConstants, TestModels}
 
 import scala.concurrent.Future
