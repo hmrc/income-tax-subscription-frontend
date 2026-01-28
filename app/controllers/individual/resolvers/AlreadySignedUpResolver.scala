@@ -16,15 +16,30 @@
 
 package controllers.individual.resolvers
 
-import models.Channel
-import play.api.mvc.Call
+import models.{Channel, HmrcLedUnconfirmed}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, Result}
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.Future
 
 @Singleton
-class AlreadySignedUpResolver {
+class AlreadySignedUpResolver @Inject()(
+  service: ???
+) {
 
-  def resolve(reason: Option[Channel]): Call =
-    controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show
+  def resolve(nino: String, isEnrolled: Boolean, channel: Option[Channel]): Future[Result] = {
+    (isEnrolled, channel) match {
+      case (false, _) =>
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentAlreadySignedUpController.show)) // Claim enrol=ment journey
+      case (true, Some(HmrcLedUnconfirmed)) =>
+        Future.successful(Redirect(Call("", "check-income-sources")))
+      case (_, _) =>
+        service.hasOptedOut(nino).map {
+          case true => Redirect(Call("", "opted-out"))
+          case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
+        }
+    }
+  }
 
 }
