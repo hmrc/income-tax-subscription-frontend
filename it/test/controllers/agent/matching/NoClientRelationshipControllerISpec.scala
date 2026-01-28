@@ -47,7 +47,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     val para1: String = "You need to add your client’s authorisation to your agent services account before you can continue signing them up to Making Tax Digital for Income Tax."
     val para2: String = "You can either:"
     val bullet1: String = "add your client’s authorisation (opens in new tab)"
-    val bullet2: String = "Sign up another client"
+    val bullet2: String = "sign up another client"
     val para3: String = "You cannot sign up clients if they have not already registered for Self Assessment."
   }
 

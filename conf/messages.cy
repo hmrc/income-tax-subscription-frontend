@@ -861,6 +861,7 @@ agent.no-client-relationship.para2                              = Gallwch wneud 
 agent.no-client-relationship.bullet1.link                       = ychwanegu awdurdodiad gan eich cleient
 agent.no-client-relationship.bullet1.link-href                  = https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request
 agent.no-client-relationship.para3                              = Ni allwch gofrestru cleient os nad yw eisoes wedi cofrestru ar gyfer Hunanasesiad.
+agent.base.sign-up-another-client.2                             = cofrestru cleient arall
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
