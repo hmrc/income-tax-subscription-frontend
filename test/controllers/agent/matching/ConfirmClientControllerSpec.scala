@@ -29,7 +29,7 @@ import org.mockito.Mockito.*
 import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.*
+import play.api.test.Helpers.{await, *}
 import play.twirl.api.HtmlFormat
 import services.agent.*
 import services.mocks.*

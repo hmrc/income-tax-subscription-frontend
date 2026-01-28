@@ -57,7 +57,7 @@ trait MockClientRelationshipService extends MockitoSugar with BeforeAndAfterEach
     )(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(true)))
   }
-  
+
 
   def preExistingMTDRelationship(arn: String, nino: String)(isPreExistingMTDRelationship: Boolean): Unit =
     when(mockClientRelationshipService.isMTDPreExistingRelationship(

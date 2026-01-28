@@ -16,6 +16,7 @@
 
 package services.agent
 
+
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
@@ -98,7 +99,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     }
   }
 
-  "AgentQualificationService.checkClientRelationship" should {
+  "AgentQualificationService.checkSAClientRelationship" should {
 
     def call: Future[TestAgentQualificationService.ReturnType] =
       TestAgentQualificationService.checkSAClientRelationship(testARN, matchedClient)
