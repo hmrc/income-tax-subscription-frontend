@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.status.MandationStatusModel
+import models.status.{GetITSAStatusModel, MandationStatusModel}
 import models.{EligibilityStatus, SessionData, YesNo}
 import play.api.libs.json.*
 import uk.gov.hmrc.http.HeaderCarrier
@@ -58,7 +58,11 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
   def saveMandationStatus(mandationStatus: MandationStatusModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.MANDATION_STATUS, Json.toJson(mandationStatus))
   }
-  
+
+  def saveGetITSAStatus(getITSAStatus: GetITSAStatusModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.GET_ITSA_STATUS, Json.toJson(getITSAStatus))
+  }
+
   def saveSignedUpDate(date: LocalDate)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.SIGNED_UP_DATE, Json.toJson(date))
   }

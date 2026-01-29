@@ -80,9 +80,9 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       }
     } else {
       (eligibleNextYearOnly, mandatedCurrentYear) match {
-        case (true, false) => controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
-        case (false, true) => controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         case (false, false) => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        case (false, true) => controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+        case _ => controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
       }
     }
   }
