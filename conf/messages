@@ -873,6 +873,7 @@ agent.no-client-relationship.para2                              = You can either
 agent.no-client-relationship.bullet1.link                       = add your client’s authorisation
 agent.no-client-relationship.bullet1.link-href                  = https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request
 agent.no-client-relationship.para3                              = You cannot sign up clients if they have not already registered for Self Assessment.
+agent.base.sign-up-another-client.2                             = sign up another client
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
