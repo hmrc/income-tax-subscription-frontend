@@ -30,13 +30,15 @@ class AlreadySignedUpResolver @Inject()(
 
   def resolve(sessionData: SessionData, isEnrolled: Boolean, channel: Option[Channel]): Future[Result] = {
     (isEnrolled, channel) match {
+      case (_, None) =>
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case (false, _) =>
-        Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentAlreadySignedUpController.show)) // Claim enrol=ment journey
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentAlreadySignedUpController.show))
       case (true, Some(HmrcLedUnconfirmed)) =>
-        Future.successful(Redirect(Call("", "check-income-sources")))
+        Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
       case (_, _) =>
         service.getITSAStatus(sessionData).map { model => model.status match {
-          case Dormant => Redirect(Call("", "opted-out"))
+          case Annual => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
           case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
         }}
     }
