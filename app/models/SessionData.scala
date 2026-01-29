@@ -17,14 +17,14 @@
 package models
 
 import _root_.common.Constants.ITSASessionKeys
-import models.status.MandationStatusModel
+import models.status.{GetITSAStatusModel, MandationStatusModel}
 import play.api.libs.json.*
 import services.Throttle
 
 import java.time.LocalDate
 
 case class SessionData(data: Map[String, JsValue] = Map()) {
-  
+
   implicit class JsObject(value: JsValue) {
     def toObject[T](implicit reads: Reads[T]): T = {
       Json.fromJson[T](value) match {
@@ -44,6 +44,10 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
 
   def fetchMandationStatus: Option[MandationStatusModel] = {
     data.get(ITSASessionKeys.MANDATION_STATUS).map(_.toObject[MandationStatusModel])
+  }
+
+  def fetchGetITSAStatus: Option[GetITSAStatusModel] = {
+    data.get(ITSASessionKeys.GET_ITSA_STATUS).map(_.toObject[GetITSAStatusModel])
   }
 
   def fetchSignedUpDate: Option[LocalDate] = {
