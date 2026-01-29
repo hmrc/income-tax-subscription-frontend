@@ -474,7 +474,7 @@ individual.digitally-exempt.heading                                  = Rydych yn
 individual.digitally-exempt.para                                     = Mae CThEF wedi cytuno eich bod wedi`ch cau allan o`r byd digidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
 individual.digitally-exempt.para1                                    = Os bydd eich amgylchiadau`n newid, mae`n rhaid i chi roi gwybod i CThEF.
 individual.digitally-exempt.para2.link-text                          = Gallwch ddod o hyd i wybodaeth am esemptiadau.
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded.cy
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
 
 ## Errors ##
 
@@ -1162,4 +1162,4 @@ agent.digitally-exempt.heading                                           = Mae e
 agent.digitally-exempt.para                                             = Mae CThEF wedi cytuno bod eich cleient wedi`i gau allan o`r byd ddigidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
 agent.digitally-exempt.para1                                            = Os bydd amgylchiadau eich cleient yn newid, {0}
 agent.digitally-exempt.para1.link-text                                  = mae`n rhaid i chi neu eich cleient roi gwybod i CThEF.
-agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded.cy
+agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
