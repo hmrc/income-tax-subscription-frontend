@@ -497,7 +497,7 @@ individual.digitally-exempt.heading                                  = You are e
 individual.digitally-exempt.para                                     = HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change.
 individual.digitally-exempt.para1                                    = If your circumstances change, you must let HMRC know.
 individual.digitally-exempt.para2.link-text                          = Find out more about exemptions 
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax
 
 ## Errors ##
 
@@ -1165,4 +1165,4 @@ agent.digitally-exempt.heading                                          = Your c
 agent.digitally-exempt.para                                             = HMRC has agreed that your client is digitally excluded. This means you do not need to use it unless your circumstances change.
 agent.digitally-exempt.para1                                            = If your client’s circumstances change, {0}
 agent.digitally-exempt.para1.link-text                                  = you or your client must let HMRC know.
-agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax
