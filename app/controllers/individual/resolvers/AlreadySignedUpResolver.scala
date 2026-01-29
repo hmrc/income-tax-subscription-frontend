@@ -16,19 +16,26 @@
 
 package controllers.individual.resolvers
 
+import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, Result}
+import play.api.mvc.{AnyContent, Call, Request, Result}
+import services.GetITSAStatusService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlreadySignedUpResolver @Inject()(
   service: GetITSAStatusService
-) {
+)(implicit ec: ExecutionContext) {
 
-  def resolve(sessionData: SessionData, isEnrolled: Boolean, channel: Option[Channel]): Future[Result] = {
+  def resolve(
+    sessionData: SessionData,
+    isEnrolled: Boolean,
+    channel: Option[Channel]
+  )(implicit hc: HeaderCarrier): Future[Result] = {
     (isEnrolled, channel) match {
       case (_, None) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))

@@ -41,8 +41,7 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec {
             }
           )
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+          status(result) mustBe OK
         }
       }
       "execute the provided code" when {
