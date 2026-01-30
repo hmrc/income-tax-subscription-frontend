@@ -74,7 +74,7 @@ class HomeController @Inject()(identity: IdentifierAction,
     sessionDataService.getAllSessionData().flatMap { sessionData =>
       throttlingService.throttled(IndividualStartOfJourneyThrottle, sessionData) {
         subscriptionService.getSubscription(request.nino) flatMap {
-          case Right(Some(SubscriptionSuccess(_, channel))) => resolver.resolve(sessionData, request.isEnrolled, channel)
+          case Right(Some(SubscriptionSuccess(_, channel))) => resolver.resolve(sessionData, request.hasEnrolment, channel)
           case Right(None) => handleNoSubscriptionFound(sessionData, utr)
           case Left(error) => throw new InternalServerException(s"[HomeController][handlePresentUTR] - Error fetching subscription: $error")
         }

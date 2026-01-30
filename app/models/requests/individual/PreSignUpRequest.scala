@@ -18,4 +18,4 @@ package models.requests.individual
 
 import play.api.mvc.{Request, WrappedRequest}
 
-case class PreSignUpRequest[A](request: Request[A], nino: String, utr: Option[String], isEnrolled: Boolean) extends WrappedRequest[A](request)
+case class PreSignUpRequest[A](request: Request[A], nino: String, utr: Option[String], hasEnrolment: Boolean) extends WrappedRequest[A](request)

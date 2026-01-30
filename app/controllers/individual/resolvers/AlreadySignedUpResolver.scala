@@ -33,10 +33,10 @@ class AlreadySignedUpResolver @Inject()(
 
   def resolve(
     sessionData: SessionData,
-    isEnrolled: Boolean,
+    hasEnrolment: Boolean,
     channel: Option[Channel]
   )(implicit hc: HeaderCarrier): Future[Result] = {
-    (isEnrolled, channel) match {
+    (hasEnrolment, channel) match {
       case (_, None) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case (false, _) =>
