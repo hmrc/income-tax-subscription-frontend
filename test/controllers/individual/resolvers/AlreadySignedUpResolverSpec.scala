@@ -18,7 +18,7 @@ package controllers.individual.resolvers
 
 import config.MockConfig.mustBe
 import controllers.ControllerSpec
-import models.status.GetITSAStatus.{Annual, NoStatus}
+import models.status.GetITSAStatus.*
 import models.status.GetITSAStatusModel
 import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
 import org.apache.pekko.util.Timeout
@@ -44,6 +44,15 @@ class AlreadySignedUpResolverSpec extends ControllerSpec {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
+  private val notOptedOut = Seq(
+    NoStatus,
+    MTDMandated,
+    MTDVoluntary,
+    DigitallyExempt,
+    Dormant,
+    MTDExempt
+  )
+
   "resolve" should {
     "Go to the already signed up page when there is no channel" in {
       Seq(false, true).foreach { hasEnrolment =>
@@ -59,15 +68,17 @@ class AlreadySignedUpResolverSpec extends ControllerSpec {
       "and has enrolled" +
       "amd has not opted-out" in {
       Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
-        when(mockService.getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(GetITSAStatusModel(NoStatus))
-        )
-        val result = resolver.resolve(sessionData, true, Some(channel))
+        notOptedOut.foreach { ITSAStatus =>
+          when(mockService.getITSAStatus(
+            ArgumentMatchers.eq(sessionData)
+          )(ArgumentMatchers.any())).thenReturn(
+            Future.successful(GetITSAStatusModel(ITSAStatus))
+          )
+          val result = resolver.resolve(sessionData, true, Some(channel))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+        }
       }
     }
 
@@ -78,7 +89,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec {
         val result = resolver.resolve(sessionData, false, Some(channel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.ClaimEnrolmentAlreadySignedUpController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
       }
     }
 

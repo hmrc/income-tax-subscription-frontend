@@ -40,13 +40,13 @@ class AlreadySignedUpResolver @Inject()(
       case (_, None) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case (false, _) =>
-        Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentAlreadySignedUpController.show))
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case (true, Some(HmrcLedUnconfirmed)) =>
         Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
       case (_, _) =>
         service.getITSAStatus(sessionData).map { model => model.status match {
           case Annual => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
-          case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
+          case _ => Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
         }}
     }
   }
