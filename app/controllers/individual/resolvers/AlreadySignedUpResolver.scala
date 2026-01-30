@@ -37,8 +37,10 @@ class AlreadySignedUpResolver @Inject()(
     channel: Option[Channel]
   )(implicit hc: HeaderCarrier): Future[Result] = {
     (hasEnrolment, channel) match {
-      case (_, None) =>
+      case (false, None) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
+      case (true, None) =>
+        Future.successful(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show))
       case (false, _) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case (true, Some(HmrcLedUnconfirmed)) =>

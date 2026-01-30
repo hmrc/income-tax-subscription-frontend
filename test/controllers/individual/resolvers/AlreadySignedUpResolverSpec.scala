@@ -54,12 +54,18 @@ class AlreadySignedUpResolverSpec extends ControllerSpec {
   )
 
   "resolve" should {
-    "Go to the already signed up page when there is no channel" in {
+    "Go to the correct page when there is no channel" in {
+
+      val expected = Map(
+        false -> controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url,
+        true -> controllers.individual.matching.routes.AlreadyEnrolledController.show.url
+      )
+
       Seq(false, true).foreach { hasEnrolment =>
         val result = resolver.resolve(sessionData, hasEnrolment, None)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
+        redirectLocation(result) mustBe expected.get(hasEnrolment)
       }
     }
 
