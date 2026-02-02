@@ -25,17 +25,20 @@ import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreSignUpJourneyRefiner @Inject(
-  resolver: AlreadyEnrolledResolver
-)(implicit val executionContext: ExecutionContext)
+class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
+                                     (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, PreSignUpRequest] with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
     request.session.get(ITSASessionKeys.JourneyStateKey)
       .map { journeyStep =>
         JourneyStep.fromString(
@@ -44,9 +47,11 @@ class PreSignUpJourneyRefiner @Inject(
       } match {
       case Some(PreSignUp) =>
         request.mtditid match {
-          case Some(_) =>
+          case Some(mtditid) =>
             logger.info("[Individual][PreSignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")
-            Future.successful(Left(Redirect(resolver.resolve())))
+            resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
+              Left(Redirect(call))
+            }
           case None =>
             Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
         }

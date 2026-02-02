@@ -17,16 +17,20 @@
 package controllers.individual.resolvers
 
 import controllers.BaseMockResolver
+import models.SessionData
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
+
+import scala.concurrent.Future
 
 trait MockAlreadyEnrolledResolver extends BaseMockResolver {
 
   val mockResolver: AlreadyEnrolledResolver = mock[AlreadyEnrolledResolver]
-  
-  def mockAlreadyEnrolledResolver(): Unit = {
-    when(mockResolver.resolve()).thenReturn(
-      call
+
+  def mockAlreadyEnrolledResolver(nino: String, sessionData: SessionData): Unit = {
+    when(mockResolver.resolve(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(sessionData))(ArgumentMatchers.any())).thenReturn(
+      Future.successful(call)
     )
   }
 }

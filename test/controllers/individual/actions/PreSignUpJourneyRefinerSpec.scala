@@ -18,6 +18,7 @@ package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
 import controllers.individual.resolvers.MockAlreadyEnrolledResolver
+import models.SessionData
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
@@ -36,7 +37,8 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
     "the user is in a PreSignUp state" should {
       "redirect to the resolver page" when {
         "the user already has an MTDITID on their cred" in {
-          mockAlreadyEnrolledResolver()
+          mockAlreadyEnrolledResolver(testNino, SessionData())
+
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
             identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
               Future.successful(Results.Ok)
