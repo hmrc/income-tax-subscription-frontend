@@ -20,7 +20,7 @@ import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessRes
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.PreSignUpJourneyRefiner
 import controllers.individual.actions.mocks.MockIdentifierAction
-import controllers.individual.resolvers.MockAlreadySignedUpResolver
+import controllers.individual.resolvers.{AlreadyEnrolledResolver, MockAlreadySignedUpResolver}
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
@@ -41,7 +41,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockAlreadySignedUpResolver
   with MockSubscriptionService {
 
-  class MockRefiner extends PreSignUpJourneyRefiner {
+  class MockRefiner extends PreSignUpJourneyRefiner(app.injector.instanceOf[AlreadyEnrolledResolver]) {
     override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
       Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
     }
