@@ -41,13 +41,26 @@ class AlreadySignedUpResolver @Inject()(
     mtdItId: String,
     channel: Option[Channel]
   )(implicit hc: HeaderCarrier): Future[Result] = {
+    channel match {
+      case None =>
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
+      case Some(channel) =>
+        resolve(sessionData, mtdItId, channel)
+    }
+  }
+  
+  private def resolve(
+    sessionData: SessionData,
+    mtdItId: String,
+    channel: Channel
+  )(implicit hc: HeaderCarrier): Future[Result] = {
     val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> mtdItId)
     checkEnrolmentService.getGroupIdForEnrolment(enrolmentKey).flatMap {
       case Right(_) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
       case Left(EnrolmentAlreadyAllocated(_)) =>
         channel match {
-          case Some(HmrcLedUnconfirmed) =>
+          case HmrcLedUnconfirmed =>
             Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
           case _ =>
             getITSAStatusService.getITSAStatus(sessionData).map { model => model.status match {

@@ -61,6 +61,15 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
   private val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> testMTDITID)
 
   "resolve" should {
+    "Go to the claim enrolment page when user if there is no channel" in {
+      (notOptedOut ++ Seq(Annual)).foreach { ITSAStatus =>
+        val result = resolver.resolve(sessionData, testMTDITID, None)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
+      }
+    }
+
     "Go to the already signed up page when user " +
       "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
       "and has enrolled" +
