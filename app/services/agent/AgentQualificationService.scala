@@ -89,9 +89,9 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       case Right(false) => clientRelationshipService.isMTDSupportingRelationship(agentReferenceNumber, mtdId) map {
         case Right(true) => Left(ClientAlreadySubscribed(channel, mtdId))
         case Right(false) => Left(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
-        case Left(_) => throw new InternalServerException("[todo] unable to fetch client relationship") // TODO update this
+        case Left(_) => throw new InternalServerException("unable to fetch client relationship")
       }
-      case Left(_) => throw new InternalServerException("[todo] unable to fetch client relationship") // TODO update this
+      case Left(_) => throw new InternalServerException("unable to fetch client relationship")
     }
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure))}
 

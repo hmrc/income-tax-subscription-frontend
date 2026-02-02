@@ -17,7 +17,7 @@
 package connectors.agent
 
 import config.AppConfig
-import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus, suppAgentClientMtditidURI}
+import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus, suppAgentClientMtditidURI, agentClientMtditidURI}
 import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -70,7 +70,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   }
 
   def isMTDRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
-    val url = agentMTDClientURL(arn, mtdId)
+    val url = appConfig.agentClientRelationshipsUrl + agentClientMtditidURI(arn, mtdId)
 
     http
       .get(url"${url}")
@@ -103,7 +103,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   }
 
   def isMTDSuppRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
-    val url = suppAgentClientMtditidURI(arn: String, mtdId: String)
+    val url = appConfig.agentClientRelationshipsUrl + suppAgentClientMtditidURI(arn: String, mtdId: String)
 
 
     http

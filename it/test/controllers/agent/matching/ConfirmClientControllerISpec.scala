@@ -197,13 +197,37 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
 
       "the client is already subscribed" should {
-        "redirect the user to client already subscribed page" in {
+        "redirect the user to client already subscribed page when user has a mtd relationship" in {
+
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
-          SubscriptionStub.stubGetSubscriptionFound()
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
+          SubscriptionStub.stubGetSubscriptionFound()
+
+
+
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+          Then("The result must have a status of SEE_OTHER and redirect to already subscribed page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.alreadySubscribedURI)
+          )
+        }
+
+        "redirect the user to client already subscribed page when user has an mtdSupprelationship" in {
+          // when user has a mtd relationship
+          // when user has a mtd Supprelationship
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
+          SubscriptionStub.stubGetSubscriptionFound()
 
 
           When("I call POST /confirm-client")
