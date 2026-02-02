@@ -20,8 +20,8 @@ import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Call, Request, Result}
 import services.GetITSAStatusService
 import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated

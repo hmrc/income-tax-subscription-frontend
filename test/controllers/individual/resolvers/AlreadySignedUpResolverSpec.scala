@@ -16,14 +16,13 @@
 
 package controllers.individual.resolvers
 
-import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName, timeout}
 import config.MockConfig.mustBe
 import controllers.ControllerSpec
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus.*
 import models.status.GetITSAStatusModel
 import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
-import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -35,7 +34,6 @@ import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated
 import services.mocks.MockCheckEnrolmentAllocationService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 
 class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolmentAllocationService {
@@ -49,7 +47,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
 
   private val sessionData = SessionData()
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 
   private val notOptedOut = Seq(
     NoStatus,
@@ -60,8 +57,8 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
     MTDExempt
   )
 
-  val testMTDITID: String = "XAIT0000000001"
-  val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> testMTDITID)
+  private val testMTDITID: String = "XAIT0000000001"
+  private val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> testMTDITID)
 
   "resolve" should {
     "Go to the already signed up page when user " +
