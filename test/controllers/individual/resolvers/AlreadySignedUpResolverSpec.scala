@@ -61,7 +61,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
   private val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> testMTDITID)
 
   "resolve" should {
-    "Go to the claim enrolment page when user if there is no channel" in {
+    "Go to the claim enrolment page if there is no channel" in {
       val result = resolver.resolve(sessionData, testMTDITID, None)
 
       status(result) mustBe SEE_OTHER
