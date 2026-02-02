@@ -19,16 +19,21 @@ package controllers.individual.matching
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants._
-import helpers.servicemocks._
+import helpers.IntegrationTestConstants.*
+import helpers.IntegrationTestModels.testMTDITEnrolmentKey
+import helpers.servicemocks.*
+import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.individual.JourneyStep.PreSignUp
 import models.prepop.{PrePopData, PrePopSelfEmployment}
+import models.status.GetITSAStatus.NoStatus
+import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import models.{DateModel, EligibilityStatus}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString, Json}
+import play.api.test.Helpers.NO_CONTENT
 import services.StartOfJourneyThrottleId
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.PrePopFlag
@@ -73,6 +78,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         AuthStub.stubAuthNoUtr()
         SessionDataConnectorStub.stubGetAllSessionData(Map())
         CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.GET_ITSA_STATUS, testNino)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -108,7 +114,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+        val noStatus = GetITSAStatusModel(NoStatus)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.GET_ITSA_STATUS, noStatus)(OK)
         SubscriptionStub.stubGetSubscriptionFound()
+        EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(NO_CONTENT)
+        stubGetITSAStatus(
+          Json.toJson(GetITSAStatusRequest(testNino))
+        )(OK, Json.toJson(noStatus))
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 

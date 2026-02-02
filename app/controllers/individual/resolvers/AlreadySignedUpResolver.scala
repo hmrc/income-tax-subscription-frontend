@@ -16,11 +16,15 @@
 
 package controllers.individual.resolvers
 
+import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Request, Result}
 import services.GetITSAStatusService
+import services.agent.CheckEnrolmentAllocationService
+import services.agent.CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -28,28 +32,31 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlreadySignedUpResolver @Inject()(
-  service: GetITSAStatusService
+  checkEnrolmentService: CheckEnrolmentAllocationService,
+  getITSAStatusService: GetITSAStatusService
 )(implicit ec: ExecutionContext) {
 
   def resolve(
     sessionData: SessionData,
-    hasEnrolment: Boolean,
+    mtdItId: String,
     channel: Option[Channel]
   )(implicit hc: HeaderCarrier): Future[Result] = {
-    (hasEnrolment, channel) match {
-      case (false, None) =>
+    val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> mtdItId)
+    checkEnrolmentService.getGroupIdForEnrolment(enrolmentKey).flatMap {
+      case Right(_) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
-      case (true, None) =>
-        Future.successful(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show))
-      case (false, _) =>
-        Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
-      case (true, Some(HmrcLedUnconfirmed)) =>
-        Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
-      case (_, _) =>
-        service.getITSAStatus(sessionData).map { model => model.status match {
-          case Annual => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
-          case _ => Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
+      case Left(EnrolmentAlreadyAllocated(_)) =>
+        channel match {
+          case Some(HmrcLedUnconfirmed) =>
+            Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
+          case _ =>
+            getITSAStatusService.getITSAStatus(sessionData).map { model => model.status match {
+              case Annual => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
+              case _ => Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
+            }
         }}
+      case _ =>
+        throw new Exception("Error checking enrolment")
     }
   }
 

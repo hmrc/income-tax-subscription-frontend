@@ -43,7 +43,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   class MockRefiner extends PreSignUpJourneyRefiner {
     override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
-      Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr, request.mtditid.isDefined)))
+      Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
     }
   }
 

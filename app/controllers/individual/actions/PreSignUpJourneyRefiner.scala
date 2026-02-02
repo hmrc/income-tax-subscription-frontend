@@ -39,18 +39,24 @@ class PreSignUpJourneyRefiner @Inject()(implicit val executionContext: Execution
           key = journeyStep
         )
       } match {
-          case Some(PreSignUp) | Some(SignUp) =>
-            Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr, request.mtditid.isDefined)))
-          case Some(Confirmation) =>
-            logger.info(s"[Individual][PreSignUpJourneyRefiner] - User is in a confirmation state. Sending the user to the confirmation page")
-            Future.successful(Left(
-              Redirect(controllers.individual.routes.ConfirmationController.show)
-            ))
+      case Some(PreSignUp) =>
+        request.mtditid match {
+          case Some(_) =>
+            logger.info("[Individual][PreSignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")
+            Future.successful(Left(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)))
           case None =>
-            logger.info(s"[Individual][PreSignUpJourneyRefiner] - User has no state. Adding PreSignUp state and sending home.")
-            Future.successful(Left(
-              Redirect(controllers.individual.matching.routes.HomeController.index).addingToSession(JourneyStateKey -> PreSignUp.key)(request)
-            ))
-      }
+            Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+        }
+      case Some(SignUp) =>
+        Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+      case Some(Confirmation) =>
+        logger.info(s"[Individual][PreSignUpJourneyRefiner] - User is in a confirmation state. Sending the user to the confirmation page")
+        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+      case None =>
+        logger.info(s"[Individual][PreSignUpJourneyRefiner] - User has no state. Adding PreSignUp state and sending home.")
+        Future.successful(Left(
+          Redirect(controllers.individual.matching.routes.HomeController.index).addingToSession(JourneyStateKey -> PreSignUp.key)(request)
+        ))
+    }
   }
 }
