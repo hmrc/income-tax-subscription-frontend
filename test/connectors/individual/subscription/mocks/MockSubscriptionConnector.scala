@@ -34,7 +34,7 @@ import scala.concurrent.Future
 trait MockSubscriptionConnector extends UnitTestTrait with MockitoSugar {
   val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
 
-  private def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
+  def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
     when(mockSubscriptionConnector.getSubscription(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
