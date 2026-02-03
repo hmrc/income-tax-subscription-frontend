@@ -21,21 +21,33 @@ import models.Channel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.mvc.Results.Redirect
+
+import scala.concurrent.Future
 
 trait MockAlreadySignedUpResolver extends BaseMockResolver {
 
   val mockResolver: AlreadySignedUpResolver = mock[AlreadySignedUpResolver]
 
   def mockResolverNoChannel(): Unit = {
-    when(mockResolver.resolve(ArgumentMatchers.eq(None))).thenReturn(
-      call
+    when(mockResolver.resolve(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(None)
+    )(ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )).thenReturn(
+      Future.successful(Redirect(call))
     )
   }
 
   def mockResolverWithChannel(channel: Channel): Unit = {
-    when(mockResolver.resolve(ArgumentMatchers.eq(Some(channel)))).thenReturn(
-      call
+    when(mockResolver.resolve(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.eq(Some(channel))
+    )(ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )).thenReturn(
+      Future.successful(Redirect(call))
     )
   }
-
 }
