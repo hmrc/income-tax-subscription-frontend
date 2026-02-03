@@ -16,10 +16,7 @@
 
 package common
 
-import org.apache.pekko.util.Timeout
 import services.Throttle
-
-import java.util.concurrent.TimeUnit
 
 object Constants {
   val mtdItsaEnrolmentName = "HMRC-MTD-IT"
@@ -65,6 +62,4 @@ object Constants {
     val SPSEntityId: String = "SPS-Entity-ID"
 
   }
-
-  implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
 }
