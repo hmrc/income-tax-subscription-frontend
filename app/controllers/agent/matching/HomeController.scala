@@ -18,9 +18,7 @@ package controllers.agent.matching
 
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import controllers.utils.ReferenceRetrieval
 import play.api.mvc.*
-import services.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

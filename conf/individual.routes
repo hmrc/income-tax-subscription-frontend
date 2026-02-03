@@ -154,3 +154,6 @@ POST        /details/income-sources-incomplete                   controllers.ind
 # Global Check Your Answers
 GET         /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
+
+GET         /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.show
+GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show

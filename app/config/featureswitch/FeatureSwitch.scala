@@ -28,7 +28,8 @@ object FeatureSwitch {
     ThrottlingFeature,
     EmailCaptureConsent,
     SignalControlGatewayEligibility,
-    AgentRelationshipSingleCall
+    AgentRelationshipSingleCall,
+    OptBackIn
   )
 
   def apply(str: String): FeatureSwitch =
@@ -57,5 +58,10 @@ object FeatureSwitch {
   case object AgentRelationshipSingleCall extends FeatureSwitch {
     override val name: String = s"$prefix.agent-relationship-as-single-call"
     override val displayText: String = "Use single call for agent client relationship check"
+  }
+
+  case object OptBackIn extends FeatureSwitch {
+    override val name: String = s"$prefix.opt-back-in"
+    override val displayText: String = "Opt back in"
   }
 }

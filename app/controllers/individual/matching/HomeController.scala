@@ -23,14 +23,14 @@ import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, PreSignUpJourneyRefiner}
 import controllers.individual.resolvers.AlreadySignedUpResolver
 import controllers.utils.ReferenceRetrieval
-import models.{Channel, EligibilityStatus, SessionData}
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.SignupStartedAuditing
 import models.common.subscription.SubscriptionSuccess
 import models.requests.individual.PreSignUpRequest
+import models.{EligibilityStatus, SessionData}
 import play.api.mvc.*
-import services.PrePopDataService.PrePopResult
 import services.*
+import services.PrePopDataService.PrePopResult
 import services.individual.*
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -74,7 +74,7 @@ class HomeController @Inject()(identity: IdentifierAction,
     sessionDataService.getAllSessionData().flatMap { sessionData =>
       throttlingService.throttled(IndividualStartOfJourneyThrottle, sessionData) {
         subscriptionService.getSubscription(request.nino) flatMap {
-          case Right(Some(SubscriptionSuccess(_, channel))) => Future.successful(Redirect(resolver.resolve(channel)))
+          case Right(Some(SubscriptionSuccess(mtdItId, channel))) => resolver.resolve(sessionData, mtdItId, channel)
           case Right(None) => handleNoSubscriptionFound(sessionData, utr)
           case Left(error) => throw new InternalServerException(s"[HomeController][handlePresentUTR] - Error fetching subscription: $error")
         }
