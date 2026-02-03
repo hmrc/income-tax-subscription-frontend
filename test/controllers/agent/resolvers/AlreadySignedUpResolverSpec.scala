@@ -22,11 +22,10 @@ import config.featureswitch.FeatureSwitch.OptBackIn
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
-import controllers.utils.ReferenceRetrieval
 import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus.*
 import models.status.GetITSAStatusModel
-import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
+import models.{Channel, CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
 import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -37,10 +36,8 @@ import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, redirectLocation, session, status}
-import services.{GetITSAStatusService, SubscriptionDetailsService}
+import services.GetITSAStatusService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import org.apache.pekko.util.Timeout
-import play.api.test.Helpers.defaultAwaitTimeout
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
@@ -52,21 +49,15 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
   override val appConfig: AppConfig = MockConfig
 
   private val mockGetITSAStatusService = mock[GetITSAStatusService]
-  private val mockReferenceRetrieval = mock[ReferenceRetrieval]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   private val resolver = new AlreadySignedUpResolver(
     mockGetITSAStatusService,
-    mockReferenceRetrieval,
-    mockSubscriptionDetailsService,
     appConfig
   )(ec)
 
   private val sessionData = SessionData()
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
-
-  private val reference: String = "test-reference"
 
   private val baseRequest: FakeRequest[AnyContent] = FakeRequest()
   private implicit val request: IdentifierRequest[AnyContent] =
@@ -84,101 +75,17 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(
-      mockGetITSAStatusService,
-      mockReferenceRetrieval,
-      mockSubscriptionDetailsService
+      mockGetITSAStatusService
     )
     enable(OptBackIn)
   }
 
-  private def stubAgentReference(): Unit =
-    when(mockReferenceRetrieval.getAgentReference(
-      ArgumentMatchers.eq(sessionData)
-    )(
-      ArgumentMatchers.any(),
-      ArgumentMatchers.any(),
-      ArgumentMatchers.eq("test-arn")
-    )).thenReturn(Future.successful(reference))
-
   "resolve" should {
     "redirect to Client already signed up (HOA06C) when client is not opted out and OptBackIn feature switch is enabled" in {
-      notOptedOut.foreach { itsaStatus =>
-        reset(mockGetITSAStatusService)
-
-        when(mockGetITSAStatusService.getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(GetITSAStatusModel(itsaStatus))
-        )
-
-        val result = resolver.resolve(sessionData, Some(CustomerLed))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
-        session(result).get(hmrcAsAgent) mustBe Some("true")
-
-        verify(mockGetITSAStatusService, times(1)).getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())
-      }
-    }
-
-    "redirect to Client already signed up (HOA06C) when OptBackIn feature switch is disabled" in {
-      disable(OptBackIn)
-      val result = resolver.resolve(sessionData, Some(CustomerLed))
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
-      session(result).get(hmrcAsAgent) mustBe Some("true")
-
-      verify(mockGetITSAStatusService, times(0)).getITSAStatus(
-        ArgumentMatchers.eq(sessionData)
-      )(ArgumentMatchers.any())
-    }
-
-    "throw an exception for Client migrated by HMRC (HOA06A) when triggered migration and income sources still need confirming" in {
-      Seq(HmrcLedUnconfirmed, HmrcLedConfirmed).foreach { channel =>
-        reset(mockReferenceRetrieval, mockSubscriptionDetailsService)
-        stubAgentReference()
-
-        when(mockSubscriptionDetailsService.fetchIncomeSourcesConfirmation(
-          ArgumentMatchers.eq(reference)
-        )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(None)
-        )
-
-        val result = resolver.resolve(sessionData, Some(channel))
-
-        intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC"
-
-        verify(mockGetITSAStatusService, times(0)).getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())
-      }
-    }
-
-    "throw an exception for Client opted out (HOA06B) when not triggered migration and ITSA status is Annual" in {
-      when(mockGetITSAStatusService.getITSAStatus(
-        ArgumentMatchers.eq(sessionData)
-      )(ArgumentMatchers.any())).thenReturn(
-        Future.successful(GetITSAStatusModel(Annual))
-      )
-
-      val result = resolver.resolve(sessionData, Some(CustomerLed))
-
-      intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06B - Client opted out"
-    }
-
-    "redirect to Client already signed up (HOA06C) when triggered migration, income sources confirmed, and client is not opted out" in {
-      Seq(HmrcLedUnconfirmed, HmrcLedConfirmed).foreach { channel =>
+      val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)
+      channels.foreach { channel =>
         notOptedOut.foreach { itsaStatus =>
-          reset(mockReferenceRetrieval, mockSubscriptionDetailsService, mockGetITSAStatusService)
-          stubAgentReference()
-
-          when(mockSubscriptionDetailsService.fetchIncomeSourcesConfirmation(
-            ArgumentMatchers.eq(reference)
-          )(ArgumentMatchers.any())).thenReturn(
-            Future.successful(Some(true))
-          )
+          reset(mockGetITSAStatusService)
 
           when(mockGetITSAStatusService.getITSAStatus(
             ArgumentMatchers.eq(sessionData)
@@ -186,20 +93,62 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
             Future.successful(GetITSAStatusModel(itsaStatus))
           )
 
-          val result = resolver.resolve(sessionData, Some(channel))
+          val result = resolver.resolve(sessionData, channel)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
           session(result).get(hmrcAsAgent) mustBe Some("true")
 
-          verify(mockReferenceRetrieval, times(1)).getAgentReference(
+          verify(mockGetITSAStatusService, times(1)).getITSAStatus(
             ArgumentMatchers.eq(sessionData)
-          )(
-            ArgumentMatchers.any(),
-            ArgumentMatchers.any(),
-            ArgumentMatchers.eq("test-arn")
-          )
+          )(ArgumentMatchers.any())
         }
+      }
+    }
+
+    "redirect to Client already signed up (HOA06C) when OptBackIn feature switch is disabled" in {
+      disable(OptBackIn)
+      val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)
+      channels.foreach { channel =>
+        reset(mockGetITSAStatusService)
+
+        val result = resolver.resolve(sessionData, channel)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
+        session(result).get(hmrcAsAgent) mustBe Some("true")
+
+        verify(mockGetITSAStatusService, times(0)).getITSAStatus(
+          ArgumentMatchers.eq(sessionData)
+        )(ArgumentMatchers.any())
+      }
+    }
+
+    "throw an exception for Client migrated by HMRC (HOA06A) when channel is unconfirmed" in {
+      val result = resolver.resolve(sessionData, Some(HmrcLedUnconfirmed))
+
+      intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC"
+
+      verify(mockGetITSAStatusService, times(0)).getITSAStatus(
+        ArgumentMatchers.eq(sessionData)
+      )(ArgumentMatchers.any())
+    }
+
+
+    "throw an exception for Client opted out (HOA06B) when not triggered migration and ITSA status is Annual" in {
+      val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)
+      channels.foreach { channel =>
+        reset(mockGetITSAStatusService)
+
+        when(mockGetITSAStatusService.getITSAStatus(
+          ArgumentMatchers.eq(sessionData)
+        )(ArgumentMatchers.any())).thenReturn(
+          Future.successful(GetITSAStatusModel(Annual))
+        )
+
+        val result = resolver.resolve(sessionData, channel)
+
+        intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06B - Client opted out"
       }
     }
   }

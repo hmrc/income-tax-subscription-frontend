@@ -22,12 +22,11 @@ import common.Constants.hmrcAsAgent
 import config.featureswitch.FeatureSwitch.OptBackIn
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
-import controllers.utils.ReferenceRetrieval
 import models.requests.agent.IdentifierRequest
-import models.{Channel, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
+import models.{Channel, HmrcLedUnconfirmed, SessionData}
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Request, Result}
-import services.{GetITSAStatusService, SubscriptionDetailsService}
+import play.api.mvc.{AnyContent, Result}
+import services.GetITSAStatusService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -35,46 +34,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusService,
-                                         referenceRetrieval: ReferenceRetrieval,
-                                         subscriptionDetailsService: SubscriptionDetailsService,
                                          val appConfig: AppConfig
-                                       )(implicit ec: ExecutionContext)
-  extends FeatureSwitching {
+                                       )(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def resolve(sessionData: SessionData, channel: Option[Channel])
              (implicit hc: HeaderCarrier, request: IdentifierRequest[AnyContent]): Future[Result] = {
-    implicit val userArn: String = request.arn
     goToAlreadySignedUp(sessionData, channel).map(_.addingToSession(hmrcAsAgent -> "true"))
   }
 
-  private def goToAlreadySignedUp(session: SessionData, channel: Option[Channel])
-                                 (implicit hc: HeaderCarrier, userArn: String, request: Request[AnyContent]): Future[Result] = {
-
-    val triggeredMigration = channel.exists {
-      case HmrcLedUnconfirmed | HmrcLedConfirmed => true
-      case _ => false
-    }
-
-    if (triggeredMigration) {
-      for {
-        reference <- referenceRetrieval.getAgentReference(session)
-        confirmed <- subscriptionDetailsService.fetchIncomeSourcesConfirmation(reference)
-        result <- if (!confirmed.contains(true)) {
-          Future.failed(new InternalServerException("AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC"))
-        } else {
-          getITSAStatus(session).flatMap {
-            case Some(Annual) => Future.failed(new InternalServerException("AlreadySignedUpResolver - Agent - HOA06B - Client opted out"))
-            case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show))
-          }
+  private def goToAlreadySignedUp(session: SessionData, channel: Option[Channel])(implicit hc: HeaderCarrier): Future[Result] =
+    channel match {
+      case Some(HmrcLedUnconfirmed) =>
+        Future.failed(
+          new InternalServerException("AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC")
+        )
+      case _ =>
+        getITSAStatus(session).map {
+          case Some(Annual) => throw new InternalServerException("AlreadySignedUpResolver - Agent - HOA06B - Client opted out")
+          case _ => Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show)
         }
-      } yield result
-    } else {
-      getITSAStatus(session).flatMap {
-        case Some(Annual) => Future.failed(new InternalServerException("AlreadySignedUpResolver - Agent - HOA06B - Client opted out"))
-        case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show))
-      }
     }
-  }
 
   private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] =
     if (isEnabled(OptBackIn)) {
