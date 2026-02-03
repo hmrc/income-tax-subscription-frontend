@@ -219,8 +219,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         }
 
         "redirect the user to client already subscribed page when user has an mtdSupprelationship" in {
-          // when user has a mtd relationship
-          // when user has a mtd Supprelationship
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
