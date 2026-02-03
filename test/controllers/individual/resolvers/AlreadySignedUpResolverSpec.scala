@@ -18,6 +18,9 @@ package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import config.MockConfig.mustBe
+import config.featureswitch.FeatureSwitch.OptBackIn
+import config.featureswitch.FeatureSwitching
+import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus.*
@@ -25,7 +28,7 @@ import models.status.GetITSAStatusModel
 import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
 import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.SEE_OTHER
@@ -38,13 +41,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 
-class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolmentAllocationService {
+class AlreadySignedUpResolverSpec extends ControllerSpec
+  with MockCheckEnrolmentAllocationService
+  with FeatureSwitching {
+
+  override val appConfig: AppConfig = MockConfig
 
   private val mockGetITSAStatusService = mock[GetITSAStatusService]
 
   private val resolver = new AlreadySignedUpResolver(
     mockCheckEnrolmentAllocationService,
-    mockGetITSAStatusService
+    mockGetITSAStatusService,
+    appConfig
   )
 
   private val sessionData = SessionData()
@@ -63,13 +71,22 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
   private val testMTDITID: String = "XAIT0000000001"
   private val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> testMTDITID)
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGetITSAStatusService)
+    enable(OptBackIn)
+  }
+
   "resolve" should {
     "Go to the already signed up page when user " +
       "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
       "and has enrolled" +
-      "amd has not opted-out" in {
+      "amd has not opted-out" +
+      "and OptBackIn FS in enabled" in {
+      enable(OptBackIn)
       Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
         notOptedOut.foreach { ITSAStatus =>
+          reset(mockGetITSAStatusService)
           mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
           when(mockGetITSAStatusService.getITSAStatus(
             ArgumentMatchers.eq(sessionData)
@@ -80,6 +97,29 @@ class AlreadySignedUpResolverSpec extends ControllerSpec with MockCheckEnrolment
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+          verify(mockGetITSAStatusService, times(1)).getITSAStatus(
+            ArgumentMatchers.eq(sessionData)
+          )(ArgumentMatchers.any())
+        }
+      }
+    }
+
+    "Go to the already signed up page when user " +
+      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
+      "and has enrolled" +
+      "and OptBackIn FS in disabled" in {
+      disable(OptBackIn)
+      Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
+        notOptedOut.foreach { ITSAStatus =>
+          reset(mockGetITSAStatusService)
+          mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
+          val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+          verify(mockGetITSAStatusService, times(0)).getITSAStatus(
+            ArgumentMatchers.eq(sessionData)
+          )(ArgumentMatchers.any())
         }
       }
     }

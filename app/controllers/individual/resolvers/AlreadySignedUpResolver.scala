@@ -17,7 +17,11 @@
 package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.OptBackIn
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import models.common.subscription.EnrolmentKey
+import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
 import play.api.mvc.Result
@@ -33,9 +37,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AlreadySignedUpResolver @Inject()(
   checkEnrolmentService: CheckEnrolmentAllocationService,
-  getITSAStatusService: GetITSAStatusService
-)(implicit ec: ExecutionContext) {
-
+  getITSAStatusService: GetITSAStatusService,
+  val appConfig: AppConfig
+)(implicit ec: ExecutionContext) extends FeatureSwitching {
+  
   def resolve(
     sessionData: SessionData,
     mtdItId: String,
@@ -50,14 +55,24 @@ class AlreadySignedUpResolver @Inject()(
           case Some(HmrcLedUnconfirmed) =>
             Future.successful(Redirect(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show))
           case _ =>
-            getITSAStatusService.getITSAStatus(sessionData).map { model => model.status match {
-              case Annual => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
+            getITSAStatus(sessionData).map {
+              case Some(Annual) => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
               case _ => Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)
             }
-        }}
+        }
       case _ =>
         throw new Exception("Error checking enrolment")
     }
+  }
+  
+  private def getITSAStatus(
+    sessionData: SessionData
+  )(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] = {
+    if (isEnabled(OptBackIn)) {
+      getITSAStatusService.getITSAStatus(sessionData).map(m => Some(m.status))
+    } else (
+      Future.successful(None)
+    )
   }
 
 }
