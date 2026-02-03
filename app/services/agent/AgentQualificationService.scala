@@ -33,7 +33,6 @@ sealed trait UnqualifiedAgent
 case object NoClientMatched extends UnqualifiedAgent
 
 case class ClientAlreadySubscribed(channel: Option[Channel], mtdId: String) extends UnqualifiedAgent
-//case class ClientAlreadySubscribed(mtdId: String) extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
