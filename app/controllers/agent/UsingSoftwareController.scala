@@ -18,91 +18,32 @@ package controllers.agent
 
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import forms.agent.UsingSoftwareForm.usingSoftwareForm
-import models.{No, Yes}
-import play.api.mvc._
-import services.{GetEligibilityStatusService, MandationStatusService, SessionDataService}
-import uk.gov.hmrc.http.InternalServerException
+import play.api.mvc.*
+import controllers.agent.actions.IdentifierAction
 import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class UsingSoftwareController @Inject()(view: UsingSoftware,
-                                        identify: IdentifierAction,
-                                        journeyRefiner: ConfirmedClientJourneyRefiner,
-                                        sessionDataService: SessionDataService,
-                                        eligibilityStatusService: GetEligibilityStatusService,
-                                        mandationStatusService: MandationStatusService)
+                                        identify: IdentifierAction)
                                        (val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents)
-  extends SignUpBaseController {
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    val sessionData = request.request.sessionData
-    for {
-      usingSoftwareStatus <- Future.successful(sessionData.fetchSoftwareStatus)
-      eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
-    } yield {
-      Ok(view(
-        usingSoftwareForm = usingSoftwareForm.fill(usingSoftwareStatus),
-        postAction = routes.UsingSoftwareController.submit(editMode),
-        clientName = request.clientDetails.name,
-        clientNino = request.clientDetails.formattedNino,
-        backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
-      ))
-    }
+  def show: Action[AnyContent] = identify { implicit request =>
+    Ok(view(
+      postAction = controllers.agent.routes.UsingSoftwareController.submit(),
+      backUrl = backUrl
+    ))
   }
 
-  def submit(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
-    val sessionData = request.request.sessionData
-    usingSoftwareForm.bindFromRequest().fold(
-      formWithErrors =>
-        eligibilityStatusService.getEligibilityStatus(sessionData) map { eligibilityStatus =>
-          BadRequest(view(
-            usingSoftwareForm = formWithErrors,
-            postAction = routes.UsingSoftwareController.submit(editMode),
-            clientName = request.clientDetails.name,
-            clientNino = request.clientDetails.formattedNino,
-            backUrl = backUrl(eligibilityStatus.eligibleNextYearOnly, editMode)
-          ))
-        },
-      yesNo =>
-        for {
-          usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-          eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
-          mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-        } yield {
-
-          val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-          val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
-
-          usingSoftwareStatus match {
-            case Left(_) =>
-              throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-            case Right(_) =>
-              if (editMode) {
-                Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
-              } else if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-              } else {
-                Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-              }
-          }
-        }
-    )
+  def submit: Action[AnyContent] = identify { _ =>
+    Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
   }
 
-  def backUrl(eligibleNextYearOnly: Boolean, editMode: Boolean): String = {
-    if (editMode) {
-      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-    } else if (eligibleNextYearOnly) {
-      controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
-    } else {
-      controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
-    }
+  def backUrl: String = {
+    appConfig.govukGuidanceITSASignUpAgentLink
   }
 }

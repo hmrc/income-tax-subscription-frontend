@@ -61,7 +61,8 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
               request = request,
               clientDetails = clientDetails,
               utr = utr,
-              reference = reference
+              reference = reference,
+              sessionData = sessionData
             ))
           }
         case state@(None | Some(ClientDetails | SignPosted)) =>

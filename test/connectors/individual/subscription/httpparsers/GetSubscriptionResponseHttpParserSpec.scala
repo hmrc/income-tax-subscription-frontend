@@ -17,13 +17,14 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponseHttpReads
+import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed}
 import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"
@@ -32,11 +33,13 @@ class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherVal
   "GetSubscriptionResponseHttpReads" when {
     "read" should {
       "parse a correctly formatted OK response as a Some(SubscriptionSuccess)" in {
-        val httpResponse = HttpResponse(OK, json = Json.toJson(SubscriptionSuccess(testMTDID)), Map.empty)
+        Seq(None, Some(CustomerLed), Some(HmrcLedUnconfirmed), Some(HmrcLedConfirmed)).foreach { channel =>
+          val httpResponse = HttpResponse(OK, json = Json.toJson(SubscriptionSuccess(testMTDID, channel)), Map.empty)
 
-        val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
+          val res = GetSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.value mustBe Some(SubscriptionSuccess(testMTDID))
+          res.value mustBe Some(SubscriptionSuccess(testMTDID, channel))
+        }
       }
 
       "parse an empty OK response as a None" in {

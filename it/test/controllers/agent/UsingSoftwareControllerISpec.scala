@@ -47,33 +47,6 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         )
       }
     }
-
-    "the Session Details Connector returns some data for Has Software" should {
-
-      "show(false) the Using Software page with a radio option selected" in {
-        val testOption: YesNo = Yes
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason= None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption)
-        ))
-
-
-        When(s"GET ${controllers.agent.routes.UsingSoftwareController.show().url}")
-        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
-
-        Then("The result should be OK with page content")
-        result must have(
-          httpStatus(OK),
-          pageTitle(messages("agent.using-software.heading") + serviceNameGovUk),
-          radioButtonSet(id = "yes-no", selectedRadioButton = Some(testOption.toString))
-        )
-      }
-    }
   }
 
   s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url}" should {
@@ -81,7 +54,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
       "the user is unauthenticated" in {
         AuthStub.stubUnauthorised()
 
-        val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(Yes))
+        val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware()
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -90,73 +63,23 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
       }
     }
 
-    s"return a redirect to ${controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
-      "the user selects the Yes radio button" in {
-        val userInput = Yes
-        Given("I setup the wiremock stubs")
+    s"return a redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" when {
+      "the user presses the Continue button" in {
+        Given("I am authenticated")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
-        SessionDataConnectorStub.stubSaveSessionData[YesNo](ITSASessionKeys.HAS_SOFTWARE, userInput)(OK)
 
         When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware()
 
         Then("Should return SEE_OTHER to the What Year To Sign Up Controller")
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
-        )
-      }
-    }
-
-    "return BAD_REQUEST and display an error box on screen without redirecting" when {
-      "the user does not select either option" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
-
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = None)
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        result must have(
-          httpStatus(BAD_REQUEST),
-          pageTitle("Error: " + messages("agent.using-software.heading") + serviceNameGovUk),
-          errorDisplayed()
-        )
-      }
-    }
-
-    "return INTERNAL_SERVER_ERROR" when {
-      "the Software Status could not be saved" in {
-        val userInput: YesNo = Yes
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
-        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.HAS_SOFTWARE, userInput)(INTERNAL_SERVER_ERROR)
-
-        When(s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url} is called")
-        val result = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(userInput))
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        result must have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          redirectURI(controllers.agent.matching.routes.ClientDetailsController.show().url)
         )
       }
     }

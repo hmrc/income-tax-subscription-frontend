@@ -62,8 +62,7 @@ class AgentWhatYouNeedToDoControllerSpec
     fakeConfirmedClientJourneyRefiner,
     mockGetEligibilityStatusService,
     mockMandationStatusService,
-    mockSubscriptionDetailsService,
-    mockSessionDataService
+    mockSubscriptionDetailsService
   )(appConfig)
 
   trait Setup {
@@ -74,8 +73,7 @@ class AgentWhatYouNeedToDoControllerSpec
       fakeConfirmedClientJourneyRefiner,
       mockGetEligibilityStatusService,
       mockMandationStatusService,
-      mockSubscriptionDetailsService,
-      mockSessionDataService
+      mockSubscriptionDetailsService
     )(appConfig)
   }
 
@@ -86,7 +84,6 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetAllSessionData(SessionData(Map(
-          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
         )))
 
@@ -109,15 +106,12 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-        mockGetAllSessionData(SessionData(Map(
-          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-        )))
 
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
+          ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -132,7 +126,6 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetAllSessionData(SessionData(Map(
-          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
         )))
 
@@ -140,7 +133,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
+          ArgumentMatchers.eq(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -155,7 +148,6 @@ class AgentWhatYouNeedToDoControllerSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockGetAllSessionData(SessionData(Map(
-          ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
         )))
 
@@ -180,7 +172,6 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockGetAllSessionData(SessionData(Map(
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
             ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
           )))
 
@@ -204,7 +195,6 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockGetAllSessionData(SessionData(Map(
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES),
             ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
           )))
 
@@ -212,7 +202,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(routes.UsingSoftwareController.show().url)
+            ArgumentMatchers.eq(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -229,15 +219,12 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Voluntary, Voluntary)
            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          mockGetAllSessionData(SessionData(Map(
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.routes.UsingSoftwareController.show().url)
+            ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -252,15 +239,12 @@ class AgentWhatYouNeedToDoControllerSpec
           mockGetMandationService(Voluntary, Mandated)
            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          mockGetAllSessionData(SessionData(Map(
-            ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
-          )))
 
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.routes.UsingSoftwareController.show().url)
+            ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -293,27 +277,27 @@ class AgentWhatYouNeedToDoControllerSpec
           backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
         }
       }
-      "return the Using Software page" when {
+      "return the Cannot sign up this year page" when {
         "the user is eligible for next year only" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
         }
         "the user is mandated for the current year" in new Setup {
 
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, Some(Current))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         }
       }
     }
     "the EmailCaptureConsent feature switch is enabled" when {
       "the user is eligible for next year only" should {
-        "return the Using Software page" in new Setup {
+        "return the Cannot sign up this year page" in new Setup {
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, captureConsentStatus = Some(Yes), Some(Next))
 
-          backUrl mustBe controllers.agent.routes.UsingSoftwareController.show().url
+          backUrl mustBe controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
         }
       }
       "the user is mandated or signing up for current year" should {

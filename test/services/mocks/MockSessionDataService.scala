@@ -20,7 +20,7 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.status.MandationStatusModel
+import models.status.{MandationStatusModel, GetITSAStatusModel}
 import models.{EligibilityStatus, SessionData, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -70,6 +70,11 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
 
   def mockSaveMandationStatus(mandationStatus: MandationStatusModel)(result: SaveSessionDataResponse): Unit = {
     when(mockSessionDataService.saveMandationStatus(ArgumentMatchers.eq(mandationStatus))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockSaveGetITSAStatus(getITSAStatus: GetITSAStatusModel)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveGetITSAStatus(ArgumentMatchers.eq(getITSAStatus))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

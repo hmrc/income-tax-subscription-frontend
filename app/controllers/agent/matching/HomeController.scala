@@ -16,57 +16,23 @@
 
 package controllers.agent.matching
 
-import auth.agent._
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import controllers.utils.ReferenceRetrieval
-import models.requests.agent.IdentifierRequest
-import play.api.mvc._
-import services._
+import play.api.mvc.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HomeController @Inject()
-                              (getEligibilityStatusService: GetEligibilityStatusService,
-                               subscriptionDetailsService: SubscriptionDetailsService,
-                               referenceRetrieval: ReferenceRetrieval,
-                               identify: IdentifierAction)
-                              (implicit val ec: ExecutionContext,
-                               mcc: MessagesControllerComponents) extends SignUpBaseController {
+class HomeController @Inject()(identify: IdentifierAction)
+                              (implicit val ec: ExecutionContext,mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def home: Action[AnyContent] = Action.async {
-    Future.successful(Redirect(controllers.agent.matching.routes.HomeController.index))
+    Future.successful(Redirect(routes.HomeController.index))
   }
 
   def index: Action[AnyContent] = identify.async { implicit request =>
-      if (request.session.get(JourneyStateKey).contains(AgentUserMatching.name)) {
-        Future.successful(Redirect(routes.ClientDetailsController.show()))
-      } else if (request.session.get(JourneyStateKey).contains(AgentSignUp.name)) {
-        continueToSignUp(request, request.arn)
-      } else {
-        Future.successful(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother()))
-      }
-    }
-
-  private def continueToSignUp(implicit request: IdentifierRequest[AnyContent], userArn: String): Future[Result] = {
-    val sessionData = request.sessionData
-    referenceRetrieval.getAgentReference(sessionData) flatMap { reference =>
-      subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) flatMap {
-        case Some(_) =>
-          Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show()))
-        case None =>
-          getEligibilityStatusService.getEligibilityStatus(sessionData) map { eligibilityStatus =>
-            if (eligibilityStatus.eligibleNextYearOnly) {
-              Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-            } else {
-              Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
-            }
-          }
-      }
-    }
+    Future.successful(Redirect(controllers.agent.routes.UsingSoftwareController.show()))
   }
 
 }

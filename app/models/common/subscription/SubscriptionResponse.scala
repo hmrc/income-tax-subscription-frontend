@@ -16,10 +16,13 @@
 
 package models.common.subscription
 
-import models.ConnectorError
-import play.api.libs.json.{Json, OFormat}
+import models.{Channel, ConnectorError}
+import play.api.libs.json.{Json, OFormat, Reads}
 
-case class SubscriptionSuccess(mtditId: String)
+case class SubscriptionSuccess(
+  mtditId: String,
+  channel: Option[Channel]
+)
 
 object SubscriptionSuccess {
   implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]

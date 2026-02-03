@@ -20,6 +20,7 @@ import controllers.individual.actions.ConfirmationJourneyRefiner
 import controllers.utils.ReferenceRetrieval
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary
+import models.SessionData
 import models.status.MandationStatusModel
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -40,7 +41,7 @@ trait MockConfirmationJourneyRefiner extends MockitoSugar with BeforeAndAfterEac
     mock[ReferenceRetrieval], mock[MandationStatusService]
   ) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
-      Future.successful(Right(ConfirmationRequest(request, reference, nino, utr, usingSoftware = true, mandationStatus)))
+      Future.successful(Right(ConfirmationRequest(request, reference, nino, utr, usingSoftware = true, mandationStatus, sessionData = SessionData())))
     }
   }
 

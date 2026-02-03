@@ -26,11 +26,17 @@ import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{Current, Next, SessionData}
 import play.api.libs.json.JsString
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import services.mocks._
+import play.api.test.Helpers.*
+import services.mocks.*
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers
 import views.agent.mocks.MockSignUpConfirmation
+import services.SignedUpDateService
 
 import scala.concurrent.Future
+import utilities.ImplicitDateFormatterImpl
+import uk.gov.hmrc.http.HeaderCarrier
+import java.time.LocalDate
 
 class ConfirmationControllerSpec extends ControllerSpec
   with MockSignUpConfirmation
@@ -47,13 +53,16 @@ class ConfirmationControllerSpec extends ControllerSpec
         val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(NO)
         ))
+        when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+          .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
         mockView(
           mandatedCurrentYear = true,
           mandatedNextYear = false,
           taxYearSelectionIsNext = false,
           name = clientDetails.name,
           nino = clientDetails.formattedNino,
-          usingSoftware = false
+          usingSoftware = false,
+          sessionData: SessionData
         )
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
@@ -67,13 +76,16 @@ class ConfirmationControllerSpec extends ControllerSpec
         val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
         ))
+        when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+          .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = true,
           taxYearSelectionIsNext = true,
           name = clientDetails.name,
           nino = clientDetails.formattedNino,
-          usingSoftware = true
+          usingSoftware = true,
+          sessionData: SessionData
         )
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
@@ -87,13 +99,16 @@ class ConfirmationControllerSpec extends ControllerSpec
         val sessionData = SessionData(Map(
           ITSASessionKeys.HAS_SOFTWARE -> JsString(YES)
         ))
+        when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
+          .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
         mockView(
           mandatedCurrentYear = false,
           mandatedNextYear = false,
           taxYearSelectionIsNext = true,
           name = clientDetails.name,
           nino = clientDetails.formattedNino,
-          usingSoftware = true
+          usingSoftware = true,
+          sessionData: SessionData
         )
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
@@ -115,11 +130,15 @@ class ConfirmationControllerSpec extends ControllerSpec
     }
   }
 
+  lazy val mockSignedUpDateService: SignedUpDateService = mock[SignedUpDateService]
+  implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = mock[ImplicitDateFormatterImpl]
+
   def testConfirmationController(sessionData: SessionData = SessionData()) = new ConfirmationController(
     mockSignUpConfirmation,
     fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmationJourneyRefiner,
     mockSubscriptionDetailsService,
+    mockSignedUpDateService,
     mockMandationStatusService
   )
 

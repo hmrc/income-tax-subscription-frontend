@@ -48,7 +48,7 @@ base.warning                                                    = Warning
 base.accept-and-continue                                        = Accept and continue
 base.tax-year.current                                           = Current tax year (6 April {0} to 5 April {1})
 base.tax-year.next                                              = Next tax year (6 April {0} to 5 April {1})
-base.print-page                                                 = Print this page
+base.print-page                                                 = Print or save this page.
 base.section-caption.hidden                                     = This section is
 base.or                                                         = or
 
@@ -349,27 +349,23 @@ agent.sign-up-confirmation.heading                                              
 agent.sign-up-confirmation.heading.panel.current                                    = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
 agent.sign-up-confirmation.heading.panel.next                                       = Your client is signed up for Making Tax Digital for Income Tax from {0} onwards
 
+agent.sign-up-confirmation.date                                                     = Date:
 
-agent.sign-up-confirmation.what-must-do.heading                                     = What you must do now
-agent.sign-up-confirmation.what-you-must-do.para1                                   = Read how to {0}
-agent.sign-up-confirmation.what-you-must-do.para1.link.text                         = use Making Tax Digital for Income Tax
-agent.sign-up-confirmation.what-you-must-do.para1.link.href                         = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
-agent.sign-up-confirmation.what-you-must-do.yes.this.year                           = You must use your software that works with Making Tax Digital for Income Tax.
-agent.sign-up-confirmation.what-you-must-do.no.this.year                            = You must find and use {0}
-agent.sign-up-confirmation.what-you-must-do.no.this.year.link.text                  = software that works with Making Tax Digital for Income Tax
-agent.sign-up-confirmation.what-you-must-do.no.this.year.link.href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.sign-up-confirmation.what-you-must-do.yes.next.year                           = From 6 April {0}, you must use your software that works with Making Tax Digital for Income Tax.
-agent.sign-up-confirmation.what-you-must-do.no.next.year                            = From 6 April {0}, you must find and use {1}
-agent.sign-up-confirmation.what-you-must-do.no.next.year.link.text                  = software that works with Making Tax Digital for Income Tax
-agent.sign-up-confirmation.what-you-must-do.no.next.year.link-href                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+agent.sign-up-confirmation.what-must-do.heading                                     = What happens next
 
-agent.sign-up-confirmation.what-you-must-do.para2                                   = Your chosen software will tell you what else you need to do, including:
-agent.sign-up-confirmation.what-you-must-do.bullet1                                 = how to authorise and connect the software to your agent services account
-agent.sign-up-confirmation.what-you-must-do.bullet2                                 = how to keep digital records
-agent.sign-up-confirmation.what-you-must-do.bullet3                                 = when and how to send quarterly updates
-agent.sign-up-confirmation.what-you-must-do.current.year.bullet4                    = if you need to send any missed or backdated updates for the current tax year - and how to send them
-agent.sign-up-confirmation.what-you-must-do.bullet5                                 = when and how to make your client’s tax return after the end of the tax year
-agent.sign-up-confirmation.what-you-must-do.para3                                   = And your client will need to pay the tax they owe.
+agent.sign-up-confirmation.you-must-use.para                                        = You must use {0} to submit your client’s Self Assessment tax return.
+agent.sign-up-confirmation.you-must-use.para.link-text                              = software that works with Making Tax Digital for Income Tax
+agent.sign-up-confirmation.you-must-use.para.link-href                              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+
+agent.sign-up-confirmation.mtd.heading                                              = Using Making Tax Digital for Income Tax
+agent.sign-up-confirmation.mtd.para                                                 = Read {0} to find out more information about:
+agent.sign-up-confirmation.mtd.para.link-text                                       = use Making Tax Digital for Income Tax
+agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+agent.sign-up-confirmation.mtd.bullet1                                              = how to submit your client’s Self Assessment tax return.
+agent.sign-up-confirmation.mtd.bullet2                                              = what to expect after you sign up your client
+agent.sign-up-confirmation.mtd.bullet3                                              = the different steps you will need to take during the tax year
+agent.sign-up-confirmation.mtd.bullet4                                              = help and support
+agent.sign-up-confirmation.mtd.para2                                                = Your chosen software will tell you what else you need to do.
 
 agent.sign-up-confirmation.manage-client-account.heading                            = Manage your clients’ accounts
 agent.sign-up-confirmation.manage-client-account.para1                              = Go to your {0}
@@ -431,52 +427,77 @@ individual.capture-consent.form-error               = Select yes if we can conta
 
 ## Sign Up Confirmation page ##
 sign-up-confirmation.heading                                         = Sign up complete
-sign-up-confirmation.heading.panel.current                           = is now signed up for Making Tax Digital for Income Tax for the current tax year ({0})
-sign-up-confirmation.heading.panel.next                              = is now signed up for Making Tax Digital for Income Tax for the next tax year ({0})
+sign-up-confirmation.heading.panel.current                           = You’re signed up for Making Tax Digital for Income Tax from ({0}) onwards
+sign-up-confirmation.heading.panel.next                              = You’re signed up for Making Tax Digital for Income Tax from ({0}) onwards
 
-sign-up-confirmation.what-you-must-do.heading                        = What you must do now
+sign-up-confirmation.date                                            = Date:
 
-sign-up-confirmation.read-how-to                                     = Read how to {0}
-sign-up-confirmation.read-how-to.link-text                           = use Making Tax Digital for Income Tax
-sign-up-confirmation.read-how-to.link-href                           = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
+sign-up-confirmation.what-you-must-do.heading                        = What happens next
 
-sign-up-confirmation.what-you-must-do.yes.this.year                  = You must use your software that works with Making Tax Digital for Income Tax.
-sign-up-confirmation.what-you-must-do.no.this.year                   = You must find and use {0}
+sign-up-confirmation.what-you-must-do.yes.this.year                  = You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax.
+
+sign-up-confirmation.what-you-must-do.no.this.year                   = You must get {0}
 sign-up-confirmation.what-you-must-do.no.this.year.link.text         = software that works with Making Tax Digital for Income Tax
 sign-up-confirmation-what-you-must-do.link-href                      = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+sign-up-confirmation-what-you-must-do.software-choices-para          = You must then use the software to:
+sign-up-confirmation-what-you-must-do.software-choices-bullet1       = create, store and correct digital records of your self-employment and property income and expenses
+sign-up-confirmation-what-you-must-do.software-choices-bullet2       = send your quarterly updates to HMRC
+sign-up-confirmation-what-you-must-do.software-choices-bullet3       = submit your tax return and pay tax due by 31 January the following year
 
-sign-up-confirmation.what-you-must-do.yes.next.year                  = From 6 April {0}, you must use your software that works with Making Tax Digital for Income Tax.
-sign-up-confirmation.what-you-must-do.no.next.year                   = From 6 April {0}, you must find and use {1}
-sign-up-confirmation.what-you-must-do.no.next.year.link.text         = software that works with Making Tax Digital for Income Tax
-sign-up-confirmation.what-you-must-do.no.next.year.link-href         = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
+sign-up-confirmation-what-you-must-do.software-choices.heading       = Using Making Tax Digital for Income Tax
+sign-up-confirmation-what-you-must-do.software-choices-para2         = Read {0} to find out more information about:
+sign-up-confirmation-what-you-must-do.no-para2.link-text             = use Making Tax Digital for Income Tax
+sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+sign-up-confirmation-what-you-must-do.software-choices-bullet4       = what to expect after you sign up
+sign-up-confirmation-what-you-must-do.software-choices-bullet5       = the different steps you will need to take during the tax year
+sign-up-confirmation-what-you-must-do.software-choices-bullet6       = help and support
 
-sign-up-confirmation.what-you-must-do.para1                          = Your chosen software will tell you what else you need to do, including:
-sign-up-confirmation.what-you-must-do.bullet1                        = how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment
-sign-up-confirmation.what-you-must-do.bullet2                        = how to keep digital records
-sign-up-confirmation.what-you-must-do.bullet3                        = when and how to send quarterly updates
-sign-up-confirmation.what-you-must-do.no.this.year.bullet4           = if you need to send any missed or backdated updates for the current tax year - and how to send them
-sign-up-confirmation.what-you-must-do.bullet5                        = when and how to make your tax return after the end of the tax year
-sign-up-confirmation.what-you-must-do.para2                          = And you will need to pay the tax you owe.
-
-sign-up-confirmation.report-previous-tax-year.heading                = Report previous tax year
-sign-up-confirmation.report-previous-tax-year.plus.one.heading       = Report current and previous tax years
-sign-up-confirmation.report-previous-tax-year.para                   = You must submit your Self Assessment tax returns for the years ended 5 April {0} using your HMRC online services account as normal.
+sign-up-confirmation.what-you-must-do.para1                          = You cannot use your HMRC online services to submit your other income sources for:
+sign-up-confirmation.what-you-must-do.bullet1                        = the remainder of the 2025 to 2026 tax year
+sign-up-confirmation.what-you-must-do.bullet2                        = the upcoming 2026 to 2027 tax year
+sign-up-confirmation.what-you-must-do.para2                          = But you must submit your Self Assessment tax returns for the tax years up to 5 April 2025 as normal.
 
 sign-up-confirmation.contact-support.heading                         = Get help with Making Tax Digital for Income Tax
-sign-up-confirmation.contact-support.phone-number                    = Phone: 03003 229 619
+sign-up-confirmation.contact-support.phone-number                    = Telephone: 03003 229 619
 sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
 sign-up-confirmation.contact-support.link-text                       = Find out about call charges
 sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
 
-sign-up-confirmation.preference-set.online.heading                   = Your communication preferences
-sign-up-confirmation.preference-set.online.para-one                  = If you’ve chosen to get your tax letters online, make sure you have verified your email address.
+sign-up-confirmation.survey.link-text                                = What did you think of this service
+sign-up-confirmation.survey.after                                    =    (takes 30 seconds)
 
+sign-up-confirmation.quarterly.updates.heading                       = Sending your quarterly updates
+sign-up-confirmation.quarterly.updates.para1                         = You need to send your quarterly updates for each of your sole trader and property income sources by:
+sign-up-confirmation.quarterly.updates.para2.start                   = You can {0}
+sign-up-confirmation.quarterly.updates.para2                         = read more about quarterly updates
+sign-up-confirmation.quarterly.updates.para2.link                    = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+
+sign-up-confirmation.quarterly.updates.deadline                      = Update deadline
+sign-up-confirmation.quarterly.updates.deadline.1                    = 7 August
+sign-up-confirmation.quarterly.updates.deadline.2                    = 7 November
+sign-up-confirmation.quarterly.updates.deadline.3                    = 7 February
+sign-up-confirmation.quarterly.updates.deadline.4                    = 7 May
+
+sign-up-confirmation.quarterly.updates.calendar                      = Calendar period
+sign-up-confirmation.quarterly.updates.calendar.1                    = 1 April to 30 June
+sign-up-confirmation.quarterly.updates.calendar.2                    = 1 April to 30 September
+sign-up-confirmation.quarterly.updates.calendar.3                    = 1 April to 31 December
+sign-up-confirmation.quarterly.updates.calendar.4                    = 1 April to 31 March
+
+sign-up-confirmation.quarterly.updates.standard                      = Standard period
+sign-up-confirmation.quarterly.updates.standard.1                    = 6 April to 5 July
+sign-up-confirmation.quarterly.updates.standard.2                    = 6 April to 5 October
+sign-up-confirmation.quarterly.updates.standard.3                    = 6 April to 5 January
+sign-up-confirmation.quarterly.updates.standard.4                    = 6 April to 5 April
+
+sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
+sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
 
 individual.digitally-exempt.heading                                  = You are exempt from Making Tax Digital for Income Tax
 individual.digitally-exempt.para                                     = HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change.
 individual.digitally-exempt.para1                                    = If your circumstances change, you must let HMRC know.
 individual.digitally-exempt.para2.link-text                          = Find out more about exemptions 
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax
 
 ## Errors ##
 
@@ -691,14 +712,10 @@ declined-sign-up-next-year.para                                 = You’ve chose
 
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Check you have compatible software
-agent.using-software.caption                                    = {0} – {1}
 agent.using-software.para1                                      = To use this service, you or your client must use software that works with Making Tax Digital for Income Tax.
 agent.using-software.para2                                      = If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
-agent.using-software.subheading                                 = Are you or your client using software that works with Making Tax Digital for Income Tax?
 agent.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
-agent.using-software.form-error                                 = Select ‘Yes’ if you or your client are using software to keep digital records and that software works with Making Tax Digital for Income Tax
-agent.using-software.no                                         = No, I’ll get software after I sign up my client
 
 ## Agent No Software Page ##
 agent.no-software.heading                                        = You need compatible software
@@ -848,16 +865,15 @@ agent.client-already-subscribed.heading                         = Your client ha
 agent.client-already-subscribed.para1                           = This client’s details are already in use.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                              = There is a problem
-agent.no-client-relationship.heading                            = There is a problem
+agent.no-client-relationship.title                              = You are not authorised by your client
+agent.no-client-relationship.heading                            = You are not authorised by your client
 agent.no-client-relationship.caption                            = {0} – {1}
-agent.no-client-relationship.para1                              = We cannot find your client’s authorisation in your agent services account.
-agent.no-client-relationship.para2                              = You need to:
-agent.no-client-relationship.bullet1                            = Check your {0}
-agent.no-client-relationship.bullet2                            = Make sure you have copied across all existing authorisations for all your clients and all your Government Gateway user IDs.
-agent.no-client-relationship.bullet3                            = If you still do not have this client’s authorisation, you’ll need to get a new authorisation from them.
-agent.no-client-relationship.para3                              = When you have your client’s authorisation, you can come back to sign them up.
-agent.no-client-relationship.link                               = agent services account
+agent.no-client-relationship.para1                              = You need to add your client’s authorisation to your agent services account before you can continue signing them up to Making Tax Digital for Income Tax.
+agent.no-client-relationship.para2                              = You can either:
+agent.no-client-relationship.bullet1.link                       = add your client’s authorisation
+agent.no-client-relationship.bullet1.link-href                  = https://www.tax.service.gov.uk/agent-client-relationships/authorisation-request
+agent.no-client-relationship.para3                              = You cannot sign up clients if they have not already registered for Self Assessment.
+agent.base.sign-up-another-client.2                             = sign up another client
 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
@@ -1130,7 +1146,6 @@ agent.global-check-your-answers.income-sources.foreign-property.start-date      
 agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
 agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
 agent.global-check-your-answers.tax-year.label                                                  = When you’re signing up from
-agent.global-check-your-answers.using-software                                                  = Software works with Making Tax Digital for Income Tax
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
 agent.global-check-your-answers.para2                                                           = The information you have given must be correct to the best of your knowledge.
@@ -1150,4 +1165,4 @@ agent.digitally-exempt.heading                                          = Your c
 agent.digitally-exempt.para                                             = HMRC has agreed that your client is digitally excluded. This means you do not need to use it unless your circumstances change.
 agent.digitally-exempt.para1                                            = If your client’s circumstances change, {0}
 agent.digitally-exempt.para1.link-text                                  = you or your client must let HMRC know.
-agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax

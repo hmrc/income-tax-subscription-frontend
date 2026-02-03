@@ -48,9 +48,7 @@ class HomeControllerSpec extends ControllerSpec
     ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
 
-  private def testHomeController() = new HomeController(mockGetEligibilityStatusService,
-    mockSubscriptionDetailsService,
-    mockReferenceRetrieval,
+  private def testHomeController() = new HomeController(
     fakeIdentifierAction
   )(executionContext, mockMessagesControllerComponents)
 
@@ -72,56 +70,12 @@ class HomeControllerSpec extends ControllerSpec
   }
 
   "index" when {
-    "the journey is in an agent user matching state" should {
-      "redirect to the enter client details page" in {
-        val result: Future[Result] = testHomeController().index()(userMatchingRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
-      }
-    }
-    "the journey is in an agent sign up state" when {
-      "the user has previously confirmed to sign up their client" should {
-        "redirect the user to the using software page" in {
-          mockFetchEligibilityInterruptPassed(Some(true))
-
-          val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show(false).url)
-        }
-      }
-      "the user has not previously confirmed to sign up their client" when {
-        "the user is eligible to sign up for next year only" should {
-          "redirect to the sign up next year only page" in {
-            mockFetchEligibilityInterruptPassed(None)
-             mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
-
-            val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-          }
-        }
-        "the user is eligible to sign up for both tax years" should {
-          "redirect to the client can sign up page" in {
-            mockFetchEligibilityInterruptPassed(None)
-            mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-
-            val result: Future[Result] = testHomeController().index()(agentSignUpRequest)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-          }
-        }
-      }
-    }
-    "the journey has no state" should {
-      "redirect to the add another client route" in {
+    "the journey is an agent with no state" should {
+      "redirect user to the using software page" in {
         val result: Future[Result] = testHomeController().index()(FakeRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+        redirectLocation(result) mustBe Some(controllers.agent.routes.UsingSoftwareController.show().url)
       }
     }
   }

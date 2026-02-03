@@ -16,6 +16,7 @@
 
 package models.requests.agent
 
+import models.SessionData
 import play.api.mvc.WrappedRequest
 import utilities.UserMatchingSessionUtil.ClientDetails
 
@@ -23,7 +24,8 @@ case class ConfirmedClientRequest[A](
                                       request: IdentifierRequest[A],
                                       clientDetails: ClientDetails,
                                       utr: String,
-                                      reference: String
+                                      reference: String,
+                                      sessionData: SessionData
                                     ) extends WrappedRequest[A](request) {
 
   val arn: String = request.arn

@@ -135,7 +135,7 @@ GET         /business/progress-saved                             controllers.ind
 GET         /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.individual.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 
-# remove UK property buisness confirmation page
+# remove UK property business confirmation page
 GET         /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.show
 POST        /business/remove-uk-property-business                controllers.individual.tasklist.ukproperty.RemoveUkPropertyController.submit
 
@@ -154,3 +154,6 @@ POST        /details/income-sources-incomplete                   controllers.ind
 # Global Check Your Answers
 GET         /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.show
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
+
+GET         /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.show
+GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show

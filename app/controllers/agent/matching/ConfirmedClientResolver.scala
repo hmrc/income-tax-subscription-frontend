@@ -39,6 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         getEligibilityStatusService: GetEligibilityStatusService,
+                                        mandationStatusService: MandationStatusService,
                                         throttlingService: ThrottlingService,
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
@@ -102,13 +103,21 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
         failureReason = None
       ))
       eligibilityInterrupt <- subscriptionDetailsService.fetchEligibilityInterruptPassed(reference)
+      eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
+      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
       prePopResult <- prePopDataService.prePopIncomeSources(reference, nino)
     } yield {
       prePopResult match {
         case PrePopResult.PrePopSuccess =>
           eligibilityInterrupt match {
             case Some(_) =>
-              Redirect(controllers.agent.routes.UsingSoftwareController.show())
+              val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+              val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+              if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+              } else {
+                Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+              }
             case None =>
               if (nextYearOnly) {
                 Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)

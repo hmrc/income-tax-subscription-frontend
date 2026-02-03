@@ -55,8 +55,6 @@
 
     <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.subheading-two")</h2>
 
-    @usingSoftwareSection(softwareStatus)
-
     @taxYearSection(completeDetails.taxYear)
 
     @incomeSourcesSection(completeDetails.incomeSources)
@@ -90,32 +88,6 @@
     @incomeSources.ukProperty.map(toUKPropertyDisplay)
     @incomeSources.foreignProperty.map(toForeignPropertyDisplay)
 
-}
-
-@usingSoftwareSection(softwareStatus: Option[YesNo]) = {
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.using-software"))),
-                value = Value(content = Text(
-                    softwareStatus match {
-                        case Some(Yes) => messages("base.yes")
-                        case Some(No) => messages("agent.using-software.no")
-                        case _ => ""
-                    }
-                )),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = controllers.agent.routes.UsingSoftwareController.show(true).url,
-                            content = Text(messages("base.change")),
-                            visuallyHiddenText = Some(messages("agent.global-check-your-answers.using-software"))
-                        )
-                    )
-                ))
-            )
-        )
-    ))
 }
 
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {

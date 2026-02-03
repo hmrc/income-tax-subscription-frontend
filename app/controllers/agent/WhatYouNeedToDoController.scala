@@ -36,8 +36,7 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                           journeyRefiner: ConfirmedClientJourneyRefiner,
                                           eligibilityStatusService: GetEligibilityStatusService,
                                           mandationStatusService: MandationStatusService,
-                                          subscriptionDetailsService: SubscriptionDetailsService,
-                                          sessionDataService: SessionDataService
+                                          subscriptionDetailsService: SubscriptionDetailsService
                                          )(val appConfig: AppConfig)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController with FeatureSwitching {
@@ -48,7 +47,6 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
       eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
       mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      softwareStatus = sessionData.fetchSoftwareStatus
       consentYesNo = sessionData.fetchConsentStatus
     } yield {
       Ok(view(
@@ -72,7 +70,7 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
   def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, captureConsentStatus: Option[YesNo], taxYearSelection: Option[AccountingYear]): String = {
     if (isEnabled(EmailCaptureConsent)) {
       if (eligibleNextYearOnly) {
-        controllers.agent.routes.UsingSoftwareController.show().url
+        controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
       } else {
         (taxYearSelection, captureConsentStatus) match {
           case (Some(Current), Some(Yes)) => controllers.agent.email.routes.EmailCaptureController.show().url
@@ -81,10 +79,10 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
         }
       }
     } else {
-      if (!(eligibleNextYearOnly || mandatedCurrentYear)) {
-        controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      } else {
-        controllers.agent.routes.UsingSoftwareController.show().url
+      (eligibleNextYearOnly, mandatedCurrentYear) match {
+        case (false, false) => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        case (false, true) => controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
+        case _ => controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
       }
     }
   }

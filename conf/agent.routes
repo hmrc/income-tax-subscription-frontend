@@ -63,8 +63,8 @@ GET         /business/what-year-to-sign-up                      controllers.agen
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
 # Using software
-GET         /using-software                                     controllers.agent.UsingSoftwareController.show(editMode: Boolean ?= false)
-POST        /using-software                                     controllers.agent.UsingSoftwareController.submit(editMode: Boolean ?= false)
+GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
+POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()
 
 # Capture consent routes
 GET         /capture-consent                                    controllers.agent.email.CaptureConsentController.show()
@@ -112,11 +112,11 @@ GET         /business/progress-saved                            controllers.agen
 GET         /business/remove-sole-trader-business                controllers.agent.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)
 POST        /business/remove-sole-trader-business                controllers.agent.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.submit(id: String)
 
-# remove UK property buisness confirmation page
+# remove UK property business confirmation page
 GET         /business/remove-uk-property-business                controllers.agent.tasklist.ukproperty.RemoveUkPropertyController.show
 POST        /business/remove-uk-property-business                controllers.agent.tasklist.ukproperty.RemoveUkPropertyController.submit
 
-# Remove overseas property buisness confirmation page
+# Remove overseas property business confirmation page
 GET         /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 

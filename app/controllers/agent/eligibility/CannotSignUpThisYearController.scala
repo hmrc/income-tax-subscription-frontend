@@ -16,6 +16,7 @@
 
 package controllers.agent.eligibility
 
+import services.*
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +37,7 @@ class CannotSignUpThisYearController @Inject()(identify: IdentifierAction,
   }
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
-    Redirect(controllers.agent.routes.UsingSoftwareController.show(false))
+    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
   }
 
 }
