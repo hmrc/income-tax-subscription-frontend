@@ -16,15 +16,49 @@
 
 package controllers.agent.resolvers
 
-import models.Channel
-import play.api.mvc.Call
+import config.AppConfig
+import config.featureswitch.FeatureSwitching
+import common.Constants.hmrcAsAgent
+import config.featureswitch.FeatureSwitch.OptBackIn
+import models.status.GetITSAStatus
+import models.status.GetITSAStatus.Annual
+import models.requests.agent.IdentifierRequest
+import models.{Channel, HmrcLedUnconfirmed, SessionData}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContent, Result}
+import services.GetITSAStatusService
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AlreadySignedUpResolver {
-  
-  def resolve(reason: Option[Channel]): Call =
-    controllers.agent.matching.routes.ClientAlreadySubscribedController.show
+class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusService,
+                                         val appConfig: AppConfig
+                                       )(implicit ec: ExecutionContext) extends FeatureSwitching {
 
+  def resolve(sessionData: SessionData, channel: Option[Channel])
+             (implicit hc: HeaderCarrier, request: IdentifierRequest[AnyContent]): Future[Result] = {
+    goToAlreadySignedUp(sessionData, channel).map(_.addingToSession(hmrcAsAgent -> "true"))
+  }
+
+  private def goToAlreadySignedUp(session: SessionData, channel: Option[Channel])(implicit hc: HeaderCarrier): Future[Result] =
+    channel match {
+      case Some(HmrcLedUnconfirmed) =>
+        Future.failed(
+          new InternalServerException("AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC")
+        )
+      case _ =>
+        getITSAStatus(session).map {
+          case Some(Annual) => throw new InternalServerException("AlreadySignedUpResolver - Agent - HOA06B - Client opted out")
+          case _ => Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show)
+        }
+    }
+
+  private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] =
+    if (isEnabled(OptBackIn)) {
+      getITSAStatusService.getITSAStatus(sessionData).map(r => Some(r.status))
+    } else {
+      Future.successful(None)
+    }
 }
