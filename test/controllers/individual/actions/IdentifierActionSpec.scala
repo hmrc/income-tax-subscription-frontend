@@ -21,6 +21,7 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import config.MockConfig
 import models.SessionData
+import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -29,11 +30,11 @@ import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.MockSessionDataService
+import services.mocks.{MockAuditingService, MockSessionDataService}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.InternalServerException
 
@@ -41,10 +42,11 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth with MockSessionDataService {
+class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach with MockAuth with MockSessionDataService with MockAuditingService {
 
   val identifierAction: IdentifierAction = new IdentifierAction(
     authConnector = mockAuth,
+    auditingService = mockAuditingService,
     parser = app.injector.instanceOf[BodyParsers.Default],
   )(MockConfig, mockSessionDataService)
 
@@ -200,6 +202,12 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some("")
+
+        verifyAudit(IVHandoffAuditModel(
+          handoffReason = "individual",
+          currentConfidence = ConfidenceLevel.L200.level,
+          minConfidence = 250
+        ))
       }
     }
     "authorising an assistant" must {

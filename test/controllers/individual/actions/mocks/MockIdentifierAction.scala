@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{BodyParsers, Request, Result}
-import services.SessionDataService
+import services.{AuditingService, SessionDataService}
 import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,7 +45,7 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
   )
 
   val fakeIdentifierAction: IdentifierAction = new IdentifierAction(
-    mock[AuthConnector], mock[BodyParsers.Default]
+    mock[AuthConnector], mock[AuditingService], mock[BodyParsers.Default]
   )(MockConfig, mockSessionDataService) {
     override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
       block(IdentifierRequest(
@@ -58,7 +58,7 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def fakeIdentifierActionWithSessionData(sessionData: SessionData): IdentifierAction = new IdentifierAction(
-    mock[AuthConnector], mock[BodyParsers.Default]
+    mock[AuthConnector], mock[AuditingService], mock[BodyParsers.Default]
   )(MockConfig, mockSessionDataService) {
     override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
       block(IdentifierRequest(
