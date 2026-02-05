@@ -20,6 +20,7 @@ import auth.individual.PostSubmissionController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
+import views.html.individual.ConfirmIncomeSources
 import views.html.individual.matching.AlreadyEnrolled
 
 import javax.inject.{Inject, Singleton}
@@ -28,14 +29,23 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CheckIncomeSourcesController @Inject()(val auditingService: AuditingService,
                                    val authService: AuthService,
-                                   val alreadyEnrolledView: AlreadyEnrolled)
+                                   val alreadyEnrolledView: AlreadyEnrolled,
+                                   val confirmIncomeSourcesView: ConfirmIncomeSources
+                                            )
                                   (implicit val ec: ExecutionContext,
                                    val appConfig: AppConfig,
                                    mcc: MessagesControllerComponents) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(alreadyEnrolledView())
+      Ok(confirmIncomeSourcesView(
+        postAction = controllers.individual.handoffs.routes.CheckIncomeSourcesController.show
+      ))
+  }
+
+  def submit: Action[AnyContent] = Authenticated { _ =>
+    _ =>
+      Redirect(routes.CheckIncomeSourcesController.show)
   }
 
 }
