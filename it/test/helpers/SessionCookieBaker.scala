@@ -16,7 +16,7 @@
 
 package helpers
 
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import play.api.libs.crypto.CookieSigner
 import uk.gov.hmrc.crypto.{PlainText, SymmetricCryptoFactory}
 import uk.gov.hmrc.http.SessionKeys
