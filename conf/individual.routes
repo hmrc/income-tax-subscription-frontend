@@ -157,3 +157,4 @@ POST        /final-check-your-answers                            controllers.ind
 
 GET         /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.show
 GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show
+POST        /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.submit

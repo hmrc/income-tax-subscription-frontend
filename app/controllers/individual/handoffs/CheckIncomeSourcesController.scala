@@ -29,7 +29,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CheckIncomeSourcesController @Inject()(val auditingService: AuditingService,
                                    val authService: AuthService,
-                                   val alreadyEnrolledView: AlreadyEnrolled,
                                    val confirmIncomeSourcesView: ConfirmIncomeSources
                                             )
                                   (implicit val ec: ExecutionContext,
@@ -39,13 +38,13 @@ class CheckIncomeSourcesController @Inject()(val auditingService: AuditingServic
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(confirmIncomeSourcesView(
-        postAction = controllers.individual.handoffs.routes.CheckIncomeSourcesController.show
+        postAction = controllers.individual.handoffs.routes.CheckIncomeSourcesController.submit
       ))
   }
 
   def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(routes.CheckIncomeSourcesController.show)
+      Redirect(controllers.individual.routes.YouCanSignUpController.show)
   }
 
 }
