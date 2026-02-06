@@ -308,6 +308,6 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val timeoutWarningInSeconds: String = config.getString("session-timeout.warning")
   override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
   
-  override def getVAndCUrl: String = config.getString("view-and-change.url")
+  override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
 
 }
