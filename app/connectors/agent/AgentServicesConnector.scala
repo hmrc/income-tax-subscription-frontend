@@ -17,7 +17,7 @@
 package connectors.agent
 
 import config.AppConfig
-import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus}
+import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus, suppAgentClientMtditidURI, agentClientMtditidURI}
 import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -69,6 +69,21 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
       }
   }
 
+  def isMTDRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    val url = appConfig.agentClientRelationshipsUrl + agentClientMtditidURI(arn, mtdId)
+
+    http
+      .get(url"${url}")
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => Right(true)
+        case res if res.status == Status.NOT_FOUND => Right(false)
+        case res =>
+          logger.warn(s"[AgentServicesConnector][isMTDRelationship] failure, status: ${res.status} body=${res.body}")
+          Left(UnexpectedStatus(res.status))
+      }
+  }
+
   def suppAgentClientURL(arn: String, nino: String): String = {
     appConfig.agentClientRelationshipsUrl + AgentServicesConnector.suppAgentClientURI(arn, nino)
   }
@@ -86,6 +101,22 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
           Left(UnexpectedStatus(res.status))
       }
   }
+
+  def isMTDSuppRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    val url = appConfig.agentClientRelationshipsUrl + suppAgentClientMtditidURI(arn: String, mtdId: String)
+
+
+    http
+      .get(url"${url}")
+      .execute[HttpResponse]
+      .map {
+        case res if res.status == Status.OK => Right(true)
+        case res =>
+          logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
+          Left(UnexpectedStatus(res.status))
+      }
+  }
+
 
   private def agentClientURL(nino: String): URL = {
     url"${appConfig.agentClientRelationshipsUrl}/itsa-post-signup/create-relationship/$nino"
@@ -121,4 +152,10 @@ object AgentServicesConnector {
   def suppAgentClientURI(arn: String, nino: String): String =
     s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT-SUPP/client/ni/$nino"
 
+  def agentClientMtditidURI(arn: String, mtdId: String): String =
+    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT/client/MTDITID/$mtdId"
+
+  def suppAgentClientMtditidURI(arn: String, mtdId: String): String =
+    s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT-SUPP/client/MTDITID/$mtdId"
+  
 }

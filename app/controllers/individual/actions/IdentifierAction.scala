@@ -20,14 +20,15 @@ import common.Constants
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import models.SessionData
+import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import models.requests.individual.IdentifierRequest
 import play.api.Logging
-import play.api.mvc.Results._
-import play.api.mvc._
-import services.SessionDataService
+import play.api.mvc.*
+import play.api.mvc.Results.*
+import services.{AuditingService, SessionDataService}
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -37,6 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 class IdentifierAction @Inject()(val authConnector: AuthConnector,
+                                 val auditingService: AuditingService,
                                  val parser: BodyParsers.Default)
                                 (appConfig: AppConfig,
                                  sessionDataService: SessionDataService)
@@ -65,8 +67,14 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
             ))
           }
         }
-      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ _ ~ _ =>
-        Future.successful(Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request))
+      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ confidenceLevel ~ _ =>
+        auditingService.audit(IVHandoffAuditModel(
+          handoffReason = "individual",
+          currentConfidence = confidenceLevel.level,
+          minConfidence = appConfig.identityVerificationRequiredConfidenceLevel.level
+        ))(implicitly, request) map { _ =>
+          Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request)
+        }
       case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ =>
         logger.info(s"[Individual][IdentifierAction] - Non 'User' credential role. Redirecting to cannot use service page.")
         Future.successful(Redirect(controllers.individual.matching.routes.CannotUseServiceController.show()))

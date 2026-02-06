@@ -156,4 +156,6 @@ GET         /final-check-your-answers                            controllers.ind
 POST        /final-check-your-answers                            controllers.individual.GlobalCheckYourAnswersController.submit
 
 GET         /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.show
+POST        /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.submit
+
 GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show

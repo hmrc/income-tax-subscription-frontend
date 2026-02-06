@@ -63,7 +63,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 
-  override val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
+  override val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = ConfidenceLevel.L250
   override val identityVerificationURL: String = ""
 
   override val citizenDetailsURL: String = ""
@@ -125,6 +125,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override val channelPreferencesUrl: String = "/channel-preferences"
 
+  override def getVAndCUrl: String = "/view-and-change/home"
 }
 
 object MockConfig extends MockConfig {

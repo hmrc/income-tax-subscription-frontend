@@ -1166,3 +1166,8 @@ agent.digitally-exempt.para                                             = HMRC h
 agent.digitally-exempt.para1                                            = If your client’s circumstances change, {0}
 agent.digitally-exempt.para1.link-text                                  = you or your client must let HMRC know.
 agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax
+
+individual.opted-out.title                                              = Manage your reporting obligations
+individual.opted-out.heading                                            = Manage your reporting obligations
+individual.opted-out.p1                                                 = If you want to use Making Tax Digital for Income Tax, you need to change your reporting obligations.
+individual.opted-out.p2                                                 = You’ll need to use the same sign in details that you use for your Self Assessment tax return.

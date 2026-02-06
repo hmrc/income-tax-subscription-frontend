@@ -16,26 +16,31 @@
 
 package controllers.individual.handoffs
 
-import auth.individual.PostSubmissionController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.OptedOut
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class OptedOutController @Inject()(val auditingService: AuditingService,
-                                   val authService: AuthService,
-                                   val alreadyEnrolledView: AlreadyEnrolled)
-                                  (implicit val ec: ExecutionContext,
-                                          val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents) extends PostSubmissionController {
+class OptedOutController @Inject()(
+  view: OptedOut,
+  identity: IdentifierAction,
+  appConfig: AppConfig
+)(implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(alreadyEnrolledView())
+  def show: Action[AnyContent] = identity { implicit request =>
+    Ok(view(
+      postAction = controllers.individual.handoffs.routes.OptedOutController.submit,
+      noEnrolment = request.mtditid.isEmpty
+    ))
+  }
+
+  def submit: Action[AnyContent] = identity { implicit request =>
+    Redirect(appConfig.getVAndCUrl)
   }
 
 }

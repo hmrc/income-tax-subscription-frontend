@@ -63,7 +63,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       withClientDetails { clientDetails =>
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
-          case Left(ClientAlreadySubscribed(channel)) => Future.successful(handleClientAlreadySubscribed(clientDetails, channel))
+          case Left(ClientAlreadySubscribed(channel,_)) => handleClientAlreadySubscribed(clientDetails, channel)
           case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
           case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
@@ -145,7 +145,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
   }
 
   private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel])
-                                           (implicit request: IdentifierRequest[_]): Result = {
+                                           (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
       agentReferenceNumber = Some(request.arn),
@@ -154,7 +154,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       eligibility = "ineligible",
       failureReason = Some("client-already-signed-up")
     ))
-    Redirect(resolver.resolve(reason)).removingFromSession(FailedClientMatching)
+    resolver.resolve(request.sessionData, reason).map(_.removingFromSession(FailedClientMatching))
   }
 
   private def handleUnexpectedFailure(clientDetails: UserDetailsModel)
