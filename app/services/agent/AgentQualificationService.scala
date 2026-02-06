@@ -22,7 +22,8 @@ import models.common.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import services.{AuditingService, SubscriptionService, UserMatchingService}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.domain.SaAgentReference
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +32,8 @@ sealed trait UnqualifiedAgent
 
 case object NoClientMatched extends UnqualifiedAgent
 
-case class ClientAlreadySubscribed(channel: Option[Channel]) extends UnqualifiedAgent
+case class ClientAlreadySubscribed(channel: Option[Channel], mtdId: String) extends UnqualifiedAgent
+//case class ClientAlreadySubscribed(mtdId: String) extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
@@ -74,15 +76,29 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       agentClientResponse <- subscriptionService.getSubscription(matchedClient.clientNino)
         .collect {
           case Right(None) => Right(matchedClient)
-          case Right(Some(SubscriptionSuccess(_, channel))) => Left(ClientAlreadySubscribed(channel))
+          case Right(Some(SubscriptionSuccess(mtditId, channel))) => Left(ClientAlreadySubscribed(channel,mtditId))
+//          case Right(Some(SubscriptionSuccess(mtdId, _))) => Left(ClientAlreadySubscribed(mtdId))
         }
     } yield agentClientResponse
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
   private[services]
-  def checkClientRelationship(agentReferenceNumber: String,
-                              matchedClient: QualifiedAgent
-                             )(implicit hc: HeaderCarrier): Future[ReturnType] = {
+  def checkMTDClientRelationship(agentReferenceNumber: String, mtdId: String, matchedClient: QualifiedAgent, channel: Option[Channel])(implicit hc: HeaderCarrier): Future[ReturnType] = {
+    clientRelationshipService.isMTDRelationship(agentReferenceNumber, mtdId) flatMap {
+      case Right(true) => Future.successful(Left(ClientAlreadySubscribed(channel,mtdId)))
+      case Right(false) => clientRelationshipService.isMTDSupportingRelationship(agentReferenceNumber, mtdId) map {
+        case Right(true) => Left(ClientAlreadySubscribed(channel, mtdId))
+        case Right(false) => Left(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
+        case Left(_) => throw new InternalServerException("[todo] unable to fetch client relationship") // TODO update this
+      }
+      case Left(_) => throw new InternalServerException("[todo] unable to fetch client relationship") // TODO update this
+    }
+  }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure))}
+
+  private[services]
+  def checkSAClientRelationship(agentReferenceNumber: String,
+                                matchedClient: QualifiedAgent
+                               )(implicit hc: HeaderCarrier): Future[ReturnType] = {
     for {
       isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(agentReferenceNumber, matchedClient.clientNino)
     } yield
@@ -101,8 +117,18 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
   def orchestrateAgentQualification(clientDetails: UserDetailsModel, agentReferenceNumber: String)
                                    (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
     matchClient(clientDetails, agentReferenceNumber)
-      .flatMapRight(checkClientRelationship(agentReferenceNumber, _))
-      .flatMapRight(checkExistingSubscription)
+      .flatMap {
+        case Right(qualifiedAgent: QualifiedAgent) =>
+          checkExistingSubscription(qualifiedAgent).flatMap {
+            case Right(qualifiedAgent: QualifiedAgent) =>
+              checkSAClientRelationship(agentReferenceNumber = agentReferenceNumber, matchedClient = qualifiedAgent)
+            case Left(ClientAlreadySubscribed(channel,mtdId)) =>
+              checkMTDClientRelationship(agentReferenceNumber = agentReferenceNumber, mtdId = mtdId, matchedClient = qualifiedAgent, channel = channel)
+            case Left(unqualifiedAgent: UnqualifiedAgent) => Future.successful(Left(unqualifiedAgent))
+          }
+        case Left(unqualifiedAgent: UnqualifiedAgent) => Future.successful(Left(unqualifiedAgent))
+      }
+
 }
 
 

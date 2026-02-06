@@ -86,7 +86,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val response = await(call)
 
-      response mustBe Left(ClientAlreadySubscribed(None))
+      response mustBe Left(ClientAlreadySubscribed(None, testMTDID))
     }
 
     "return ApprovedAgent if the client does not have a subscription" in {
@@ -101,7 +101,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
   "AgentQualificationService.checkClientRelationship" should {
 
     def call: Future[TestAgentQualificationService.ReturnType] =
-      TestAgentQualificationService.checkClientRelationship(testARN, matchedClient)
+      TestAgentQualificationService.checkSAClientRelationship(testARN, matchedClient)
 
     "return UnexpectedFailure if something went awry" in {
       preExistingRelationshipFailure(testARN, testNino)(new Exception())
@@ -153,12 +153,13 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
     "return ClientAlreadySubscribed if the client already has subscription" in {
       preExistingRelationship(testARN, testClientDetails.nino)(true)
+      mtdRelationship(testARN,testMTDID)
 
-      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None))
+      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None, testMTDID))
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Left(ClientAlreadySubscribed(None))
+      await(result) mustBe Left(ClientAlreadySubscribed(None, testMTDID))
 
       verifyClientMatchingSuccessAudit()
     }
@@ -166,6 +167,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return UnApprovedAgent if the agent does not have prior relationship with the client" in {
 
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = false)
+      setupGetSubscription(nino = testNino)
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 

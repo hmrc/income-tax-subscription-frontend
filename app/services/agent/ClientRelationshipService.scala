@@ -30,12 +30,20 @@ class ClientRelationshipService @Inject()(val agentServicesConnector: AgentServi
     agentServicesConnector.isPreExistingRelationship(arn, nino)
   }
 
+  def isMTDRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    agentServicesConnector.isMTDRelationship(arn, mtdId)
+  }
+
   def isMTDPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     agentServicesConnector.isMTDPreExistingRelationship(arn, nino)
   }
 
   def isMTDSuppAgentRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     agentServicesConnector.isMTDSuppAgentRelationship(arn, nino)
+  }
+
+  def isMTDSupportingRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
+    agentServicesConnector.isMTDSuppAgentRelationship(arn, mtdId)
   }
   
   def isMTDAgentRelationship(nino: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {

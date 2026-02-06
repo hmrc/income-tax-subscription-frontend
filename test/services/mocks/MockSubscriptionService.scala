@@ -59,6 +59,15 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
 
   def setupMockGetSubscriptionException(nino: String): Unit =
     mockGetSubscription(nino)(Future.failed(testException))
+
+  def setupGetSubscription(nino: String): Unit = {
+    when(mockSubscriptionService.getSubscription(
+      ArgumentMatchers.eq(testNino)
+    )(ArgumentMatchers.any()))
+      .thenReturn(
+        Future.successful(Right(None))
+      )
+  }
 }
 
 trait TestSubscriptionService extends MockSubscriptionConnector {
