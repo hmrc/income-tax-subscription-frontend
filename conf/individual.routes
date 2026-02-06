@@ -159,4 +159,4 @@ GET         /hand-offs/opted-out                                 controllers.ind
 POST        /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.submit
 
 GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show
-POST         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.submit
+POST        /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.submit

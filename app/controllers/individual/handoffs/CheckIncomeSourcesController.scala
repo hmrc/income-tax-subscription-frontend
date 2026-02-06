@@ -19,27 +19,29 @@ package controllers.individual.handoffs
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.handoffs.CheckIncomeSources
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CheckIncomeSourcesController @Inject()(view: CheckIncomeSources,
-                                             identity: IdentifierAction,
-                                             appConfig: AppConfig
-                                            )
-                                  (implicit val mcc: MessagesControllerComponents) extends SignUpBaseController {
+class CheckIncomeSourcesController @Inject()(identify: IdentifierAction,
+                                             checkIncomeSources: CheckIncomeSources,
+                                             appConfig: AppConfig)
+                                            (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = identity { implicit request =>
-      Ok(view(
-        postAction = controllers.individual.handoffs.routes.CheckIncomeSourcesController.submit
-      ))
+  val show: Action[AnyContent] = identify { implicit request =>
+    Ok(checkIncomeSources(
+      postAction = routes.CheckIncomeSourcesController.submit,
+      hasMTDITID = request.mtditid.isDefined
+    ))
   }
 
-  def submit: Action[AnyContent] = identity { implicit request =>
-      Redirect(appConfig.getVAndCUrl)
+  val submit: Action[AnyContent] = identify { implicit request =>
+    request.mtditid match {
+      case Some(_) => Redirect(appConfig.getVAndCUrl)
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getVAndCUrl))
+    }
   }
 
 }

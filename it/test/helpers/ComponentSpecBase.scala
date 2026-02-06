@@ -17,39 +17,39 @@
 package helpers
 
 import _root_.common.Constants.ITSASessionKeys
-import _root_.common.Constants.ITSASessionKeys._
-import auth.individual.{JourneyState, SignUp, ClaimEnrolment => ClaimEnrolmentJourney}
+import _root_.common.Constants.ITSASessionKeys.*
+import auth.individual.{JourneyState, SignUp, ClaimEnrolment as ClaimEnrolmentJourney}
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
-import forms.individual._
+import forms.individual.*
 import forms.individual.accountingperiod.{AccountingPeriodForm, AccountingPeriodNonStandardForm}
-import forms.individual.business._
+import forms.individual.business.*
 import forms.individual.email.{CaptureConsentForm, EmailCaptureForm}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models._
+import models.*
 import models.common.BusinessAccountingPeriod
 import models.individual.JourneyStep.{Confirmation, PreSignUp}
 import org.jsoup.nodes.Element
-import org.scalatest._
+import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api._
+import play.api.*
 import play.api.data.Form
 import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{JsArray, JsString, JsValue, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.UUIDProvider
-import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 
 import java.time.LocalDate
 import java.util.UUID
@@ -360,6 +360,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
+    def getCheckIncomeSources: WSResponse = get("/hand-offs/check-income-sources")
+
+    def postCheckIncomeSources: WSResponse = post("/hand-offs/check-income-sources")(Map.empty)
+
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def getRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
@@ -405,6 +409,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     }
 
     def showNonStandardAccountingPeriod(): WSResponse = get("/accounting-period-non-standard")
+
     def submitNonStandardAccountingPeriod(request: Option[YesNo]): WSResponse = {
       post("/accounting-period-non-standard")(
         request.fold(Map.empty[String, Seq[String]])(
@@ -518,9 +523,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def individualSigningUpPost(): WSResponse = post("/eligibility/signing-up")(Map.empty)
 
-    def agentIndex(): WSResponse = get ("/eligibility/client")
+    def agentIndex(): WSResponse = get("/eligibility/client")
 
-    def individualIndex(): WSResponse = get ("/eligibility")
+    def individualIndex(): WSResponse = get("/eligibility")
 
   }
 

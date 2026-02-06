@@ -15,32 +15,32 @@
  *@
 
 @import config.AppConfig
-@import views.html.helpers.ButtonHelper
 @import views.html.templates.PrincipalMainTemplate
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.helpers.ContinueButton
 
 @this(
-        principalMainTemplate: PrincipalMainTemplate,
-        buttonHelper: ButtonHelper,
-        continueButton: ContinueButton,
-        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-        form: FormWithCSRF
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton
 )
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@principalMainTemplate(title = messages("handoff.check-income-sources.heading")) {
+@(postAction: Call, hasMTDITID: Boolean)(implicit request: Request[_], messages: Messages)
 
-    <h1 class="govuk-heading-l">@messages("handoff.check-income-sources.heading")</h1>
+@mainTemplate(title = messages("individual.check-income-sources.heading")) {
 
-    <p class="govuk-body">@messages("handoff.check-income-sources.para")</p>
+    <h1 class="govuk-heading-l">@messages("individual.check-income-sources.heading")</h1>
 
-    <h2 class="govuk-heading-m">@messages("handoff.check-income-sources.heading2")</h2>
+    <p class="govuk-body">@messages("individual.check-income-sources.para-one")</p>
 
-    <p class="govuk-body">@messages("handoff.check-income-sources.para2")</p>
+    <h2 class="govuk-heading-m">@messages("individual.check-income-sources.next-steps.heading")</h2>
+
+    <p class="govuk-body">@messages("individual.check-income-sources.next-steps.para-one")</p>
+
+    @if(!hasMTDITID) {
+        <p class="govuk-body">@messages("individual.check-income-sources.next-steps.para-two")</p>
+    }
 
     @form(action = postAction) {
-        @continueButton(alternateText = Some(messages("handoff.check-income-sources.continue")))
+        @continueButton()
     }
 }
