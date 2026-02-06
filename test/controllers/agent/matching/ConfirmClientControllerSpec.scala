@@ -29,13 +29,13 @@ import org.mockito.Mockito.*
 import play.api.http.Status
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.*
+import play.api.test.Helpers.{await, *}
 import play.twirl.api.HtmlFormat
 import services.agent.*
 import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingTestSupport
-import utilities.agent.TestConstants.{testNino, testUtr}
+import utilities.agent.TestConstants.{testMTDID, testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
 import views.html.agent.matching.CheckYourClientDetails
 
@@ -198,7 +198,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
         "the client entered has already been signed up" should {
           "redirect to resolver" in withController { controller =>
             setupMockNotLockedOut(testARN)
-            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None))
+            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None,mtdId = testMTDID))
 
             val result: Future[Result] = controller.submit()(builtRequest)
 
