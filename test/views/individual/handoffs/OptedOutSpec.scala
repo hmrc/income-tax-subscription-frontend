@@ -33,8 +33,7 @@ class OptedOutSpec extends ViewSpec {
         new TemplateViewTest(
           view = page(noEnrolment),
           isAgent = false,
-          title = OptedOut.title,
-          hasSignOutLink = false
+          title = OptedOut.title
         )
       }
 
