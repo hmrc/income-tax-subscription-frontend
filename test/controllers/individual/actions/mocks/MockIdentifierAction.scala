@@ -70,4 +70,17 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
       ))
     }
   }
+
+  def fakeIdentifierAction(noEnrolment: Boolean): IdentifierAction = new IdentifierAction(
+    mock[AuthConnector], mock[BodyParsers.Default]
+  )(MockConfig, mockSessionDataService) {
+    override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+      block(IdentifierRequest(
+        request = request,
+        mtditid = if (noEnrolment) None else Some(mtditid),
+        nino = nino,
+        utr = Some(utr)
+      ))
+    }
+  }
 }

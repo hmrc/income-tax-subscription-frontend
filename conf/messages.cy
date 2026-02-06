@@ -1163,3 +1163,8 @@ agent.digitally-exempt.para                                             = Mae CT
 agent.digitally-exempt.para1                                            = Os bydd amgylchiadau eich cleient yn newid, {0}
 agent.digitally-exempt.para1.link-text                                  = mae`n rhaid i chi neu eich cleient roi gwybod i CThEF.
 agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
+
+individual.opted-out.title                                              = Rheoli eich ymrwymiadau o ran adrodd
+individual.opted-out.heading                                            = Rheoli eich ymrwymiadau o ran adrodd
+individual.opted-out.p1                                                 = Mae`n rhaid i chi newid eich ymrwymiadau o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.opted-out.p2                                                 = Bydd angen i chi fewngofnodi eto gan ddefnyddio`r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
