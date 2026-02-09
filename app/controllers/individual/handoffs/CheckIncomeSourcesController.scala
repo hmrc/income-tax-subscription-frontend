@@ -16,20 +16,17 @@
 
 package controllers.individual.handoffs
 
-import auth.individual.PostSubmissionController
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
-import views.html.individual.ConfirmIncomeSources
+import views.html.individual.handoffs.CheckIncomeSources
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class CheckIncomeSourcesController @Inject()(view: ConfirmIncomeSources,
+class CheckIncomeSourcesController @Inject()(view: CheckIncomeSources,
                                              identity: IdentifierAction,
                                              appConfig: AppConfig
                                             )

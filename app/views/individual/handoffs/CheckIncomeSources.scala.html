@@ -30,17 +30,17 @@
 )
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@principalMainTemplate(title = messages("handoff.confirm-income-sources.heading")) {
+@principalMainTemplate(title = messages("handoff.check-income-sources.heading")) {
 
-    <h1 class="govuk-heading-l">@messages("handoff.confirm-income-sources.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("handoff.check-income-sources.heading")</h1>
 
-    <p class="govuk-body">@messages("handoff.confirm-income-sources.para")</p>
+    <p class="govuk-body">@messages("handoff.check-income-sources.para")</p>
 
-    <h2 class="govuk-heading-m">@messages("handoff.confirm-income-sources.heading2")</h2>
+    <h2 class="govuk-heading-m">@messages("handoff.check-income-sources.heading2")</h2>
 
-    <p class="govuk-body">@messages("handoff.confirm-income-sources.para2")</p>
+    <p class="govuk-body">@messages("handoff.check-income-sources.para2")</p>
 
     @form(action = postAction) {
-        @continueButton()
+        @continueButton(alternateText = Some(messages("handoff.check-income-sources.continue")))
     }
 }
