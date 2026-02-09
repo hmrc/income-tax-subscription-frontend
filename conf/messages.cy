@@ -302,6 +302,13 @@ claim-enrolment.claim-already-signed-up.content                    = Os na allwc
 claim-enrolment.claim-already-signed-up.content.link1              = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
 claim-enrolment.claim-already-signed-up.content.link2              = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
+## Handoff Check Income Sources
+handoff.check-income-sources.heading                             = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
+handoff.check-income-sources.para                                = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+handoff.check-income-sources.heading2                            = Camau nesaf
+handoff.check-income-sources.para2                               = Mae’n rhaid i chi gadarnhau bod eich ffynonellau incwm fel unig fasnachwr a’ch ffynonellau incwm o eiddo wedi’u diweddaru.
+handoff.check-income-sources.continue                            = Parhau
+
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
 sign-up-complete.can-use-software                               = Gallwch nawr ddefnyddio meddalwedd er mwyn anfon diweddariadau ynghylch Treth Incwm

@@ -16,26 +16,30 @@
 
 package controllers.individual.handoffs
 
-import auth.individual.PostSubmissionController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.CheckIncomeSources
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class CheckIncomeSourcesController @Inject()(val auditingService: AuditingService,
-                                   val authService: AuthService,
-                                   val alreadyEnrolledView: AlreadyEnrolled)
-                                  (implicit val ec: ExecutionContext,
-                                   val appConfig: AppConfig,
-                                   mcc: MessagesControllerComponents) extends PostSubmissionController {
+class CheckIncomeSourcesController @Inject()(view: CheckIncomeSources,
+                                             identity: IdentifierAction,
+                                             appConfig: AppConfig
+                                            )
+                                  (implicit val mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(alreadyEnrolledView())
+  val show: Action[AnyContent] = identity { implicit request =>
+      Ok(view(
+        postAction = controllers.individual.handoffs.routes.CheckIncomeSourcesController.submit
+      ))
+  }
+
+  def submit: Action[AnyContent] = identity { implicit request =>
+      Redirect(appConfig.getVAndCUrl)
   }
 
 }
