@@ -297,17 +297,17 @@ claim-enrolment.confirmation.content.para3                      = Rydym yn eich 
 claim-enrolment.confirmation.continue-button                    = Yn eich blaen i’ch cyfrif gwasanaethau ar-lein CThEF
 
 ## Claim Enrolment Already Signed Up
-claim-enrolment.claim-already-signed-up.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.claim-already-signed-up.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif gwasanaethau ar-lein CThEF arall. Gallwch wneud y canlynol:
-claim-enrolment.claim-already-signed-up.content.link1              = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
-claim-enrolment.claim-already-signed-up.content.link2              = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+claim-enrolment.claim-already-signed-up.content                 = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif gwasanaethau ar-lein CThEF arall. Gallwch wneud y canlynol:
+claim-enrolment.claim-already-signed-up.content.link1           = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
+claim-enrolment.claim-already-signed-up.content.link2           = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
 ## Handoff Check Income Sources
-handoff.check-income-sources.heading                             = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
-handoff.check-income-sources.para                                = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-handoff.check-income-sources.heading2                            = Camau nesaf
-handoff.check-income-sources.para2                               = Mae’n rhaid i chi gadarnhau bod eich ffynonellau incwm fel unig fasnachwr a’ch ffynonellau incwm o eiddo wedi’u diweddaru.
-handoff.check-income-sources.continue                            = Parhau
+individual.check-income-sources.heading                         = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
+individual.check-income-sources.para-one                        = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.check-income-sources.next-steps.heading              = Camau nesaf
+individual.check-income-sources.next-steps.para-one             = Mae’n rhaid i chi gadarnhau bod eich ffynonellau incwm fel unig fasnachwr a’ch ffynonellau incwm o eiddo wedi’u diweddaru.
+individual.check-income-sources.next-steps.para-two             = Bydd angen i chi fewngofnodi eto gan ddefnyddio’r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm

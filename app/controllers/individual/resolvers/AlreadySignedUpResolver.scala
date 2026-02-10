@@ -19,7 +19,7 @@ package controllers.individual.resolvers
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitching
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
@@ -29,24 +29,24 @@ import play.api.mvc.Results.Redirect
 import services.GetITSAStatusService
 import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AlreadySignedUpResolver @Inject()(
-  checkEnrolmentService: CheckEnrolmentAllocationService,
-  getITSAStatusService: GetITSAStatusService,
-  val appConfig: AppConfig
-)(implicit ec: ExecutionContext) extends FeatureSwitching {
-  
-  def resolve(
-    sessionData: SessionData,
-    mtdItId: String,
-    channel: Option[Channel]
-  )(implicit hc: HeaderCarrier): Future[Result] = {
+class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAllocationService,
+                                        getITSAStatusService: GetITSAStatusService,
+                                        val appConfig: AppConfig)
+                                       (implicit ec: ExecutionContext) extends FeatureSwitching {
+
+  def resolve(sessionData: SessionData,
+              mtdItId: String,
+              channel: Option[Channel])
+             (implicit hc: HeaderCarrier): Future[Result] = {
+
     val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> mtdItId)
+
     checkEnrolmentService.getGroupIdForEnrolment(enrolmentKey).flatMap {
       case Right(_) =>
         Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
@@ -61,18 +61,16 @@ class AlreadySignedUpResolver @Inject()(
             }
         }
       case _ =>
-        throw new Exception("Error checking enrolment")
+        throw new InternalServerException("[AlreadySignedUpResolver][resolve] - error checking if enrolment exists elsewhere")
     }
   }
-  
-  private def getITSAStatus(
-    sessionData: SessionData
-  )(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] = {
+
+  private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] = {
     if (isEnabled(OptBackIn)) {
       getITSAStatusService.getITSAStatus(sessionData).map(m => Some(m.status))
-    } else (
+    } else {
       Future.successful(None)
-    )
+    }
   }
 
 }

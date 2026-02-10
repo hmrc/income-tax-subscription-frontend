@@ -325,12 +325,12 @@ claim-enrolment.claim-already-signed-up.content                 = If you cannot 
 claim-enrolment.claim-already-signed-up.content.link1           = check if your Self Assessment is in another account
 claim-enrolment.claim-already-signed-up.content.link2           = retrieve sign in details for your other account
 
-## Handoff Check Income Sources
-handoff.check-income-sources.heading                            = You must confirm your income sources
-handoff.check-income-sources.para                               = You’re already signed up to Making Tax Digital for Income Tax.
-handoff.check-income-sources.heading2                           = Next steps
-handoff.check-income-sources.para2                              = You need to confirm your sole trader and property income sources are up to date.
-handoff.check-income-sources.continue                           = Continue
+## Individual Handoff Check Income Sources
+individual.check-income-sources.heading                         = You must confirm your income sources
+individual.check-income-sources.para-one                        = You’re already signed up to Making Tax Digital for Income Tax.
+individual.check-income-sources.next-steps.heading              = Next steps
+individual.check-income-sources.next-steps.para-one             = You need to confirm your sole trader and property income sources are up to date.
+individual.check-income-sources.next-steps.para-two             = You’ll need to sign in again using the same sign in details that you use for your Self Assessment tax return.
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = You have signed up to use software to send Income Tax updates
