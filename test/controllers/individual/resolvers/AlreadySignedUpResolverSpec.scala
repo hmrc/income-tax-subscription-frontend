@@ -126,13 +126,33 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
 
     "Go to the claim enrollment when user " +
       "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
-      "and has not enrolled" in {
+      "and has not enrolled" +
+      "and OptBackIn FS is disabled" in {
+      disable(OptBackIn)
       Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
         mockGetGroupIdForEnrolment(enrolmentKey)(Right(EnrolmentNotAllocated))
         val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
+      }
+    }
+
+    "Go to the opted-out page when user " +
+      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
+      "and has not enrolled" +
+      "and has opted-out" in {
+      Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
+        mockGetGroupIdForEnrolment(enrolmentKey)(Right(EnrolmentNotAllocated))
+        when(mockGetITSAStatusService.getITSAStatus(
+          ArgumentMatchers.eq(sessionData)
+        )(ArgumentMatchers.any())).thenReturn(
+          Future.successful(GetITSAStatusModel(Annual))
+        )
+        val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.handoffs.routes.OptedOutController.show.url)
       }
     }
 
