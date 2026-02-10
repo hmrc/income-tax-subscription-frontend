@@ -49,7 +49,10 @@ class AlreadySignedUpResolver @Inject()(
     val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, mtdItsaEnrolmentIdentifierKey -> mtdItId)
     checkEnrolmentService.getGroupIdForEnrolment(enrolmentKey).flatMap {
       case Right(_) =>
-        Future.successful(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show))
+        getITSAStatus(sessionData).map {
+          case Some(Annual) => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
+          case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
+        }
       case Left(EnrolmentAlreadyAllocated(_)) =>
         channel match {
           case Some(HmrcLedUnconfirmed) =>
