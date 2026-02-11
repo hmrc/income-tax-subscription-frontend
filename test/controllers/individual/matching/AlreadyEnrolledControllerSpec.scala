@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService {
 
   val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
-  when(mockAlreadyEnrolledView()(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  when(mockAlreadyEnrolledView(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
@@ -47,16 +47,26 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
 
-    def call(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.show(request)
+    def show(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.show(request)
+    def submit(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.submit(request)
 
     "return an OK with the error page" in {
       mockAuthEnrolled()
 
-      lazy val result = call(subscriptionRequest)
+      lazy val result = show(subscriptionRequest)
 
       status(result) must be(Status.OK)
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
+    }
+
+    "redirect " in {
+      mockAuthEnrolled()
+
+      lazy val result = submit(subscriptionRequest)
+
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result) must be(Some(appConfig.getAccountUrl))
     }
   }
 

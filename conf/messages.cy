@@ -283,9 +283,13 @@ timeout.heading                                                 = Mae’ch sesiw
 timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = Rydych chi eisoes wedi cofrestru
-already-enrolled.heading                                        = Rydych chi eisoes wedi cofrestru
-already-enrolled.line1                                          = Mae’ch manylion mewngofnodi eisoes yn cael eu defnyddio.
+already-enrolled.title                                          = Rydych eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+already-enrolled.heading                                        = Rydych eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+already-enrolled.line1                                          = Gallai hyn fod oherwydd y canlynol:
+already-enrolled.b1                                             = gwnaethoch gofrestru o’r blaen
+already-enrolled.b2                                             = mae rhywun sy’n eich helpu gyda’ch treth, fel asiant, eisoes wedi’ch cofrestru
+already-enrolled.h2                                             = Y camau nesaf
+already-enrolled.line2                                          = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif

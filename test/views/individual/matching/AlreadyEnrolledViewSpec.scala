@@ -17,11 +17,13 @@
 package views.individual.matching
 
 import controllers.SignOutController
+import messagelookup.agent.MessageLookup.Base
 import messagelookup.individual.MessageLookup
 import models.DateModel
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import play.api.mvc.AnyContentAsEmpty
+import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
@@ -33,8 +35,9 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
-  lazy val page: HtmlFormat.Appendable = alreadyEnrolled()(request, implicitly)
+  lazy val page: HtmlFormat.Appendable = alreadyEnrolled(Call("", ""))(request, implicitly)
   lazy val document: Document = Jsoup.parse(page.body)
+  lazy val main: Elements = document.select("main")
 
   "The Already Enrolled view" should {
 
@@ -45,22 +48,40 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
     s"has a heading (H1)" which {
 
-      lazy val heading = document.select("H1")
+      lazy val heading = main.select("H1")
 
       s"has the text '${MessageLookup.AlreadyEnrolled.heading}'" in {
         heading.text() mustBe MessageLookup.AlreadyEnrolled.heading
       }
 
       s"has a line '${MessageLookup.AlreadyEnrolled.line1}'" in {
-        document.select(".govuk-body").text must be(MessageLookup.AlreadyEnrolled.line1)
+        main.select("p").get(0).text must be(MessageLookup.AlreadyEnrolled.line1)
+      }
+
+      s"has a bullet '${MessageLookup.AlreadyEnrolled.b1}'" in {
+        main.select("li").get(0).text must be(MessageLookup.AlreadyEnrolled.b1)
+      }
+
+      s"has a bullet '${MessageLookup.AlreadyEnrolled.b2}'" in {
+        main.select("li").get(1).text must be(MessageLookup.AlreadyEnrolled.b2)
       }
     }
 
-    "have a sign out button" in {
-      val actionSignOut = document.getElementById("sign-out-button")
-      actionSignOut.attr("role") mustBe "button"
-      actionSignOut.text() mustBe MessageLookup.Base.signOut
-      actionSignOut.attr("href") mustBe SignOutController.signOut.url
+    s"has a heading (H2)" which {
+
+      lazy val heading = main.select("H2")
+
+      s"has the text '${MessageLookup.AlreadyEnrolled.h2}'" in {
+        heading.text() mustBe MessageLookup.AlreadyEnrolled.h2
+      }
+
+      s"has a line '${MessageLookup.AlreadyEnrolled.line2}'" in {
+        main.select("#line2").text must be(MessageLookup.AlreadyEnrolled.line2)
+      }
+    }
+
+    "have a continue button" in {
+      main.select(".govuk-button").text mustBe Base.continue
     }
 
     "have a sign out link" in {

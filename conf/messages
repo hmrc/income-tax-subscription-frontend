@@ -306,9 +306,13 @@ timeout.heading                                                 = Your session h
 timeout.return-to-home                                           = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You’ve already signed up
-already-enrolled.heading                                        = You’ve already signed up
-already-enrolled.line1                                          = Your sign in details are already in use.
+already-enrolled.title                                          = You’re already signed up to use Making Tax Digital for Income Tax
+already-enrolled.heading                                        = You’re already signed up to use Making Tax Digital for Income Tax
+already-enrolled.line1                                          = This could be because:
+already-enrolled.b1                                             = you previously signed up
+already-enrolled.b2                                             = someone who helps you with your tax, like an agent, has already signed you up
+already-enrolled.h2                                             = Next steps
+already-enrolled.line2                                          = You can manage your Self Assessment details from HMRC online services.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your account

@@ -126,6 +126,9 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val channelPreferencesUrl: String = "/channel-preferences"
 
   override def getVAndCUrl: String = "/view-and-change/home"
+
+  override def getAccountUrl: String = "/account"
+
 }
 
 object MockConfig extends MockConfig {

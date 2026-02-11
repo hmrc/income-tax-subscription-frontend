@@ -37,9 +37,13 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You’ve already signed up"
-    val heading = "You’ve already signed up"
-    val line1 = "Your sign in details are already in use."
+    val title = "You’re already signed up to use Making Tax Digital for Income Tax"
+    val heading = "You’re already signed up to use Making Tax Digital for Income Tax"
+    val line1 = "This could be because:"
+    val b1 = "you previously signed up"
+    val b2 = "someone who helps you with your tax, like an agent, has already signed you up"
+    val h2 = "Next steps"
+    val line2 = "You can manage your Self Assessment details from HMRC online services."
   }
 
   object ClaimEnrollmentConfirmation {

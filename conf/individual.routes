@@ -23,6 +23,7 @@ GET         /session-timeout                                     controllers.ind
 
 # Already enrolled
 GET         /already-enrolled                                    controllers.individual.matching.AlreadyEnrolledController.show
+POST        /already-enrolled                                    controllers.individual.matching.AlreadyEnrolledController.submit
 
 # No NINO Routes
 GET         /register-for-SA                                     controllers.individual.matching.NoSAController.show
