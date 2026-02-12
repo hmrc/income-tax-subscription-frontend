@@ -50,7 +50,7 @@ class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusServi
         )
       case _ =>
         getITSAStatus(session).map {
-          case Some(Annual) => throw new InternalServerException("AlreadySignedUpResolver - Agent - HOA06B - Client opted out")
+          case Some(Annual) => Redirect(controllers.agent.handoffs.routes.OptedOutController.show)
           case _ => Redirect(controllers.agent.matching.routes.ClientAlreadySubscribedController.show)
         }
     }

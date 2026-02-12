@@ -138,3 +138,7 @@ POST        /final-check-your-answers                            controllers.age
 
 # Cannot Go Back To Previous Client
 GET         /cannot-go-back-to-previous-client                   controllers.agent.matching.CannotGoBackToPreviousClientController.show
+
+# Handoffs
+GET         /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.show
+POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.submit
