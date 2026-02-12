@@ -14,16 +14,21 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.AgentMainTemplate
 @import views.html.helpers.ContinueButton
+@import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
 @this(
-    mainTemplate: PrincipalMainTemplate,
+    mainTemplate: AgentMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    appConfig: AppConfig,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
 )
 
-@(noEnrolment: Boolean, postAction: Call)(implicit request: Request[_], messages: Messages)
+@(changeAction: Call, postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.opted-out.heading")) {
 
@@ -31,17 +36,26 @@
 
     <p class="govuk-body">@messages("agent.opted-out.paragraph")</p>
 
-    <ol class="govuk-list govuk-list--bullet">
-        @form(action = postAction) {
-        <li>@messages("agent.opted-out.bullet1")</li>
-            }
-        
-        <li>@SignUpAnotherClient</li>
-    </ol>
-}
+    <p class="govuk-body">@messages("agent.opted-out.paragraph2")</p>
 
-@SignUpAnotherClient = @{
     <div>
-        <a id="continue" class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.opted-out.bullet2")}</a>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                @form(action = changeAction) {
+                <a href="@appConfig.getVAndCUrl" class="govuk-link">
+                    @messages("agent.opted-out.bullet1")
+                </a>
+                }
+            </li>
+            <li>
+                @form(action = postAction) {
+                <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link">
+                    @messages("agent.opted-out.bullet2")
+                </a>
+                }
+            </li>
+        </ul>
     </div>
 }
+
+

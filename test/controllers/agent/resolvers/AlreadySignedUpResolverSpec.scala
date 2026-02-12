@@ -135,7 +135,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
     }
 
 
-    "throw an exception for Client opted out (HOA06B) when not triggered migration and ITSA status is Annual" in {
+    "Go to Client opted out (HOA06B) when not triggered migration and ITSA status is Annual" in {
       val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)
       channels.foreach { channel =>
         reset(mockGetITSAStatusService)
@@ -148,7 +148,8 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
 
         val result = resolver.resolve(sessionData, channel)
 
-        intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06B - Client opted out"
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.handoffs.routes.OptedOutController.show.url)
       }
     }
   }

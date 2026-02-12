@@ -142,3 +142,4 @@ GET         /cannot-go-back-to-previous-client                   controllers.age
 # Handoffs
 GET         /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.show
 POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.submit
+POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.change

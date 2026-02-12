@@ -18,7 +18,7 @@ package controllers.agent.handoffs
 
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
+import controllers.agent.actions.IdentifierAction
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.handoffs.OptedOut
@@ -34,12 +34,16 @@ class OptedOutController @Inject()(
 
   def show: Action[AnyContent] = identity { implicit request =>
     Ok(view(
-      postAction = controllers.agent.handoffs.routes.OptedOutController.submit,
-      noEnrolment = request.mtditid.isEmpty
+      changeAction = controllers.agent.handoffs.routes.OptedOutController.change,
+      postAction = controllers.agent.handoffs.routes.OptedOutController.submit
     ))
   }
 
-  def submit: Action[AnyContent] = identity { implicit request =>
+  def change: Action[AnyContent] = identity { implicit request =>
     Redirect(appConfig.getVAndCUrl)
+  }
+
+  def submit: Action[AnyContent] = identity { implicit request =>
+    Redirect(controllers.agent.routes.AddAnotherClientController.addAnother().url)
   }
 }
