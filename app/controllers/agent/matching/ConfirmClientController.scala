@@ -26,6 +26,7 @@ import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.requests.agent.IdentifierRequest
 import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
+import play.api.libs.json.Json
 import play.api.mvc.*
 import play.twirl.api.Html
 import services.*
@@ -63,7 +64,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       withClientDetails { clientDetails =>
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
-          case Left(ClientAlreadySubscribed(channel,_)) => handleClientAlreadySubscribed(clientDetails, channel)
+          case Left(ClientAlreadySubscribed(channel, _)) => handleClientAlreadySubscribed(clientDetails, channel)
           case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
           case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
@@ -154,7 +155,14 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       eligibility = "ineligible",
       failureReason = Some("client-already-signed-up")
     ))
-    resolver.resolve(request.sessionData, reason).map(_.removingFromSession(FailedClientMatching))
+    sessionDataService.saveNino(clientDetails.nino) flatMap {
+      case Right(_) => resolver.resolve(
+        sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
+        channel = reason
+      ).map(_.removingFromSession(FailedClientMatching))
+      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+    }
+
   }
 
   private def handleUnexpectedFailure(clientDetails: UserDetailsModel)
