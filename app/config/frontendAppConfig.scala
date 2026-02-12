@@ -120,6 +120,8 @@ trait AppConfig {
   def feedbackFrontendAgentRedirectUrl: String
 
   def getVAndCUrl: String
+
+  def getAccountUrl: String
 }
 
 @Singleton
@@ -309,5 +311,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
   
   override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
+
+  override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
 
 }

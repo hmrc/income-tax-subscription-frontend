@@ -35,7 +35,14 @@ class AlreadyEnrolledController @Inject()(val auditingService: AuditingService,
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(alreadyEnrolledView())
+      Ok(alreadyEnrolledView(
+        postAction = controllers.individual.matching.routes.AlreadyEnrolledController.submit
+      ))
+  }
+
+  val submit: Action[AnyContent] = Authenticated { implicit request =>
+    _ =>
+      Redirect(appConfig.getAccountUrl)
   }
 
 }
