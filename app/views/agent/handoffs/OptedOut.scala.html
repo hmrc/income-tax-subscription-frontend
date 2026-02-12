@@ -19,6 +19,7 @@
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.helpers.UnorderedList
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -26,6 +27,7 @@
     form: FormWithCSRF,
     appConfig: AppConfig,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    ul: UnorderedList
 )
 
 @(changeAction: Call, postAction: Call)(implicit request: Request[_], messages: Messages)
@@ -36,26 +38,25 @@
 
     <p class="govuk-body">@messages("agent.opted-out.paragraph")</p>
 
-    <p class="govuk-body">@messages("agent.opted-out.paragraph2")</p>
+    @ul(
+        leadIn=messages("agent.opted-out.paragraph2"),
+        Seq(
+        HtmlContent(viewAndChangeLink()),
+        HtmlContent(signUpAnotherClient())
+        )
+    )
+}
 
-    <div>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                @form(action = changeAction) {
-                <a href="@appConfig.getVAndCUrl" class="govuk-link">
-                    @messages("agent.opted-out.bullet1")
-                </a>
-                }
-            </li>
-            <li>
-                @form(action = postAction) {
-                <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link">
-                    @messages("agent.opted-out.bullet2")
-                </a>
-                }
-            </li>
-        </ul>
-    </div>
+@viewAndChangeLink() = {
+<a href="@appConfig.getVAndCUrl" class="govuk-link">
+    @messages("agent.opted-out.bullet1")
+</a>
+}
+
+@signUpAnotherClient() = {
+<a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
+    @messages("agent.opted-out.bullet2")
+</a>
 }
 
 
