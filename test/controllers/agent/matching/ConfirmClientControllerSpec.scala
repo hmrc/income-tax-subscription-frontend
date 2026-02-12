@@ -199,6 +199,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
           "redirect to resolver" in withController { controller =>
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None,mtdId = testMTDID))
+            mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
 
             val result: Future[Result] = controller.submit()(builtRequest)
 

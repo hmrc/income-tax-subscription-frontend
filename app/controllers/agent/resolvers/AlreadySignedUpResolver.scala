@@ -16,13 +16,13 @@
 
 package controllers.agent.resolvers
 
-import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import common.Constants.hmrcAsAgent
+import config.AppConfig
 import config.featureswitch.FeatureSwitch.OptBackIn
+import config.featureswitch.FeatureSwitching
+import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
-import models.requests.agent.IdentifierRequest
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Result}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusService,
-                                         val appConfig: AppConfig
+                                        val appConfig: AppConfig
                                        )(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def resolve(sessionData: SessionData, channel: Option[Channel])
