@@ -359,6 +359,13 @@ agent.sign-up-confirmation.manage-client-account.heading                        
 agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
 
+## Agent Handoff Page Opted out ##
+agent.opted-out.heading                                                             = Rheoli ymrwymiadau eich cleient o ran adrodd
+agent.opted-out.paragraph                                                           = Mae’n rhaid i chi newid ymrwymiadau eich cleient o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.opted-out.paragraph2                                                          = Gallwch wneud y naill neu’r llall o’r canlynol:
+agent.opted-out.bullet1                                                             = rheoli ymrwymiadau eich cleient o ran adrodd
+agent.opted-out.bullet2                                                             = cofrestru cleient arall
+
 ## Using Software Page ##
 individual.using-software.heading                                       = Gwirio bod gennych feddalwedd sy’n cydweddu
 individual.using-software.para-1                                        = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

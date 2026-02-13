@@ -382,6 +382,13 @@ agent.sign-up-confirmation.manage-client-account.heading                        
 agent.sign-up-confirmation.manage-client-account.para1                              = Go to your {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = agent services account
 
+## Agent Handoff Page Opted out ##
+agent.opted-out.heading                                                             = Manage your client’s reporting obligations
+agent.opted-out.paragraph                                                           = If you want to use Making Tax Digital for Income Tax, you need to change their reporting obligations.
+agent.opted-out.paragraph2                                                          = You can either:
+agent.opted-out.bullet1                                                             = manage your client’s reporting obligations
+agent.opted-out.bullet2                                                             = sign up another client
+
 ## Using Software Page ##
 individual.using-software.heading                                       = Check you have compatible software
 individual.using-software.para-1                                        = To use this service, you must use software that works with Making Tax Digital for Income Tax.
