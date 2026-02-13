@@ -14,20 +14,35 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.SignOutButton
+@import views.html.helpers.{ContinueButton, UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
         mainTemplate: PrincipalMainTemplate,
-        signOutButton: SignOutButton
+        continueButton: ContinueButton,
+        form: FormWithCSRF,
+        ul: UnorderedList
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("already-enrolled.title")) {
     <h1 class="govuk-heading-l">@Messages("already-enrolled.heading")</h1>
 
-    <p class="govuk-body">@Messages("already-enrolled.line1")</p>
+    @ul(
+        leadIn = messages("already-enrolled.line1"),
+        Seq(
+            Text(messages("already-enrolled.b1")),
+            Text(messages("already-enrolled.b2"))
+        )
+    )
 
-    @signOutButton()
+    <h2 class="govuk-heading-m">@Messages("already-enrolled.h2")</h2>
+
+    <p class="govuk-body" id="line2">@Messages("already-enrolled.line2")</p>
+
+    @form(action = postAction) {
+        @continueButton()
+    }
+
 }

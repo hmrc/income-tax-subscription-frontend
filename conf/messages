@@ -306,9 +306,13 @@ timeout.heading                                                 = Your session h
 timeout.return-to-home                                           = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You’ve already signed up
-already-enrolled.heading                                        = You’ve already signed up
-already-enrolled.line1                                          = Your sign in details are already in use.
+already-enrolled.title                                          = You’re already signed up to use Making Tax Digital for Income Tax
+already-enrolled.heading                                        = You’re already signed up to use Making Tax Digital for Income Tax
+already-enrolled.line1                                          = This could be because:
+already-enrolled.b1                                             = you previously signed up
+already-enrolled.b2                                             = someone who helps you with your tax, like an agent, has already signed you up
+already-enrolled.h2                                             = Next steps
+already-enrolled.line2                                          = You can manage your Self Assessment details from HMRC online services.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your account
@@ -324,6 +328,13 @@ claim-enrolment.claim-already-signed-up.title                   = You are alread
 claim-enrolment.claim-already-signed-up.content                 = If you cannot find your Self Assessment account details, they may be in your other HMRC online services account. You can:
 claim-enrolment.claim-already-signed-up.content.link1           = check if your Self Assessment is in another account
 claim-enrolment.claim-already-signed-up.content.link2           = retrieve sign in details for your other account
+
+## Individual Handoff Check Income Sources
+individual.check-income-sources.heading                         = You must confirm your income sources
+individual.check-income-sources.para-one                        = You’re already signed up to Making Tax Digital for Income Tax.
+individual.check-income-sources.next-steps.heading              = Next steps
+individual.check-income-sources.next-steps.para-one             = You need to confirm your sole trader and property income sources are up to date.
+individual.check-income-sources.next-steps.para-two             = You’ll need to sign in again using the same sign in details that you use for your Self Assessment tax return.
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = You have signed up to use software to send Income Tax updates
@@ -370,6 +381,13 @@ agent.sign-up-confirmation.mtd.para2                                            
 agent.sign-up-confirmation.manage-client-account.heading                            = Manage your clients’ accounts
 agent.sign-up-confirmation.manage-client-account.para1                              = Go to your {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = agent services account
+
+## Agent Handoff Page Opted out ##
+agent.opted-out.heading                                                             = Manage your client’s reporting obligations
+agent.opted-out.paragraph                                                           = If you want to use Making Tax Digital for Income Tax, you need to change their reporting obligations.
+agent.opted-out.paragraph2                                                          = You can either:
+agent.opted-out.bullet1                                                             = manage your client’s reporting obligations
+agent.opted-out.bullet2                                                             = sign up another client
 
 ## Using Software Page ##
 individual.using-software.heading                                       = Check you have compatible software

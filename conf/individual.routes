@@ -23,6 +23,7 @@ GET         /session-timeout                                     controllers.ind
 
 # Already enrolled
 GET         /already-enrolled                                    controllers.individual.matching.AlreadyEnrolledController.show
+POST        /already-enrolled                                    controllers.individual.matching.AlreadyEnrolledController.submit
 
 # No NINO Routes
 GET         /register-for-SA                                     controllers.individual.matching.NoSAController.show
@@ -159,3 +160,4 @@ GET         /hand-offs/opted-out                                 controllers.ind
 POST        /hand-offs/opted-out                                 controllers.individual.handoffs.OptedOutController.submit
 
 GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show
+POST        /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.submit

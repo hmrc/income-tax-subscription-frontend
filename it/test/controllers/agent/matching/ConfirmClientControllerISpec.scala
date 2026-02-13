@@ -18,12 +18,15 @@ package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
-import helpers.servicemocks.{AuthStub => _, _}
-import play.api.http.Status._
+import helpers.servicemocks.{AuthStub as _, *}
+import models.status.GetITSAStatus.NoStatus
+import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
+import play.api.http.Status.*
+import play.api.libs.json.{JsString, Json}
 
 
 class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
@@ -198,15 +201,17 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
 
       "the client is already subscribed" should {
         "redirect the user to client already subscribed page when user has a mtd relationship" in {
-
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
-
-
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -219,13 +224,17 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         }
 
         "redirect the user to client already subscribed page when user has an mtdSupprelationship" in {
-
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+          ))
 
 
           When("I call POST /confirm-client")

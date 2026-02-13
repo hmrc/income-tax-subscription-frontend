@@ -283,9 +283,13 @@ timeout.heading                                                 = Mae’ch sesiw
 timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = Rydych chi eisoes wedi cofrestru
-already-enrolled.heading                                        = Rydych chi eisoes wedi cofrestru
-already-enrolled.line1                                          = Mae’ch manylion mewngofnodi eisoes yn cael eu defnyddio.
+already-enrolled.title                                          = Rydych eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+already-enrolled.heading                                        = Rydych eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+already-enrolled.line1                                          = Gallai hyn fod oherwydd y canlynol:
+already-enrolled.b1                                             = gwnaethoch gofrestru o’r blaen
+already-enrolled.b2                                             = mae rhywun sy’n eich helpu gyda’ch treth, fel asiant, eisoes wedi’ch cofrestru
+already-enrolled.h2                                             = Y camau nesaf
+already-enrolled.line2                                          = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
@@ -297,10 +301,17 @@ claim-enrolment.confirmation.content.para3                      = Rydym yn eich 
 claim-enrolment.confirmation.continue-button                    = Yn eich blaen i’ch cyfrif gwasanaethau ar-lein CThEF
 
 ## Claim Enrolment Already Signed Up
-claim-enrolment.claim-already-signed-up.title                      = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.claim-already-signed-up.content                    = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif gwasanaethau ar-lein CThEF arall. Gallwch wneud y canlynol:
-claim-enrolment.claim-already-signed-up.content.link1              = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
-claim-enrolment.claim-already-signed-up.content.link2              = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+claim-enrolment.claim-already-signed-up.content                 = Os na allwch ddod o hyd i fanylion eich cyfrif Hunanasesiad, mae’n bosibl eu bod yn eich cyfrif gwasanaethau ar-lein CThEF arall. Gallwch wneud y canlynol:
+claim-enrolment.claim-already-signed-up.content.link1           = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
+claim-enrolment.claim-already-signed-up.content.link2           = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
+
+## Handoff Check Income Sources
+individual.check-income-sources.heading                         = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
+individual.check-income-sources.para-one                        = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+individual.check-income-sources.next-steps.heading              = Camau nesaf
+individual.check-income-sources.next-steps.para-one             = Mae’n rhaid i chi gadarnhau bod eich ffynonellau incwm fel unig fasnachwr a’ch ffynonellau incwm o eiddo wedi’u diweddaru.
+individual.check-income-sources.next-steps.para-two             = Bydd angen i chi fewngofnodi eto gan ddefnyddio’r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
 
 ## Sign Up Complete page ##
 sign-up-complete.heading                                        = Rydych wedi’ch cofrestru i ddefnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm
@@ -347,6 +358,13 @@ agent.sign-up-confirmation.mtd.para2                                            
 agent.sign-up-confirmation.manage-client-account.heading                            = Rheoli cyfrifon eich cleient
 agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
+
+## Agent Handoff Page Opted out ##
+agent.opted-out.heading                                                             = Rheoli ymrwymiadau eich cleient o ran adrodd
+agent.opted-out.paragraph                                                           = Mae’n rhaid i chi newid ymrwymiadau eich cleient o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.opted-out.paragraph2                                                          = Gallwch wneud y naill neu’r llall o’r canlynol:
+agent.opted-out.bullet1                                                             = rheoli ymrwymiadau eich cleient o ran adrodd
+agent.opted-out.bullet2                                                             = cofrestru cleient arall
 
 ## Using Software Page ##
 individual.using-software.heading                                       = Gwirio bod gennych feddalwedd sy’n cydweddu
