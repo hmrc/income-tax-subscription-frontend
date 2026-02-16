@@ -289,7 +289,8 @@ already-enrolled.line1                                          = Gallai hyn fod
 already-enrolled.b1                                             = gwnaethoch gofrestru o’r blaen
 already-enrolled.b2                                             = mae rhywun sy’n eich helpu gyda’ch treth, fel asiant, eisoes wedi’ch cofrestru
 already-enrolled.h2                                             = Y camau nesaf
-already-enrolled.line2                                          = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
+already-enrolled.line2.1                                        = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
+already-enrolled.line2.2                                        = Bydd angen i chi fewngofnodi eto gan ddefnyddio’r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
