@@ -18,6 +18,7 @@ package controllers.individual.matching
 
 import auth.individual.PostSubmissionController
 import config.AppConfig
+import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService}
 import views.html.individual.matching.AlreadyEnrolled
@@ -28,21 +29,21 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AlreadyEnrolledController @Inject()(val auditingService: AuditingService,
                                           val authService: AuthService,
+                                          val identify: IdentifierAction,
                                           val alreadyEnrolledView: AlreadyEnrolled)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents) extends PostSubmissionController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(alreadyEnrolledView(
-        postAction = controllers.individual.matching.routes.AlreadyEnrolledController.submit
-      ))
+  def show: Action[AnyContent] = identify { implicit request =>
+    Ok(alreadyEnrolledView(
+      postAction = controllers.individual.matching.routes.AlreadyEnrolledController.submit,
+      noEnrolment = request.mtditid.isEmpty
+    ))
   }
 
-  val submit: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Redirect(appConfig.getAccountUrl)
+  def submit: Action[AnyContent] = identify { implicit request =>
+    Redirect(appConfig.getAccountUrl)
   }
 
 }

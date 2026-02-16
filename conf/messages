@@ -312,7 +312,8 @@ already-enrolled.line1                                          = This could be 
 already-enrolled.b1                                             = you previously signed up
 already-enrolled.b2                                             = someone who helps you with your tax, like an agent, has already signed you up
 already-enrolled.h2                                             = Next steps
-already-enrolled.line2                                          = You can manage your Self Assessment details from HMRC online services.
+already-enrolled.line2.1                                        = You can manage your Self Assessment details from HMRC online services.
+already-enrolled.line2.2                                        = You’ll need to sign in again using the same sign in details that you use for your Self Assessment tax return.
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your account

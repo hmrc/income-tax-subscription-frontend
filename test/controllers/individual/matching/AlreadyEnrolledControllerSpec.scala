@@ -17,26 +17,28 @@
 package controllers.individual.matching
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.MockIdentifierAction
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
 import views.html.individual.matching.AlreadyEnrolled
 
 import scala.concurrent.Future
 
-class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService {
+class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService with MockIdentifierAction {
 
   val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
-  when(mockAlreadyEnrolledView(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+  when(mockAlreadyEnrolledView(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
     mockAuditingService,
     mockAuthService,
+    fakeIdentifierAction,
     mockAlreadyEnrolledView
   )
 
@@ -60,7 +62,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
       charset(result) must be(Some("utf-8"))
     }
 
-    "redirect " in {
+    "redirect to tax account" in {
       mockAuthEnrolled()
 
       lazy val result = submit(subscriptionRequest)
@@ -69,6 +71,4 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
       redirectLocation(result) must be(Some(appConfig.getAccountUrl))
     }
   }
-
-  authorisationTests()
 }
