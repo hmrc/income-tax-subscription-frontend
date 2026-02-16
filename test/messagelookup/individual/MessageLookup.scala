@@ -44,6 +44,7 @@ object MessageLookup {
     val b2 = "someone who helps you with your tax, like an agent, has already signed you up"
     val h2 = "Next steps"
     val line2 = "You can manage your Self Assessment details from HMRC online services."
+    val line3 = "You’ll need to sign in again using the same sign in details that you use for your Self Assessment tax return."
   }
 
   object ClaimEnrollmentConfirmation {

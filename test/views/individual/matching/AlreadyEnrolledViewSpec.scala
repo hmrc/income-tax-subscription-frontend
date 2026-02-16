@@ -35,59 +35,92 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
   val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
-  lazy val page: HtmlFormat.Appendable = alreadyEnrolled(Call("", ""))(request, implicitly)
-  lazy val document: Document = Jsoup.parse(page.body)
-  lazy val main: Elements = document.select("main")
+
+  def page(noEnrolment: Boolean): HtmlFormat.Appendable =
+    alreadyEnrolled(Call("", ""), noEnrolment)(request, implicitly)
+
+  def document(noEnrolment: Boolean): Document =
+    Jsoup.parse(page(noEnrolment).body)
+
+  def main(noEnrolment: Boolean): Elements =
+    document(noEnrolment).select("main")
 
   "The Already Enrolled view" should {
 
     s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
       val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-      document.title() must be(MessageLookup.AlreadyEnrolled.title + serviceNameGovUk)
+      Seq(false, true).foreach { noEnrolment =>
+        document(noEnrolment).title() must be(MessageLookup.AlreadyEnrolled.title + serviceNameGovUk)
+      }
     }
 
-    s"has a heading (H1)" which {
-
-      lazy val heading = main.select("H1")
-
+    s"has a heading (H1)" should {
       s"has the text '${MessageLookup.AlreadyEnrolled.heading}'" in {
-        heading.text() mustBe MessageLookup.AlreadyEnrolled.heading
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("H1").text() mustBe MessageLookup.AlreadyEnrolled.heading
+        }
       }
 
       s"has a line '${MessageLookup.AlreadyEnrolled.line1}'" in {
-        main.select("p").get(0).text must be(MessageLookup.AlreadyEnrolled.line1)
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("p").get(0).text must be(MessageLookup.AlreadyEnrolled.line1)
+        }
       }
 
       s"has a bullet '${MessageLookup.AlreadyEnrolled.b1}'" in {
-        main.select("li").get(0).text must be(MessageLookup.AlreadyEnrolled.b1)
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("li").get(0).text must be(MessageLookup.AlreadyEnrolled.b1)
+        }
       }
 
       s"has a bullet '${MessageLookup.AlreadyEnrolled.b2}'" in {
-        main.select("li").get(1).text must be(MessageLookup.AlreadyEnrolled.b2)
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("li").get(1).text must be(MessageLookup.AlreadyEnrolled.b2)
+        }
       }
     }
 
-    s"has a heading (H2)" which {
-
-      lazy val heading = main.select("H2")
-
+    s"has a heading (H2)" should {
       s"has the text '${MessageLookup.AlreadyEnrolled.h2}'" in {
-        heading.text() mustBe MessageLookup.AlreadyEnrolled.h2
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("H2").text() mustBe MessageLookup.AlreadyEnrolled.h2
+        }
       }
 
       s"has a line '${MessageLookup.AlreadyEnrolled.line2}'" in {
-        main.select("#line2").text must be(MessageLookup.AlreadyEnrolled.line2)
+        Seq(false, true).foreach { noEnrolment =>
+          main(noEnrolment).select("#line2").text must be(MessageLookup.AlreadyEnrolled.line2)
+        }
+      }
+
+      "When noEnrolment is" should {
+        s"true then has a line '${MessageLookup.AlreadyEnrolled.line3}'" in {
+          main(true).select("#line3").text must be(MessageLookup.AlreadyEnrolled.line3)
+        }
+
+        "false then has no such line" in {
+          try {
+            main(false).select("#line3")
+            fail()
+          } catch {
+            case e: Exception =>
+          }
+        }
       }
     }
 
     "have a continue button" in {
-      main.select(".govuk-button").text mustBe Base.continue
+      Seq(false, true).foreach { noEnrolment =>
+        main(noEnrolment).select(".govuk-button").text mustBe Base.continue
+      }
     }
 
     "have a sign out link" in {
-      val actionSignOut = document.select(".hmrc-sign-out-nav__link")
-      actionSignOut.text() mustBe MessageLookup.Base.signOut
-      actionSignOut.attr("href") mustBe SignOutController.signOut.url
+      Seq(false, true).foreach { noEnrolment =>
+        val actionSignOut = document(noEnrolment).select(".hmrc-sign-out-nav__link")
+        actionSignOut.text() mustBe MessageLookup.Base.signOut
+        actionSignOut.attr("href") mustBe SignOutController.signOut.url
+      }
     }
 
   }
