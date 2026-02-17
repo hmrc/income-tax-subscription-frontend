@@ -24,8 +24,9 @@ import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.AnyContent
 import services.GetITSAStatusService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -44,10 +45,7 @@ class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusServi
 
   private def goToAlreadySignedUp(session: SessionData, channel: Option[Channel])(implicit hc: HeaderCarrier): Future[Result] =
     channel match {
-      case Some(HmrcLedUnconfirmed) =>
-        Future.failed(
-          new InternalServerException("AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC")
-        )
+      case Some(HmrcLedUnconfirmed) => Future.successful(Redirect(controllers.agent.handoffs.routes.CheckClientIncomeSourcesController.show))
       case _ =>
         getITSAStatus(session).map {
           case Some(Annual) => Redirect(controllers.agent.handoffs.routes.OptedOutController.show)

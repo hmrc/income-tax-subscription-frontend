@@ -367,6 +367,13 @@ agent.opted-out.paragraph2                                                      
 agent.opted-out.bullet1                                                             = rheoli ymrwymiadau eich cleient o ran adrodd
 agent.opted-out.bullet2                                                             = cofrestru cleient arall
 
+## Agent Handoff Page Check Income Sources ##
+agent.check-income-sources.heading                         = Cadarnhau ffynonellau incwm eich cleient
+agent.check-income-sources.para-one                        = Mae eich cleient eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.check-income-sources.para-two                        = Gallwch wneud y naill neu’r llall o’r canlynol:
+agent.check-income-sources.next-steps.para-one             = cadarnhau ffynonellau incwm eich cleient/Rheoli manylion Hunanasesiad eich cleient
+agent.check-income-sources.next-steps.para-two             = cofrestru cleient arall
+
 ## Using Software Page ##
 individual.using-software.heading                                       = Gwirio bod gennych feddalwedd sy’n cydweddu
 individual.using-software.para-1                                        = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

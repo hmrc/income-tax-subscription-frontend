@@ -122,6 +122,8 @@ trait AppConfig {
   def getVAndCUrl: String
 
   def getAccountUrl: String
+  
+  def getClientUTRUrl: String
 }
 
 @Singleton
@@ -313,5 +315,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
 
   override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
+  
+  def getClientUTRUrl: String = {
+    s"${config.getString("income-tax-view-change-frontend.url")}/agents/client-utr"
+  }
 
 }

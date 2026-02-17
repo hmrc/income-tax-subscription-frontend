@@ -125,13 +125,22 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
     }
 
     "throw an exception for Client migrated by HMRC (HOA06A) when channel is unconfirmed" in {
-      val result = resolver.resolve(sessionData, Some(HmrcLedUnconfirmed))
+      val channels = Seq[Option[Channel]](Some(HmrcLedUnconfirmed))
+      channels.foreach { channel =>
+        reset(mockGetITSAStatusService)
 
-      intercept[InternalServerException](await(result)).message mustBe "AlreadySignedUpResolver - Agent - HOA06A - Client migrated by HMRC"
+        val result = resolver.resolve(sessionData, channel)
 
-      verify(mockGetITSAStatusService, times(0)).getITSAStatus(
-        ArgumentMatchers.eq(sessionData)
-      )(ArgumentMatchers.any())
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(
+          controllers.agent.handoffs.routes.CheckClientIncomeSourcesController.show.url
+        )
+        session(result).get(hmrcAsAgent) mustBe Some("true")
+
+        verify(mockGetITSAStatusService, times(0)).getITSAStatus(
+          ArgumentMatchers.eq(sessionData)
+        )(ArgumentMatchers.any())
+      }
     }
 
 
