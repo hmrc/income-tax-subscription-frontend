@@ -73,10 +73,7 @@ class CheckClientIncomeSourcesViewSpec extends ViewSpec {
   }
 
   private def page(): Html = {
-    checkClientIncomeSources(
-      postAction = Call("", ""),
-      changeAction = Call("", "")
-    )
+    checkClientIncomeSources()
   }
 
   private def document(): Document =

@@ -33,17 +33,6 @@ class CheckClientIncomeSourcesController @Inject()(
                                                )(implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identity { implicit request =>
-    Ok(view(
-      postAction = controllers.agent.handoffs.routes.CheckClientIncomeSourcesController.submit,
-      changeAction = controllers.agent.handoffs.routes.CheckClientIncomeSourcesController.change
-    ))
-  }
-
-  def submit: Action[AnyContent] = identity { implicit request =>
-    Redirect(appConfig.getClientUTRUrl)
-  }
-
-  def change: Action[AnyContent] = identity { implicit request =>
-    Redirect(controllers.agent.routes.AddAnotherClientController.addAnother().url)
+    Ok(view())
   }
 }

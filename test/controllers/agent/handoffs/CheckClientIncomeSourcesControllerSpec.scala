@@ -43,16 +43,4 @@ class CheckClientIncomeSourcesControllerSpec extends AgentControllerBaseSpec wit
     contentType(result) must be(Some("text/html"))
     charset(result) must be(Some("utf-8"))
   }
-
-  "change redirects to add another client page" in {
-    val result = new TestController().change()(fakeRequest)
-    status(result) must be(Status.SEE_OTHER)
-    redirectLocation(result) must be(Some(controllers.agent.routes.AddAnotherClientController.addAnother().url))
-  }
-
-  "submit redirects to view and change UTR page" in {
-    val result = new TestController().submit()(fakeRequest)
-    status(result) must be(Status.SEE_OTHER)
-    redirectLocation(result) must be(Some(appConfig.getClientUTRUrl))
-  }
 }

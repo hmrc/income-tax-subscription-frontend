@@ -145,5 +145,3 @@ POST        /hand-offs/opted-out                                 controllers.age
 POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.change
 
 GET         /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.show
-POST        /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.submit
-POST        /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.change
