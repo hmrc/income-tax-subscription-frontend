@@ -317,7 +317,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
   
   def getClientUTRUrl: String = {
-    s"${config.getString("income-tax-view-change-frontend.url")}/report-quarterly/income-and-expenses/view/agents/client-utr"
+    s"${config.getString("income-tax-view-change-frontend.url")}/agents/client-utr"
   }
 
 }

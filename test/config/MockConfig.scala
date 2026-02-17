@@ -129,7 +129,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override def getAccountUrl: String = "/account"
   
-  override def getClientUTRUrl: String = "/report-quarterly/income-and-expenses/view/agents/client-utr"
+  override def getClientUTRUrl: String = "/agents/client-utr"
 
 }
 
