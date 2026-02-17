@@ -143,3 +143,7 @@ GET         /cannot-go-back-to-previous-client                   controllers.age
 GET         /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.show
 POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.submit
 POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.change
+
+GET         /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.show
+POST        /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.submit
+POST        /hand-offs/already-signed-up-confirm-income         controllers.agent.handoffs.CheckClientIncomeSourcesController.change
