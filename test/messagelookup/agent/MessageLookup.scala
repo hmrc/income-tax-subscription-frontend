@@ -37,7 +37,7 @@ object MessageLookup {
   object ClientAlreadySubscribed {
     val title = "Your client has already signed up"
     val heading = "Your client has already signed up"
-    val para1 = "This client’s details are already in use."
+    val para1 = "Your client is already signed up to use Making Tax Digital for Income Tax."
     val uList = "You can either:"
     val bullet1 = "manage your clients’ Self Assessment details"
     val bullet2 = "sign up another client"

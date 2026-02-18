@@ -879,9 +879,7 @@ agent.client-already-subscribed.heading                         = Mae’ch cleie
 agent.client-already-subscribed.para1                           = Mae’ch cleient eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.client-already-subscribed.list                            = Gallwch wneud y naill neu’r llall o’r canlynol:
 agent.client-already-subscribed.bullet1.link                    = rheoli manylion Hunanasesiad eich cleient
-agent.client-already-subscribed.bullet1.link-href               =
 agent.client-already-subscribed.bullet2.link                    = cofrestru cleient arall
-agent.client-already-subscribed.bullet2.link-href               =
 
 ## No client relationship page ##
 agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi gan eich cleient

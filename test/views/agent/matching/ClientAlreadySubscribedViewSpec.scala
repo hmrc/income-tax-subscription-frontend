@@ -41,8 +41,10 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
     )
 
     testPage.mustHavePara(
-      messages.para1,
-      messages.uList,
+      messages.para1
+    )
+
+    testPage.mustHaveBulletSeq(
       messages.bullet1,
       messages.bullet2
     )
