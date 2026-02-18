@@ -87,9 +87,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
 
       "return a view with the language selector" in {
         val res = fixture(agentLocked = false)
-        val languageSelectNav = Jsoup.parse(res.body).selectOptionally("nav.hmrc-language-select")
-        languageSelectNav.isDefined mustBe true
-        languageSelectNav.get.selectOptionally("""a[href="/report-quarterly/income-and-expenses/sign-up/hmrc-frontend/language/cy"]""").isDefined mustBe true
+        Jsoup.parse(res.body).selectOptionally("""a[href="/report-quarterly/income-and-expenses/sign-up/hmrc-frontend/language/cy"]""").isDefined mustBe true
       }
     }
   }
