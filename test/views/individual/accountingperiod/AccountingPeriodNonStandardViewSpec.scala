@@ -92,6 +92,6 @@ class AccountingPeriodNonStandardViewSpec extends ViewSpec {
     val bulletOne: String = "6 April to 5 April"
     val bulletTwo: String = "1 April to 31 March"
     val radioName: String = "yes-no"
-    val radioLegend: String = "Would you like like to sign up for next tax year?"
+    val radioLegend: String = "Would you like to sign up for next tax year?"
   }
 }

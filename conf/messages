@@ -201,7 +201,7 @@ accounting-period-non-standard.heading                         = Your business a
 accounting-period-non-standard.para-one                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods:
 accounting-period-non-standard.bullet-one                      = 6 April to 5 April
 accounting-period-non-standard.bullet-two                      = 1 April to 31 March
-accounting-period-non-standard.form-legend                     = Would you like like to sign up for next tax year?
+accounting-period-non-standard.form-legend                     = Would you like to sign up for next tax year?
 accounting-period-non-standard.form-error                      = Select if you want to sign up for next tax year, 2026 to 2027
 
 ## Accounting period not supported
