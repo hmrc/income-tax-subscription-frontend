@@ -17,13 +17,15 @@
 package config.featureswitch
 
 import config.FrontendAppConfig
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.featureswitch.FeatureSwitch.{TaxYear26To27Plus, ThrottlingFeature}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.UnitTestTrait
+
+import java.time.LocalDate
 
 class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
 
@@ -48,30 +50,59 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
+  "TaxYear26To27Plus" should {
+    "return true" when {
+      "the feature switch is enabled in system properties" in {
+        enable(TaxYear26To27Plus)
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
+      }
+      "the date in the config is before the current date" in {
+        when(mockConfig.getOptional[String]("feature-switch.tax-year-26-27-plus")).thenReturn(Some(LocalDate.now.minusDays(1).toString))
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
+      }
+      "the date in the config is the current date" in {
+        when(mockConfig.getOptional[String]("feature-switch.tax-year-26-27-plus")).thenReturn(Some(LocalDate.now.toString))
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
+      }
+    }
+    "return false" when {
+      "the feature switch is disabled in system properties" in {
+        disable(TaxYear26To27Plus)
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
+      }
+      "the feature switch does not exist in config" in {
+
+      }
+      "the date in the config is after the current date" in {
+        when(mockConfig.getOptional[String]("feature-switch.tax-year-26-27-plus")).thenReturn(Some(LocalDate.now.plusDays(1).toString))
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
+      }
+    }
+  }
+
   "Throttle" should {
     "return true if Throttle feature switch is enabled in sys.props" in {
       enable(ThrottlingFeature)
-      isEnabled(ThrottlingFeature) mustBe true
+      featureSwitching.isEnabled(ThrottlingFeature) mustBe true
     }
     "return false if Throttle feature switch is disabled in sys.props" in {
       disable(ThrottlingFeature)
-      isEnabled(ThrottlingFeature) mustBe false
+      featureSwitching.isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return false if Throttle feature switch does not exist" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(None)
-      isEnabled(ThrottlingFeature) mustBe false
+      featureSwitching.isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return false if Throttle feature switch is not in sys.props but is set to off in config" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      isEnabled(ThrottlingFeature) mustBe false
+      featureSwitching.isEnabled(ThrottlingFeature) mustBe false
     }
 
     "return true if Throttle feature switch is not in sys.props but is set to on in config" in {
-      enable(ThrottlingFeature)
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
-      isEnabled(ThrottlingFeature) mustBe true
+      featureSwitching.isEnabled(ThrottlingFeature) mustBe true
     }
   }
 
