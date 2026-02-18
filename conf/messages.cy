@@ -876,7 +876,10 @@ agent.timeout.return-to-home                                    = I gofrestru’
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Mae’ch cleient eisoes wedi cofrestru
 agent.client-already-subscribed.heading                         = Mae’ch cleient eisoes wedi cofrestru
-agent.client-already-subscribed.para1                           = Mae manylion y cleient hwn eisoes yn cael eu defnyddio.
+agent.client-already-subscribed.para1                           = Mae’ch cleient eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.client-already-subscribed.list                            = Gallwch wneud y naill neu’r llall o’r canlynol:
+agent.client-already-subscribed.bullet1.link                    = rheoli manylion Hunanasesiad eich cleient
+agent.client-already-subscribed.bullet2.link                    = cofrestru cleient arall
 
 ## No client relationship page ##
 agent.no-client-relationship.title                              = Nid ydych wedi’ch awdurdodi gan eich cleient

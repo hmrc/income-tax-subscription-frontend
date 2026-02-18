@@ -44,6 +44,11 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
       messages.para1
     )
 
+    testPage.mustHaveBulletSeq(
+      messages.bullet1,
+      messages.bullet2
+    )
+
     val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.goBack)
