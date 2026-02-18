@@ -394,7 +394,7 @@ agent.opted-out.bullet2                                                         
 agent.check-income-sources.heading                         = Confirm your client’s income sources
 agent.check-income-sources.para-one                        = Your client is already signed up to use Making Tax Digital for Income Tax.
 agent.check-income-sources.para-two                        = You can either:
-agent.check-income-sources.next-steps.para-one             = confirm your client’s income sources/Manage your clients’ Self Assessment details
+agent.check-income-sources.next-steps.para-one             = confirm your client’s income sources
 agent.check-income-sources.next-steps.para-two             = sign up another client
 
 ## Using Software Page ##

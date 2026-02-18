@@ -371,7 +371,7 @@ agent.opted-out.bullet2                                                         
 agent.check-income-sources.heading                         = Cadarnhau ffynonellau incwm eich cleient
 agent.check-income-sources.para-one                        = Mae eich cleient eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 agent.check-income-sources.para-two                        = Gallwch wneud y naill neu’r llall o’r canlynol:
-agent.check-income-sources.next-steps.para-one             = cadarnhau ffynonellau incwm eich cleient/Rheoli manylion Hunanasesiad eich cleient
+agent.check-income-sources.next-steps.para-one             = cadarnhau ffynonellau incwm eich cleient
 agent.check-income-sources.next-steps.para-two             = cofrestru cleient arall
 
 ## Using Software Page ##
