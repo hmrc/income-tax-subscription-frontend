@@ -888,7 +888,10 @@ agent.timeout.return-to-home                                      = To sign your
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Your client has already signed up
 agent.client-already-subscribed.heading                         = Your client has already signed up
-agent.client-already-subscribed.para1                           = This client’s details are already in use.
+agent.client-already-subscribed.para1                           = Your client is already signed up to use Making Tax Digital for Income Tax.
+agent.client-already-subscribed.list                            = You can either:
+agent.client-already-subscribed.bullet1.link                    = manage your clients’ Self Assessment details
+agent.client-already-subscribed.bullet2.link                    = sign up another client
 
 ## No client relationship page ##
 agent.no-client-relationship.title                              = You are not authorised by your client

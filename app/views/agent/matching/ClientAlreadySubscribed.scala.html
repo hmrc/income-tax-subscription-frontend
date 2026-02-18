@@ -15,11 +15,18 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, SignOutLink}
+@import views.html.helpers.{ContinueButton, SignOutLink, UnorderedList}
+@import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.helpers.UnorderedList
 
 @this(
     mainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
+    appConfig: AppConfig,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    ul: UnorderedList,
     continueButton: ContinueButton,
     signOutLink: SignOutLink
 )
@@ -32,8 +39,30 @@
 
     <p class="govuk-body">@Messages("agent.client-already-subscribed.para1")</p>
 
+    @ul(
+        leadIn=messages("agent.client-already-subscribed.list"),
+        Seq(
+            HtmlContent(getClientUTRLink()),
+            HtmlContent(signUpAnotherClient())
+        )
+    )
 
-    @form(action = postAction) {
+}
+
+
+@getClientUTRLink() = {
+<a href="@appConfig.getClientUTRUrl" class="govuk-link">
+    @messages("agent.client-already-subscribed.bullet1.link")
+</a>
+}
+
+@signUpAnotherClient() = {
+<a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
+    @messages("agent.client-already-subscribed.bullet2.link")
+</a>
+}
+
+@form(action = postAction) {
 
         <div class="govuk-form-group">
             <div>@continueButton(alternateText = Some(Messages("base.go-back")))</div>

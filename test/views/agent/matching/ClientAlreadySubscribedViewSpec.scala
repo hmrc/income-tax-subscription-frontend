@@ -41,7 +41,10 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
     )
 
     testPage.mustHavePara(
-      messages.para1
+      messages.para1,
+      messages.uList,
+      messages.bullet1,
+      messages.bullet2
     )
 
     val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
