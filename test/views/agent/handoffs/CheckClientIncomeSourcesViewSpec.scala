@@ -68,7 +68,7 @@ class CheckClientIncomeSourcesViewSpec extends ViewSpec {
     val heading = "Confirm your client’s income sources"
     val p1 = "Your client is already signed up to use Making Tax Digital for Income Tax."
     val p2 = "You can either:"
-    val bullet1 = "confirm your client’s income sources/Manage your clients’ Self Assessment details"
+    val bullet1 = "confirm your client’s income sources"
     val bullet2 = "sign up another client"
   }
 
