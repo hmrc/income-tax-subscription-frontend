@@ -48,7 +48,7 @@ base.warning                                                    = Rhybudd
 base.accept-and-continue                                        = Derbyn ac yn eich blaen
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
-base.print-page                                                 = Argraffu neu gadw’r dudalen hon.
+base.print-page                                                 = Argraffu neu gadw’r dudalen hon
 base.section-caption.hidden                                     = Teitl yr adran hon yw
 base.or                                                         = neu
 

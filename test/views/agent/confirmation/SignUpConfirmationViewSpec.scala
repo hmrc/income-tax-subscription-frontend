@@ -240,7 +240,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-    val printLink = "Print or save this page."
+    val printLink = "Print or save this page"
 
     val dateField: String = {
       val date = implicitDateFormatter.LongDate(LocalDate.now()).toLongDate

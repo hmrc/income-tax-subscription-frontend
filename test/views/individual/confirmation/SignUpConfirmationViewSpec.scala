@@ -755,7 +755,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-    val printLink = "Print or save this page."
+    val printLink = "Print or save this page"
 
     val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
     private val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
