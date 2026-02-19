@@ -24,7 +24,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.{AuthStub as _, *}
 import models.status.GetITSAStatus.NoStatus
-import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
+import models.status.GetITSAStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 
@@ -228,7 +228,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-          AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
+          AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = false)
+          AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -244,6 +245,29 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.alreadySubscribedURI)
+          )
+        }
+
+        "redirect to the no agent client relationship page when the user has neither mtd relationship" in {
+          AuthStub.stubAuthSuccess()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          SubscriptionStub.stubGetSubscriptionFound()
+          AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = false)
+          AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = false)
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+          ))
+
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+          Then("The result must have a status of SEE_OTHER and redirect to no agent client relationship page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.clientRelationshipURI)
           )
         }
       }
