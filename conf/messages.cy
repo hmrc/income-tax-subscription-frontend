@@ -291,14 +291,24 @@ already-enrolled.h2                                             = Y camau nesaf
 already-enrolled.line2.1                                        = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
 already-enrolled.line2.2                                        = Bydd angen i chi fewngofnodi eto gan ddefnyddio’r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
 
+## Claim enrolment origin
+claim-enrolment.origin.bta                                      = cyfrif treth busnes
+claim-enrolment.origin.pta                                      = cyfrif treth personol
+claim-enrolment.origin.sign-up                                  = cyfrif gwasanaethau ar-lein
+
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
-claim-enrolment.confirmation.heading                            = Yr hyn y mae’n rhaid i chi ei wneud nawr
-claim-enrolment.confirmation.content.para1                      = Byddwch nawr yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno’ch incwm a’ch treuliau i CThEF.
-claim-enrolment.confirmation.content.para2                      = Darllenwch ragor am {0}.
-claim-enrolment.confirmation.content.para2.link                 = Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant treth penodedig, os oes gennych un.
-claim-enrolment.confirmation.continue-button                    = Yn eich blaen i’ch cyfrif gwasanaethau ar-lein CThEF
+claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
+claim-enrolment.confirmation.heading                            = Yr hyn i’w wneud nesaf
+claim-enrolment.confirmation.bullets.heading                    = Bydd angen i chi, neu’ch asiant, os oes gennych un, ddefnyddio meddalwedd sy’n gweithio gyda Throi Treth yn Ddigidol ar gyfer Treth Incwm er mwyn:
+claim-enrolment.confirmation.bullets.1                          = creu, cadw, a chywiro cofnodion digidol o’ch treuliau ac incwm o hunangyflogaeth ac eiddo
+claim-enrolment.confirmation.bullets.2                          = anfon eich diweddariadau chwarterol at CThEF
+claim-enrolment.confirmation.bullets.3                          = cyflwyno’ch Ffurflen Dreth a thalu’r dreth sy’n ddyledus erbyn 31 Ionawr y flwyddyn ganlynol
+claim-enrolment.confirmation.content.para1                      = Gallwch fwrw golwg dros a rheoli manylion Troi Treth yn Ddigidol ar gyfer Treth Incwm yn eich {0}.
+claim-enrolment.confirmation.content.para2                      = Gwiriwch eich bod wedi cwblhau pob cam ar gyfer {0}.
+claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/troi-treth-yn-ddigidol-ar-gyfer-treth-incwm-i-unigolion-cam-wrth-gam.cy
+claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant penodedig, os oes gennych un.
+claim-enrolment.confirmation.continue-button                    = Parhau i {0}
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
