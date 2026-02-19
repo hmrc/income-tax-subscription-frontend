@@ -153,7 +153,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       document.mainContent.selectNth("p", 1).text mustBe MTDExempt2627.paragraph1
     }
 
-    "have a third paragraph" in {
+    "have a second paragraph" in {
       val paragraph: Element = document.mainContent.selectNth("p", 2)
       paragraph.text mustBe MTDExempt2627.paragraph2
 
