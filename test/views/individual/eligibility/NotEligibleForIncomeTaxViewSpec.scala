@@ -154,12 +154,8 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document.mainContent.selectNth("p", 2).text mustBe MTDExempt2627.paragraph2
-    }
-
-    "have a third paragraph" in {
-      val paragraph: Element = document.mainContent.selectNth("p", 3)
-      paragraph.text mustBe MTDExempt2627.paragraph3
+      val paragraph: Element = document.mainContent.selectNth("p", 2)
+      paragraph.text mustBe MTDExempt2627.paragraph2
 
       val link: Element = paragraph.selectHead("a")
       link.attr("href") mustBe "https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax#who-is-exempt-from-making-tax-digital-for-income-tax"
@@ -241,9 +237,8 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   object MTDExempt2627 {
     val heading = "You are exempt from Making Tax Digital for Income Tax"
-    val paragraph1 = "You are exempt from using Making Tax Digital for Income Tax for the 2026 to 2027 tax year."
-    val paragraph2 = "This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change."
-    val paragraph3 = "Find out if and when you may be able to use Making Tax Digital for Income Tax in the future. (opens in new tab)"
+    val paragraph1 = "This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change."
+    val paragraph2 = "Find out more about exemptions. (opens in new tab)"
     val signoutButton = "Sign out"
   }
 

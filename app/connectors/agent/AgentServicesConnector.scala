@@ -17,11 +17,11 @@
 package connectors.agent
 
 import config.AppConfig
-import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus, suppAgentClientMtditidURI, agentClientMtditidURI}
+import connectors.agent.AgentServicesConnector.{RelationshipCheckFailure, UnexpectedStatus, agentClientMtditidURI, suppAgentClientMtditidURI}
 import play.api.Logging
 import play.api.http.Status
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.net.URL
@@ -105,12 +105,12 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def isMTDSuppRelationship(arn: String, mtdId: String)(implicit hc: HeaderCarrier): Future[Either[RelationshipCheckFailure, Boolean]] = {
     val url = appConfig.agentClientRelationshipsUrl + suppAgentClientMtditidURI(arn: String, mtdId: String)
 
-
     http
-      .get(url"${url}")
+      .get(url"$url")
       .execute[HttpResponse]
       .map {
         case res if res.status == Status.OK => Right(true)
+        case res if res.status == Status.NOT_FOUND => Right(false)
         case res =>
           logger.warn(s"[AgentServicesConnector][isMTDSuppAgentRelationship] - Unexpected status returned - ${res.status}")
           Left(UnexpectedStatus(res.status))
@@ -157,5 +157,5 @@ object AgentServicesConnector {
 
   def suppAgentClientMtditidURI(arn: String, mtdId: String): String =
     s"/agent-client-relationships/agent/$arn/service/HMRC-MTD-IT-SUPP/client/MTDITID/$mtdId"
-  
+
 }
