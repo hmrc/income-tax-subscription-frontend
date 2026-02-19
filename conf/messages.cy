@@ -132,9 +132,8 @@ individual.cannot-take-part-enduring.link-href                         = https:/
 
 # Cannot sign up MTD Exempt 26/27
 individual.cannot-take-part-exempt-26-27.heading                     = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.cannot-take-part-exempt-26-27.para1                       = Rydych yn esempt rhag  defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm am flwyddyn dreth 2026 i 2027.
-individual.cannot-take-part-exempt-26-27.para2                       = Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Rhaid i chi hysbysu CTheEF os yw eu hamgylchiadau’n newid.
-individual.cannot-take-part-exempt-26-27.link                        = Darganfyddwch a fyddwch chi’n gallu defnyddio Digideiddio Treth ar gyfer Treth Incwm yn y dyfodol, a phryd i’w ddefnyddio.
+individual.cannot-take-part-exempt-26-27.para1                       = Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Rhaid i chi hysbysu CTheEF os yw eu hamgylchiadau’n newid.
+individual.cannot-take-part-exempt-26-27.link                        = Gallwch ddod o hyd i wybodaeth am esemptiadau.
 individual.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
 # Cannot cannot sign up No Data
