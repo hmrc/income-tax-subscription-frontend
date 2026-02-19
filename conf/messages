@@ -330,6 +330,7 @@ claim-enrolment.confirmation.bullets.3                          = submit your ta
 claim-enrolment.confirmation.content.para1                      = You can now view and manage Making Tax Digital for Income Tax details in your {0}.
 claim-enrolment.confirmation.content.para2                      = Check you have completed all the steps to {0}.
 claim-enrolment.confirmation.content.para2.link                 = use Making Tax Digital for Income Tax
+claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/making-tax-digital-for-income-tax-for-businesses-step-by-step
 claim-enrolment.confirmation.content.para3                      = We advise contacting your appointed tax agent, if you have one.
 claim-enrolment.confirmation.continue-button                    = Continue to {0}
 

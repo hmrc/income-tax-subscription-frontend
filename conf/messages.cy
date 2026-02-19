@@ -307,6 +307,7 @@ claim-enrolment.confirmation.bullets.3                          = cyflwyno’ch 
 claim-enrolment.confirmation.content.para1                      = Gallwch fwrw golwg dros a rheoli manylion Troi Treth yn Ddigidol ar gyfer Treth Incwm yn eich {0}.
 claim-enrolment.confirmation.content.para2                      = Gwiriwch eich bod wedi cwblhau pob cam ar gyfer {0}.
 claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/troi-treth-yn-ddigidol-ar-gyfer-treth-incwm-i-unigolion-cam-wrth-gam.cy
 claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant penodedig, os oes gennych un.
 claim-enrolment.confirmation.continue-button                    = Parhau i {0}
 
