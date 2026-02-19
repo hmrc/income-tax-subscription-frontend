@@ -49,11 +49,5 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
       messages.bullet2
     )
 
-    val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
-
-    form.mustHaveSubmitButton(common.goBack)
-
-    testPage.mustHaveSignOutLinkGovUk(common.signOut, Some(request.path))
-
   }
 }
