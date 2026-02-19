@@ -315,14 +315,23 @@ already-enrolled.h2                                             = Next steps
 already-enrolled.line2.1                                        = You can manage your Self Assessment details from HMRC online services.
 already-enrolled.line2.2                                        = You’ll need to sign in again using the same sign in details that you use for your Self Assessment tax return.
 
+## Claim enrolment origin
+claim-enrolment.origin.bta                                      = business tax account
+claim-enrolment.origin.pta                                      = personal tax account
+claim-enrolment.origin.sign-up                                  = online services account
+
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your account
-claim-enrolment.confirmation.heading                            = What you must do now
-claim-enrolment.confirmation.content.para1                      = You will now use Making Tax Digital for Income Tax to submit your income and expenses to HMRC.
-claim-enrolment.confirmation.content.para2                      = Read more about {0}.
-claim-enrolment.confirmation.content.para2.link                 = Making Tax Digital for Income Tax
+claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your {0}
+claim-enrolment.confirmation.heading                            = What to do next
+claim-enrolment.confirmation.bullets.heading                    = You, or your agent if you have one, will need to use software that works with Making Tax Digital for Income Tax to:
+claim-enrolment.confirmation.bullets.1                          = create, store and correct digital records of your self-employment and property income and expenses
+claim-enrolment.confirmation.bullets.2                          = send your quarterly updates to HMRC
+claim-enrolment.confirmation.bullets.3                          = submit your tax return and pay tax due by 31 January the following year
+claim-enrolment.confirmation.content.para1                      = You can now view and manage Making Tax Digital for Income Tax details in your {0}.
+claim-enrolment.confirmation.content.para2                      = Check you have completed all the steps to {0}.
+claim-enrolment.confirmation.content.para2.link                 = use Making Tax Digital for Income Tax
 claim-enrolment.confirmation.content.para3                      = We advise contacting your appointed tax agent, if you have one.
-claim-enrolment.confirmation.continue-button                    = Continue to Online Services account
+claim-enrolment.confirmation.continue-button                    = Continue to {0}
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                   = You are already signed up for Making Tax Digital for Income Tax

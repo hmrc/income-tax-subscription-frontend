@@ -292,14 +292,23 @@ already-enrolled.h2                                             = Y camau nesaf
 already-enrolled.line2.1                                        = Gallwch reoli’ch manylion Hunanasesiad o’ch gwasanaethau ar-lein CThEF.
 already-enrolled.line2.2                                        = Bydd angen i chi fewngofnodi eto gan ddefnyddio’r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
 
+## Claim enrolment origin
+claim-enrolment.origin.bta                                      =
+claim-enrolment.origin.pta                                      =
+claim-enrolment.origin.sign-up                                  =
+
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif
-claim-enrolment.confirmation.heading                            = Yr hyn y mae’n rhaid i chi ei wneud nawr
-claim-enrolment.confirmation.content.para1                      = Byddwch nawr yn defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno’ch incwm a’ch treuliau i CThEF.
-claim-enrolment.confirmation.content.para2                      = Darllenwch ragor am {0}.
-claim-enrolment.confirmation.content.para2.link                 = Troi Treth yn Ddigidol ar gyfer Treth Incwm
-claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant treth penodedig, os oes gennych un.
-claim-enrolment.confirmation.continue-button                    = Yn eich blaen i’ch cyfrif gwasanaethau ar-lein CThEF
+claim-enrolment.confirmation.title                              =
+claim-enrolment.confirmation.heading                            =
+claim-enrolment.confirmation.bullets.heading                    =
+claim-enrolment.confirmation.bullets.1                          =
+claim-enrolment.confirmation.bullets.2                          =
+claim-enrolment.confirmation.bullets.3                          =
+claim-enrolment.confirmation.content.para1                      =
+claim-enrolment.confirmation.content.para2                      =
+claim-enrolment.confirmation.content.para2.link                 =
+claim-enrolment.confirmation.content.para3                      =
+claim-enrolment.confirmation.continue-button                    =
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm

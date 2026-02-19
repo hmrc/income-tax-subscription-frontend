@@ -77,4 +77,8 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
   def fetchEmailPassed: Option[Boolean] = {
     data.get(ITSASessionKeys.EMAIL_PASSED).map(_.toObject[Boolean])
   }
+
+  def fetchOrigin: Option[String] = {
+    data.get(ITSASessionKeys.ORIGIN).map(_.toObject[String])
+  }
 }
