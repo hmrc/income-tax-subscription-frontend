@@ -90,13 +90,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         incomeSources = completeIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectNth("p", 4).text mustBe AgentIncomeSource.beforeYouContinue
+        document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe AgentIncomeSource.beforeYouContinue
       }
       "the income sources were prepopulated and the income sources are missing data items" in new ViewTest(
         incomeSources = incompleteIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectNth("p", 4).text mustBe AgentIncomeSource.beforeYouContinue
+        document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe AgentIncomeSource.beforeYouContinue
       }
     }
     "have no final paragraph" when {
@@ -796,7 +796,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val ukPropertyHiddenText = "(UK property)"
     val foreignPropertyHiddenText = "(Foreign property)"
 
-    val beforeYouContinue = "Before you continue, make sure you have checked any income sources we added for you."
+    val beforeYouContinue = "Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here."
   }
 
   private lazy val incomeSourceView = app.injector.instanceOf[YourIncomeSourceToSignUp]

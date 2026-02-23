@@ -36,7 +36,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val heading: String = title
     val currentTaxYearStart: Int = AccountingPeriodUtil.getCurrentTaxEndYear - 1
     val incomeSourcesPara1: String = s"Add all of these sources that you get income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April $currentTaxYearStart."
-    val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you."
+    val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here."
     val incomeSourcesPara3: String = "Do not add limited companies or partnerships here."
 
     val addDetails: String = "Add details"
