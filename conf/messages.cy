@@ -80,8 +80,8 @@ agent.business-already-removed.back-to-income-sources-link-text = ffynonellau in
 ## Individual your income sources to sign up page
 your-income-source.heading                                      = Eich ffynonellau incwm
 your-income-source.manage.para-1                                = Ychwanegwch bob un o’r ffynonellau hyn yr ydych yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
-your-income-source.manage.para-2                                = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
-your-income-source.manage.para-3                                = Nid oes angen i chi ychwanegu incwm o bartneriaethau.
+your-income-source.manage.para-2                                = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
+your-income-source.manage.para-3                                = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 your-income-source.self-employed.heading                        = Busnesau unig fasnachwr
 your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig. Nid ydych yn unig fasnachwr os daw eich incwm busnes o gwmni cyfyngedig yn unig.
 your-income-source.self-employed.label-none                     = Busnes {0}
@@ -805,7 +805,7 @@ agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Ffynonellau incwm eich cleient
-agent.your-income-source.para-1                                     = Nid oes angen i chi ychwanegu incwm o bartneriaethau.
+agent.your-income-source.para-1                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma. Byddwch yn gallu rhoi gwybod i ni ynghylch y rhain yn eich meddalwedd.
 agent.your-income-source.lead                                       = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Busnesau unig fasnachwr
@@ -824,7 +824,7 @@ agent.your-income-source.foreign-property                           = Busnes eid
 agent.your-income-source.uk-property.add-link                       = Ychwanegu eiddo yn y DU
 agent.your-income-source.foreign-property.add-link                  = Ychwanegu eiddo tramor
 agent.your-income-source.foreign-property.before-start-date-limit   = Cyn 6 Ebrill {0}
-agent.your-income-source.before-you-continue                        = Cyn i chi fynd yn eich blaen, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan.
+agent.your-income-source.before-you-continue                        = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = Mae problem gyda ffynonellau incwm eich cleient
