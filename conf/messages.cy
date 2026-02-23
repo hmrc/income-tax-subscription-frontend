@@ -610,13 +610,12 @@ affinity-group-error.line2                                      = I gofrestru ar
 affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
 
 ## ADD MTDIT Overview
-mtdit-overview.heading                                          = Ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i’ch cyfrif treth busnes
-mtdit-overview.para-one                                         = Mae’ch asiant wedi’ch cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-mtdit-overview.next-steps.heading                               = Y camau nesaf
-mtdit-overview.next-steps.para-one                              = Gallwch nawr fynd ati i ychwanegu’r cynllun i’ch cyfrif a’i reoli gyda threthi eraill. Bydd angen y Dynodydd Defnyddiwr (ID) a’r cyfrinair arnoch a gawsoch wrth gofrestru ar gyfer Hunanasesiad.
-mtdit-overview.next-steps.para-two                              = Gallwch wirio manylion eich cyfrif presennol yn eich {0}.
-mtdit-overview.next-steps.para-two.link-text                    = cyfrif treth busnes
-mtdit-overview.next-steps.para-three                            = Mae’n bosibl y bydd gofyn i chi roi rhagor o dystiolaeth i brofi pwy ydych er mwyn ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich cyfrif gwasanaethau ar-lein CThEF.
+mtdit-overview.heading                                          = Ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
+mtdit-overview.para-one                                         = Gallwch nawr ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0} a’i reoli gyda’ch trethi eraill.
+mtdit-overview.para-two                                         = Mae’n bosibl y bydd gofyn i chi roi rhagor o dystiolaeth i brofi pwy ydych.
+mtdit-overview.origin.bta                                       = cyfrif treth busnes
+mtdit-overview.origin.pta                                       = cyfrif treth personol
+mtdit-overview.origin.sign-up                                   = cyfrif gwasanaethau ar-lein
 
 ## Agent Base ##
 agent.base.service-name                                         = Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm

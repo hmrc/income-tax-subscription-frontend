@@ -16,7 +16,6 @@
 
 package controllers.individual.claimenrolment
 
-import config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.*
@@ -26,34 +25,34 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
   "GET /claim-enrolment/confirmation" should {
     "return the confirmation page when the user is enrolled and enrolment claimed" in {
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-        When("GET /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
-        val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-        Then("Should return a OK with the confirmation page")
-        res must have(
-          httpStatus(OK),
-          pageTitle(messages("claim-enrolment.confirmation.title", messages("claim-enrolment.origin.bta")) + serviceNameGovUk)
-        )
-      }
+      When("GET /claim-enrolment/confirmation is called")
+      val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
+      val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+      Then("Should return a OK with the confirmation page")
+      res must have(
+        httpStatus(OK),
+        pageTitle(messages("claim-enrolment.confirmation.title", messages("claim-enrolment.origin.bta")) + serviceNameGovUk)
+      )
     }
+  }
 
   "POST /claim-enrolment/confirmation" should {
     "redirect to bta" in {
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-        When("POST /claim-enrolment/confirmation is called")
-        val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
-        Then("Should return a SEE_OTHER going to bta")
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(appConfig.getAccountUrl)
-        )
-      }
+      When("POST /claim-enrolment/confirmation is called")
+      val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
+      Then("Should return a SEE_OTHER going to bta")
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(appConfig.getAccountUrl)
+      )
     }
+  }
 
 }

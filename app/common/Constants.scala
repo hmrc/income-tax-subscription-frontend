@@ -50,11 +50,12 @@ object Constants {
     val MANDATION_STATUS = "MANDATION_STATUS"
     val GET_ITSA_STATUS = "GET_ITSA_STATUS"
     val SIGNED_UP_DATE = "SIGNED_UP_DATE"
-    val ORIGIN = "origin"
 
     val HAS_SOFTWARE = "HAS_SOFTWARE"
     val CAPTURE_CONSENT = "CAPTURE_CONSENT"
     val EMAIL_PASSED = "EMAIL_PASSED"
+
+    val CLAIM_ENROLMENT_ORIGIN = "CLAIM_ENROLMENT_ORIGIN"
 
     def throttlePassed(throttle: Throttle) = s"throttle-${throttle.throttleId}"
 

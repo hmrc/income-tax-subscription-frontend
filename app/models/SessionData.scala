@@ -17,6 +17,7 @@
 package models
 
 import _root_.common.Constants.ITSASessionKeys
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
 import play.api.libs.json.*
 import services.Throttle
@@ -78,7 +79,8 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
     data.get(ITSASessionKeys.EMAIL_PASSED).map(_.toObject[Boolean])
   }
 
-  def fetchOrigin: Option[String] = {
-    data.get(ITSASessionKeys.ORIGIN).map(_.toObject[String])
+  def fetchClaimEnrolmentOrigin: Option[ClaimEnrolmentOrigin] = {
+    data.get(ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN).map(_.toObject[ClaimEnrolmentOrigin])
   }
+
 }

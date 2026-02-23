@@ -16,6 +16,9 @@
 
 package messagelookup.individual
 
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import models.individual.claimenrolment.ClaimEnrolmentOrigin.{ClaimEnrolmentBTA, ClaimEnrolmentPTA, ClaimEnrolmentSignUp}
+
 object MessageLookup {
 
   object Base {
@@ -48,7 +51,7 @@ object MessageLookup {
   }
 
   object ClaimEnrollmentConfirmation {
-    def title(origin: String) =
+    def title(origin: ClaimEnrolmentOrigin) =
       "You have added Making Tax Digital for Income Tax to your " +
         getAccountType(origin)
 
@@ -61,16 +64,15 @@ object MessageLookup {
     val b2 = "send your quarterly updates to HMRC"
     val b3 = "submit your tax return and pay tax due by 31 January the following year"
 
-    def ContinueToOnlineServicesButton(origin: String) =
+    def ContinueToOnlineServicesButton(origin: ClaimEnrolmentOrigin) =
       "Continue to " +
         getAccountType(origin)
 
-    private def getAccountType(origin: String) =
+    private def getAccountType(origin: ClaimEnrolmentOrigin) =
       origin match {
-        case "bta" => "business tax account"
-        case "pta" => "personal tax account"
-        case "sign-up" => "online services account"
-        case _ => ""
+        case ClaimEnrolmentBTA => "business tax account"
+        case ClaimEnrolmentPTA => "personal tax account"
+        case ClaimEnrolmentSignUp => "online services account"
       }
   }
 

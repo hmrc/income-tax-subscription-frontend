@@ -17,6 +17,8 @@
 @import config.AppConfig
 @import views.html.helpers.{ButtonHelper, UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
+@import models.individual.claimenrolment.ClaimEnrolmentOrigin
+@import models.individual.claimenrolment.ClaimEnrolmentOrigin._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 
@@ -27,17 +29,22 @@
         form: FormWithCSRF,
         ul: UnorderedList
 )
-@(postAction: Call, origin: String)(implicit request: Request[_], messages: Messages)
 
-@principalMainTemplate(title = messages("claim-enrolment.confirmation.title", messages(s"claim-enrolment.origin.$origin"))) {
+@(postAction: Call, origin: ClaimEnrolmentOrigin)(implicit request: Request[_], messages: Messages)
+
+@originMessage = @{
+    messages(s"claim-enrolment.origin.${origin.key}")
+}
+
+@principalMainTemplate(title = messages("claim-enrolment.confirmation.title", originMessage)) {
 
     <div id="confirmation-panel" class="govuk-panel govuk-panel--confirmation govuk-!-margin-bottom-8">
-        <h1 class="govuk-panel__title">@messages("claim-enrolment.confirmation.title", messages(s"claim-enrolment.origin.$origin"))</h1>
+        <h1 class="govuk-panel__title">@messages("claim-enrolment.confirmation.title", originMessage)</h1>
     </div>
 
     @form(action = postAction) {
 
-        <p class="govuk-body">@messages("claim-enrolment.confirmation.content.para1", messages(s"claim-enrolment.origin.$origin"))</p>
+        <p class="govuk-body">@messages("claim-enrolment.confirmation.content.para1", originMessage)</p>
 
         @ul(
             leadIn = messages("claim-enrolment.confirmation.bullets.heading"),
@@ -60,7 +67,7 @@
 
             <p class="govuk-body">@messages("claim-enrolment.confirmation.content.para3")</p>
 
-            @buttonHelper(messages("claim-enrolment.confirmation.continue-button", messages(s"claim-enrolment.origin.$origin")), classes = Some("govuk-!-display-block"))
+            @buttonHelper(messages("claim-enrolment.confirmation.continue-button", originMessage), classes = Some("govuk-!-display-block"))
         </section>
     }
 }

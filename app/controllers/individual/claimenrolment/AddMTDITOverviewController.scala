@@ -16,33 +16,56 @@
 
 package controllers.individual.claimenrolment
 
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import auth.individual.JourneyState.ResultFunctions
-import auth.individual.{BaseClaimEnrolmentController, ClaimEnrolment => ClaimEnrolmentJourney}
 import config.AppConfig
-import play.api.mvc._
-import services.{AuditingService, AuthService}
+import config.featureswitch.FeatureSwitch.ClaimEnrolmentOrigins
+import config.featureswitch.FeatureSwitching
+import controllers.SignUpBaseController
+import controllers.individual.actions.{BasicIdentifierAction, IdentifierAction}
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import play.api.mvc.*
+import services.SessionDataService
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.claimenrolment.AddMTDITOverview
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
-                                           val auditingService: AuditingService,
-                                           val authService: AuthService)
+                                           sessionDataService: SessionDataService,
+                                           identify: IdentifierAction,
+                                           basicIdentify: BasicIdentifierAction)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
 
-  def show: Action[AnyContent] = Authenticated.unrestricted { implicit request =>
-    _ =>
-      Ok(addmtdit(postAction = routes.AddMTDITOverviewController.submit)).withJourneyState(ClaimEnrolmentJourney)
+  def show(origin: Option[String] = None): Action[AnyContent] = basicIdentify.async { implicit request =>
+    originFromParameter(origin) map { origin =>
+      Ok(addmtdit(
+        postAction = routes.AddMTDITOverviewController.submit,
+        origin = origin
+      )).withJourneyState(ClaimEnrolmentJourney)
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      Redirect(routes.ClaimEnrolmentResolverController.resolve)
+  def submit: Action[AnyContent] = identify { _ =>
+    Redirect(routes.ClaimEnrolmentResolverController.resolve)
   }
 
+  private def originFromParameter(maybeOrigin: Option[String])
+                                 (implicit headerCarrier: HeaderCarrier): Future[ClaimEnrolmentOrigin] = {
+    val origin: ClaimEnrolmentOrigin = maybeOrigin.map(_.toLowerCase) match {
+      case Some(ClaimEnrolmentOrigin.ClaimEnrolmentBTA.key) => ClaimEnrolmentOrigin.ClaimEnrolmentBTA
+      case Some(ClaimEnrolmentOrigin.ClaimEnrolmentPTA.key) => ClaimEnrolmentOrigin.ClaimEnrolmentPTA
+      case _ if isEnabled(ClaimEnrolmentOrigins) => ClaimEnrolmentOrigin.ClaimEnrolmentSignUp
+      case _ => ClaimEnrolmentOrigin.ClaimEnrolmentBTA
+    }
+    sessionDataService.saveClaimEnrolmentOrigin(origin) map {
+      case Right(_) => origin
+      case Left(_) => throw new InternalServerException("[AddMTDITOverviewController] - Failed to save origin to session")
+    }
+  }
 }

@@ -511,7 +511,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
 
-    def addMTDITOverview(): WSResponse = get("/claim-enrolment/overview")
+    def addMTDITOverview(maybeOrigin: Option[String] = None): WSResponse = get(
+      uri = s"/claim-enrolment/overview" + maybeOrigin.map(origin => s"?origin=$origin").getOrElse("")
+    )
 
     def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 

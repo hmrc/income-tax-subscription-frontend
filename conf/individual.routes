@@ -103,7 +103,7 @@ GET         /keep-alive                                          controllers.ind
 GET         /timeout                                             controllers.individual.SessionTimeoutController.timeout
 
 # MTDIT Overview
-GET         /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.show
+GET         /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.show(origin: Option[String] ?= None)
 POST        /claim-enrolment/overview                            controllers.individual.claimenrolment.AddMTDITOverviewController.submit
 
 # Claim enrolment resolver

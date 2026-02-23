@@ -62,7 +62,7 @@ trait AuthPredicates extends Results with FrontendHeaderCarrierProvider with Log
 
   lazy val homeRoute: Result = Redirect(controllers.individual.matching.routes.HomeController.index)
 
-  lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
+  lazy val claimEnrolmentRoute: Result = Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
 
   lazy val cannotUseServiceRoute: Result = Redirect(controllers.individual.matching.routes.CannotUseServiceController.show())
 
