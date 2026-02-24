@@ -48,12 +48,30 @@ object MessageLookup {
   }
 
   object ClaimEnrollmentConfirmation {
-    val title = "You have added Making Tax Digital for Income Tax to your account"
-    val heading = "What you must do now"
-    val para1 = "You will now use Making Tax Digital for Income Tax to submit your income and expenses to HMRC."
-    val para2 = "Read more about Making Tax Digital for Income Tax (opens in new tab)."
+    def title(origin: String) =
+      "You have added Making Tax Digital for Income Tax to your " +
+        getAccountType(origin)
+
+    val heading = "What to do next"
+    val para1 = "Check you have completed all the steps to use Making Tax Digital for Income Tax (opens in new tab)."
+    val para2 = "You, or your agent if you have one, will need to use software that works with Making Tax Digital for Income Tax to:"
     val para3 = "We advise contacting your appointed tax agent, if you have one."
-    val ContinueToOnlineServicesButton = "Continue to Online Services account"
+
+    val b1 = "create, store and correct digital records of your self-employment and property income and expenses"
+    val b2 = "send your quarterly updates to HMRC"
+    val b3 = "submit your tax return and pay tax due by 31 January the following year"
+
+    def ContinueToOnlineServicesButton(origin: String) =
+      "Continue to " +
+        getAccountType(origin)
+
+    private def getAccountType(origin: String) =
+      origin match {
+        case "bta" => "business tax account"
+        case "pta" => "personal tax account"
+        case "sign-up" => "online services account"
+        case _ => ""
+      }
   }
 
   object ClaimEnrolmentAlreadySignedUp {

@@ -19,7 +19,7 @@ package controllers.individual.claimenrolment
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import services.{AuditingService, AuthService, SessionDataService}
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 import javax.inject.{Inject, Singleton}
@@ -28,21 +28,26 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentConfirmationController @Inject()(val authService: AuthService,
                                                      val auditingService: AuditingService,
+                                                     sessionDataService: SessionDataService,
                                                      claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
                                                     (implicit val ec: ExecutionContext,
                                                      val appConfig: AppConfig,
                                                      mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
+      sessionDataService.getAllSessionData().map { sessionData =>
+        val origin = sessionData.fetchOrigin.getOrElse("bta")
         Ok(claimEnrolmentConfirmation(
-          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit()
+          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
+          origin = origin
         ))
       }
+  }
 
   def submit: Action[AnyContent] = Authenticated { _ =>
     _ =>
-      Redirect(appConfig.btaUrl)
+      Redirect(appConfig.getAccountUrl)
   }
 
 }

@@ -16,12 +16,12 @@
 
 package controllers.individual.claimenrolment
 
+import config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import play.api.http.Status.*
 
 class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
-
 
   "GET /claim-enrolment/confirmation" should {
     "return the confirmation page when the user is enrolled and enrolment claimed" in {
@@ -35,7 +35,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the confirmation page")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("claim-enrolment.confirmation.title") + serviceNameGovUk)
+          pageTitle(messages("claim-enrolment.confirmation.title", messages("claim-enrolment.origin.bta")) + serviceNameGovUk)
         )
       }
     }
@@ -50,7 +50,8 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
         Then("Should return a SEE_OTHER going to bta")
         res must have(
-          httpStatus(SEE_OTHER), redirectURI("https://www.tax.service.gov.uk/business-account")
+          httpStatus(SEE_OTHER),
+          redirectURI(appConfig.getAccountUrl)
         )
       }
     }
