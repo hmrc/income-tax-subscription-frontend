@@ -63,11 +63,8 @@
 
     @if(isPrePopulated && !(incomeSources.hasNoIncomeSources || incomeSources.isComplete)) {
         @govukInsetText(InsetText(
-            content = Text(messages("your-income-source.manage.para-3"))
+            content = Text(messages("your-income-source.manage.para-2"))
         ))
-        <p class="govuk-body">
-            @messages("your-income-source.manage.para-2")
-        </p>
     }
 
     @form(action = postAction) {
