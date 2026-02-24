@@ -441,13 +441,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a second paragraph" when {
         "data has been pre-populated and not checked by the user" in new ViewTest(incompleteIncomeSources, isPrePopulated = true) {
-          document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.incomeSourcesPara2
+          document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
         }
       }
 
       "not have a second paragraph" when {
         "data has not been pre-populated" in new ViewTest(incompleteIncomeSources, isPrePopulated = false) {
-          document.mainContent.selectOptionalNth("p", 5) mustBe None
+          document.mainContent.selectOptionalNth(".govuk-inset-text", 2) mustBe None
         }
       }
     }
@@ -730,12 +730,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a second paragraph" when {
         "data has been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = true) {
-          document.mainContent.selectNth("p", 5).text mustBe IndividualIncomeSource.incomeSourcesPara2
+          document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
         }
       }
       "not have a second paragraph" when {
         "data has not been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = false) {
-          document.mainContent.selectOptionalNth("p", 5) mustBe None
+          document.mainContent.selectOptionalNth(".govuk-inset-text", 2) mustBe None
         }
       }
     }
