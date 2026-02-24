@@ -18,6 +18,7 @@ package config.featureswitch
 
 import config.AppConfig
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 trait FeatureSwitching {
@@ -27,8 +28,22 @@ trait FeatureSwitching {
   val FEATURE_SWITCH_ON = "true"
   val FEATURE_SWITCH_OFF = "false"
 
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    (sys.props.get(featureSwitch.name) orElse appConfig.configuration.getOptional[String](featureSwitch.name)) contains FEATURE_SWITCH_ON
+  def isEnabled(featureSwitch: FeatureSwitch): Boolean = {
+    lazy val systemProperty = sys.props.get(featureSwitch.name)
+    lazy val configEnabled = featureSwitch match {
+      case switch: DatedFeatureSwitch =>
+        appConfig.configuration.getOptional[String](featureSwitch.name).map(LocalDate.parse) match {
+          case Some(date) => !LocalDate.now().isBefore(date)
+          case None => false
+        }
+      case _ => appConfig.configuration.getOptional[String](featureSwitch.name) contains FEATURE_SWITCH_ON
+    }
+
+    systemProperty match {
+      case Some(value) => value contains FEATURE_SWITCH_ON
+      case None => configEnabled
+    }
+  }
 
   def isDisabled(featureSwitch: FeatureSwitch): Boolean =
     !isEnabled(featureSwitch)

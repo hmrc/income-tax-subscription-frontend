@@ -21,6 +21,8 @@ sealed trait FeatureSwitch {
   val displayText: String
 }
 
+sealed trait DatedFeatureSwitch extends FeatureSwitch
+
 object FeatureSwitch {
   val prefix = "feature-switch"
 
@@ -29,7 +31,8 @@ object FeatureSwitch {
     EmailCaptureConsent,
     SignalControlGatewayEligibility,
     AgentRelationshipSingleCall,
-    OptBackIn
+    OptBackIn,
+    TaxYear26To27Plus
   )
 
   def apply(str: String): FeatureSwitch =
@@ -63,5 +66,10 @@ object FeatureSwitch {
   case object OptBackIn extends FeatureSwitch {
     override val name: String = s"$prefix.opt-back-in"
     override val displayText: String = "Opt back in"
+  }
+
+  case object TaxYear26To27Plus extends DatedFeatureSwitch {
+    override val name: String = s"$prefix.tax-year-26-27-plus"
+    override val displayText: String = "Tax year is 26/27 or later"
   }
 }
