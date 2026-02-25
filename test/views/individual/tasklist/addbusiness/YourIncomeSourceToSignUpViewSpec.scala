@@ -216,7 +216,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
 
       "have the correct lead InsetText" in new ViewTest(noIncomeSources){
-        document.mainContent.select(".govuk-inset-text").text mustBe IndividualIncomeSource.incomeSourcesPara3
+        document.mainContent.selectNth(".govuk-inset-text", 1).text mustBe IndividualIncomeSource.incomeSourcesPara3
       }
 
       "have a sole trader section" which {
@@ -442,12 +442,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a second paragraph" when {
         "data has been pre-populated and not checked by the user" in new ViewTest(incompleteIncomeSources, isPrePopulated = true) {
           document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
-        }
-      }
-
-      "not have a second paragraph" when {
-        "data has not been pre-populated" in new ViewTest(incompleteIncomeSources, isPrePopulated = false) {
-          document.mainContent.selectOptionalNth(".govuk-inset-text", 2) mustBe None
         }
       }
     }
@@ -731,11 +725,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "have a second paragraph" when {
         "data has been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = true) {
           document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
-        }
-      }
-      "not have a second paragraph" when {
-        "data has not been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = false) {
-          document.mainContent.selectOptionalNth(".govuk-inset-text", 2) mustBe None
         }
       }
     }

@@ -56,11 +56,9 @@
 
     @propertySection
 
-    @if(prepopulated && !(incomeSources.hasNoIncomeSources || incomeSources.isComplete)) {
-        @govukInsetText(InsetText(
-            content = Text(messages("agent.your-income-source.before-you-continue"))
-        ))
-    }
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.your-income-source.before-you-continue"))
+    ))
 
     @form(action = postAction) {
         @saveAndContinueButtonHelper(

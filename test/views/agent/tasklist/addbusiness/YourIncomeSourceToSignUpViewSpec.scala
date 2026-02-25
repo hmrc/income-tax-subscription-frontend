@@ -81,7 +81,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     "have a lead paragraph" which {
       "tells the agent not to add income from partnerships" in new ViewTest{
-        document.mainContent.select(".govuk-inset-text").text mustBe AgentIncomeSource.paragraph3
+        document.mainContent.selectNth(".govuk-inset-text", 1).text mustBe AgentIncomeSource.paragraph3
       }
     }
 
