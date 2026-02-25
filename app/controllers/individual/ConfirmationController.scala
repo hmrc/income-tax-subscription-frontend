@@ -17,18 +17,20 @@
 package controllers.individual
 
 import auth.individual.IncomeTaxSAUser
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
+import config.featureswitch.FeatureSwitching
 import connectors.individual.PreferencesFrontendConnector
 import controllers.SignUpBaseController
 import controllers.individual.actions.{ConfirmationJourneyRefiner, IdentifierAction}
 import models.Next
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services._
+import services.*
+import utilities.ImplicitDateFormatterImpl
 import views.html.individual.confirmation.SignUpConfirmation
-import java.time.LocalDate
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import utilities.ImplicitDateFormatterImpl
 
 @Singleton
 class ConfirmationController @Inject()(identify: IdentifierAction,
@@ -36,10 +38,11 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
                                        preferencesFrontendConnector: PreferencesFrontendConnector,
                                        subscriptionDetailsService: SubscriptionDetailsService,
                                        signedUpDateService: SignedUpDateService,
-                                       view: SignUpConfirmation)
+                                       view: SignUpConfirmation,
+                                       val appConfig: AppConfig)
                                       (implicit mcc: MessagesControllerComponents,
                                        ec: ExecutionContext,
-                                       implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController {
+                                       implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
@@ -56,7 +59,8 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
         individualUserNino = request.nino,
         preference = preference,
         usingSoftwareStatus = request.usingSoftware,
-        signedUpDate = signedUpDate
+        signedUpDate = signedUpDate,
+        showHelp = isDisabled(TaxYear26To27Plus)
       ))
     }
   }
