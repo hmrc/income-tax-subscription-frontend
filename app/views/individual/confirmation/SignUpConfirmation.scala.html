@@ -33,12 +33,12 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     featureSwitching: FeatureSwitchingImpl,
     ul: UnorderedList,
-    govukTabs : GovukTabs,
-    govukTable : GovukTable,
+    govukTabs: GovukTabs,
+    govukTable: GovukTable,
     appConfig: AppConfig
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate, showHelp: Boolean)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
 
@@ -108,7 +108,9 @@ classes = "govuk-!-margin-bottom-4"
   }
 </div>
 
-@voluntary
+@if(showHelp) {
+    @voluntary
+}
 
 <div>
     <p class="govuk-body">
