@@ -17,6 +17,8 @@
 package views.individual.claimenrolment
 
 import messagelookup.individual.MessageLookup
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import models.individual.claimenrolment.ClaimEnrolmentOrigin.{ClaimEnrolmentBTA, ClaimEnrolmentPTA, ClaimEnrolmentSignUp}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
@@ -27,16 +29,16 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
   val claimEnrolmentConfirmation: ClaimEnrolmentConfirmation = app.injector.instanceOf[ClaimEnrolmentConfirmation]
 
-  val origins = Seq(
-    "bta",
-    "pta",
-    "sign-up"
+  val origins: Seq[ClaimEnrolmentOrigin] = Seq(
+    ClaimEnrolmentBTA,
+    ClaimEnrolmentPTA,
+    ClaimEnrolmentSignUp
   )
 
-  def page(origin: String): Html =
+  def page(origin: ClaimEnrolmentOrigin): Html =
     claimEnrolmentConfirmation(testCall, origin)(request, implicitly)
 
-  def document(origin: String): Document =
+  def document(origin: ClaimEnrolmentOrigin): Document =
     Jsoup.parse(page(origin).body)
 
   "The Claim Enrolment Confirmation view" should {
@@ -59,7 +61,7 @@ class ClaimEnrolmentConfirmationViewSpec extends ViewSpec {
 
     s"has a heading (H2)" which {
 
-      def heading(origin: String) =
+      def heading(origin: ClaimEnrolmentOrigin) =
         document(origin).mainContent.select("H2")
 
       s"has the text '${MessageLookup.ClaimEnrollmentConfirmation.heading}'" in {

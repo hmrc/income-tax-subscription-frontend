@@ -18,6 +18,8 @@ package controllers.individual.claimenrolment
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import models.individual.claimenrolment.ClaimEnrolmentOrigin.ClaimEnrolmentBTA
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AuditingService, AuthService, SessionDataService}
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
@@ -37,7 +39,7 @@ class ClaimEnrolmentConfirmationController @Inject()(val authService: AuthServic
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
       sessionDataService.getAllSessionData().map { sessionData =>
-        val origin = sessionData.fetchOrigin.getOrElse("bta")
+        val origin: ClaimEnrolmentOrigin = sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
         Ok(claimEnrolmentConfirmation(
           postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
           origin = origin

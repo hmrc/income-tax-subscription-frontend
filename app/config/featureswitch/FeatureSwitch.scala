@@ -32,7 +32,8 @@ object FeatureSwitch {
     SignalControlGatewayEligibility,
     AgentRelationshipSingleCall,
     OptBackIn,
-    TaxYear26To27Plus
+    TaxYear26To27Plus,
+    ClaimEnrolmentOrigins
   )
 
   def apply(str: String): FeatureSwitch =
@@ -72,4 +73,9 @@ object FeatureSwitch {
     override val name: String = s"$prefix.tax-year-26-27-plus"
     override val displayText: String = "Tax year is 26/27 or later"
   }
+  case object ClaimEnrolmentOrigins extends FeatureSwitch {
+    override val name: String = s"$prefix.claim-enrolment-origins"
+    override val displayText: String = "Claim enrolment origins"
+  }
+
 }

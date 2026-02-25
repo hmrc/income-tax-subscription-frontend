@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
 import models.{EligibilityStatus, SessionData, YesNo}
 import play.api.libs.json.*
@@ -89,5 +90,9 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def saveEmailPassed(emailPassed: Boolean)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.EMAIL_PASSED, JsBoolean(emailPassed))
+  }
+
+  def saveClaimEnrolmentOrigin(origin: ClaimEnrolmentOrigin)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, origin)
   }
 }

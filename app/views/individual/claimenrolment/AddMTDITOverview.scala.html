@@ -16,6 +16,8 @@
 
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import models.individual.claimenrolment.ClaimEnrolmentOrigin
+@import models.individual.claimenrolment.ClaimEnrolmentOrigin._
 @import views.html.helpers.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
 
@@ -26,31 +28,21 @@
     continueButton: ContinueButton
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, origin: ClaimEnrolmentOrigin)(implicit request: Request[_], messages: Messages)
+
+@originMessage: String = @{
+    messages(s"mtdit-overview.origin.${origin.key}")
+}
 
 @mainTemplate(
-    title = messages("mtdit-overview.heading")
+    title = messages("mtdit-overview.heading", originMessage)
 ) {
 
-    <h1 class="govuk-heading-l">@messages("mtdit-overview.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("mtdit-overview.heading", originMessage)</h1>
 
-    <p class="govuk-body">@messages("mtdit-overview.para-one")</p>
+    <p class="govuk-body">@messages("mtdit-overview.para-one", originMessage)</p>
 
-    <h2 class="govuk-heading-m">@messages("mtdit-overview.next-steps.heading")</h2>
-
-    <p class="govuk-body">@messages("mtdit-overview.next-steps.para-one")</p>
-
-    <p class="govuk-body">
-        @Html(messages(
-            key = "mtdit-overview.next-steps.para-two",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(
-                text = messages("mtdit-overview.next-steps.para-two.link-text"),
-                href = Some("https://www.tax.service.gov.uk/business-account")
-            ))
-        ))
-    </p>
-
-    <p class="govuk-body">@messages("mtdit-overview.next-steps.para-three")</p>
+    <p class="govuk-body">@messages("mtdit-overview.para-two")</p>
 
     @form(action = postAction){
         @continueButton()

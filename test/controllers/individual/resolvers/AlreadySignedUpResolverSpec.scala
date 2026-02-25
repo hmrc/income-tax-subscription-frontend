@@ -134,7 +134,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
         val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show.url)
+        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show().url)
       }
     }
 

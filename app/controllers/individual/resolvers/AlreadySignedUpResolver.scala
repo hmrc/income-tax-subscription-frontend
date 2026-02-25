@@ -51,7 +51,7 @@ class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAll
       case Right(_) =>
         getITSAStatus(sessionData).map {
           case Some(Annual) => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
-          case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show)
+          case _ => Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show())
         }
       case Left(EnrolmentAlreadyAllocated(_)) =>
         channel match {

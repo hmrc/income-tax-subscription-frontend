@@ -16,6 +16,8 @@
 
 package views.individual.claimenrolment
 
+import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import models.individual.claimenrolment.ClaimEnrolmentOrigin.{ClaimEnrolmentBTA, ClaimEnrolmentPTA, ClaimEnrolmentSignUp}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
@@ -25,77 +27,129 @@ import views.html.individual.claimenrolment.AddMTDITOverview
 class AddMTDITOverviewSpec extends ViewSpec {
 
   val addMTDITOverview: AddMTDITOverview = app.injector.instanceOf[AddMTDITOverview]
-  val page: HtmlFormat.Appendable = addMTDITOverview(testCall)
-  val document: Document = Jsoup.parse(page.body)
-  val mainContent: Element = document.mainContent
 
-  "AddMTDITOverview" must {
-    "use the correct page template" in new TemplateViewTest(
-      view = page,
-      title = AddMTDITOverviewMessages.heading,
-      hasSignOutLink = true
-    )
+  def page(origin: ClaimEnrolmentOrigin): HtmlFormat.Appendable = addMTDITOverview(testCall, origin)
 
-    "have a heading" in {
-      mainContent.getH1Element.text mustBe AddMTDITOverviewMessages.heading
-    }
+  def document(origin: ClaimEnrolmentOrigin): Document = Jsoup.parse(page(origin).body)
 
-    "have a initial paragraph" in {
-      mainContent.getNthParagraph(1).text mustBe AddMTDITOverviewMessages.paraOne
-    }
 
-    "have a next steps section heading" in {
-      mainContent.selectHead("h2").text mustBe AddMTDITOverviewMessages.NextSteps.heading
-    }
+  "AddMTDITOverview" when {
+    "the origin is BTA" must {
+      lazy val mainContent: Element = document(ClaimEnrolmentBTA).mainContent
 
-    "have a next steps first paragraph" in {
-      mainContent.getNthParagraph(2).text mustBe AddMTDITOverviewMessages.NextSteps.paraOne
-    }
+      "use the correct page template" in new TemplateViewTest(
+        view = page(ClaimEnrolmentBTA),
+        title = AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.bta),
+        hasSignOutLink = true
+      )
 
-    "have a next steps second paragraph" which {
-      "has the correct text" in {
-        mainContent.getNthParagraph(3).text mustBe AddMTDITOverviewMessages.NextSteps.paraTwo
+      "have a heading" in {
+        mainContent.getH1Element.text mustBe AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.bta)
       }
-      "has a link to the business tax account which opens in a new tab" in {
-        val link: Element = mainContent.getNthParagraph(3).selectHead("a")
 
-        link.text mustBe AddMTDITOverviewMessages.NextSteps.paraTwoLinkText
-        link.attr("href") mustBe "https://www.tax.service.gov.uk/business-account"
-        link.attr("target") mustBe "_blank"
-        link.attr("rel") mustBe "noopener noreferrer"
+      "have a initial paragraph" in {
+        mainContent.getNthParagraph(1).text mustBe AddMTDITOverviewMessages.paraOne(AddMTDITOverviewMessages.Origins.bta)
+      }
+
+      "have a secondary paragraph" in {
+        mainContent.getNthParagraph(2).text mustBe AddMTDITOverviewMessages.paraTwo
+      }
+
+      "have a form" which {
+        def form: Element = mainContent.getForm
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+        "has a continue button" in {
+          form.getGovukSubmitButton.text mustBe AddMTDITOverviewMessages.continue
+        }
       }
     }
 
-    "have a next steps third paragraph" in {
-      mainContent.getNthParagraph(4).text mustBe AddMTDITOverviewMessages.NextSteps.paraThree
+    "the origin is PTA" must {
+      lazy val mainContent: Element = document(ClaimEnrolmentPTA).mainContent
+
+      "use the correct page template" in new TemplateViewTest(
+        view = page(ClaimEnrolmentPTA),
+        title = AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.pta),
+        hasSignOutLink = true
+      )
+
+      "have a heading" in {
+        mainContent.getH1Element.text mustBe AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.pta)
+      }
+
+      "have a initial paragraph" in {
+        mainContent.getNthParagraph(1).text mustBe AddMTDITOverviewMessages.paraOne(AddMTDITOverviewMessages.Origins.pta)
+      }
+
+      "have a secondary paragraph" in {
+        mainContent.getNthParagraph(2).text mustBe AddMTDITOverviewMessages.paraTwo
+      }
+
+      "have a form" which {
+        def form: Element = mainContent.getForm
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+        "has a continue button" in {
+          form.getGovukSubmitButton.text mustBe AddMTDITOverviewMessages.continue
+        }
+      }
     }
 
-    "have a form" which {
-      def form: Element = mainContent.getForm
+    "the origin is sign up" must {
+      lazy val mainContent: Element = document(ClaimEnrolmentSignUp).mainContent
 
-      "has the correct attributes" in {
-        form.attr("method") mustBe testCall.method
-        form.attr("action") mustBe testCall.url
+      "use the correct page template" in new TemplateViewTest(
+        view = page(ClaimEnrolmentSignUp),
+        title = AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.signUp),
+        hasSignOutLink = true
+      )
+
+      "have a heading" in {
+        mainContent.getH1Element.text mustBe AddMTDITOverviewMessages.heading(AddMTDITOverviewMessages.Origins.signUp)
       }
-      "has a continue button" in {
-        form.getGovukSubmitButton.text mustBe AddMTDITOverviewMessages.continue
+
+      "have a initial paragraph" in {
+        mainContent.getNthParagraph(1).text mustBe AddMTDITOverviewMessages.paraOne(AddMTDITOverviewMessages.Origins.signUp)
+      }
+
+      "have a secondary paragraph" in {
+        mainContent.getNthParagraph(2).text mustBe AddMTDITOverviewMessages.paraTwo
+      }
+
+      "have a form" which {
+        def form: Element = mainContent.getForm
+
+        "has the correct attributes" in {
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
+        }
+        "has a continue button" in {
+          form.getGovukSubmitButton.text mustBe AddMTDITOverviewMessages.continue
+        }
       }
     }
   }
 
   object AddMTDITOverviewMessages {
-    val heading: String = "Add Making Tax Digital for Income Tax to your business tax account"
-    val paraOne = "Your agent has signed you up for Making Tax Digital for Income Tax."
+    def heading(origin: String): String = s"Add Making Tax Digital for Income Tax to your $origin"
 
-    object NextSteps {
-      val heading: String = "Next steps"
-      val paraOne: String = "You can now add it to your account and manage it with other taxes. You’ll need the user ID and password you got when you signed up for Self Assessment."
-      val paraTwoLinkText: String = "business tax account (opens in new tab)"
-      val paraTwo: String = s"You can check your existing account details in your $paraTwoLinkText."
-      val paraThree: String = "You may be asked to provide further proof of your identity to add Making Tax Digital for Income Tax to your HMRC online services account."
-    }
+    def paraOne(origin: String) = s"You can now add Making Tax Digital for Income Tax to your $origin and manage it with other taxes."
 
+    val paraTwo = "You may be asked to provide further proof of your identity."
     val continue: String = "Continue"
+
+    object Origins {
+      val bta: String = "business tax account"
+      val pta: String = "personal tax account"
+      val signUp: String = "online services account"
+    }
   }
 
 }
