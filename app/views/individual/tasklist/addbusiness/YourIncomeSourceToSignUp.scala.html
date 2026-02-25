@@ -61,11 +61,9 @@
 
     @incomeFromProperty
 
-    @if(isPrePopulated && !(incomeSources.hasNoIncomeSources || incomeSources.isComplete)) {
-        @govukInsetText(InsetText(
-            content = Text(messages("your-income-source.manage.para-2"))
-        ))
-    }
+    @govukInsetText(InsetText(
+        content = Text(messages("your-income-source.manage.para-2"))
+    ))
 
     @form(action = postAction) {
             @saveAndContinueButtonHelper(
