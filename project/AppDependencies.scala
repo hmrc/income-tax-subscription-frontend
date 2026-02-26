@@ -8,7 +8,7 @@ object AppDependencies {
   private val testScope = "test"
   private val integrationTestScope = "it"
 
-  private val bootstrapPlayVersion = "10.5.0"
+  private val bootstrapPlayVersion = "10.6.0"
   private val playPartialsVersion = "10.2.0"
   private val playHmrcFrontendVersion = "12.31.0"
   private val domainVersion = "13.0.0"

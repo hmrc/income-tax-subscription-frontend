@@ -52,7 +52,7 @@ object MessageLookup {
 
   object ClaimEnrollmentConfirmation {
     def title(origin: ClaimEnrolmentOrigin) =
-      "You have added Making Tax Digital for Income Tax to your " +
+      "You added Making Tax Digital for Income Tax to your " +
         getAccountType(origin)
 
     val heading = "What to do next"
