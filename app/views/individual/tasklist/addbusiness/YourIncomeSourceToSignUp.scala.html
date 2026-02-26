@@ -53,10 +53,6 @@
             )
         </p>
 
-    @govukInsetText(InsetText(
-        content = Text(messages("your-income-source.manage.para-3"))
-    ))
-
     @selfEmploymentSection
 
     @incomeFromProperty
@@ -141,6 +137,10 @@
 @selfEmploymentSection = {
     <h2 class="govuk-heading-m">@messages("your-income-source.self-employed.heading")</h2>
     <p class="govuk-body">@messages("your-income-source.self-employed.description")</p>
+
+    @govukInsetText(InsetText(
+        content = Text(messages("your-income-source.manage.para-3"))
+    ))
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
         @govukSummaryList(SummaryList(
