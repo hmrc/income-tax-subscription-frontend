@@ -47,7 +47,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a first paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraOne
+      document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.paraOne
     }
 
     "have a print information link" in {
@@ -365,11 +365,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraThree
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {

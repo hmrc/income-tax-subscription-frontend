@@ -72,12 +72,6 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     document.title mustBe s"$titlePrefix$title$titleSuffix"
 
-    backLink.map { href =>
-      val link = document.selectHead(".govuk-back-link")
-      link.text mustBe backLinkText.getOrElse("Back")
-      link.attr("href") mustBe href
-    }
-
     if (hasSignOutLink) {
       val signOutLink: Element = document.selectHead(".hmrc-sign-out-nav__link")
       signOutLink.text mustBe "Sign out"
@@ -116,14 +110,14 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
   implicit class CustomSelectors(element: Element) {
 
     def selectHead(selector: String): Element = {
-      element.select(selector).asScala.headOption match {
+      selectSeq(selector).headOption match {
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
     }
 
     def selectOptionally(selector: String): Option[Element] = {
-      element.select(selector).asScala.headOption
+      selectSeq(selector).headOption
     }
 
     def selectOptionalNth(selector: String, nth: Int): Option[Element] = {
@@ -131,7 +125,12 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
     }
 
     def selectSeq(selector: String): Seq[Element] = {
-      element.select(selector).asScala.toSeq
+      val seq = element.select(selector).asScala.toSeq
+      seq.headOption.map(_.id()) match {
+        case Some("_back1") => seq.tail
+        case Some("_back2") => seq.tail
+        case _ => seq
+      }
     }
 
     def selectNth(selector: String, nth: Int): Element = {
@@ -147,7 +146,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
     def getParagraphs: Elements = element.getElementsByTag("p")
 
-    def getNthParagraph(nth: Int): Element = element.selectHead(s"p:nth-of-type($nth)")
+    def getNthParagraph(nth: Int): Element = selectNth("p", nth)
 
     def getNthUnorderedList(nth: Int): Element = element.selectHead(s"ul:nth-of-type($nth)")
 

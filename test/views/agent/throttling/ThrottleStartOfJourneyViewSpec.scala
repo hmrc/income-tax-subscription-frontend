@@ -47,7 +47,7 @@ class ThrottleStartOfJourneyViewSpec extends ViewSpec {
       document1.select("main").select("h1").text() mustBe messages.heading
     }
     "have line 1" in {
-      document1.select("main").select("p").first().text() mustBe messages.line1
+      document1.mainContent.selectNth("p", 1).text() mustBe messages.line1
     }
     "have a continue button that says try again" in {
       document1.mainContent.select("button").text() mustBe tryAgain

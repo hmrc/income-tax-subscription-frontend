@@ -63,7 +63,7 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
       s"has a line '${MessageLookup.AlreadyEnrolled.line1}'" in {
         Seq(false, true).foreach { noEnrolment =>
-          main(noEnrolment).select("p").get(0).text must be(MessageLookup.AlreadyEnrolled.line1)
+          main(noEnrolment).select("p").get(1).text must be(MessageLookup.AlreadyEnrolled.line1)
         }
       }
 

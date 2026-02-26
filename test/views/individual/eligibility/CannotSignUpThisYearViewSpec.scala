@@ -68,7 +68,7 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
     }
 
     "have paragraph 1" in new ViewTest {
-      document.mainContent.selectFirst("p").text() mustBe CannotSignUpMessages.paragraph1(year, nextYear)
+      document.mainContent.select("p").get(1).text() mustBe CannotSignUpMessages.paragraph1(year, nextYear)
     }
 
     "have a the correct yes-no radio inputs" in new ViewTest {

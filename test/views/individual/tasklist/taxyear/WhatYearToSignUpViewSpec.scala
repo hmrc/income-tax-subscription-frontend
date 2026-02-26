@@ -62,11 +62,11 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
 
     "have a body" which {
       "has a first paragraph" in {
-        document().mainContent.select("p").get(0).text mustBe WhatYearToSignUp.paragraph
+        document().mainContent.selectNth("p", 1).text mustBe WhatYearToSignUp.paragraph
       }
 
       "has a second paragraph with a link" in {
-        document().mainContent.select("p").get(1).text mustBe WhatYearToSignUp.paragraphTwo
+        document().mainContent.selectNth("p", 2).text mustBe WhatYearToSignUp.paragraphTwo
         val link = document().mainContent.select(".govuk-link").get(0)
         link.text mustBe WhatYearToSignUp.LinkText
         link.attr("href") mustBe "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates"
