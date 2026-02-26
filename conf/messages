@@ -320,7 +320,7 @@ claim-enrolment.origin.pta                                      = personal tax a
 claim-enrolment.origin.sign-up                                  = online services account
 
 ## Claim Enrolment Confirmation
-claim-enrolment.confirmation.title                              = You have added Making Tax Digital for Income Tax to your {0}
+claim-enrolment.confirmation.title                              = You added Making Tax Digital for Income Tax to your {0}
 claim-enrolment.confirmation.heading                            = What to do next
 claim-enrolment.confirmation.bullets.heading                    = You, or your agent if you have one, will need to use software that works with Making Tax Digital for Income Tax to:
 claim-enrolment.confirmation.bullets.1                          = create, store and correct digital records of your self-employment and property income and expenses
