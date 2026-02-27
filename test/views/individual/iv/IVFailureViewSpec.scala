@@ -47,7 +47,7 @@ class IVFailureViewSpec extends ViewSpec {
     }
     "have info on why the user can't access the service" which {
       "has text to start a list of reasons" in {
-        document.mainContent.select("p").get(1).text mustBe IVFailureMessages.cannotAccess
+        document.mainContent.select("p").get(0).text mustBe IVFailureMessages.cannotAccess
       }
       "has a list of reasons" which {
         "has a first reason" in {

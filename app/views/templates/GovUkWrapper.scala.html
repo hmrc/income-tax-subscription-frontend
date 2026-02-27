@@ -46,13 +46,10 @@
     serviceName = serviceName,
     isWelshTranslationAvailable = hasWelsh,
     pageTitle = Some(title),
-    backLink = None
+    backLink = Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
 ))(content)
 
 @content = {
-
-    <a id="_back1" href="#" class="govuk-back-link" data-module="hmrc-back-link">@messages("base.back")</a>
-    <p id="_back2">
 
     @optForm.map { form =>
         @if(form.hasErrors) {
