@@ -826,7 +826,7 @@ agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Your client’s income sources
-agent.your-income-source.para-1                                     = Do not add limited companies or partnerships here. You’ll be able to tell us about them in your software.
+agent.your-income-source.para-1                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.lead                                       = Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April {0}.
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Sole trader businesses
