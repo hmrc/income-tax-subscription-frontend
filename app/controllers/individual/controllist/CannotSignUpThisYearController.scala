@@ -48,7 +48,7 @@ class CannotSignUpThisYearController @Inject()(val auditingService: AuditingServ
     _ =>
       form.bindFromRequest().fold(
         hasErrors => BadRequest(view(form = hasErrors)), {
-          case Yes => Redirect(controllers.individual.routes.UsingSoftwareController.show())
+          case Yes => Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
           case No => Redirect(controllers.individual.controllist.routes.DeclinedSignUpNextYearController.show)
         }
       )

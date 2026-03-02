@@ -62,6 +62,6 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
   }
 
   def backUrl: String = {
-    controllers.individual.routes.WhatYouNeedToDoController.show.url
+    controllers.individual.routes.UsingSoftwareController.show().url
   }
 }

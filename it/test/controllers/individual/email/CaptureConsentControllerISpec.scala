@@ -133,7 +133,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
         }
       }
 
-      s"return a redirect to ${controllers.individual.routes.WhatYouNeedToDoController.show.url}" when {
+      s"return a redirect to ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
         "the user selects the No radio button" in {
           val userInput: YesNo = No
           Given("I setup the wiremock stubs")
@@ -147,7 +147,7 @@ class CaptureConsentControllerISpec extends ComponentSpecBase {
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+            redirectURI(controllers.individual.routes.UsingSoftwareController.show().url)
           )
         }
       }

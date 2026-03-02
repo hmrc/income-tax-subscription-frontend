@@ -166,7 +166,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase with FeatureSwit
         Then("Should return a SEE_OTHER with a redirect location of Accounting Period")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+          redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         )
       }
     }

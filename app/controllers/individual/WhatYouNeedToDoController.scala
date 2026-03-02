@@ -49,47 +49,36 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         reference <- referenceRetrieval.getIndividualReference(sessionData)
         mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
-        usingSoftwareStatus = sessionData.fetchSoftwareStatus
         selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-        consentYesNo = sessionData.fetchConsentStatus
       } yield {
-        val taxYearSelection: Option[AccountingYear] = selectedTaxYear.map(_.accountingYear)
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
           backUrl = backUrl(
-            eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-            mandatedCurrentYear = mandationStatus.currentYearStatus == Mandated,
-            consentStatus = consentYesNo,
-            taxYearSelection = taxYearSelection
+            eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly
           )
         ))
       }
   }
 
-  val submit: Action[AnyContent] = Authenticated { _ =>
-    _ => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-  }
-
-  def backUrl(eligibleNextYearOnly: Boolean, mandatedCurrentYear: Boolean, consentStatus: Option[YesNo], taxYearSelection: Option[AccountingYear]): String = {
-
-    if (isEnabled(EmailCaptureConsent)) {
-      if(eligibleNextYearOnly) {
-        controllers.individual.routes.UsingSoftwareController.show(false).url
-      } else {
-        (taxYearSelection, consentStatus) match {
-          case (Some(Current), Some(Yes)) => controllers.individual.email.routes.EmailCaptureController.show().url
-          case (Some(Current), Some(No)) => controllers.individual.email.routes.CaptureConsentController.show().url
-          case _ => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+    val submit: Action[AnyContent] = Authenticated.async { implicit request =>
+      _ =>
+        for {
+          sessionData <- sessionDataService.getAllSessionData()
+          reference <- referenceRetrieval.getIndividualReference(sessionData)
+          selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
+        } yield {
+          selectedTaxYear.map(_.accountingYear) match {
+            case Some(Current) => Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
+            case _ => Redirect(controllers.individual.routes.UsingSoftwareController.show())
+          }
         }
-      }
+    }
+
+  def backUrl(eligibleNextYearOnly: Boolean): String = {
+    if (eligibleNextYearOnly) {
+      controllers.individual.matching.routes.CannotUseServiceController.show().url
     } else {
-      if (eligibleNextYearOnly || mandatedCurrentYear) {
-        controllers.individual.routes.UsingSoftwareController.show(false).url
-      } else if (taxYearSelection.contains(Current)){
-        controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
-      } else {
-        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      }
+      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     }
   }
 }

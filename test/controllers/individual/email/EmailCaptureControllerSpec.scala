@@ -58,7 +58,7 @@ class EmailCaptureControllerSpec extends ControllerSpec
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
 
           verifyAudit(BetaContactDetails(
             emailAddress = testValidEmail,
@@ -73,7 +73,7 @@ class EmailCaptureControllerSpec extends ControllerSpec
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
 
           verifyAudit(BetaContactDetails(
             emailAddress = testValidEmail,

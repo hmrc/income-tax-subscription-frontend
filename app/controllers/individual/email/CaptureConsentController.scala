@@ -66,7 +66,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
                 case Yes =>
                   Redirect(controllers.individual.email.routes.EmailCaptureController.show())
                 case No =>
-                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+                  Redirect(controllers.individual.routes.UsingSoftwareController.show())
               }
           }
         }

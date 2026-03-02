@@ -53,7 +53,7 @@ class EmailCaptureController @Inject()(auditingService: AuditingService,
         backUrl = controllers.individual.email.routes.CaptureConsentController.show().url
       ))), { email =>
         auditBetaContactDetails(email) map { _ =>
-          Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+          Redirect(controllers.individual.routes.UsingSoftwareController.show())
         }
       }
     )
