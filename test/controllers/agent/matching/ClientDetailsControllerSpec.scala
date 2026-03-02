@@ -20,12 +20,13 @@ import config.AppConfig
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
+import models.audits.SignupStartedAuditing
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status, stubMessagesControllerComponents}
-import services.mocks._
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
 import views.ViewSpecTrait.testBackUrl
@@ -133,6 +134,12 @@ class ClientDetailsControllerSpec extends ControllerSpec
         sessionMap.get(dobM) mustBe Some("2")
         sessionMap.get(dobY) mustBe Some("1980")
         sessionMap.get(nino) mustBe Some("AA000011D")
+
+        verifyAudit(SignupStartedAuditing.SignupStartedAuditModel(
+          agentReferenceNumber = Some(testARN),
+          utr = None,
+          nino = Some("AA000011D")
+        ))
       }
     }
     "return a bad request with the page content" which {
