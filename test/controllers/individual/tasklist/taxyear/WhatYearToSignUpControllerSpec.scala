@@ -173,7 +173,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
             val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
 
             status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
           }
         }
         "the user signs up for the next tax year" should {
@@ -197,7 +197,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
             val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
 
             status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
           }
         }
         "the user signs up for the next tax year" should {
@@ -244,7 +244,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
       "redirect the user to the Using Software page when in edit mode" in {
         mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.routes.UsingSoftwareController.show(false).url)
+        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.routes.YouCanSignUpController.show.url)
       }
     }
 

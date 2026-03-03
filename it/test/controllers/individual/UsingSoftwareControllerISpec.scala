@@ -18,15 +18,17 @@ package controllers.individual
 
 import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitching
-import connectors.stubs.SessionDataConnectorStub
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, No, Yes, YesNo}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
+import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.individual.TestConstants.testNino
 
 class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
@@ -46,7 +48,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption)
         ))
-
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         When(s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}")
         val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
 
@@ -61,7 +63,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
   }
 
   s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" when {
-    s"return a redirect to ${controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url}" when {
+    s"return a redirect to ${controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url}" when {
       "the user selects the Yes radio button" in {
         val userInput = Yes
 
@@ -80,7 +82,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          redirectURI(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         )
       }
     }
@@ -96,7 +98,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitchi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino)
         ))
-
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         When(s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url} is called")
         val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = None)
 

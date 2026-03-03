@@ -97,7 +97,7 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
   private def nextPage: Call = if (isEnabled(EmailCaptureConsent)) {
     controllers.individual.email.routes.CaptureConsentController.show()
   } else {
-    controllers.individual.routes.WhatYouNeedToDoController.show
+    controllers.individual.routes.UsingSoftwareController.show()
   }
 
 }

@@ -174,76 +174,33 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   }
 
   "submit" must {
-    "return SEE_OTHER to the your income sources page" in new Setup {
+    "redirect to Accounting Period when selected tax year is Current" in new Setup {
+      mockGetAllSessionData(SessionData())
+      mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
       val result: Future[Result] = controller.submit(subscriptionRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
+      redirectLocation(result) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+    }
+
+    "redirect to Using Software when Next tax year is selected" in new Setup {
+      mockGetAllSessionData(SessionData())
+      mockFetchSelectedTaxYear(Some(testSelectedTaxYearNext))
+
+      val result: Future[Result] = controller.submit(subscriptionRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
     }
   }
 
   "backUrl" when {
-    "the email capture consent feature switch is disabled" should {
-      "return the what year to sign up page url" when {
-        "the user is eligible for both years, not mandated and selects 'Current' year" in new Setup {
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Current))
-
-          backUrl mustBe controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
-        }
-      }
-      "return the what tax year to sign up page url" when {
-        "the user is eligible for both years, not mandated and selects 'Next' year" in new Setup {
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Next))
-
-          backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-        }
-      }
-      "return the using software page url" when {
-        "the user is eligible for next year only" in new Setup {
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, None, None)
-
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
-        }
-        "the user is mandated for the current year" in new Setup {
-
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = true, None, None)
-
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
-        }
-      }
+    "return cannot use the service page when eligible for next year only" in new Setup {
+      controller.backUrl(eligibleNextYearOnly = true) mustBe controllers.individual.matching.routes.CannotUseServiceController.show().url
     }
-    "the email capture consent feature switch is enabled" when {
-      "the user is eligible for next year only" should {
-        "return the Using Software page url" in new Setup {
-          enable(EmailCaptureConsent)
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, mandatedCurrentYear = false, consentStatus = Some(Yes), None)
-
-          backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
-        }
-      }
-      "the user is mandated or signing up for current year" should {
-        "return the email capture page url when selected Yes to consenting" in new Setup {
-          enable(EmailCaptureConsent)
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = Some(Yes), Some(Current))
-
-          backUrl mustBe controllers.individual.email.routes.EmailCaptureController.show().url
-        }
-        "return the capture consent page url when selected No to consenting" in new Setup {
-          enable(EmailCaptureConsent)
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = Some(No), Some(Current))
-
-          backUrl mustBe controllers.individual.email.routes.CaptureConsentController.show().url
-        }
-      }
-      "the user is voluntarily signing up for next year" should {
-        "return the What Year to Sign Up page url" in new Setup {
-          enable(EmailCaptureConsent)
-          val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, consentStatus = None, Some(Next))
-
-          backUrl mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-        }
-      }
+    "return what year to sign up page when current tax year" in new Setup {
+      controller.backUrl(eligibleNextYearOnly = false) mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     }
   }
-
 }

@@ -35,13 +35,11 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
   s"GET ${routes.WhatYouNeedToDoController.show.url}" must {
     "return OK with the page content" in {
-      val testSoftwareOption: YesNo = Yes
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-        ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testSoftwareOption)
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
@@ -60,14 +58,18 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
     "return a SEE_OTHER to the your income sources page" in {
       Given("I am authenticated")
       AuthStub.stubAuthSuccess()
-
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+      ))
+      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")
       val result = IncomeTaxSubscriptionFrontend.submitWhatYouNeedToDo()
 
-      Then("The result should be SEE_OTHER redirecting to the task list page")
+      Then("The result should be SEE_OTHER redirecting to the accounting period page")
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.yourIncomeSourcesURI)
+        redirectURI(IndividualURI.accountingPeriodURI)
       )
     }
   }
