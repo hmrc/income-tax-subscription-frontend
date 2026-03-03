@@ -34,7 +34,7 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
                                            (val appConfig: AppConfig)
                                            (implicit ec: ExecutionContext) extends FeatureSwitching {
 
-  def getEligibilityStatus(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
+  def getEligibilityStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
     sessionData.fetchEligibilityStatus match {
       case Some(value) => Future.successful(value)
       case None =>
