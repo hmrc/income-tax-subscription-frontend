@@ -250,7 +250,7 @@ class CannotTakePartViewSpec extends ViewSpec {
 
       val link: Element = paragraph.selectHead("a")
       link.text mustBe NoDataFound.paragraph3LinkText
-      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
+      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals"
     }
 
     "have a form" which {
