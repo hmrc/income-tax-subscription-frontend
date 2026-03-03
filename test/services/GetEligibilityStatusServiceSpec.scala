@@ -47,6 +47,8 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
     disable(SignalControlGatewayEligibility)
   }
 
+  val emptySessionData: SessionData = SessionData()
+
   "getEligibilityStatus" when {
     "the signal control gateway eligibility feature switch is enabled" must {
       "return the eligibility status from session" when {
@@ -68,7 +70,7 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
           mockGetEligibilityStatus(testNino, testUtr)(Right(eligibilityStatus))
           mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
 
-          await(TestGetEligibilityStatusService.getEligibilityStatus()) mustBe eligibilityStatus
+          await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)) mustBe eligibilityStatus
         }
       }
     }
@@ -89,7 +91,7 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
           mockGetEligibilityStatus(testUtr)(Right(eligibilityStatus))
           mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
 
-          await(TestGetEligibilityStatusService.getEligibilityStatus()) mustBe eligibilityStatus
+          await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)) mustBe eligibilityStatus
         }
       }
       "throw an exception" when {
@@ -98,7 +100,7 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
           mockGetUTR(testUtr)
           mockGetEligibilityStatus(testUtr)(Left(HttpConnectorError(httpResponse)))
 
-          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus()))
+          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
             .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: status = 400, body = "
         }
         "there was a problem saving the eligibility status to session" in {
@@ -106,7 +108,7 @@ class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilitySt
           mockGetUTR(testUtr)
           mockSaveEligibilityStatus(eligibilityStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus()))
+          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
             .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: UnexpectedStatusFailure(500)"
         }
       }

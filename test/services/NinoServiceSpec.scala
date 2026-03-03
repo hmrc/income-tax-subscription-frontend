@@ -44,6 +44,8 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
     )
   }
 
+  val emptySessionData: SessionData = SessionData()
+
   "getNino" must {
     "return a nino" when {
       "the nino was returned from session" in new Setup {
@@ -57,21 +59,21 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getNino()) mustBe testNino
+        await(service.getNino(emptySessionData)) mustBe testNino
       }
     }
     "throw an exception" when {
       "no nino was returned from auth" in new Setup {
         mockRetrievalSuccess[Option[String]](None)
 
-        intercept[InternalServerException](await(service.getNino()))
+        intercept[InternalServerException](await(service.getNino(emptySessionData)))
           .message mustBe "[NinoService][getNino] - Nino not present in auth"
       }
       "there was a problem saving the nino to session" in new Setup {
         mockRetrievalSuccess[Option[String]](Some(testNino))
         mockSaveNino(testNino)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getNino()))
+        intercept[InternalServerException](await(service.getNino(emptySessionData)))
           .message mustBe "[NinoService][getNino] - Failure when saving nino to session: UnexpectedStatusFailure(500)"
       }
     }
