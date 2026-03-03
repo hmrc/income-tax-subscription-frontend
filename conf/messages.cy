@@ -670,7 +670,7 @@ agent.cannot-take-part-no-data.list2                             = nid yw erioed
 agent.cannot-take-part-no-data.list3                             = mae’n ansolfent
 agent.cannot-take-part-no-data.para3                             = Os yw eich cleient wedi cael llythyr gan CThEF yn gofyn iddo gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, {0}
 agent.cannot-take-part-no-data.link                              = cysylltwch â ni
-agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
+agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
