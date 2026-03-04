@@ -339,6 +339,18 @@ claim-enrolment.claim-already-signed-up.content                 = If you cannot 
 claim-enrolment.claim-already-signed-up.content.link1           = check if your Self Assessment is in another account
 claim-enrolment.claim-already-signed-up.content.link2           = retrieve sign in details for your other account
 
+## IRSA Credentials Page
+irsa-cred.title                                                 = You’re not using your Self Assessment sign in details
+irsa-cred.heading                                               = You’re not using your Self Assessment sign in details
+irsa-cred.government-gateway.paragraph1                         = You’re signed in with Government Gateway user ID
+irsa-cred.one-login.paragraph1                                  = You’re signed in with GOV.UK One Login details
+irsa-cred.government-gateway.paragraph2                         = The Government Gateway user ID details you use for Self Assessment ends in
+irsa-cred.one-login.paragraph2                                  = The GOV.UK One Login details you use for Self Assessment are:
+irsa-cred.paragraph3                                            = We recommend you use the same sign in details that you use for your Self Assessment to sign up to Making Tax Digital for Income Tax.
+irsa-cred.heading2                                              = Do you want to use the same sign in details to access Making Tax Digital for Income Tax and Self Assessment?
+irsa-cred.government-gateway.hint-text                          = You’ll have to sign in again using Government Gateway user ID ending in
+irsa-cred.one-login.hint-text                                   = You’ll have to sign in again using GOV.UK One Login details:
+
 ## Individual Handoff Check Income Sources
 individual.check-income-sources.heading                         = You must confirm your income sources
 individual.check-income-sources.para-one                        = You’re already signed up to Making Tax Digital for Income Tax.
