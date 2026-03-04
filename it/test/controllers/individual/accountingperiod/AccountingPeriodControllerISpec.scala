@@ -128,7 +128,7 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+            redirectURI(controllers.individual.routes.UsingSoftwareController.show().url)
           )
         }
         "user selects 'neither of these'" in {

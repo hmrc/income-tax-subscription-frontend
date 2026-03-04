@@ -126,7 +126,7 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
           )
         }
       }
-      "redirect to the ORM page" when {
+      "redirect to the using software page" when {
         "a valid email address is provided" in {
           AuthStub.stubAuthSuccess()
 
@@ -134,7 +134,7 @@ class EmailCaptureControllerISpec extends ComponentSpecBase {
 
           result must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+            redirectURI(controllers.individual.routes.UsingSoftwareController.show().url)
           )
         }
       }

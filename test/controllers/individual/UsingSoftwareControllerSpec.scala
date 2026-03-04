@@ -28,8 +28,9 @@ import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
+import utilities.agent.TestModels.testSelectedTaxYearCurrent
 import views.ViewSpecTrait.testBackUrl
 import views.html.individual.UsingSoftware
 
@@ -40,16 +41,21 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
   with MockClientDetailsRetrieval
   with MockGetEligibilityStatusService
   with MockMandationStatusService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockReferenceRetrieval
+  with MockSubscriptionDetailsService {
 
   val mockUsingSoftware: UsingSoftware = mock[UsingSoftware]
 
   when(mockUsingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+
   object TestUsingSoftwareController extends UsingSoftwareController(
     mockUsingSoftware,
     mockSessionDataService,
     mockGetEligibilityStatusService,
-    mockMandationStatusService
+    mockMandationStatusService,
+    mockReferenceRetrieval,
+    mockSubscriptionDetailsService
   )(
     mockAuditingService,
     mockAuthService,
@@ -67,7 +73,9 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       usingSoftware,
       mockSessionDataService,
       mockGetEligibilityStatusService,
-      mockMandationStatusService
+      mockMandationStatusService,
+      mockReferenceRetrieval,
+      mockSubscriptionDetailsService
     )(
       mockAuditingService,
       mockAuthService,
@@ -85,10 +93,11 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     "return OK with the page content" in new Setup {
       mockGetAllSessionData(SessionData())
       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+      mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-        ArgumentMatchers.eq(routes.UsingSoftwareController.submit()),
-        ArgumentMatchers.eq(testBackUrl)
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false)),
+        ArgumentMatchers.eq(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = TestUsingSoftwareController.show(false)(
@@ -102,6 +111,8 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
   "submit" when {
     "the users submission is invalid" should {
       "return a bad request with the page content" in new Setup {
+        mockGetAllSessionData(SessionData())
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         when(usingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
@@ -113,7 +124,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       }
     }
     "the user submits 'Yes'" should {
-      "redirect to the what you need to do page" when {
+      "redirect to the your income sources page" when {
         "the email capture consent feature switch is disabled the user is eligible for next year only" in new Setup {
           mockGetMandationService(Voluntary, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
@@ -122,7 +133,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         }
         "the email capture consent feature switch is disabled and the user is mandated for the current tax year only" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
@@ -132,7 +143,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         }
         "the email capture consent feature switch is disabled and the user is mandated for the current tax year and eligible for next year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
@@ -142,7 +153,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         }
       }
       "redirect to the capture consent page" when {
@@ -170,7 +181,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(editMode match {
-                case false => controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+                case false => controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
                 case true => controllers.individual.routes.GlobalCheckYourAnswersController.show.url
               })
             }

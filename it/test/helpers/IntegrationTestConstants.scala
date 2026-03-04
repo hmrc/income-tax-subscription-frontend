@@ -121,6 +121,7 @@ object IntegrationTestConstants {
     val apaHandOffControllerUrI = s"$baseURI/sps-handoff"
     val claimEnrolSpsHandoffURI = s"/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BFw14Es%2Fzqc6h9U3UpZg18WfhJXb4iUz3Y5ttgFaoTjs&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D"
     val accountingYearURI = s"$baseURI/business/what-year-to-sign-up"
+    val accountingPeriodURI = s"$baseURI/accounting-period-check"
     val checkYourAnswersURI = s"$baseURI/check-your-answers"
     val ukPropertyCYAURI = s"$baseURI/business/uk-property-check-your-answers"
     val overseasPropertyCYAURI = s"$baseURI/business/overseas-property-check-your-answers"

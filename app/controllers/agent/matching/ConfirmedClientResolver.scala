@@ -23,15 +23,14 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
-import models.EligibilityStatus
-import models.SessionData
 import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
-import play.api.mvc._
+import models.{EligibilityStatus, SessionData}
+import play.api.mvc.*
+import services.*
 import services.PrePopDataService.PrePopResult
-import services._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil._
+import utilities.UserMatchingSessionUtil.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -85,8 +84,8 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
               JourneyStateKey -> AgentSignUp.name
             )
           }
-        }
       }
+    }
   }
 
   private def goToSignUpClient(arn: String, nextYearOnly: Boolean, sessionData: SessionData)
@@ -103,7 +102,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
         failureReason = None
       ))
       eligibilityInterrupt <- subscriptionDetailsService.fetchEligibilityInterruptPassed(reference)
-      eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
       mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
       prePopResult <- prePopDataService.prePopIncomeSources(reference, nino)
     } yield {
@@ -112,7 +110,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
           eligibilityInterrupt match {
             case Some(_) =>
               val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-              val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
+              val isEligibleNextYearOnly: Boolean = nextYearOnly
               if (isMandatedCurrentYear || isEligibleNextYearOnly) {
                 Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
               } else {

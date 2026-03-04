@@ -670,7 +670,7 @@ agent.cannot-take-part-no-data.list2                             = nid yw erioed
 agent.cannot-take-part-no-data.list3                             = mae’n ansolfent
 agent.cannot-take-part-no-data.para3                             = Os yw eich cleient wedi cael llythyr gan CThEF yn gofyn iddo gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, {0}
 agent.cannot-take-part-no-data.link                              = cysylltwch â ni
-agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
+agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
 # Agent cannot sign up page
 agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
@@ -814,7 +814,7 @@ agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Ffynonellau incwm eich cleient
-agent.your-income-source.para-1                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma. Byddwch yn gallu rhoi gwybod i ni ynghylch y rhain yn eich meddalwedd.
+agent.your-income-source.para-1                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 agent.your-income-source.lead                                       = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Busnesau unig fasnachwr

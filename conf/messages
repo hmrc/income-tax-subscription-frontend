@@ -687,7 +687,7 @@ agent.cannot-take-part-no-data.list2                             = have never su
 agent.cannot-take-part-no-data.list3                             = are insolvent
 agent.cannot-take-part-no-data.para3                             = If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please {0}
 agent.cannot-take-part-no-data.link                              = contact us
-agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
+agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
 # Cannot sign up MTD Exempt 26/27
 agent.cannot-take-part-exempt-26-27.heading                     = Your client is exempt from Making Tax Digital for Income Tax
@@ -826,7 +826,7 @@ agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Your client’s income sources
-agent.your-income-source.para-1                                     = Do not add limited companies or partnerships here. You’ll be able to tell us about them in your software.
+agent.your-income-source.para-1                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.lead                                       = Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April {0}.
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Sole trader businesses

@@ -43,7 +43,6 @@ class ClientDetailsController @Inject()(view: ClientDetails,
                                        (implicit cc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig) extends SignUpBaseController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    startAgentSignupAudit(agentReferenceNumber = Some(request.arn))
     handleLockOut {
       Future.successful(Ok(view(
         clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
@@ -66,6 +65,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
             isEditMode = isEditMode
           ))),
         clientDetails => {
+          startAgentSignupAudit(request.arn, clientDetails.nino)
           sessionClearingService.clearAgentSession(routes.ConfirmClientController.show(), sessionData).map(_.saveUserDetails(clientDetails))
         }
       )
@@ -80,11 +80,11 @@ class ClientDetailsController @Inject()(view: ClientDetails,
     }
   }
 
-  private def startAgentSignupAudit(agentReferenceNumber: Option[String])(implicit request: Request[_]): Future[AuditResult] = {
+  private def startAgentSignupAudit(arn: String, nino: String)(implicit request: Request[_]): Future[AuditResult] = {
     val auditModel = SignupStartedAuditing.SignupStartedAuditModel(
-      agentReferenceNumber = agentReferenceNumber,
+      agentReferenceNumber = Some(arn),
       utr = None,
-      nino = None
+      nino = Some(nino)
     )
     auditingService.audit(auditModel)
   }

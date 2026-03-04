@@ -48,10 +48,6 @@
             @messages("agent.your-income-source.lead", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)
     </p>
 
-    @govukInsetText(InsetText(
-        content = Text(messages("agent.your-income-source.para-1"))
-    ))
-
     @selfEmploymentSection
 
     @propertySection
@@ -135,6 +131,10 @@
 
 @selfEmploymentSection = {
     <h2 class="govuk-heading-m">@messages("agent.your-income-source.self-employed")</h2>
+
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.your-income-source.para-1"))
+    ))
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
         @govukSummaryList(SummaryList(

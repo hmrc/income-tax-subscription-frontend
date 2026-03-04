@@ -84,12 +84,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                   if (isEditMode) {
                     Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
                   } else {
-                    accountingYear match {
-                      case Current =>
-                        Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
-                      case _ =>
-                        Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                    }
+                    Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
                   }
                 case Left(_) =>
                   throw new InternalServerException("[WhatYearToSignUpController][submit] - Could not save accounting year")
@@ -104,7 +99,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     if (isEditMode) {
       Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
     } else {
-      Some(controllers.individual.routes.UsingSoftwareController.show(editMode = isEditMode).url)
+      Some(controllers.individual.routes.YouCanSignUpController.show.url)
     }
   }
 }
