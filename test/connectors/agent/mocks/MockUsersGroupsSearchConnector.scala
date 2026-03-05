@@ -16,7 +16,7 @@
 
 package connectors.agent.mocks
 
-import connectors.agent.UsersGroupsSearchConnector
+import connectors.UsersGroupsSearchConnector
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.GetUsersForGroupResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}

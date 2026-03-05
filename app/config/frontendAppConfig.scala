@@ -135,6 +135,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   private lazy val usersGroupsSearchUrl: String = config.baseUrl("users-groups-search")
 
   def getUsersForGroupUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
+  def getUserDetailsFromCredIdUrl(credId: String): String = s"$usersGroupsSearchUrl/users-groups-search/users/$credId"
 
   // Frontend Config
   override lazy val baseUrl: String = config.getString("base.url")
