@@ -19,9 +19,10 @@ package services.agent
 import cats.data.EitherT
 import cats.implicits._
 import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import connectors.UsersGroupsSearchConnector
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
-import connectors.agent.{EnrolmentStoreProxyConnector, UsersGroupsSearchConnector}
+import connectors.agent.EnrolmentStoreProxyConnector
 import models.ConnectorError
 import models.common.subscription.EnrolmentKey
 import play.api.Logging
