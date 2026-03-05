@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.individual.business
+package forms.individual
 
 import forms.submapping.YesNoMapping
 import models.YesNo
