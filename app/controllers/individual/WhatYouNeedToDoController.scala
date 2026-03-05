@@ -16,15 +16,15 @@
 
 package controllers.individual
 
-import _root_.config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import _root_.config.featureswitch.FeatureSwitch.{EmailCaptureConsent, TaxYear26To27Plus}
 import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models._
+import models.*
 import models.status.MandationStatus.Mandated
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -68,7 +68,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
           selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
         } yield {
           selectedTaxYear.map(_.accountingYear) match {
-            case Some(Current) => Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
+            case Some(Current) if isDisabled(TaxYear26To27Plus) => Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
             case _ => Redirect(controllers.individual.routes.UsingSoftwareController.show())
           }
         }
