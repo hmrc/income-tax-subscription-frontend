@@ -329,7 +329,6 @@ irsa-cred.government-gateway.hint-text                          = Bydd angen i c
 irsa-cred.one-login.hint-text                                   = YBydd angen i chi fewngofnodi eto gan ddefnyddio GOV.UK One Login: {0}
 irsa-cred.error                                                 = Dewiswch ddefnyddio’r un Dynodydd Defnyddiwr a chyfrinair neu eu cadw ar wahân
 
-
 ## Handoff Check Income Sources
 individual.check-income-sources.heading                         = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
 individual.check-income-sources.para-one                        = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
