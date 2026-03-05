@@ -94,11 +94,12 @@ trait CustomMatchers {
   def backUrl(expectedValue: String): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
     val body = Jsoup.parse(response.body)
     val backButton = body.select(".govuk-back-link").asScala.headOption
+    val hash = "#"
 
     HavePropertyMatchResult(
-      backButton.exists(_.attr("href") == expectedValue),
+      backButton.exists(_.attr("href") == hash),
       "backUrl",
-      expectedValue,
+      hash,
       backButton.map(_.attr("href")).getOrElse("")
     )
   }

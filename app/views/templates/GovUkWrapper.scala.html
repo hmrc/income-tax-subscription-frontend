@@ -46,15 +46,10 @@
     serviceName = serviceName,
     isWelshTranslationAvailable = hasWelsh,
     pageTitle = Some(title),
-    backLink = backLink.map(url => BackLink(href = url, content = backLinkContent.map(Text.apply).getOrElse(Empty)))
+    backLink = Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
 ))(content)
 
 @content = {
-
-    @if(useJSBack) {
-        <a href="#" class="govuk-back-link" data-module="hmrc-back-link">@messages("base.back")</a>
-        <p>
-    }
 
     @optForm.map { form =>
         @if(form.hasErrors) {

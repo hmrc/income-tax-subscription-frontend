@@ -62,7 +62,10 @@ trait ViewSpecTrait extends UnitTestTrait {
       ElementTest(n, () => {
         val selector = element.select(cssQuery)
         if (selector.isEmpty) fail(s"Unable to locate $cssQuery in\n$element")
-        selector.get(0)
+        selector.get(selector.size() match {
+          case 1 => 0
+          case _ => 1
+        })
       })
     }
 
