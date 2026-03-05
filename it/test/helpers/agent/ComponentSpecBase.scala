@@ -550,7 +550,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   implicit class CustomSelectors(element: Element) {
 
     def selectHead(selector: String): Element = {
-      element.select(selector).asScala.headOption match {
+      selectSeq(selector).headOption match {
         case Some(element) => element
         case None => fail(s"No elements returned for selector: $selector")
       }
@@ -577,7 +577,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def getParagraphs: Elements = element.getElementsByTag("p")
 
-    def getNthParagraph(nth: Int): Element = element.selectHead(s"p:nth-of-type($nth)")
+    def getNthParagraph(nth: Int): Element = selectNth("p", nth)
 
     def getNthUnorderedList(nth: Int): Element = element.selectHead(s"ul:nth-of-type($nth)")
 
