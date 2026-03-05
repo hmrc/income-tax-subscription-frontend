@@ -16,9 +16,9 @@
 
 package connectors.stubs
 
-import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads.*
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads.{credentialRoleKey, userIdKey}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.WireMockMethods
 import play.api.libs.json.{JsArray, JsValue, Json}
 
@@ -26,10 +26,19 @@ object UsersGroupsSearchStub extends WireMockMethods {
 
   private def getUsersForGroupUrl(groupId: String) = s"/users-groups-search/groups/$groupId/users"
 
+  private def getUserDetailsByCredId(credId: String) = s"/users-groups-search/users/$credId"
+
   def stubGetUsersForGroups(groupId: String)(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
     when(
       method = GET,
       uri = getUsersForGroupUrl(groupId)
+    ).thenReturn(responseStatus, responseBody)
+  }
+
+  def stubGetUserDetailsByCredId(credId: String)(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
+    when(
+      method = GET,
+      uri = getUserDetailsByCredId(credId)
     ).thenReturn(responseStatus, responseBody)
   }
 
