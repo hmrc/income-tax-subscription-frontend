@@ -17,7 +17,6 @@
 package controllers.agent.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.testAccountingYearCurrent
@@ -36,11 +35,6 @@ import utilities.{AccountingPeriodUtil, UserMatchingSessionUtil}
 import java.time.LocalDate
 
 class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EmailCaptureConsent)
-  }
 
   val serviceNameGovUk: String = "Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
@@ -224,11 +218,8 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         }
       }
       "current tax year is selected" when {
-        "the email capture consent feature switch is enabled" when {
           "the email passed flag is present in session" should {
             "save the tax year and redirect to the what you need to do page" in {
-              enable(EmailCaptureConsent)
-
               AuthStub.stubAuthSuccess()
               SessionDataConnectorStub.stubGetAllSessionData(Map(
                 ITSASessionKeys.NINO -> JsString(testNino),
@@ -245,7 +236,6 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
               )
             }
           }
-        }
       }
     }
     "there was a problem saving the tax year selection" must {

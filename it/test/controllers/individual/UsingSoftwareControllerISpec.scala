@@ -17,7 +17,6 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestModels.testAccountingYearCurrent
@@ -31,7 +30,7 @@ import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.individual.TestConstants.testNino
 
-class UsingSoftwareControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class UsingSoftwareControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 

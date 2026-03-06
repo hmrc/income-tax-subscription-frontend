@@ -16,7 +16,6 @@
 
 package views.individual.confirmation
 
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import models.DateModel
 import models.common.AccountingPeriodModel
 import org.jsoup.Jsoup
@@ -953,7 +952,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains survey link" which {
         "has a link for survey" in {
-          enable(EmailCaptureConsent)
           Seq(false, true).foreach { showHelp =>
             mainContent(showHelp = showHelp).selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
             mainContent(showHelp = showHelp).selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
