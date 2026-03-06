@@ -27,7 +27,7 @@ import play.api.mvc.*
 import play.api.mvc.Results.*
 import services.{AuditingService, SessionDataService}
 import uk.gov.hmrc.auth.core.*
-import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -51,8 +51,10 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino) {
-      case Some(Individual | Organisation) ~ allEnrolments ~ Some(User) ~ confidenceLevel ~ maybeNino if confidenceLevel.level >= ConfidenceLevel.L250.level =>
+    authorised().retrieve(affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials) {
+      case Some(Individual | Organisation) ~ allEnrolments ~ Some(User) ~ confidenceLevel ~ maybeNino ~ Some(credentials)
+        if confidenceLevel.level >= ConfidenceLevel.L250.level =>
+
         val maybeMTDITID: Option[String] = allEnrolments.getEnrolment(Constants.mtdItsaEnrolmentName).flatMap(_.identifiers.headOption.map(_.value))
         val nino: String = maybeNino.getOrElse(throw new InternalServerException("[Individual][IdentifierAction] - CL250 User, no nino in retrieval"))
 
@@ -63,11 +65,12 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
               mtditid = maybeMTDITID,
               nino = nino,
               utr = maybeUTR,
+              credentials = credentials,
               sessionData = sessionData
             ))
           }
         }
-      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ confidenceLevel ~ _ =>
+      case Some(Individual | Organisation) ~ _ ~ Some(User) ~ confidenceLevel ~ _ ~ _ =>
         auditingService.audit(IVHandoffAuditModel(
           handoffReason = "individual",
           currentConfidence = confidenceLevel.level,
@@ -75,12 +78,14 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
         ))(implicitly, request) map { _ =>
           Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request)
         }
-      case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ =>
+      case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ ~ _ =>
         logger.info(s"[Individual][IdentifierAction] - Non 'User' credential role. Redirecting to cannot use service page.")
         Future.successful(Redirect(controllers.individual.matching.routes.CannotUseServiceController.show()))
-      case _ =>
+      case Some(Agent) ~ _ ~ _ ~ _ ~ _ ~ _ =>
         logger.info(s"[Individual][IdentifierAction] - User with non individual or organisation affinity. Redirecting to affinity group error page.")
         Future.successful(Redirect(controllers.individual.matching.routes.AffinityGroupErrorController.show))
+      case _ =>
+        throw new InternalServerException("[Individual][IdentifierAction] - Unsupported user due to auth details")
     } recover {
       case _: AuthorisationException =>
         logger.info(s"[Individual][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")

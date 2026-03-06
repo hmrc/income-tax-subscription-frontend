@@ -16,9 +16,9 @@
 
 package helpers
 
-import _root_.common.Constants.ITSASessionKeys
-import _root_.common.Constants.ITSASessionKeys.*
 import auth.individual.{JourneyState, SignUp, ClaimEnrolment as ClaimEnrolmentJourney}
+import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.*
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
@@ -516,6 +516,18 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     )
 
     def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+
+    def claimEnrolmentUseSelfAssessment(): WSResponse = get("/claim-enrolment/use-self-assessment-details")
+
+    def submitClaimEnrolmentUseSelfAssessment(request: Option[YesNo]): WSResponse = {
+      post("/claim-enrolment/use-self-assessment-details")(
+        request.fold(Map.empty[String, Seq[String]]) { model =>
+          IRSACredentialForm.irsaCredentialForm.fill(model).data.map {
+            case (k, v) => (k, Seq(v))
+          }
+        }
+      )
+    }
 
     def agentSigningUp(): WSResponse = get("/eligibility/client/signing-up")
 

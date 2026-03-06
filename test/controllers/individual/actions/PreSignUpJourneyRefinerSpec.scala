@@ -27,6 +27,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -128,7 +129,9 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
       request = requestWithSession(journeyStep, entityId),
       mtditid = mtditid,
       nino = testNino,
-      utr = utr
+      utr = utr,
+      credentials = Credentials("testProviderId", "testProviderType"),
+      sessionData = SessionData()
     )
   }
 }
