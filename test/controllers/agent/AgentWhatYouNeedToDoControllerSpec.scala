@@ -79,7 +79,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.email.routes.EmailCaptureController.show().url)
+          any[String]
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -98,7 +98,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+          any[String]
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -119,7 +119,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.email.routes.EmailCaptureController.show().url)
+          any[String]
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -140,7 +140,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          any[String]
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -163,7 +163,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.email.routes.EmailCaptureController.show().url)
+            any[String]
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -184,7 +184,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.email.routes.EmailCaptureController.show().url)
+            any[String]
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -205,7 +205,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+            any[String]
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -223,7 +223,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+            any[String]
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
