@@ -16,8 +16,6 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models._
@@ -42,13 +40,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
   with MockSubscriptionDetailsService
-  with MockSessionDataService
-  with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EmailCaptureConsent)
-  }
+  with MockSessionDataService {
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],

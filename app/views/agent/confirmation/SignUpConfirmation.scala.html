@@ -23,8 +23,6 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
-@import config.featureswitch.FeatureSwitchingImpl
-@import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 @import config.FrontendAppConfig
 @import java.time.LocalDate
 @import utilities.ImplicitDateFormatterImpl
@@ -36,7 +34,6 @@
     languageUtils: LanguageUtils,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     appConfig: AppConfig,
-    featureSwitching: FeatureSwitchingImpl,
     ul: UnorderedList,
     govukTabs : GovukTabs,
     govukTable : GovukTable

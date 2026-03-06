@@ -16,8 +16,6 @@
 
 package controllers.individual.accountingperiod
 
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.individual.accountingperiod.AccountingPeriodForm
 import helpers.ComponentSpecBase
@@ -29,7 +27,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.AccountingPeriod
 
-class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class AccountingPeriodControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
@@ -106,9 +104,7 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
       }
     }
     "user is authorised" must {
-      "return SEE_OTHER and save the accounting period" when {
-        "email capture consent feature switch enabled" in {
-          enable(EmailCaptureConsent)
+      "return SEE_OTHER and save the accounting period" in {
           AuthStub.stubAuthSuccess()
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[BusinessAccountingPeriod](AccountingPeriod, SixthAprilToFifthApril)
 
@@ -117,18 +113,6 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
           result must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.individual.email.routes.CaptureConsentController.show().url)
-          )
-        }
-        "email capture consent feature switch disabled" in {
-          disable(EmailCaptureConsent)
-          AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[BusinessAccountingPeriod](AccountingPeriod, FirstAprilToThirtyFirstMarch)
-
-          val result = IncomeTaxSubscriptionFrontend.submitAccountingPeriod(Some(FirstAprilToThirtyFirstMarch))
-
-          result must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.UsingSoftwareController.show().url)
           )
         }
         "user selects 'neither of these'" in {
@@ -141,7 +125,6 @@ class AccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwit
             httpStatus(SEE_OTHER),
             redirectURI(controllers.individual.accountingperiod.routes.AccountingPeriodNonStandardController.show.url)
           )
-        }
       }
       "return BAD_REQUEST" when {
         "no accounting period is selected" in {

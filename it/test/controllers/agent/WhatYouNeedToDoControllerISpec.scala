@@ -17,7 +17,6 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
@@ -31,7 +30,7 @@ import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 import utilities.agent.TestConstants.testUtr
 
-class WhatYouNeedToDoControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
