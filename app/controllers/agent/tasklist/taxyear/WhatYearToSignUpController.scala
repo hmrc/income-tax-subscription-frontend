@@ -17,7 +17,7 @@
 package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.{EmailCaptureConsent, TaxYear26To27Plus}
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccess
 import controllers.SignUpBaseController
@@ -83,7 +83,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
             Future.successful(Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show))
           } else {
             fetchEmailPassed map { emailPassed =>
-              if (accountingYear == Current && isDisabled(TaxYear26To27Plus)) {
+              if (accountingYear == Current && isDisabled(TaxYear26To27Plus) && !emailPassed) {
                 Redirect(controllers.agent.email.routes.CaptureConsentController.show())
               } else {
                 Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
