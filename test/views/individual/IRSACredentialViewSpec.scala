@@ -25,6 +25,8 @@ import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.individual.IRSACredential
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import models.individual.ObfuscatedIdentifier
+import models.individual.ObfuscatedIdentifier.{ObfuscatedUserId, UserEmail}
 
 class IRSACredentialViewSpec extends ViewSpec {
 
@@ -32,15 +34,18 @@ class IRSACredentialViewSpec extends ViewSpec {
 
   private val testFormError: FormError = FormError(IRSACredentialForm.fieldName, "irsa-cred.error")
 
+  val testCurrentGGCredential: ObfuscatedUserId = ObfuscatedUserId("1234567890")
+  val testSAGGCredential: ObfuscatedUserId = ObfuscatedUserId("78 90")
+  val testCurrentOLCredential: UserEmail = UserEmail("test123@example.com")
+  val testSAOLCredential: UserEmail = UserEmail("t*****3@example.com")
+
   "IRSA Credential View" must {
     import IRSACredentialMessages.*
 
-    "GG user ID and obfuscated GG user ID" should {
+    "GG signed in and SA on GG" should {
       def mainContent: Element = document(
-        obfuscatedUserId = Some(IRSACredentialMessages.testObfuscatedUserId),
-        obfuscatedEmail = None,
-        userID = Some(IRSACredentialMessages.testUserId),
-        email = None
+        currentCredential = testCurrentGGCredential,
+        saCredential = testSAGGCredential
       ).mainContent
 
       "have a heading" in {
@@ -48,15 +53,15 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.mainContent.selectNth("p", 1).text mustBe IRSACredentialMessages.ggParagraph1 + testUserId
+        mainContent.selectNth("p", 1).text mustBe s"${ggParagraph1} ${testCurrentGGCredential.id}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.mainContent.selectNth("p", 2).text mustBe IRSACredentialMessages.ggParagraph2 + testObfuscatedUserId
+        mainContent.selectNth("p", 2).text mustBe s"${ggParagraph2} ${testSAGGCredential.id}"
       }
 
       "have the correct third paragraph" in {
-        mainContent.mainContent.selectNth("p", 3).text mustBe IRSACredentialMessages.paragraph3
+        mainContent.selectNth("p", 3).text mustBe paragraph3
       }
 
       "have a form" which {
@@ -70,13 +75,13 @@ class IRSACredentialViewSpec extends ViewSpec {
         "has the correct radio inputs" in {
           form.mustHaveYesNoRadioInputs(selector = "fieldset")(
             name = radioName,
-            legend = IRSACredentialMessages.heading2,
+            legend = heading2,
             isHeading = false,
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
             yesHintId = None,
-            yesHint = Some(Text(IRSACredentialMessages.ggHintText + IRSACredentialMessages.testObfuscatedUserId)),
+            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
             noHintId = None,
             noHint = None,
             inline = false,
@@ -91,12 +96,10 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
     }
 
-    "One Login email and obfuscated GG user ID" should {
+    "OL signed in and SA on GG" should {
       def mainContent: Element = document(
-        obfuscatedUserId = Some(IRSACredentialMessages.testObfuscatedUserId),
-        obfuscatedEmail = None,
-        userID = None,
-        email = Some(IRSACredentialMessages.testEmail)
+        currentCredential = testCurrentOLCredential,
+        saCredential = testSAGGCredential
       ).mainContent
 
       "have a heading" in {
@@ -104,15 +107,15 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.mainContent.selectNth("p", 1).text mustBe IRSACredentialMessages.olParagraph1 + testEmail
+        mainContent.selectNth("p", 1).text mustBe s"${olParagraph1} ${testCurrentOLCredential.email}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.mainContent.selectNth("p", 2).text mustBe IRSACredentialMessages.ggParagraph2 + testObfuscatedUserId
+        mainContent.selectNth("p", 2).text mustBe s"${ggParagraph2} ${testSAGGCredential.id}"
       }
 
       "have the correct third paragraph" in {
-        mainContent.mainContent.selectNth("p", 3).text mustBe IRSACredentialMessages.paragraph3
+        mainContent.selectNth("p", 3).text mustBe paragraph3
       }
 
       "have a form" which {
@@ -126,13 +129,13 @@ class IRSACredentialViewSpec extends ViewSpec {
         "has the correct radio inputs" in {
           form.mustHaveYesNoRadioInputs(selector = "fieldset")(
             name = radioName,
-            legend = IRSACredentialMessages.heading2,
+            legend = heading2,
             isHeading = false,
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
             yesHintId = None,
-            yesHint = Some(Text(IRSACredentialMessages.ggHintText + IRSACredentialMessages.testObfuscatedUserId)),
+            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
             noHintId = None,
             noHint = None,
             inline = false,
@@ -147,12 +150,10 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
     }
 
-    "GG user ID and obfuscated One Login email" should {
+    "GG signed in and SA on OL" should {
       def mainContent: Element = document(
-        obfuscatedUserId = None,
-        obfuscatedEmail = Some(IRSACredentialMessages.testObfuscatedEmail),
-        userID = Some(IRSACredentialMessages.testUserId),
-        email = None
+        currentCredential = testCurrentGGCredential,
+        saCredential = testSAOLCredential
       ).mainContent
 
       "have a heading" in {
@@ -160,15 +161,15 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.mainContent.selectNth("p", 1).text mustBe IRSACredentialMessages.ggParagraph1 + testUserId
+        mainContent.selectNth("p", 1).text mustBe s"${ggParagraph1} ${testCurrentGGCredential.id}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.mainContent.selectNth("p", 2).text mustBe IRSACredentialMessages.olParagraph2 + testObfuscatedEmail
+        mainContent.selectNth("p", 2).text mustBe s"${olParagraph2} ${testSAOLCredential.obfuscatedEmail}"
       }
 
       "have the correct third paragraph" in {
-        mainContent.mainContent.selectNth("p", 3).text mustBe IRSACredentialMessages.paragraph3
+        mainContent.selectNth("p", 3).text mustBe paragraph3
       }
 
       "have a form" which {
@@ -182,13 +183,13 @@ class IRSACredentialViewSpec extends ViewSpec {
         "has the correct radio inputs" in {
           form.mustHaveYesNoRadioInputs(selector = "fieldset")(
             name = radioName,
-            legend = IRSACredentialMessages.heading2,
+            legend = heading2,
             isHeading = false,
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
             yesHintId = None,
-            yesHint = Some(Text(IRSACredentialMessages.olHintText + IRSACredentialMessages.testObfuscatedEmail)),
+            yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
             noHintId = None,
             noHint = None,
             inline = false,
@@ -203,12 +204,10 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
     }
 
-    "One Login email and obfuscated One Login email" should {
+    "OL signed in and SA on OL" should {
       def mainContent: Element = document(
-        obfuscatedUserId = None,
-        obfuscatedEmail = Some(IRSACredentialMessages.testObfuscatedEmail),
-        userID = None,
-        email = Some(IRSACredentialMessages.testEmail)
+        currentCredential = testCurrentOLCredential,
+        saCredential = testSAOLCredential
       ).mainContent
 
       "have a heading" in {
@@ -216,15 +215,15 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.mainContent.selectNth("p", 1).text mustBe IRSACredentialMessages.olParagraph1 + testEmail
+        mainContent.selectNth("p", 1).text mustBe s"${olParagraph1} ${testCurrentOLCredential.email}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.mainContent.selectNth("p", 2).text mustBe IRSACredentialMessages.olParagraph2 + testObfuscatedEmail
+        mainContent.selectNth("p", 2).text mustBe s"${olParagraph2} ${testSAOLCredential.obfuscatedEmail}"
       }
 
       "have the correct third paragraph" in {
-        mainContent.mainContent.selectNth("p", 3).text mustBe IRSACredentialMessages.paragraph3
+        mainContent.selectNth("p", 3).text mustBe paragraph3
       }
 
       "have a form" which {
@@ -238,13 +237,13 @@ class IRSACredentialViewSpec extends ViewSpec {
         "has the correct radio inputs" in {
           form.mustHaveYesNoRadioInputs(selector = "fieldset")(
             name = radioName,
-            legend = IRSACredentialMessages.heading2,
+            legend = heading2,
             isHeading = false,
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
             yesHintId = None,
-            yesHint = Some(Text(IRSACredentialMessages.olHintText + IRSACredentialMessages.testObfuscatedEmail)),
+            yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
             noHintId = None,
             noHint = None,
             inline = false,
@@ -260,33 +259,25 @@ class IRSACredentialViewSpec extends ViewSpec {
     }
   }
 
-  private def page(hasError: Boolean = false, obfuscatedUserId: Option[String], obfuscatedEmail: Option[String], userID: Option[String], email: Option[String]): Html = {
+  private def page(
+                    hasError: Boolean = false,
+                    currentCredential: ObfuscatedIdentifier,
+                    saCredential: ObfuscatedIdentifier
+                  ): Html = {
     irsaCredential(
       if (hasError) IRSACredentialForm.irsaCredentialForm.withError(testFormError)
       else IRSACredentialForm.irsaCredentialForm,
-        testCall,
-        obfuscatedUserId,
-        obfuscatedEmail,
-        userID,
-        email
+      testCall,
+      currentCredential,
+      saCredential
     )
   }
 
   private def document(
                         hasError: Boolean = false,
-                        obfuscatedUserId: Option[String] = None,
-                        obfuscatedEmail: Option[String] = None,
-                        userID: Option[String] = None,
-                        email: Option[String] = None
-                      ): Document = {
-    Jsoup.parse(page(
-      hasError,
-      obfuscatedUserId,
-      obfuscatedEmail,
-      userID,
-      email
-    ).body)
-  }
+                        currentCredential: ObfuscatedIdentifier,
+                        saCredential: ObfuscatedIdentifier
+                      ): Document = Jsoup.parse(page(hasError, currentCredential, saCredential).body)
 
   private object IRSACredentialMessages {
     val title: String = "You’re not using your Self Assessment sign in details"
@@ -304,10 +295,5 @@ class IRSACredentialViewSpec extends ViewSpec {
     val heading2: String = "Do you want to use the same sign in details to access Making Tax Digital for Income Tax and Self Assessment?"
     val error: String = "Select to use the same user ID and password or to keep them separate"
     val radioName: String = "yes-no"
-
-    val testUserId: String = " 1234567890"
-    val testEmail: String = " test@example.com"
-    val testObfuscatedUserId: String = " 12 34"
-    val testObfuscatedEmail: String = " te**@example.com"
   }
 }
