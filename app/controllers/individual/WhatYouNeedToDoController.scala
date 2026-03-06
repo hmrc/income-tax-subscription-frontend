@@ -16,13 +16,12 @@
 
 package controllers.individual
 
-import _root_.config.featureswitch.FeatureSwitch.{EmailCaptureConsent, TaxYear26To27Plus}
+import _root_.config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import models.*
-import models.status.MandationStatus.Mandated
 import play.api.mvc.*
 import services.*
 import views.html.individual.WhatYouNeedToDo
