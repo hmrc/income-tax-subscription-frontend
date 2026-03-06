@@ -17,7 +17,7 @@
 package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccess
 import controllers.SignUpBaseController
@@ -29,7 +29,7 @@ import models.{AccountingYear, Current}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import services._
+import services.*
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.taxyear.WhatYearToSignUp
 
@@ -83,7 +83,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
             Future.successful(Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show))
           } else {
             fetchEmailPassed map { emailPassed =>
-              if (accountingYear == Current && isEnabled(EmailCaptureConsent) && !emailPassed) {
+              if (accountingYear == Current && isDisabled(TaxYear26To27Plus) && !emailPassed) {
                 Redirect(controllers.agent.email.routes.CaptureConsentController.show())
               } else {
                 Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
