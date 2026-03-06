@@ -80,13 +80,8 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHintId = None,
             yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
-            noHintId = None,
-            noHint = None,
-            inline = false,
-            yesText = None,
-            noText = None
+            inline = false
           )
         }
 
@@ -134,13 +129,8 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHintId = None,
             yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
-            noHintId = None,
-            noHint = None,
-            inline = false,
-            yesText = None,
-            noText = None
+            inline = false
           )
         }
 
@@ -188,13 +178,8 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHintId = None,
             yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
-            noHintId = None,
-            noHint = None,
-            inline = false,
-            yesText = None,
-            noText = None
+            inline = false
           )
         }
 
@@ -242,13 +227,8 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHintId = None,
             yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
-            noHintId = None,
-            noHint = None,
-            inline = false,
-            yesText = None,
-            noText = None
+            inline = false
           )
         }
 
