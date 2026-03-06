@@ -316,6 +316,19 @@ claim-enrolment.claim-already-signed-up.content                 = Os na allwch d
 claim-enrolment.claim-already-signed-up.content.link1           = gwirio a yw’ch manylion Hunanasesiad mewn cyfrif arall
 claim-enrolment.claim-already-signed-up.content.link2           = adfer manylion mewngofnodi ar gyfer eich cyfrif arall
 
+## IRSA Credentials Page
+irsa-cred.title                                                 = Nid ydych yn defnyddio eich manylion mewngofnodi Hunanasesiad {0}
+irsa-cred.heading                                               = Nid ydych yn defnyddio eich manylion mewngofnodi Hunanasesiad {0}
+irsa-cred.government-gateway.paragraph1                         = Rydych wedi mewngofnodi gan ddefnyddio manylion Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth {0}
+irsa-cred.one-login.paragraph1                                  = Rydych wedi mewngofnodi gan ddefnyddio manylion GOV.UK One Login {0}
+irsa-cred.government-gateway.paragraph2                         = Y manylion Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth rydych yn eu defnyddio ar gyfer Hunanasesiad yw:
+irsa-cred.one-login.paragraph2                                  = Y manylion GOV.UK One Login rydych yn eu defnyddio ar gyfer Hunanasesiad yw:
+irsa-cred.paragraph3                                            = Awgrymwn eich bod yn defnyddio’r un manylion mewngofnodi rydych yn eu defnyddio i fewngofnodi i Hunanasesiad er mwyn cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth.
+irsa-cred.heading2                                              = A ydych eisiau defnyddio’r un manylion mewngofnodi er mwyn cael mynediad at Troi Treth yn Ddigidol ar gyfer Treth Incwm a Hunanasesiad?
+irsa-cred.government-gateway.hint-text                          = Bydd angen i chi fewngofnodi eto gan ddefnyddio Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth: {0}
+irsa-cred.one-login.hint-text                                   = YBydd angen i chi fewngofnodi eto gan ddefnyddio GOV.UK One Login: {0}
+irsa-cred.error                                                 = Dewiswch ddefnyddio’r un Dynodydd Defnyddiwr a chyfrinair neu eu cadw ar wahân
+
 ## Handoff Check Income Sources
 individual.check-income-sources.heading                         = Mae’n rhaid i chi gadarnhau eich ffynonellau incwm
 individual.check-income-sources.para-one                        = Rydych eisoes wedi cofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
