@@ -123,7 +123,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                 if (editMode) {
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
                 } else if (isMandatedCurrentYear) {
-                  Redirect(controllers.individual.email.routes.CaptureConsentController.show())
+                  Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
                 } else {
                   Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
                 }

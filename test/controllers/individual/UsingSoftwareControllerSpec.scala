@@ -118,7 +118,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       }
     }
     "the user submits 'Yes'" should {
-      "redirect to the capture consent page" when {
+      "redirect to the your income sources page" when {
         "the user is mandated for the current tax year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
@@ -127,7 +127,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
           val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
+          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
         }
       }
       "redirect to the what year to sign up page" when {
