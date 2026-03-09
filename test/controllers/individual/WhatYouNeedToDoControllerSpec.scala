@@ -47,7 +47,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EmailCaptureConsent)
+    disable(TaxYear26To27Plus)
   }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
