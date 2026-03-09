@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.{EmailCaptureConsent, TaxYear26To27Plus}
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import config.featureswitch.FeatureSwitching
 import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}

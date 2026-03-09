@@ -17,7 +17,7 @@
 package controllers.agent.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.{EmailCaptureConsent, TaxYear26To27Plus}
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.testAccountingYearCurrent

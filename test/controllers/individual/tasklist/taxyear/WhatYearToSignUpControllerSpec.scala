@@ -16,8 +16,6 @@
 
 package controllers.individual.tasklist.taxyear
 
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
@@ -39,13 +37,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
   with MockAuditingService
-  with FeatureSwitching
   with MockSessionDataService {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EmailCaptureConsent)
-  }
 
   override val controllerName: String = "WhatYearToSignUpMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -163,10 +155,8 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     }
 
     "not in edit mode" when {
-      "the email capture consent feature switch is enabled" when {
         "the user signs up for the current tax year" should {
           "redirect to accounting period page" in {
-            enable(EmailCaptureConsent)
 
             mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
@@ -178,7 +168,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         }
         "the user signs up for the next tax year" should {
           "redirect to the what you need to do page" in {
-            enable(EmailCaptureConsent)
 
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
@@ -188,29 +177,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
           }
         }
-      }
-      "the email capture consent feature switch is disabled" when {
-        "the user signs up for the current tax year" should {
-          "redirect to the accounting period page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-
-            val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
-
-            status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
-        }
-        "the user signs up for the next tax year" should {
-          "redirect to the what you need to do page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
-
-            val goodRequest = callSubmit(isEditMode = false, accountingYear = Next)
-
-            status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
-        }
-      }
     }
 
     "return bad request status (400)" when {
