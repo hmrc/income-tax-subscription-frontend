@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
@@ -45,13 +43,7 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockAccountingPeriodService
-  with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EmailCaptureConsent)
-  }
+  with MockAccountingPeriodService {
 
   implicit val appConfig: AppConfig = MockConfig
 
@@ -122,11 +114,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         }
       }
       "current tax year is selected" when {
-        "the email capture consent feature switch is enabled" when {
           "the email passed flag is not present in session" must {
             "save the tax year and redirect to the capture consent page" in {
-              enable(EmailCaptureConsent)
-
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
               val result: Future[Result] = callSubmit(isEditMode = false)
@@ -137,8 +126,6 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
           }
           "the email passed flag is present in session" should {
             "save the tax year and redirect to the what you need to do page" in {
-              enable(EmailCaptureConsent)
-
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
               val sessionData = SessionData(Map(
                 ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true),
@@ -150,39 +137,16 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
             }
-          }
-        }
-        "the email capture consent feature switch is disabled" must {
-          "save the tax year and redirect to the what you need to do page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
-
-            val result: Future[Result] = callSubmit(isEditMode = false)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-          }
         }
       }
       "next tax year is selected" must {
-        "save the tax year and redirect to the capture consent page" when {
-          "the email capture consent feature switch is enabled" in {
-            enable(EmailCaptureConsent)
-
+        "save the tax year and redirect to the capture consent page" in {
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-          }
-          "the email capture consent feature switch is disabled" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
-
-            val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-          }
         }
       }
     }

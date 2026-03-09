@@ -18,8 +18,6 @@ package controllers.individual
 
 import auth.individual.SignUpController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import controllers.utils.ReferenceRetrieval
 import forms.individual.UsingSoftwareForm
 import models.{AccountingYear, Current, No, Yes, YesNo}
@@ -47,7 +45,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
                                         val appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends SignUpController with FeatureSwitching {
+  extends SignUpController {
 
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
@@ -124,12 +122,9 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
               case Right(_) =>
                 if (editMode) {
                   Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else if (isDisabled(EmailCaptureConsent) && (isMandatedCurrentYear || isEligibleNextYearOnly)) {
+                } else if (isMandatedCurrentYear) {
                   Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                } else if (isEnabled(EmailCaptureConsent) && isMandatedCurrentYear) {
-                  Redirect(controllers.individual.email.routes.CaptureConsentController.show())
-                }
-                else {
+                } else {
                   Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
                 }
             }
@@ -140,7 +135,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   private def backUrl(editMode: Boolean, eligibleNextYearOnly: Boolean, taxYearSelection: Option[AccountingYear], consentStatus: Option[YesNo]): String = {
     if (editMode) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEnabled(EmailCaptureConsent)) {
+    } else {
       if (eligibleNextYearOnly) {
         controllers.individual.routes.WhatYouNeedToDoController.show.url
       } else {
@@ -150,11 +145,6 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           case (Some(Current), None) => controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
           case _ => controllers.individual.routes.WhatYouNeedToDoController.show.url
         }
-      }
-    } else {
-      taxYearSelection match {
-        case Some(Current) => controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
-        case _ => controllers.individual.routes.WhatYouNeedToDoController.show.url
       }
     }
   }

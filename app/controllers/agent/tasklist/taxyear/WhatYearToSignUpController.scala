@@ -17,8 +17,6 @@
 package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccess
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
@@ -44,7 +42,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
                                            accountingPeriodService: AccountingPeriodService)
                                           (val appConfig: AppConfig)
                                           (implicit mcc: MessagesControllerComponents,
-                                           ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
+                                           ec: ExecutionContext) extends SignUpBaseController {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)
           (implicit request: ConfirmedClientRequest[_]): Html =
@@ -83,7 +81,7 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
             Future.successful(Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show))
           } else {
             fetchEmailPassed map { emailPassed =>
-              if (accountingYear == Current && isEnabled(EmailCaptureConsent) && !emailPassed) {
+              if (accountingYear == Current && !emailPassed) {
                 Redirect(controllers.agent.email.routes.CaptureConsentController.show())
               } else {
                 Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())

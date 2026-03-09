@@ -16,8 +16,6 @@
 
 package controllers.individual
 
-import _root_.config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
@@ -40,7 +38,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
-                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
+                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>

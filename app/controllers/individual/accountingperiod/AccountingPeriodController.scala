@@ -17,8 +17,6 @@
 package controllers.individual.accountingperiod
 
 import _root_.config.AppConfig
-import _root_.config.featureswitch.FeatureSwitch.EmailCaptureConsent
-import _root_.config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.accountingperiod.AccountingPeriodForm.accountingPeriodForm
@@ -42,7 +40,7 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
                                            auditingService: AuditingService)
                                           (implicit val appConfig: AppConfig,
                                            ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.fetchAccountingPeriod(request.reference) flatMap { accountingPeriod =>
@@ -67,10 +65,10 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
           case Right(_) => accountingPeriod match {
               case SixthAprilToFifthApril =>
                 audit(eligible = true, answer = SixthAprilToFifthApril)
-                  .map(_ => Redirect(nextPage))
+                  .map(_ => Redirect(controllers.individual.email.routes.CaptureConsentController.show()))
               case FirstAprilToThirtyFirstMarch =>
                 audit(eligible = true, answer = FirstAprilToThirtyFirstMarch)
-                  .map(_ => Redirect(nextPage))
+                  .map(_ => Redirect(controllers.individual.email.routes.CaptureConsentController.show()))
               case OtherAccountingPeriod =>
                 audit(eligible = false, answer = OtherAccountingPeriod)
                   .map(_ => Redirect(routes.AccountingPeriodNonStandardController.show))
@@ -92,12 +90,6 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
       },
       question = "standardAccountingPeriod"
     ))
-  }
-
-  private def nextPage: Call = if (isEnabled(EmailCaptureConsent)) {
-    controllers.individual.email.routes.CaptureConsentController.show()
-  } else {
-    controllers.individual.routes.UsingSoftwareController.show()
   }
 
 }

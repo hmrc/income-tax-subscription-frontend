@@ -16,7 +16,6 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.EmailCaptureConsent
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
 import forms.individual.UsingSoftwareForm
 import models.status.MandationStatus.{Mandated, Voluntary}
@@ -61,11 +60,6 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     mockAuthService,
     appConfig
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EmailCaptureConsent)
-  }
 
   trait Setup {
     val usingSoftware: UsingSoftware = mock[UsingSoftware]
@@ -125,27 +119,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
     }
     "the user submits 'Yes'" should {
       "redirect to the your income sources page" when {
-        "the email capture consent feature switch is disabled the user is eligible for next year only" in new Setup {
-          mockGetMandationService(Voluntary, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
-          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
-
-          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-        "the email capture consent feature switch is disabled and the user is mandated for the current tax year only" in new Setup {
-          mockGetMandationService(Mandated, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = false, exemptionReason = None))
-          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
-
-          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-        "the email capture consent feature switch is disabled and the user is mandated for the current tax year and eligible for next year" in new Setup {
+        "the user is mandated for the current tax year" in new Setup {
           mockGetMandationService(Mandated, Voluntary)
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
           mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
@@ -154,19 +128,6 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-        }
-      }
-      "redirect to the capture consent page" when {
-        "the email capture consent feature switch is enabled and the user is mandated for the current tax year" in new Setup {
-          enable(EmailCaptureConsent)
-          mockGetMandationService(Mandated, Voluntary)
-          mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-          mockSaveSoftwareStatus(Yes)(Right(SaveSessionDataSuccessResponse))
-
-          val result: Future[Result] = controller.submit(false)(subscriptionRequest.post(UsingSoftwareForm.usingSoftwareForm, Yes))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.email.routes.CaptureConsentController.show().url)
         }
       }
       "redirect to the what year to sign up page" when {
