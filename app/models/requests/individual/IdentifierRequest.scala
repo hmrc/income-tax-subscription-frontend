@@ -18,11 +18,11 @@ package models.requests.individual
 
 import models.SessionData
 import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-case class IdentifierRequest[A](
-  request: Request[A],
-  mtditid: Option[String],
-  nino: String,
-  utr: Option[String],
-  sessionData: SessionData = SessionData()
-) extends WrappedRequest[A](request)
+case class IdentifierRequest[A](request: Request[A],
+                                mtditid: Option[String],
+                                nino: String,
+                                utr: Option[String],
+                                credentials: Credentials,
+                                sessionData: SessionData) extends WrappedRequest[A](request)
