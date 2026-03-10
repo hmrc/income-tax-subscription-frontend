@@ -17,6 +17,7 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
+import models.SessionData
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
@@ -26,6 +27,7 @@ import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.{MockReferenceRetrieval, MockSessionDataService}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -116,7 +118,9 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
       request = requestWithSession(journeyStep),
       mtditid = mtditid,
       nino = nino,
-      utr = None
+      utr = None,
+      credentials = Credentials("testProviderId", "testProviderType"),
+      sessionData = SessionData()
     )
   }
 }

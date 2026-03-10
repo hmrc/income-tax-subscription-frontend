@@ -27,6 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{BodyParsers, Request, Result}
 import services.{AuditingService, SessionDataService}
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -52,7 +53,9 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
         request = request,
         mtditid = Some(mtditid),
         nino = nino,
-        utr = Some(utr)
+        utr = Some(utr),
+        credentials = Credentials("testProviderId", "testProviderType"),
+        sessionData = SessionData()
       ))
     }
   }
@@ -66,6 +69,7 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
         mtditid = Some(mtditid),
         nino = nino,
         utr = Some(utr),
+        credentials = Credentials("testProviderId", "testProviderType"),
         sessionData = sessionData
       ))
     }
@@ -79,7 +83,9 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
         request = request,
         mtditid = if (noEnrolment) None else Some(mtditid),
         nino = nino,
-        utr = Some(utr)
+        utr = Some(utr),
+        credentials = Credentials("testProviderId", "testProviderType"),
+        sessionData = SessionData()
       ))
     }
   }

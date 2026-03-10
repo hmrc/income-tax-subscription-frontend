@@ -17,11 +17,12 @@
 package connectors.httpparser
 
 import models.individual.ObfuscatedIdentifier
+import play.api.Logging
 import play.api.http.Status.NON_AUTHORITATIVE_INFORMATION
 import play.api.libs.json.*
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object GetUserDetailsByCredIdHttpParser {
+object GetUserDetailsByCredIdHttpParser extends Logging {
 
   type GetUserDetailsByCredIdResponse = Either[GetUserDetailsByCredIdFailure, ObfuscatedIdentifier]
 
@@ -30,9 +31,13 @@ object GetUserDetailsByCredIdHttpParser {
       response.status match {
         case NON_AUTHORITATIVE_INFORMATION => response.json.validate[ObfuscatedIdentifier] match {
           case JsSuccess(userDetails, _) => Right(userDetails)
-          case JsError(_) => Left(InvalidJson)
+          case JsError(_) =>
+            logger.warn("[GetUserDetailsByCredIdHttpParser] - Failed to parse user details from json")
+            Left(InvalidJson)
         }
-        case status => Left(UnexpectedStatus(status))
+        case status =>
+          logger.warn(s"[GetUserDetailsByCredIdHttpParser] - Unexpected status when fetching user details, status: $status")
+          Left(UnexpectedStatus(status))
       }
   }
 

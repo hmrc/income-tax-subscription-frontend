@@ -120,6 +120,10 @@ GET         /claim-enrolment/already-signed-up                   controllers.ind
 GET         /claim-enrolment/sps-handoff                         controllers.individual.claimenrolment.sps.SPSHandoffForClaimEnrolController.redirectToSPS
 GET         /claim-enrolment/sps-callback                        controllers.individual.claimenrolment.sps.SPSCallbackForClaimEnrolController.callback
 
+# Claim enrolment check SA enrolment
+GET         /claim-enrolment/use-self-assessment-details         controllers.individual.claimenrolment.CheckIRSAEnrolmentController.show
+POST        /claim-enrolment/use-self-assessment-details         controllers.individual.claimenrolment.CheckIRSAEnrolmentController.submit
+
 GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
