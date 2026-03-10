@@ -16,20 +16,16 @@
 
 package controllers.individual.matching
 
-import cats.data.EitherT
 import config.AppConfig
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
-import connectors.agent.httpparsers.QueryUsersHttpParser.UsersFound
 import controllers.SignUpBaseController
+import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
 import forms.individual.IRSACredentialForm
-import models.individual.ObfuscatedIdentifier
-import models.requests.individual.IdentifierRequest
 import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UTRService
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.IRSACredential
 
 import javax.inject.{Inject, Singleton}
@@ -43,7 +39,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
                                              irsaCredential: IRSACredential,
                                              appConfig: AppConfig)
                                             (implicit mcc: MessagesControllerComponents,
-                                             ec: ExecutionContext) extends SignUpBaseController {
+                                             ec: ExecutionContext) extends CheckIRSAEnrolmentBaseController(utrService, usersGroupsSearchConnector, enrolmentStoreProxyConnector) {
 
   def show: Action[AnyContent] = identify.async { implicit request =>
     getIdentifierDetails map {
@@ -80,42 +76,4 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
       }
     )
   }
-
-  private def getIdentifierDetails(implicit request: IdentifierRequest[_]): Future[Either[IdentifiersFailure.type, IdentifierDetails]] = {
-    utrService.getUTR(request.sessionData) flatMap { utr =>
-
-      val obfuscatedIdentifierResult = for {
-        saCredId <- EitherT(getSACredId(currentCredId = request.credentials.providerId, utr = utr))
-        saCredObfuscatedIdentifier <- EitherT(getUserDetailsByCredId(credId = saCredId))
-        currentCredObfuscatedIdentifier <- EitherT(getUserDetailsByCredId(credId = request.credentials.providerId))
-      } yield {
-        IdentifierDetails(
-          currentCredential = currentCredObfuscatedIdentifier,
-          saCredential = saCredObfuscatedIdentifier
-        )
-      }
-
-      obfuscatedIdentifierResult.value
-    }
-  }
-
-  private def getSACredId(currentCredId: String, utr: String)(implicit hc: HeaderCarrier): Future[Either[IdentifiersFailure.type, String]] = {
-    enrolmentStoreProxyConnector.getUserIds(utr) map {
-      case Right(UsersFound(saCredIds)) if saCredIds.nonEmpty && !saCredIds.contains(currentCredId) =>
-        Right(saCredIds.head)
-      case _ => Left(IdentifiersFailure)
-    }
-  }
-
-  private def getUserDetailsByCredId(credId: String)(implicit hc: HeaderCarrier): Future[Either[IdentifiersFailure.type, ObfuscatedIdentifier]] = {
-    usersGroupsSearchConnector.getUserDetailsByCredId(credId) map {
-      case Right(obfuscatedIdentifier) => Right(obfuscatedIdentifier)
-      case _ => Left(IdentifiersFailure)
-    }
-  }
-
-  private case class IdentifierDetails(currentCredential: ObfuscatedIdentifier, saCredential: ObfuscatedIdentifier)
-
-  private case object IdentifiersFailure
-
 }
