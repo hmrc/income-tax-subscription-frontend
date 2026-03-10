@@ -541,6 +541,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def individualIndex(): WSResponse = get("/eligibility")
 
+    def matchingUseSelfAssessment(): WSResponse = get("/use-self-assessment-details")
+
+    def submitMatchingUseSelfAssessment(request: Option[YesNo]): WSResponse = {
+      post("/use-self-assessment-details")(
+        request.fold(Map.empty[String, Seq[String]]) { model =>
+          IRSACredentialForm.irsaCredentialForm.fill(model).data.map {
+            case (k, v) => (k, Seq(v))
+          }
+        }
+      )
+    }
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
