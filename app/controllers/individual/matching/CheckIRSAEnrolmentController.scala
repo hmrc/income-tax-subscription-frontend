@@ -19,17 +19,14 @@ package controllers.individual.matching
 import config.AppConfig
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
-import controllers.SignUpBaseController
 import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
-import forms.individual.IRSACredentialForm
-import models.{No, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UTRService
 import views.html.individual.IRSACredential
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
@@ -39,41 +36,23 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
                                              irsaCredential: IRSACredential,
                                              appConfig: AppConfig)
                                             (implicit mcc: MessagesControllerComponents,
-                                             ec: ExecutionContext) extends CheckIRSAEnrolmentBaseController(utrService, usersGroupsSearchConnector, enrolmentStoreProxyConnector) {
-
+                                             ec: ExecutionContext)
+extends CheckIRSAEnrolmentBaseController(
+  utrService,
+  usersGroupsSearchConnector,
+  enrolmentStoreProxyConnector,
+  irsaCredential,
+  appConfig
+) {
+  
+  private val postAction = routes.CheckIRSAEnrolmentController.submit
+  private val gotoAction = controllers.individual.matching.routes.HomeController.index
+    
   def show: Action[AnyContent] = identify.async { implicit request =>
-    getIdentifierDetails map {
-      case Right(identifierDetails) =>
-        Ok(irsaCredential(
-          irsaCredentialForm = IRSACredentialForm.irsaCredentialForm,
-          postAction = routes.CheckIRSAEnrolmentController.submit,
-          currentCredential = identifierDetails.currentCredential,
-          saCredential = identifierDetails.saCredential
-        ))
-      case Left(_) =>
-        Redirect(controllers.individual.matching.routes.HomeController.index)
-    }
+    super.show(postAction, gotoAction)
   }
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
-    IRSACredentialForm.irsaCredentialForm.bindFromRequest().fold(
-      hasErrors => {
-        getIdentifierDetails map {
-          case Right(identifierDetails) =>
-            BadRequest(irsaCredential(
-              irsaCredentialForm = hasErrors,
-              postAction = routes.CheckIRSAEnrolmentController.submit,
-              currentCredential = identifierDetails.currentCredential,
-              saCredential = identifierDetails.saCredential
-            ))
-          case Left(_) =>
-            Redirect(controllers.individual.matching.routes.HomeController.index)
-        }
-      },
-      {
-        case Yes => Future.successful(Redirect(appConfig.ggSignOutUrl()))
-        case No => Future.successful(Redirect(controllers.individual.matching.routes.HomeController.index))
-      }
-    )
+    super.submit(postAction, gotoAction)
   }
 }

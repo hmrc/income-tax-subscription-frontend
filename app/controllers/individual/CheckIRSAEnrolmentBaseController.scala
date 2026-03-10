@@ -23,11 +23,12 @@ import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.QueryUsersHttpParser.UsersFound
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
+import controllers.individual.matching.routes
 import forms.individual.IRSACredentialForm
 import models.individual.ObfuscatedIdentifier
 import models.requests.individual.IdentifierRequest
 import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import services.UTRService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.IRSACredential
@@ -38,12 +39,54 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckIRSAEnrolmentBaseController(
   utrService: UTRService,
   usersGroupsSearchConnector: UsersGroupsSearchConnector,
-  enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector
+  enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
+  irsaCredential: IRSACredential,
+  appConfig: AppConfig
 )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
-  protected final def getIdentifierDetails(
-    implicit request: IdentifierRequest[_], hc: HeaderCarrier): Future[Either[IdentifiersFailure.type, IdentifierDetails]
-  ] = {
+  protected final def show(
+    postAction: Call,
+    gotoAction: Call
+  )(implicit request: IdentifierRequest[_]): Future[Result] = {
+    getIdentifierDetails map {
+      case Right(identifierDetails) =>
+        Ok(irsaCredential(
+          irsaCredentialForm = IRSACredentialForm.irsaCredentialForm,
+          postAction = postAction,
+          currentCredential = identifierDetails.currentCredential,
+          saCredential = identifierDetails.saCredential
+        ))
+      case Left(_) =>
+        Redirect(gotoAction)
+    }
+  }
+
+  protected final def submit(
+    postAction: Call,
+    gotoAction: Call
+  )(implicit request: IdentifierRequest[_]): Future[Result] = {
+    IRSACredentialForm.irsaCredentialForm.bindFromRequest().fold(
+      hasErrors => {
+        getIdentifierDetails map {
+          case Right(identifierDetails) =>
+            BadRequest(irsaCredential(
+              irsaCredentialForm = hasErrors,
+              postAction = postAction,
+              currentCredential = identifierDetails.currentCredential,
+              saCredential = identifierDetails.saCredential
+            ))
+          case Left(_) =>
+            Redirect(gotoAction)
+        }
+      },
+      {
+        case Yes => Future.successful(Redirect(appConfig.ggSignOutUrl()))
+        case No => Future.successful(Redirect(gotoAction))
+      }
+    )
+  }
+
+  private def getIdentifierDetails(implicit request: IdentifierRequest[_]): Future[Either[IdentifiersFailure.type, IdentifierDetails]] = {
     utrService.getUTR(request.sessionData) flatMap { utr =>
 
       val obfuscatedIdentifierResult = for {
@@ -69,7 +112,7 @@ class CheckIRSAEnrolmentBaseController(
     }
   }
 
-  protected final def getUserDetailsByCredId(credId: String)(implicit hc: HeaderCarrier): Future[Either[IdentifiersFailure.type, ObfuscatedIdentifier]] = {
+  private def getUserDetailsByCredId(credId: String)(implicit hc: HeaderCarrier): Future[Either[IdentifiersFailure.type, ObfuscatedIdentifier]] = {
     usersGroupsSearchConnector.getUserDetailsByCredId(credId) map {
       case Right(obfuscatedIdentifier) => Right(obfuscatedIdentifier)
       case _ => Left(IdentifiersFailure)
