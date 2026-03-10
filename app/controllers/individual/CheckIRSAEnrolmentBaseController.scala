@@ -36,7 +36,7 @@ import views.html.individual.IRSACredential
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckIRSAEnrolmentBaseController(
+abstract class CheckIRSAEnrolmentBaseController(
   utrService: UTRService,
   usersGroupsSearchConnector: UsersGroupsSearchConnector,
   enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
@@ -119,8 +119,8 @@ class CheckIRSAEnrolmentBaseController(
     }
   }
 
-  protected final case class IdentifierDetails(currentCredential: ObfuscatedIdentifier, saCredential: ObfuscatedIdentifier)
+  private case class IdentifierDetails(currentCredential: ObfuscatedIdentifier, saCredential: ObfuscatedIdentifier)
 
-  protected case object IdentifiersFailure
+  private case object IdentifiersFailure
 
 }
