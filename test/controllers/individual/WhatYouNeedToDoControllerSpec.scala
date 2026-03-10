@@ -16,9 +16,11 @@
 
 package controllers.individual
 
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
+import config.featureswitch.FeatureSwitching
 import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models._
+import models.*
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -27,7 +29,7 @@ import play.api.libs.json.JsString
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import utilities.agent.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
 import views.html.individual.WhatYouNeedToDo
 
@@ -40,7 +42,13 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
   with MockSubscriptionDetailsService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYear26To27Plus)
+  }
 
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
@@ -166,14 +174,28 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   }
 
   "submit" must {
-    "redirect to Accounting Period when selected tax year is Current" in new Setup {
-      mockGetAllSessionData(SessionData())
-      mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+    "selected tax year is Current" must {
+      "redirect to Accounting Period when FS is OFF" in new Setup {
+        disable(TaxYear26To27Plus)
+        mockGetAllSessionData(SessionData())
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
 
-      val result: Future[Result] = controller.submit(subscriptionRequest)
+        val result: Future[Result] = controller.submit(subscriptionRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+      }
+
+      "redirect to Using Software when FS is ON" in new Setup {
+        enable(TaxYear26To27Plus)
+        mockGetAllSessionData(SessionData())
+        mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
+
+        val result: Future[Result] = controller.submit(subscriptionRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
+      }
     }
 
     "redirect to Using Software when Next tax year is selected" in new Setup {
