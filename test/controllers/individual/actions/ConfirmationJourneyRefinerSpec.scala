@@ -32,6 +32,7 @@ import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, status}
 import services.mocks.{MockMandationStatusService, MockReferenceRetrieval, MockSessionDataService}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -104,7 +105,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       "throw an internal server exception" when {
         "utr was not present from the identifier request" in {
           mockGetMandationService(Voluntary, Voluntary)
-          
+
           val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
             identifierRequest(journeyStep = Some(Confirmation), maybeUtr = None), { (_: ConfirmationRequest[_]) =>
               Future.successful(Results.Ok)
@@ -173,6 +174,7 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       mtditid = None,
       nino = nino,
       utr = maybeUtr,
+      credentials = Credentials("testProviderId", "testProviderType"),
       sessionData = sessionData
     )
   }

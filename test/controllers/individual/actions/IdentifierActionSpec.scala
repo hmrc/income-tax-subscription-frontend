@@ -31,11 +31,11 @@ import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.{MockAuditingService, MockSessionDataService}
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
-import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.InternalServerException
 
 import java.util.UUID
@@ -54,6 +54,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   val testNino: String = "AA000000A"
   val testMTDITID: String = "XAIT0000000001"
 
+  val testCredentials: Credentials = Credentials("providerId", "providerType")
+
   val enrolments: Enrolments = Enrolments(Set(
     Enrolment(Constants.utrEnrolmentName, Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)), "Activated"),
     Enrolment(Constants.mtdItsaEnrolmentName, Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, testMTDITID)), "Activated")
@@ -68,8 +70,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -89,8 +91,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Organisation), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Organisation), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -110,8 +112,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -131,8 +133,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -152,8 +154,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L500), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L500), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -170,8 +172,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has CL250, without a nino" must {
       "throw an InternalServerException as the user should have a nino in this scenario" in {
         mockGetAllSessionData()
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), None)
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), None), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { _ =>
@@ -188,8 +190,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L200), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L200), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -216,8 +218,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(Assistant)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(Assistant)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -238,8 +240,8 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino)(
-          new~(new~(new~(new~(Some(Agent), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino))
+        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+          new~(new~(new~(new~(new~(Some(Agent), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
         val result: Future[Result] = identifierAction { request =>
@@ -257,7 +259,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorisation throws an AuthorisationException" must {
       "redirect the user to login" in {
         mockGetAllSessionData()
-        mockAuthoriseFailure(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino) {
+        mockAuthoriseFailure(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials) {
           BearerTokenExpired()
         }
 
