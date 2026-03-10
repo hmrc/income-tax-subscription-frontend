@@ -44,10 +44,10 @@ extends CheckIRSAEnrolmentBaseController(
   irsaCredential,
   appConfig
 ) {
-  
+
   private val postAction = routes.CheckIRSAEnrolmentController.submit
-  private val gotoAction = controllers.individual.matching.routes.HomeController.index
-    
+  private val gotoAction = routes.HomeController.index
+
   def show: Action[AnyContent] = identify.async { implicit request =>
     super.show(postAction, gotoAction)
   }

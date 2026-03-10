@@ -46,7 +46,7 @@ extends CheckIRSAEnrolmentBaseController(
 ) {
 
   private val postAction = routes.CheckIRSAEnrolmentController.submit
-  private val gotoAction = controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show()
+  private val gotoAction = routes.AddMTDITOverviewController.show()
 
   def show: Action[AnyContent] = identify.async { implicit request =>
     super.show(postAction, gotoAction)
