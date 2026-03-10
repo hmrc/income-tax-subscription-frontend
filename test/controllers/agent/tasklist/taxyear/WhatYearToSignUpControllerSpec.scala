@@ -17,6 +17,8 @@
 package controllers.agent.tasklist.taxyear
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
+import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
@@ -29,8 +31,8 @@ import models.status.MandationStatus.Voluntary
 import play.api.http.Status
 import play.api.libs.json.JsBoolean
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import services.mocks._
+import play.api.test.Helpers.*
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockWhatYearToSignUp
 import models.Current
@@ -43,7 +45,13 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmedClientJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockAccountingPeriodService {
+  with MockAccountingPeriodService
+  with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYear26To27Plus)
+  }
 
   implicit val appConfig: AppConfig = MockConfig
 
@@ -114,8 +122,11 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
         }
       }
       "current tax year is selected" when {
+        "the FS is disabled" when {
           "the email passed flag is not present in session" must {
             "save the tax year and redirect to the capture consent page" in {
+              disable(TaxYear26To27Plus)
+
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
               val result: Future[Result] = callSubmit(isEditMode = false)
@@ -126,6 +137,8 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
           }
           "the email passed flag is present in session" should {
             "save the tax year and redirect to the what you need to do page" in {
+              enable(TaxYear26To27Plus)
+
               mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
               val sessionData = SessionData(Map(
                 ITSASessionKeys.HAS_SOFTWARE -> JsBoolean(true),
@@ -137,16 +150,41 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
               status(result) mustBe SEE_OTHER
               redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
             }
+          }
+        }
+        "the FS is disabled" must {
+          "save the tax year and redirect to the e-mail consent page" in {
+            disable(TaxYear26To27Plus)
+            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = callSubmit(isEditMode = false)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.email.routes.CaptureConsentController.show().url)
+          }
         }
       }
       "next tax year is selected" must {
-        "save the tax year and redirect to the capture consent page" in {
+        "save the tax year and redirect to the capture consent page" when {
+          "the FS is enabled" in {
+            enable(TaxYear26To27Plus)
+
             mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
             val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          }
+          "the FS is disabled" in {
+            disable((TaxYear26To27Plus))
+            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
+
+            val result: Future[Result] = callSubmit(isEditMode = false, taxYear = Next)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+          }
         }
       }
     }
