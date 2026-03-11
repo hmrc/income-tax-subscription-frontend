@@ -130,6 +130,7 @@ object IntegrationTestConstants {
     val signOutURI = s"$baseURI/logout"
     val ggSignOutURI = s"/bas-gateway/sign-out-without-state"
     val addMTDITOverviewURI = s"$baseURI/claim-enrolment/overview"
+    val claimEnrolmentSACredential = s"$baseURI/claim-enrolment/use-self-assessment-details"
     val notSubscribedURI = s"$baseURI/claim-enrolment/not-subscribed"
     val claimEnrolmentConfirmationURI = s"$baseURI/claim-enrolment/confirmation"
     val claimEnrolmentAlreadySignedUpURI = s"$baseURI/claim-enrolment/already-signed-up"

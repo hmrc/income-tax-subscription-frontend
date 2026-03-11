@@ -17,10 +17,10 @@
 package testonly.connectors
 
 import play.api.libs.json.{JsObject, Json}
-import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
+import testonly.TestOnlyAppConfig
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.util.UUID
@@ -33,8 +33,47 @@ class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   lazy val enrolmentStoreUrl: String = appConfig.enrolmentStoreStubUrl + "/enrolment-store-stub/data"
 
-  def updateEnrolments(credId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def updateEnrolments(credId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.post(url"${enrolmentStoreUrl}").withBody(Json.toJson(updateEnrolmentsRequest(credId))).execute[HttpResponse]
+  }
+
+  def updateIRSACred(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.post(url"$enrolmentStoreUrl").withBody(updateIRSAEnrolmentRequest()).execute[HttpResponse]
+  }
+
+  private def updateIRSAEnrolmentRequest(): JsObject = {
+    val credId: String = UUID.randomUUID().toString
+    Json.obj(
+      "groupId" -> UUID.randomUUID().toString,
+      "affinityGroup" -> "Organisation",
+      "users" -> Json.arr(
+        Json.obj(
+          "credId" -> credId,
+          "name" -> "Default IR-SA User",
+          "email" -> "test@test.com",
+          "credentialRole" -> "Admin",
+          "description" -> "User Description",
+          "identityProviderType" -> "ONE_LOGIN"
+        )
+      ),
+      "enrolments" -> Json.arr(
+        Json.obj(
+          "serviceName" -> "IR-SA",
+          "identifiers" -> Json.arr(
+            Json.obj(
+              "key" -> "UTR",
+              "value" -> "5544663377"
+            )
+          ),
+          "enrolmentFriendlyName" -> "IRSA",
+          "assignedUserCreds" -> Json.arr(credId),
+          "state" -> "Activated",
+          "enrolmentType" -> "principal",
+          "assignedToAll" -> false
+        )
+      )
+    )
+  }
 
   private def updateEnrolmentsRequest(credId: String): JsObject =
     Json.obj(
@@ -43,10 +82,11 @@ class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
       "users" -> Json.arr(
         Json.obj(
           "credId" -> credId,
-          "name" -> "Default User",
+          "name" -> "Default HMRC-MTD-IT User",
           "email" -> "test@test.com",
           "credentialRole" -> "Admin",
-          "description" -> "User Description"
+          "description" -> "User Description",
+          "identityProviderType" -> "ONE_LOGIN"
         )
       ),
       "enrolments" -> Json.arr(
