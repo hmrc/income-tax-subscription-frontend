@@ -165,3 +165,7 @@ POST        /hand-offs/opted-out                                 controllers.ind
 
 GET         /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.show
 POST        /hand-offs/check-income-sources                      controllers.individual.handoffs.CheckIncomeSourcesController.submit
+
+# Sign-up check SA enrolment
+GET         /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.show
+POST        /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.submit
