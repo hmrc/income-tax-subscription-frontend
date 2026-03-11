@@ -183,6 +183,13 @@ business.what-year-to-sign-up.option-1                          = Current tax ye
 business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
 business.what-year-to-sign-up.option-2                          = Next tax year
 
+# When do you want to start
+business.when-do-you-wat-to-start.heading                       = When do you want to start using Making Tax Digital for Income Tax?
+business.when-do-you-wat-to-start.para                          = If you start in the current tax year, you’ll need to use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far.
+business.when-do-you-wat-to-start.para2                         = Making Tax Digital for Income Tax is voluntary until 6 April 2026, so you will not get penalties for any missed quarterly updates before then.
+business.when-do-you-wat-to-start.option-1                      = I want to start in the current tax year, {0} to {1}
+business.when-do-you-wat-to-start.option-2                      = I want to start from the next tax year, {0} to {1}
+
 ## Accounting period
 accounting-period.heading                                       = Your business accounting period
 accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
@@ -887,6 +894,20 @@ agent.business.what-year-to-sign-up.option-2                    = Next tax year
 agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to use your software to send any missed quarterly updates for the year so far
 agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
 agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
+
+# When do you want to start
+agent.business.when-do-you-wat-to-start.heading                       = You can sign up this client
+agent.business.when-do-you-wat-to-start.caption                       = {0} - {1}
+agent.business.when-do-you-wat-to-start.para                          = You can sign up your client during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
+agent.business.when-do-you-wat-to-start.para2                         = Find out more about {0}.
+agent.business.when-do-you-wat-to-start.para2.link-text               = sending quarterly updates (opens in a new tab).
+agent.business.when-do-you-wat-to-start.para2.link-href               = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+agent.business.when-do-you-wat-to-start.para3                         = Your client must still submit their Self Assessment tax returns for {0} to {1} as normal.
+agent.business.when-do-you-wat-to-start.heading2                      = When do you want to start using Making Tax Digital for Income Tax?
+agent.business.when-do-you-wat-to-start.para4                         = I want to sign up my client now, and:
+agent.business.when-do-you-wat-to-start.option-1                      = start in the current tax year, {0} to {1}
+agent.business.when-do-you-wat-to-start.option-1-hint                 = You or your client will need to use your software to send any missed quarterly updates for the year so far
+agent.business.when-do-you-wat-to-start.option-2                      = start from the next tax year, {0} to {1}
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property

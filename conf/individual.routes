@@ -60,6 +60,10 @@ POST        /using-software                                      controllers.ind
 GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+#When Do You Want To Start Routes
+GET         /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
+POST        /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
+
 # Accounting Period
 GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
 POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit

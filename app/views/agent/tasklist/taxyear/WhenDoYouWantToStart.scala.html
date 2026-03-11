@@ -1,0 +1,101 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.agent.AccountingYearForm
+@import services.AccountingPeriodService
+@import views.html.helpers.{RadioHelper, PageHeadingHelper, ContinueButton}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.ReturnDeadlineTable
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
+
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    radioHelper: RadioHelper,
+    continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
+    form : FormWithCSRF,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    govukInsetText: GovukInsetText
+)
+
+@(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("business.when-do-you-want-to-sign-up.heading"), optForm = Some(accountingYearForm)) {
+
+@pageHeadingHelper(
+    heading = messages("agent.business.when-do-you-want-to-sign-up.heading"),
+    caption = messages("agent.business.when-do-you-want-to-sign-up.caption", clientName, clientNino),
+    isSection = false
+)
+
+<p class="govuk-body">
+    @messages(
+    "agent.business.when-do-you-wat-to-start.para", endYearOfCurrentTaxPeriod - 1).toString,
+    endYearOfCurrentTaxPeriod.toString
+    )
+</p>
+
+<p class="govuk-body">
+    @Html(messages(
+    key = "agent.when-do-you-wat-to-start.para2",
+    args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.when-do-you-wat-to-start.para2.link-text"), Some(messages("agent.when-do-you-wat-to-start.para2.link-href"))))
+    ))
+</p>
+
+@govukInsetText(InsetText(
+    content = Text(messages("agent.business.when-do-you-wat-to-start.para3", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))
+))
+
+<h1 class="govuk-heading-l">@messages("agent.business.when-do-you-wat-to-start.heading2")</h1>
+
+<p class="govuk-body">
+    @messages(
+    "agent.business.when-do-you-wat-to-start.para4",
+    )
+</p>
+
+@form(action = postAction) {
+    @radioHelper(
+        field = accountingYearForm(AccountingYearForm.accountingYear),
+        legend = messages("agent.business.when-do-you-wat-to-start.heading"),
+        isPageHeading = false,
+        headingClasses = "govuk-visually-hidden",
+        radioItems = Seq(
+            RadioItem(
+                content = Text(messages("agent.business.when-do-you-wat-to-start.option-1",(endYearOfCurrentTaxPeriod - 1).toString,
+                endYearOfCurrentTaxPeriod.toString)),
+                hint = Some(Hint(content = Text(messages("agent.business.what-year-to-sign-up.option-1.hint")))),
+                value = Some(Current.toString)
+                ),
+            RadioItem(
+                content = Text(messages("agent.business.when-do-you-wat-to-start.option-2", endYearOfCurrentTaxPeriod.toString,
+                (endYearOfCurrentTaxPeriod + 1).toString)),
+                value = Some(Next.toString)
+                )
+            )
+        )
+    @continueButton(isEditMode = isEditMode)
+    }
+
+    <p class="govuk-body">
+        @Html(messages(
+        key = "agent.when-do-you-wat-to-start.para2",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.when-do-you-wat-to-start.para2.link-text"), Some(messages("agent.when-do-you-wat-to-start.para2.link-href"))))
+        ))
+    </p>
+}
