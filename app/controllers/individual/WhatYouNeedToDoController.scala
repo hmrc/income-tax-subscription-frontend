@@ -78,7 +78,7 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
     if (eligibleNextYearOnly) {
       controllers.individual.matching.routes.CannotUseServiceController.show().url
     } else {
-      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
     }
   }
 }

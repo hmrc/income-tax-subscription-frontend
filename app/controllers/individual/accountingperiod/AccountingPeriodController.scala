@@ -50,7 +50,7 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
         Ok(view(
           accountingPeriodForm = accountingPeriodForm.fill(accountingPeriod),
           postAction = routes.AccountingPeriodController.submit,
-          backUrl = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url))
+          backUrl = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url))
       )
     }
   }
@@ -60,7 +60,7 @@ class AccountingPeriodController @Inject()(view: AccountingPeriod,
       formWithErrors => Future.successful(BadRequest(view(
         accountingPeriodForm = formWithErrors,
         postAction = routes.AccountingPeriodController.submit,
-        backUrl = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        backUrl = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
       ))),
       accountingPeriod => {
         subscriptionDetailsService.saveAccountingPeriod(request.reference, accountingPeriod) flatMap {

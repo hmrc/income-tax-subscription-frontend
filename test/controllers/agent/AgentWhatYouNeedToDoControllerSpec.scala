@@ -91,7 +91,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -155,7 +155,7 @@ class AgentWhatYouNeedToDoControllerSpec
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
           ArgumentMatchers.eq(clientDetails.formattedNino),
-          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -179,7 +179,7 @@ class AgentWhatYouNeedToDoControllerSpec
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
             ArgumentMatchers.eq(clientDetails.formattedNino),
-            ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+            ArgumentMatchers.eq(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -274,7 +274,7 @@ class AgentWhatYouNeedToDoControllerSpec
         "the user is eligible for both years and not mandated for the current year" in new Setup {
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, None, Some(Current))
 
-          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         }
       }
       "return the Cannot sign up this year page" when {
@@ -319,7 +319,7 @@ class AgentWhatYouNeedToDoControllerSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, captureConsentStatus = None, Some(Next))
 
-          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         }
       }
       "the user is voluntarily signing up for current year" should {
@@ -327,7 +327,7 @@ class AgentWhatYouNeedToDoControllerSpec
           enable(EmailCaptureConsent)
           val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, mandatedCurrentYear = false, captureConsentStatus = None, Some(Current))
 
-          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         }
       }
     }

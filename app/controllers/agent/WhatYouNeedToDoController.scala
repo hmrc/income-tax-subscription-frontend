@@ -75,12 +75,12 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
         (taxYearSelection, captureConsentStatus) match {
           case (Some(Current), Some(Yes)) => controllers.agent.email.routes.EmailCaptureController.show().url
           case (Some(Current), Some(No)) => controllers.agent.email.routes.CaptureConsentController.show().url
-          case _ => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          case _ => controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         }
       }
     } else {
       (eligibleNextYearOnly, mandatedCurrentYear) match {
-        case (false, false) => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+        case (false, false) => controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         case (false, true) => controllers.agent.eligibility.routes.ClientCanSignUpController.show().url
         case _ => controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
       }

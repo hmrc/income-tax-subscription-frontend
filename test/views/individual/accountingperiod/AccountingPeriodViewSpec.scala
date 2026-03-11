@@ -38,7 +38,7 @@ class AccountingPeriodViewSpec extends ViewSpec {
         view = page(),
         isAgent = false,
         title = AccountingPeriodMessages.heading,
-        backLink = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        backLink = Some(controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
       )
 
       "the page has an error" in new TemplateViewTest(
@@ -46,7 +46,7 @@ class AccountingPeriodViewSpec extends ViewSpec {
         isAgent = false,
         title = AccountingPeriodMessages.heading,
         error = Some(testFormError),
-        backLink = Some(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+        backLink = Some(controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
       )
     }
     "have a heading" in {
@@ -105,7 +105,7 @@ class AccountingPeriodViewSpec extends ViewSpec {
     accountingPeriod(
       if (hasError) AccountingPeriodForm.accountingPeriodForm.withError(testFormError) else AccountingPeriodForm.accountingPeriodForm,
       testCall,
-      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
     )
   }
 

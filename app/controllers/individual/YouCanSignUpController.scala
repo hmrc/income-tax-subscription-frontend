@@ -36,7 +36,7 @@ class YouCanSignUpController @Inject()(view: YouCanSignUp)
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Ok(view(
-        postAction = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(),
+        postAction = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(),
         backUrl = backUrl
       ))
   }

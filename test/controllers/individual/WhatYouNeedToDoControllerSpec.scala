@@ -200,7 +200,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
       controller.backUrl(eligibleNextYearOnly = true) mustBe controllers.individual.matching.routes.CannotUseServiceController.show().url
     }
     "return what year to sign up page when current tax year" in new Setup {
-      controller.backUrl(eligibleNextYearOnly = false) mustBe controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      controller.backUrl(eligibleNextYearOnly = false) mustBe controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
     }
   }
 }

@@ -43,7 +43,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
       postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino,
-      backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+      backUrl = controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
     ))
   }
 
@@ -55,7 +55,7 @@ class CaptureConsentController @Inject()(view: CaptureConsent,
           postAction = controllers.agent.email.routes.CaptureConsentController.submit(),
           clientName = request.clientDetails.name,
           clientNino = request.clientDetails.formattedNino,
-          backUrl = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
+          backUrl = controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url
         ))),
       yesNo =>
         for {
