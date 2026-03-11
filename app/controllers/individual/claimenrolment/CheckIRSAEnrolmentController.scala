@@ -21,12 +21,13 @@ import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import models.requests.individual.IdentifierRequest
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.UTRService
 import views.html.individual.IRSACredential
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
@@ -46,13 +47,17 @@ extends CheckIRSAEnrolmentBaseController(
 ) {
 
   private val postAction = routes.CheckIRSAEnrolmentController.submit
-  private val gotoAction = routes.AddMTDITOverviewController.show()
 
   def show: Action[AnyContent] = identify.async { implicit request =>
-    super.show(postAction, gotoAction)
+    super.show(postAction)
   }
 
   def submit: Action[AnyContent] = identify.async { implicit request =>
-    super.submit(postAction, gotoAction)
+    super.submit(postAction)
   }
+  
+  override protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result] =
+    Future.successful(
+      Redirect(routes.AddMTDITOverviewController.show())
+    )
 }

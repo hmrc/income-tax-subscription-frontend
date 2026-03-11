@@ -22,18 +22,15 @@ import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.QueryUsersHttpParser.UsersFound
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
-import controllers.individual.matching.routes
 import forms.individual.IRSACredentialForm
 import models.individual.ObfuscatedIdentifier
 import models.requests.individual.IdentifierRequest
 import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc.{Call, MessagesControllerComponents, Result}
 import services.UTRService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.individual.IRSACredential
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 abstract class CheckIRSAEnrolmentBaseController(
@@ -45,43 +42,41 @@ abstract class CheckIRSAEnrolmentBaseController(
 )(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   protected final def show(
-    postAction: Call,
-    gotoAction: Call
+    postAction: Call
   )(implicit request: IdentifierRequest[_]): Future[Result] = {
-    getIdentifierDetails map {
+    getIdentifierDetails flatMap {
       case Right(identifierDetails) =>
-        Ok(irsaCredential(
+        Future.successful(Ok(irsaCredential(
           irsaCredentialForm = IRSACredentialForm.irsaCredentialForm,
           postAction = postAction,
           currentCredential = identifierDetails.currentCredential,
           saCredential = identifierDetails.saCredential
-        ))
+        )))
       case Left(_) =>
-        Redirect(gotoAction)
+        redirectToNext
     }
   }
 
   protected final def submit(
-    postAction: Call,
-    gotoAction: Call
+    postAction: Call
   )(implicit request: IdentifierRequest[_]): Future[Result] = {
     IRSACredentialForm.irsaCredentialForm.bindFromRequest().fold(
       hasErrors => {
-        getIdentifierDetails map {
+        getIdentifierDetails flatMap {
           case Right(identifierDetails) =>
-            BadRequest(irsaCredential(
+            Future.successful(BadRequest(irsaCredential(
               irsaCredentialForm = hasErrors,
               postAction = postAction,
               currentCredential = identifierDetails.currentCredential,
               saCredential = identifierDetails.saCredential
-            ))
+            )))
           case Left(_) =>
-            Redirect(gotoAction)
+            redirectToNext
         }
       },
       {
         case Yes => Future.successful(Redirect(appConfig.ggSignOutUrl()))
-        case No => Future.successful(Redirect(gotoAction))
+        case No => redirectToNext
       }
     )
   }
@@ -123,4 +118,5 @@ abstract class CheckIRSAEnrolmentBaseController(
 
   private case object IdentifiersFailure
 
+  protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result]
 }

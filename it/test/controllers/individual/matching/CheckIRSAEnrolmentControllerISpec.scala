@@ -18,16 +18,36 @@ package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{SessionDataConnectorStub, UsersGroupsSearchStub}
+import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
+import helpers.servicemocks.EligibilityStub.stubEligibilityResponseBoth
 import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub}
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import models.{No, Yes}
+import models.{EligibilityStatus, No, Yes}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 
-class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
+
+  val journeyStart: Map[Boolean, String] = Map(
+    true -> controllers.individual.routes.YouCanSignUpController.show.url,
+    false -> controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url
+  )
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+
+  def setup(eligibleCurrentYear: Boolean): Unit = {
+    val status = EligibilityStatus(
+      eligibleCurrentYear = eligibleCurrentYear,
+      eligibleNextYear = true,
+      exemptionReason = None
+    )
+    stubEligibilityResponseBoth(testUtr)(
+      currentYearResponse = status.eligibleCurrentYear,
+      nextYearResponse = status.eligibleNextYear,
+      exemptionReason = status.exemptionReason
+    )
+    SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, status)(OK)
+  }
 
   "GET /use-self-assessment-details" should {
     "redirect the user to log in" when {
@@ -43,7 +63,7 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
       }
     }
 
-    "redirect to the claim enrolment overview page" when {
+    "redirect to the journey start page" when {
       "it is identified that there are no other credentials with the IR-SA enrolment" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -51,12 +71,15 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
 
-        val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
       
       "it is identified that the current credential has the IR-SA enrolment" in {
@@ -66,12 +89,15 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
 
-        val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
 
       "there was a problem fetching the credentials assigned to an IR-SA enrolment" in {
@@ -81,12 +107,15 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
-        val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
 
       "there was a problem fetching the user details for the SA credential" in {
@@ -97,12 +126,15 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.obj("principalUserIds" -> Json.arr(testCredentialId2)))
         UsersGroupsSearchStub.stubGetUserDetailsByCredId(testCredentialId2)(INTERNAL_SERVER_ERROR)
 
-        val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
 
       "there was a problem fetching the user details for the current credential" in {
@@ -117,12 +149,15 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         ))
         UsersGroupsSearchStub.stubGetUserDetailsByCredId(testCredId)(INTERNAL_SERVER_ERROR)
 
-        val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
     }
 
@@ -224,23 +259,34 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase with SessionCo
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
-        val res = IncomeTaxSubscriptionFrontend.submitMatchingUseSelfAssessment(request = None)
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.submitMatchingUseSelfAssessment(request = None)
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
 
       "the user selects to not change accounts" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
+        EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
-        val res = IncomeTaxSubscriptionFrontend.submitMatchingUseSelfAssessment(request = Some(No))
+        Seq(true, false).foreach { eligibleCurrentYear =>
+          setup(eligibleCurrentYear)
+          val url = journeyStart.getOrElse(eligibleCurrentYear, "")
+          val res = IncomeTaxSubscriptionFrontend.submitMatchingUseSelfAssessment(request = Some(No))
 
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(routes.HomeController.index.url)
-        )
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(url)
+          )
+        }
       }
     }
 
