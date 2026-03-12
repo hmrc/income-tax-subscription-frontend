@@ -127,7 +127,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.addMTDITOverviewURI)
+          redirectURI(IndividualURI.claimEnrolmentSACredential)
         )
       }
     }
@@ -153,7 +153,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         )
       }
     }
-    "redirect to the you can sign up now page" when {
+    "redirect to the check irsa enrolment route" when {
       "the user is eligible to sign up for both tax years" in {
         AuthStub.stubAuthSuccess()
 
@@ -178,11 +178,11 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
+          redirectURI(routes.CheckIRSAEnrolmentController.show.url)
         )
       }
     }
-    "redirect to the cannot sign up for current tax year page" when {
+    "redirect to the check irsa enrolment route" when {
       "the user is eligible to sign up for next tax year only" in {
         AuthStub.stubAuthSuccess()
 
@@ -200,7 +200,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.cannotSignUpForCurrentYearURI)
+          redirectURI(routes.CheckIRSAEnrolmentController.show.url)
         )
       }
     }
@@ -262,7 +262,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
+          redirectURI(routes.CheckIRSAEnrolmentController.show.url)
         )
 
         val session: Map[String, String] = getSessionMap(res)

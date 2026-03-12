@@ -33,17 +33,14 @@ import views.html.individual.IRSACredential
 
 import scala.concurrent.{ExecutionContext, Future}
 
-abstract class CheckIRSAEnrolmentBaseController(
-  utrService: UTRService,
-  usersGroupsSearchConnector: UsersGroupsSearchConnector,
-  enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
-  irsaCredential: IRSACredential,
-  appConfig: AppConfig
-)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+abstract class CheckIRSAEnrolmentBaseController(utrService: UTRService,
+                                                usersGroupsSearchConnector: UsersGroupsSearchConnector,
+                                                enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
+                                                irsaCredential: IRSACredential,
+                                                appConfig: AppConfig)
+                                               (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
-  protected final def show(
-    postAction: Call
-  )(implicit request: IdentifierRequest[_]): Future[Result] = {
+  protected final def show(postAction: Call)(implicit request: IdentifierRequest[_]): Future[Result] = {
     getIdentifierDetails flatMap {
       case Right(identifierDetails) =>
         Future.successful(Ok(irsaCredential(
@@ -57,9 +54,7 @@ abstract class CheckIRSAEnrolmentBaseController(
     }
   }
 
-  protected final def submit(
-    postAction: Call
-  )(implicit request: IdentifierRequest[_]): Future[Result] = {
+  protected final def submit(postAction: Call)(implicit request: IdentifierRequest[_]): Future[Result] = {
     IRSACredentialForm.irsaCredentialForm.bindFromRequest().fold(
       hasErrors => {
         getIdentifierDetails flatMap {

@@ -34,8 +34,8 @@ class IRSACredentialViewSpec extends ViewSpec {
 
   private val testFormError: FormError = FormError(IRSACredentialForm.fieldName, "irsa-cred.error")
 
-  val testCurrentGGCredential: ObfuscatedUserId = ObfuscatedUserId("1234567890")
-  val testSAGGCredential: ObfuscatedUserId = ObfuscatedUserId("78 90")
+  val testCurrentGGCredential: ObfuscatedUserId = ObfuscatedUserId("******1234")
+  val testSAGGCredential: ObfuscatedUserId = ObfuscatedUserId("******5678")
   val testCurrentOLCredential: UserEmail = UserEmail("test123@example.com")
   val testSAOLCredential: UserEmail = UserEmail("t*****3@example.com")
 
@@ -53,11 +53,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"${ggParagraph1} ${testCurrentGGCredential.id}"
+        mainContent.selectNth("p", 1).text mustBe s"$ggParagraph1 ${testCurrentGGCredential.id.grouped(2).mkString(" ")}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"${ggParagraph2} ${testSAGGCredential.id}"
+        mainContent.selectNth("p", 2).text mustBe s"$ggParagraph2 ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}"
       }
 
       "have the correct third paragraph" in {
@@ -80,7 +80,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
+            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}")),
             inline = false
           )
         }
@@ -102,11 +102,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"${olParagraph1} ${testCurrentOLCredential.email}"
+        mainContent.selectNth("p", 1).text mustBe s"$olParagraph1 ${testCurrentOLCredential.email}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"${ggParagraph2} ${testSAGGCredential.id}"
+        mainContent.selectNth("p", 2).text mustBe s"$ggParagraph2 ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}"
       }
 
       "have the correct third paragraph" in {
@@ -129,7 +129,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id}")),
+            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}")),
             inline = false
           )
         }
@@ -151,11 +151,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"${ggParagraph1} ${testCurrentGGCredential.id}"
+        mainContent.selectNth("p", 1).text mustBe s"$ggParagraph1 ${testCurrentGGCredential.id.grouped(2).mkString(" ")}"
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"${olParagraph2} ${testSAOLCredential.obfuscatedEmail}"
+        mainContent.selectNth("p", 2).text mustBe s"$olParagraph2 ${testSAOLCredential.obfuscatedEmail}"
       }
 
       "have the correct third paragraph" in {

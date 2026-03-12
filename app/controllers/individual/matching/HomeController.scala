@@ -16,8 +16,6 @@
 
 package controllers.individual.matching
 
-import auth.individual.JourneyState.*
-import auth.individual.SignUp
 import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, PreSignUpJourneyRefiner}
@@ -101,7 +99,8 @@ class HomeController @Inject()(identity: IdentifierAction,
         prePopResult <- prePopDataService.prePopIncomeSources(reference, request.nino)
       } yield {
         prePopResult match {
-          case PrePopResult.PrePopSuccess => goToSignUp(eligibleCurrentYear).withJourneyState(SignUp)
+          case PrePopResult.PrePopSuccess =>
+            goToSignUp()
           case PrePopResult.PrePopFailure(error) =>
             throw new InternalServerException(
               s"[HomeController][handleNoSubscriptionFound] - Failure occurred when pre-populating income source details. Error: $error"
@@ -111,12 +110,8 @@ class HomeController @Inject()(identity: IdentifierAction,
     }
   }
 
-  private def goToSignUp(eligibleCurrentYear: Boolean): Result = {
-    if (eligibleCurrentYear) {
-      Redirect(controllers.individual.routes.YouCanSignUpController.show)
-    } else {
-      Redirect(controllers.individual.controllist.routes.CannotSignUpThisYearController.show)
-    }
+  private def goToSignUp(): Result = {
+    Redirect(routes.CheckIRSAEnrolmentController.show)
   }
 
   private def withMaybeUtrAndName(f: (Option[String], Option[String]) => Future[Result])(implicit request: PreSignUpRequest[AnyContent]): Future[Result] = {

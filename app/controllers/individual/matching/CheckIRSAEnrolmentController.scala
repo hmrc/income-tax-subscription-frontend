@@ -42,15 +42,15 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
                                              appConfig: AppConfig)
                                             (implicit mcc: MessagesControllerComponents,
                                              ec: ExecutionContext)
-extends CheckIRSAEnrolmentBaseController(
-  utrService,
-  usersGroupsSearchConnector,
-  enrolmentStoreProxyConnector,
-  irsaCredential,
-  appConfig
-) {
+  extends CheckIRSAEnrolmentBaseController(
+    utrService,
+    usersGroupsSearchConnector,
+    enrolmentStoreProxyConnector,
+    irsaCredential,
+    appConfig
+  ) {
 
-  private val postAction = routes.CheckIRSAEnrolmentController.submit
+  private lazy val postAction = routes.CheckIRSAEnrolmentController.submit
 
   def show: Action[AnyContent] = identify.async { implicit request =>
     super.show(postAction)
@@ -59,7 +59,7 @@ extends CheckIRSAEnrolmentBaseController(
   def submit: Action[AnyContent] = identify.async { implicit request =>
     super.submit(postAction)
   }
-  
+
   override protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result] = {
     eligibilityStatusService.getEligibilityStatus(request.sessionData) map {
       case EligibilityStatus(eligibleCurrentYear, _, _) =>

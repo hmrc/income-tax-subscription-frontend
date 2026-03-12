@@ -124,7 +124,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       }
     }
 
-    "Go to the claim enrollment when user " +
+    "Go to the claim enrolment check irsa enrolment when user " +
       "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
       "and has not enrolled" +
       "and OptBackIn FS is disabled" in {
@@ -134,7 +134,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
         val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.CheckIRSAEnrolmentController.show.url)
       }
     }
 
