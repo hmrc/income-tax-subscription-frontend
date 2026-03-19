@@ -239,7 +239,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         "1 long road",
         "lonely street"
       ),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     ))),
     confirmed = true
   )

@@ -24,30 +24,30 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import forms.agent._
+import forms.agent.*
 import forms.individual.business.RemoveBusinessForm
-import helpers.IntegrationTestConstants._
-import helpers.agent.WiremockHelper._
+import helpers.IntegrationTestConstants.*
+import helpers.agent.WiremockHelper.*
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
-import models._
+import models.*
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import org.scalatest._
+import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api._
+import play.api.*
 import play.api.data.Form
 import play.api.http.HeaderNames
 import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, Writes}
+import play.api.libs.json.{Format, JsArray, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -58,10 +58,12 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.{UUIDProvider, UserMatchingSessionUtil}
 import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 
 import java.time.LocalDate
 import java.util.UUID
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   with GivenWhenThen with TestSuite
@@ -131,6 +133,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     .build()
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+
+  implicit lazy val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
   lazy val mockHost: String = WiremockHelper.wiremockHost
   lazy val mockPort: String = WiremockHelper.wiremockPort.toString

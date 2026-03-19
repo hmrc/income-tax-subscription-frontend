@@ -17,7 +17,7 @@
 package views.individual.tasklist.addbusiness
 
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
@@ -101,7 +101,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))),
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom"))))),
       confirmed = true
     )
   )
@@ -120,7 +120,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ")))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom"))))))
   )
   val completeUKProperty: Option[PropertyModel] = Some(PropertyModel(startDate = Some(DateModel("1", "1", "1981"))))
 
@@ -215,7 +215,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
       }
 
-      "have the correct lead InsetText" in new ViewTest(noIncomeSources){
+      "have the correct lead InsetText" in new ViewTest(noIncomeSources) {
         document.mainContent.selectNth(".govuk-inset-text", 1).text mustBe IndividualIncomeSource.incomeSourcesPara3
       }
 

@@ -808,7 +808,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
     businessName = Some(BusinessNameModel("business name")),
     businessTradeName = Some(BusinessTradeNameModel("business trade")),
-    businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"))))
+    businessAddress = Some(BusinessAddressModel(Address(Seq("1 Long Road"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
   )
 
   lazy val completeSelfEmployments: Seq[SelfEmploymentData] = Seq(completeSelfEmploymentData)

@@ -23,9 +23,9 @@ import helpers.servicemocks.WireMockMethods
 import models.common.business.SelfEmploymentData
 import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import play.api.http.Status
-import play.api.libs.json._
-import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
-import utilities.SubscriptionDataKeys._
+import play.api.libs.json.*
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import utilities.SubscriptionDataKeys.*
 
 object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
@@ -49,7 +49,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   def stubSoleTraderBusinessesDetails(
                                        responseStatus: Int,
                                        businesses: Seq[SelfEmploymentData] = Seq.empty,
-                                     )(implicit crypto: Encrypter with Decrypter): Unit = {
+                                     )(implicit sensitiveFormat: Format[SensitiveString]): Unit = {
     when(
       method = GET,
       uri = subscriptionUri(SoleTraderBusinessesKey)
@@ -59,7 +59,8 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
       )(SoleTraderBusinesses.encryptedFormat))
   }
 
-  def stubSaveSoleTraderBusinessDetails(selfEmployments: Seq[SelfEmploymentData])(implicit crypto: Encrypter with Decrypter): Unit = {
+  def stubSaveSoleTraderBusinessDetails(selfEmployments: Seq[SelfEmploymentData])
+                                       (implicit sensitiveFormat: Format[SensitiveString]): Unit = {
     when(
       method = POST,
       uri = subscriptionUri(SoleTraderBusinessesKey),
@@ -141,7 +142,7 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   }
 
   def verifySubscriptionSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
-    import helpers.ImplicitConversions._
+    import helpers.ImplicitConversions.*
     WiremockHelper.verifyPost(subscriptionUri(id), Some((body: JsValue).toString()), count)
   }
 

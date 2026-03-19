@@ -69,7 +69,8 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase {
           businessTradeName = Some(BusinessTradeNameModel("test-trade")),
           businessAddress = Some(BusinessAddressModel(Address(
             lines = Seq("test-line-one", "test-line-two"),
-            postcode = Some("test-postcode")
+            postcode = Some("test-postcode"),
+            country = Some(Country("GB", "United Kingdom"))
           )))
         )
       )

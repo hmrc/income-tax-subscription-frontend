@@ -16,12 +16,12 @@
 
 package helpers
 
-import models._
+import models.*
 import models.common.AccountingPeriodModel
-import models.common.business._
+import models.common.business.*
 import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain._
+import uk.gov.hmrc.domain.*
 import utilities.AccountingPeriodUtil
 
 import java.net.URLEncoder
@@ -95,15 +95,13 @@ object IntegrationTestConstants {
   )
 
   lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
-    Seq(SelfEmploymentData
-    (
+    Seq(SelfEmploymentData(
       id = testId,
       businessStartDate = Some(businessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"))))
-    )
-    )
+      businessAddress = Some(BusinessAddressModel(Address(Seq("1 long road", "lonely town", "quiet county"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
+    ))
 
   object IndividualURI {
     val baseURI = "/report-quarterly/income-and-expenses/sign-up"
