@@ -107,7 +107,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
     "have the third inset paragraph" in new Setup() {
       private val content = doc.body().getElementById("main-content")
-      content.select("div").get(3).text mustBe NoClientRelationshipMessages.para3
+      content.select("div").get(2).text mustBe NoClientRelationshipMessages.para3
     }
 
     "have a view with a link" in new Setup() {

@@ -38,9 +38,9 @@ trait MockGetITSAStatusConnector extends MockitoSugar with BeforeAndAfterEach {
     reset(mockGetITSAStatusConnector)
   }
 
-  def mockGetITSAStatusSuccess(nino: String)(status: GetITSAStatus): Unit = {
+  def mockGetITSAStatusSuccess(nino: String)(status: Option[GetITSAStatus]): Unit = {
     when(mockGetITSAStatusConnector.getITSAStatus(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]()))
-      .thenReturn(Future.successful(Right(GetITSAStatusModel(status))))
+      .thenReturn(Future.successful(Right(status.map(GetITSAStatusModel.apply))))
   }
 
   def mockGetITSAStatusFailure(nino: String): Unit = {

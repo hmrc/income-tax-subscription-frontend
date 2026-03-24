@@ -49,10 +49,7 @@ class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAll
 
     checkEnrolmentService.getGroupIdForEnrolment(enrolmentKey).flatMap {
       case Right(_) =>
-        getITSAStatus(sessionData).map {
-          case Some(Annual) => Redirect(controllers.individual.handoffs.routes.OptedOutController.show)
-          case _ => Redirect(controllers.individual.claimenrolment.routes.CheckIRSAEnrolmentController.show)
-        }
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.CheckIRSAEnrolmentController.show))
       case Left(EnrolmentAlreadyAllocated(_)) =>
         channel match {
           case Some(HmrcLedUnconfirmed) =>
@@ -70,7 +67,7 @@ class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAll
 
   private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] = {
     if (isEnabled(OptBackIn)) {
-      getITSAStatusService.getITSAStatus(sessionData).map(m => Some(m.status))
+      getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
     } else {
       Future.successful(None)
     }

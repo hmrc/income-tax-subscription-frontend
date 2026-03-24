@@ -52,24 +52,13 @@ class GetITSAStatusServiceSpec extends PlaySpec
   }
 
   "getITSAStatus" must {
-    "return the itsa status from session" when {
-      "available in session" in new Setup {
-        val sessionData = SessionData(Map(
-          ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(getITSAStatus)
-        ))
+    "return the itsa status from the API" in new Setup {
+      mockGetNino(testNino)
+      mockGetITSAStatusSuccess(testNino)(Some(NoStatus))
 
-        await(service.getITSAStatus(sessionData)) mustBe getITSAStatus
-      }
+      await(service.getITSAStatus(SessionData())) mustBe Some(getITSAStatus)
     }
-    "return the itsa status from the API and save to the session database" when {
-      "the itsa status is not available from session" in new Setup {
-        mockGetNino(testNino)
-        mockGetITSAStatusSuccess(testNino)(NoStatus)
-        mockSaveGetITSAStatus(getITSAStatus)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getITSAStatus(SessionData())) mustBe getITSAStatus
-      }
-    }
     "throw an exception" when {
       "there was a problem retrieving get itsa status from the API" in new Setup {
         mockGetNino(testNino)
@@ -77,14 +66,6 @@ class GetITSAStatusServiceSpec extends PlaySpec
 
         intercept[InternalServerException](await(service.getITSAStatus(SessionData())))
           .message mustBe "[GetITSAStatusService][getITSAStatus] - Failure when fetching get itsa status from API: ErrorModel(500,Something went wrong)"
-      }
-      "there was a problem saving get itsa status to session" in new Setup {
-        mockGetNino(testNino)
-        mockGetITSAStatusSuccess(testNino)(NoStatus)
-        mockSaveGetITSAStatus(getITSAStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-        intercept[InternalServerException](await(service.getITSAStatus(SessionData())))
-          .message mustBe "[GetITSAStatusService][getITSAStatus] - Failure when saving get itsa status to session: UnexpectedStatusFailure(500)"
       }
     }
   }

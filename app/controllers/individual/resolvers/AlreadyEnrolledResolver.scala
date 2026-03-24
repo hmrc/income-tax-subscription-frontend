@@ -42,11 +42,9 @@ class AlreadyEnrolledResolver @Inject()(subscriptionConnector: SubscriptionConne
         Future.successful(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show)
       case Right(_) =>
         if (isEnabled(OptBackIn)) {
-          getITSAStatusService.getITSAStatus(sessionData) map { getITSAStatus =>
-            getITSAStatus.status match {
-              case GetITSAStatus.Annual => controllers.individual.handoffs.routes.OptedOutController.show
-              case _ => controllers.individual.matching.routes.AlreadyEnrolledController.show
-            }
+          getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status)) map {
+            case Some(GetITSAStatus.Annual) => controllers.individual.handoffs.routes.OptedOutController.show
+            case _ => controllers.individual.matching.routes.AlreadyEnrolledController.show
           }
         } else {
           Future.successful(controllers.individual.matching.routes.AlreadyEnrolledController.show)

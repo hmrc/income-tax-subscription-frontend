@@ -30,30 +30,17 @@ class GetITSAStatusService @Inject()(getITSAStatusConnector: GetITSAStatusConnec
                                      sessionDataService: SessionDataService)
                                     (implicit ec: ExecutionContext) {
 
-  def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[GetITSAStatusModel] = {
-    sessionData.fetchGetITSAStatus match {
-      case Some(getITSAStatus) => Future.successful(getITSAStatus)
-      case None =>
-        ninoService.getNino(sessionData) flatMap { nino =>
-          getITSAStatusConnector.getITSAStatus(nino = nino) flatMap {
-            case Right(getITSAStatus) =>
-              sessionDataService.saveGetITSAStatus(getITSAStatus) map {
-                case Right(_) =>
-                  getITSAStatus
-                case Left(error) => throw new SaveToSessionException(error.toString)
-              }
-            case Left(error) => throw new FetchFromAPIException(error.toString)
-          }
-        }
+  def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatusModel]] = {
+    ninoService.getNino(sessionData) flatMap { nino =>
+      getITSAStatusConnector.getITSAStatus(nino = nino) map {
+        case Right(value) => value
+        case Left(error) => throw new FetchFromAPIException(error.toString)
+      }
     }
   }
 
   private class FetchFromAPIException(error: String) extends InternalServerException(
     s"[GetITSAStatusService][getITSAStatus] - Failure when fetching get itsa status from API: $error"
   )
-
-  private class SaveToSessionException(error: String) extends InternalServerException(
-    s"[GetITSAStatusService][getITSAStatus] - Failure when saving get itsa status to session: $error"
-  )
-
+  
 }

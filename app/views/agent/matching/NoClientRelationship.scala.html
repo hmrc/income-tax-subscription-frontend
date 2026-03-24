@@ -43,23 +43,22 @@
 
     <ol class="govuk-list govuk-list--bullet">
         <li>@AddYourClientAuthorisation</li>
-        @form(action = postAction) {<li>@SignUpAnotherClient</li>}
+        <li>@SignUpAnotherClient</li>
     </ol>
 
     <div class="govuk-inset-text">
         @messages("agent.no-client-relationship.para3")
-        </div>
+    </div>
 
 }
 
 @AddYourClientAuthorisation = @{
-    hmrcNewTabLinkHelper(
-    NewTabLinkHelper(messages("agent.no-client-relationship.bullet1.link"),
-    Some(messages("agent.no-client-relationship.bullet1.link-href"))))
+    hmrcNewTabLinkHelper(NewTabLinkHelper(
+        messages("agent.no-client-relationship.bullet1.link"),
+        Some(messages("agent.no-client-relationship.bullet1.link-href"))
+    ))
 }
 
 @SignUpAnotherClient = @{
-    <div>
-        <a id="continue" class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.base.sign-up-another-client.2")}</a>
-    </div>
+    <a id="continue" class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.base.sign-up-another-client.2")}</a>
 }
