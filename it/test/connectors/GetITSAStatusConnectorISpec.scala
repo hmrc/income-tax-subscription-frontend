@@ -24,7 +24,7 @@ import models.status.MandationStatus.Voluntary
 import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.matchers.should.Matchers.*
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,7 +35,7 @@ class GetITSAStatusConnectorISpec extends ComponentSpecBase {
   private val testNino: String = "test-nino"
 
   "GetITSAStatusConnector" must {
-    "return a GetITSAStatusModel" when {
+    "return Some(GetITSAStatusModel)" when {
       "an OK response was received with valid json" in {
         stubGetITSAStatus(
           Json.toJson(GetITSAStatusRequest(testNino))
@@ -43,7 +43,18 @@ class GetITSAStatusConnectorISpec extends ComponentSpecBase {
 
         val result = connector.getITSAStatus(testNino)
 
-        result.futureValue shouldBe Right(GetITSAStatusModel(status = NoStatus))
+        result.futureValue shouldBe Right(Some(GetITSAStatusModel(status = NoStatus)))
+      }
+    }
+    "return None" when {
+      "a NO_CONTENT response was received" in {
+        stubGetITSAStatus(
+          Json.toJson(GetITSAStatusRequest(testNino))
+        )(NO_CONTENT, Json.obj())
+
+        val result = connector.getITSAStatus(testNino)
+
+        result.futureValue shouldBe Right(None)
       }
     }
   }

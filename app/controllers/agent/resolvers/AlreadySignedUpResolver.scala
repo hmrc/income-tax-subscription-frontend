@@ -24,11 +24,10 @@ import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
 import models.{Channel, HmrcLedUnconfirmed, SessionData}
-import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, Result}
 import services.GetITSAStatusService
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,7 +54,7 @@ class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusServi
 
   private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] =
     if (isEnabled(OptBackIn)) {
-      getITSAStatusService.getITSAStatus(sessionData).map(r => Some(r.status))
+      getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
     } else {
       Future.successful(None)
     }

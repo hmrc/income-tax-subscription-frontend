@@ -36,9 +36,9 @@ trait MockGetITSAStatusService extends MockitoSugar with BeforeAndAfterEach {
     reset(mockGetITSAStatusService)
   }
 
-  def mockGetITSAStatusSuccess(nino: String)(status: GetITSAStatus): Unit = {
+  def mockGetITSAStatusSuccess(nino: String)(status: Option[GetITSAStatus]): Unit = {
     when(mockGetITSAStatusService.getITSAStatus(ArgumentMatchers.any())(ArgumentMatchers.any[HeaderCarrier]()))
-      .thenReturn(Future.successful(GetITSAStatusModel(status)))
+      .thenReturn(Future.successful(status.map(GetITSAStatusModel.apply)))
   }
 
 }

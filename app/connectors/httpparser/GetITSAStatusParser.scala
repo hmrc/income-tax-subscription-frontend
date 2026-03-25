@@ -18,21 +18,22 @@ package connectors.httpparser
 
 import models.ErrorModel
 import models.status.GetITSAStatusModel
-import play.api.http.Status.OK
+import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object GetITSAStatusParser {
-  type GetITSAStatusResponse = Either[ErrorModel, GetITSAStatusModel]
+  type GetITSAStatusResponse = Either[ErrorModel, Option[GetITSAStatusModel]]
 
   implicit val getITSAStatusResponseHttpReads: HttpReads[GetITSAStatusResponse] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK => response.json.validate[GetITSAStatusModel] match {
-          case JsSuccess(value, _) => Right(value)
+          case JsSuccess(value, _) => Right(Some(value))
           case JsError(errors) =>
             Left(ErrorModel(OK, s"Invalid Json for getITSAStatusResponseHttpReads: $errors"))
         }
+        case NO_CONTENT => Right(None)
         case status => Left(ErrorModel(status, response.body))
       }
     }

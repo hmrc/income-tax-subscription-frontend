@@ -17,7 +17,6 @@
 package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
-import config.MockConfig.mustBe
 import config.featureswitch.FeatureSwitch.OptBackIn
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
@@ -29,8 +28,6 @@ import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
 import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.SEE_OTHER
 import play.api.test.Helpers.{redirectLocation, status}
 import services.GetITSAStatusService
@@ -81,7 +78,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
     "Go to the already signed up page when user " +
       "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
       "and has enrolled" +
-      "amd has not opted-out" +
+      "and has not opted-out" +
       "and OptBackIn FS in enabled" in {
       enable(OptBackIn)
       Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
@@ -91,7 +88,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
           when(mockGetITSAStatusService.getITSAStatus(
             ArgumentMatchers.eq(sessionData)
           )(ArgumentMatchers.any())).thenReturn(
-            Future.successful(GetITSAStatusModel(ITSAStatus))
+            Future.successful(Some(GetITSAStatusModel(ITSAStatus)))
           )
           val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 
@@ -102,6 +99,28 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
           )(ArgumentMatchers.any())
         }
       }
+    }
+
+    "Go to the already signed up page when user " +
+      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
+      "and has enrolled" +
+      "and has no status returned" +
+      "and OptBackIn FS in enabled" in {
+      enable(OptBackIn)
+
+      mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
+      when(mockGetITSAStatusService.getITSAStatus(
+        ArgumentMatchers.eq(sessionData)
+      )(ArgumentMatchers.any())).thenReturn(
+        Future.successful(None)
+      )
+      val result = resolver.resolve(sessionData, testMTDITID, None)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+      verify(mockGetITSAStatusService, times(1)).getITSAStatus(
+        ArgumentMatchers.eq(sessionData)
+      )(ArgumentMatchers.any())
     }
 
     "Go to the already signed up page when user " +
@@ -138,24 +157,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       }
     }
 
-    "Go to the opted-out page when user " +
-      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
-      "and has not enrolled" +
-      "and has opted-out" in {
-      Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
-        mockGetGroupIdForEnrolment(enrolmentKey)(Right(EnrolmentNotAllocated))
-        when(mockGetITSAStatusService.getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(GetITSAStatusModel(Annual))
-        )
-        val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.handoffs.routes.OptedOutController.show.url)
-      }
-    }
-
     "Go to the check income sources page when user " +
       "has signed-up by HMRC and not confirmed income sources" in {
       mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
@@ -174,7 +175,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
         when(mockGetITSAStatusService.getITSAStatus(
           ArgumentMatchers.eq(sessionData)
         )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(GetITSAStatusModel(Annual))
+          Future.successful(Some(GetITSAStatusModel(Annual)))
         )
         val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 

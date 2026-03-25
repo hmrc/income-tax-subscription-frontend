@@ -55,7 +55,7 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
       "the user has an annual status" in {
         enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-        mockGetITSAStatusSuccess(testNino)(Annual)
+        mockGetITSAStatusSuccess(testNino)(Some(Annual))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.handoffs.routes.OptedOutController.show.url
@@ -68,10 +68,18 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.matching.routes.AlreadyEnrolledController.show.url
       }
+      "the user is already signed up with a channel of confirmed triggered migrated with no status" in {
+        enable(OptBackIn)
+        setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
+        mockGetITSAStatusSuccess(testNino)(None)
+
+        await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
+          controllers.individual.matching.routes.AlreadyEnrolledController.show.url
+      }
       "the user is already signed up with a channel of confirmed triggered migrated with a non annual status" in {
         enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-        mockGetITSAStatusSuccess(testNino)(MTDMandated)
+        mockGetITSAStatusSuccess(testNino)(Some(MTDMandated))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.matching.routes.AlreadyEnrolledController.show.url
@@ -79,7 +87,7 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
       "the user is already signed up with a channel of customer sign up with a non annual status" in {
         enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(CustomerLed))))))
-        mockGetITSAStatusSuccess(testNino)(MTDVoluntary)
+        mockGetITSAStatusSuccess(testNino)(Some(MTDVoluntary))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.matching.routes.AlreadyEnrolledController.show.url

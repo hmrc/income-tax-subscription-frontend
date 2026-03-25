@@ -17,27 +17,24 @@
 package controllers.agent.resolvers
 
 import common.Constants.hmrcAsAgent
-import config.MockConfig.mustBe
 import config.featureswitch.FeatureSwitch.OptBackIn
 import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
+import models.*
 import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus.*
 import models.status.GetITSAStatusModel
-import models.{Channel, CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
 import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, redirectLocation, session, status}
+import play.api.test.Helpers.{redirectLocation, session, status}
 import services.GetITSAStatusService
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
@@ -90,7 +87,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
           when(mockGetITSAStatusService.getITSAStatus(
             ArgumentMatchers.eq(sessionData)
           )(ArgumentMatchers.any())).thenReturn(
-            Future.successful(GetITSAStatusModel(itsaStatus))
+            Future.successful(Some(GetITSAStatusModel(itsaStatus)))
           )
 
           val result = resolver.resolve(sessionData, channel)
@@ -104,6 +101,24 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
           )(ArgumentMatchers.any())
         }
       }
+    }
+
+    "redirect to Client already signed up (HOA06C) when client has no status and OptBackIn feature switch is enabled" in {
+      when(mockGetITSAStatusService.getITSAStatus(
+        ArgumentMatchers.eq(sessionData)
+      )(ArgumentMatchers.any())).thenReturn(
+        Future.successful(None)
+      )
+
+      val result = resolver.resolve(sessionData, None)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
+      session(result).get(hmrcAsAgent) mustBe Some("true")
+
+      verify(mockGetITSAStatusService, times(1)).getITSAStatus(
+        ArgumentMatchers.eq(sessionData)
+      )(ArgumentMatchers.any())
     }
 
     "redirect to Client already signed up (HOA06C) when OptBackIn feature switch is disabled" in {
@@ -152,7 +167,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
         when(mockGetITSAStatusService.getITSAStatus(
           ArgumentMatchers.eq(sessionData)
         )(ArgumentMatchers.any())).thenReturn(
-          Future.successful(GetITSAStatusModel(Annual))
+          Future.successful(Some(GetITSAStatusModel(Annual)))
         )
 
         val result = resolver.resolve(sessionData, channel)
