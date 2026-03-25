@@ -56,6 +56,14 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
         enable(TaxYear26To27Plus)
         featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
       }
+      "the date in the system properties is before the current date" in {
+        sys.props += TaxYear26To27Plus.name -> LocalDate.now.minusDays(1).toString
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
+      }
+      "the date in the system properties is the current date" in {
+        sys.props += TaxYear26To27Plus.name -> LocalDate.now.toString
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
+      }
       "the date in the config is before the current date" in {
         when(mockConfig.getOptional[String]("feature-switch.tax-year-26-27-plus")).thenReturn(Some(LocalDate.now.minusDays(1).toString))
         featureSwitching.isEnabled(TaxYear26To27Plus) mustBe true
@@ -77,8 +85,16 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
         disable(TaxYear26To27Plus)
         featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
       }
-      "the feature switch does not exist in config" in {
+      "the feature switch does not exist in config or system properties" in {
         when(mockConfig.getOptional[String]("feature-switch.tax-year-26-27-plus")).thenReturn(None)
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
+      }
+      "the date in the system properties is after current date" in {
+        sys.props += TaxYear26To27Plus.name -> LocalDate.now.plusDays(1).toString
+        featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
+      }
+      "the date in the system properties could not be parsed" in {
+        sys.props += TaxYear26To27Plus.name -> "invalid-date"
         featureSwitching.isEnabled(TaxYear26To27Plus) mustBe false
       }
       "the date in the config is after the current date" in {
