@@ -17,11 +17,12 @@
 package config.featureswitch
 
 import config.AppConfig
+import play.api.Logging
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
-trait FeatureSwitching {
+trait FeatureSwitching extends Logging {
 
   val appConfig: AppConfig
 
@@ -33,8 +34,12 @@ trait FeatureSwitching {
     lazy val configEnabled = featureSwitch match {
       case switch: DatedFeatureSwitch =>
         appConfig.configuration.getOptional[String](featureSwitch.name).map(LocalDate.parse) match {
-          case Some(date) => !LocalDate.now().isBefore(date)
-          case None => false
+          case Some(date) =>
+            logger.info(s"[FeatureSwitching][isEnabled] - Date: $date")
+            !LocalDate.now().isBefore(date)
+          case None =>
+            logger.info(s"[FeatureSwitching][isEnabled] - Date not found")
+            false
         }
       case _ => appConfig.configuration.getOptional[String](featureSwitch.name) contains FEATURE_SWITCH_ON
     }
