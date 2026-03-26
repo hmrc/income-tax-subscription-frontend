@@ -1217,3 +1217,15 @@ individual.opted-out.title                                              = Rheoli
 individual.opted-out.heading                                            = Rheoli eich ymrwymiadau o ran adrodd
 individual.opted-out.p1                                                 = Mae`n rhaid i chi newid eich ymrwymiadau o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 individual.opted-out.p2                                                 = Bydd angen i chi fewngofnodi eto gan ddefnyddio`r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
+
+individual.non-eligible-voluntary.title                                 =
+individual.non-eligible-voluntary.heading                               = Gallwch ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef 2026 i 2027
+individual.non-eligible-voluntary.para                                  = Bydd yn dal i fod yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad (yn agor tab newydd) ar gyfer y flwyddyn dreth hon, sef 2025 i 2026, yn ôl yr arfer.
+individual.non-eligible-voluntary.sign-up                               = Parhau
+
+agent.non-eligible-voluntary.title                                      =
+agent.non-eligible-voluntary.heading                                    = Gall eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, 2026 i 2027, os yw’n dymuno
+agent.non-eligible-voluntary.caption                                    = {0} – {1}
+agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, 2025 i 2026, fel yr arfer.
+agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
+agent.non-eligible-voluntary.sign-up.para                               = Neu gallwch wirio a allwch gofrestru cleient arall. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {0}.

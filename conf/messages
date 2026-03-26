@@ -1220,3 +1220,15 @@ individual.opted-out.title                                              = Manage
 individual.opted-out.heading                                            = Manage your reporting obligations
 individual.opted-out.p1                                                 = If you want to use Making Tax Digital for Income Tax, you need to change your reporting obligations.
 individual.opted-out.p2                                                 = You’ll need to use the same sign in details that you use for your Self Assessment tax return.
+
+individual.non-eligible-voluntary.title                                 = You can sign up next tax year, 2026 to 2027
+individual.non-eligible-voluntary.heading                               = You can use Making Tax Digital for Income Tax next tax year, 2026 to 2027
+individual.non-eligible-voluntary.para                                  = You must still submit your Self Assessment tax return for this tax year, 2025 to 2026, as normal.
+individual.non-eligible-voluntary.sign-up                               = Continue
+
+agent.non-eligible-voluntary.title                                      =
+agent.non-eligible-voluntary.heading                                    = Your client can use Making Tax Digital for Income Tax next tax year, 2026 to 2027 if they choose
+agent.non-eligible-voluntary.caption                                    = {0} – {1}
+agent.non-eligible-voluntary.para                                       = They must still submit their Self Assessment tax return for this tax year, 2025 to 2026 as normal.
+agent.non-eligible-voluntary.sign-up                                    = Sign up this client
+agent.non-eligible-voluntary.sign-up.para                               = Or you can check if you can sign up another client. We will not save the details you entered about {0}.
