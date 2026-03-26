@@ -16,8 +16,8 @@
 
 package controllers.individual
 
-import _root_.config.featureswitch.FeatureSwitch.TaxYear26To27Plus
-import _root_.config.featureswitch.FeatureSwitching
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
+import config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
