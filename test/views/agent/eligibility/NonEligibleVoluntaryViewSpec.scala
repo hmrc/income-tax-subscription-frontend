@@ -45,7 +45,7 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
   }
 
   object NonEligibleVoluntaryMessages {
-    val title = ""
+    val title = "Your client can sign up next tax year, 2026 to 2027"
     val heading = "Your client can use Making Tax Digital for Income Tax next tax year, 2026 to 2027 if they choose"
     val caption = s"$clientName – $clientNino"
     val para = "They must still submit their Self Assessment tax return for this tax year, 2025 to 2026 as normal."

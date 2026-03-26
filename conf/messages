@@ -1226,7 +1226,7 @@ individual.non-eligible-voluntary.heading                               = You ca
 individual.non-eligible-voluntary.para                                  = You must still submit your Self Assessment tax return for this tax year, 2025 to 2026, as normal.
 individual.non-eligible-voluntary.sign-up                               = Continue
 
-agent.non-eligible-voluntary.title                                      =
+agent.non-eligible-voluntary.title                                      = Your client can sign up next tax year, 2026 to 2027
 agent.non-eligible-voluntary.heading                                    = Your client can use Making Tax Digital for Income Tax next tax year, 2026 to 2027 if they choose
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = They must still submit their Self Assessment tax return for this tax year, 2025 to 2026 as normal.
