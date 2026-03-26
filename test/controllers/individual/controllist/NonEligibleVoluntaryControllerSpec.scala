@@ -18,11 +18,12 @@ package controllers.individual.controllist
 
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
+import controllers.individual.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockAuthService
@@ -32,11 +33,19 @@ import views.html.individual.eligibility.NonEligibleVoluntary
 import scala.concurrent.Future
 
 class NonEligibleVoluntaryControllerSpec
-  extends ControllerSpec
+  extends ControllerBaseSpec
     with MockAuditingService
     with MockAuthService {
 
-  val appConfig: AppConfig = MockConfig
+  override val appConfig: AppConfig = MockConfig
+
+  object TestNonEligibleVoluntaryController extends NonEligibleVoluntaryController(
+    mock[NonEligibleVoluntary]
+  )(
+    mockAuditingService,
+    appConfig,
+    mockAuthService
+  )
 
   trait Setup {
     val NonEligibleVoluntary: NonEligibleVoluntary = mock[NonEligibleVoluntary]
@@ -49,6 +58,12 @@ class NonEligibleVoluntaryControllerSpec
     )
   }
 
+  override val controllerName: String = "WhatYouNeedToDoController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "show" -> TestNonEligibleVoluntaryController.show,
+    "submit" -> TestNonEligibleVoluntaryController.submit
+  )
+
   "show" must {
     "return OK with the page content" in new Setup {
       when(NonEligibleVoluntary(
@@ -56,7 +71,7 @@ class NonEligibleVoluntaryControllerSpec
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = controller.show(
-        request
+        subscriptionRequest
       )
 
       status(result) mustBe OK
@@ -66,7 +81,9 @@ class NonEligibleVoluntaryControllerSpec
 
   "submit" must {
     "return SEE_OTHER to the Your Income Sources page" in new Setup {
-      val result: Future[Result] = controller.submit(request)
+      val result: Future[Result] = controller.submit(
+        subscriptionRequest
+      )
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)

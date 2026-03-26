@@ -33,14 +33,14 @@ class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary)
                                                val authService: AuthService)
                                               (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-        Ok(view(
-          postAction = routes.NonEligibleVoluntaryController.submit
-        ))
+      Ok(view(
+        postAction = routes.NonEligibleVoluntaryController.submit
+      ))
   }
 
-  val submit: Action[AnyContent] = Authenticated { implicit request =>
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
       Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
   }

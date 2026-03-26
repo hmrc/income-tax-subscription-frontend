@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary,
                                                identify: IdentifierAction,
-                                               journeyRefiner: ConfirmedClientJourneyRefiner,
+                                               journeyRefiner: ConfirmedClientJourneyRefiner
                                               )(val appConfig: AppConfig)
                                               (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController {
@@ -41,7 +41,7 @@ class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary,
     ))
   }
 
-  val submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
     Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
   }
 }
