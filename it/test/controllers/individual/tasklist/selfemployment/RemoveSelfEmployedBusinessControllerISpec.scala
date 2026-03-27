@@ -23,7 +23,10 @@ import helpers.IntegrationTestModels.testBusinesses
 import helpers.servicemocks.AuthStub
 import models.common.business.SelfEmploymentData
 import models.{No, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
+import play.api.libs.json.Format
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class RemoveSelfEmployedBusinessControllerISpec extends ComponentSpecBase {

@@ -16,7 +16,7 @@
 
 package models
 
-import models.common.business.{Address, BusinessAddressModel}
+import models.common.business.{Address, BusinessAddressModel, Country}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.json.{JsSuccess, Json}
@@ -26,10 +26,10 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
   "BusinessAddressModel" should {
     val lines = Seq("line1", "line2", "line3")
 
-    "work with a postcode" should {
+    "work with a postcode and country" should {
 
-      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = Some("TF3 4NT")))
-      val json = Json.obj("address" -> Json.obj("lines" -> lines, "postcode" -> Some("TF3 4NT")))
+      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = Some("TF3 4NT"), country = Some(Country("GB", "United Kingdom"))))
+      val json = Json.obj("address" -> Json.obj("lines" -> lines, "postcode" -> Some("TF3 4NT"), "country" -> Json.obj("code" -> "GB", "name" -> "United Kingdom")))
 
       "read from Json correctly" in {
         Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)
@@ -39,9 +39,9 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
         Json.toJson(businessAddressModel) mustBe json
       }
     }
-    "work without a postcode" should {
+    "work without a postcode or country" should {
 
-      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = None))
+      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = None, country = None))
       val json = Json.obj("address" -> Json.obj("lines" -> lines))
 
       "read from Json correctly" in {

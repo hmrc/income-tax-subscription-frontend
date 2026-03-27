@@ -65,7 +65,8 @@ class PrePopConnectorISpec extends ComponentSpecBase {
               lines = Seq(
                 "1 long road"
               ),
-              postcode = Some("ZZ1 1ZZ")
+              postcode = Some("ZZ1 1ZZ"),
+              country = None,
             )),
             startDate = Some(DateModel(
               day = "01",

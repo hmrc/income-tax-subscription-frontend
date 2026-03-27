@@ -56,7 +56,8 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
     businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
     businessAddress = Some(BusinessAddressModel(address = Address(
       lines = Seq("1 Long Road", "Lonely city"),
-      postcode = Some("ZZ11ZZ")
+      postcode = Some("ZZ11ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     ))),
     confirmed = true
   )
@@ -83,7 +84,8 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           startDate = Some(startDateLimit),
           address = Address(
             lines = Seq("1 Long Road", "Lonely city"),
-            postcode = Some("ZZ11ZZ")
+            postcode = Some("ZZ11ZZ"),
+            country = Some(Country("GB", "United Kingdom"))
           )
         ))
       )),
@@ -107,7 +109,8 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
           startDate = None,
           address = Address(
             lines = Seq("1 Long Road", "Lonely city"),
-            postcode = Some("ZZ11ZZ")
+            postcode = Some("ZZ11ZZ"),
+            country = Some(Country("GB", "United Kingdom"))
           )
         ))
       )),

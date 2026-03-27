@@ -83,7 +83,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
         ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr)
       ))
@@ -123,7 +123,8 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
             lines = Seq(
               "1 long road"
             ),
-            postcode = Some("ZZ1 1ZZ")
+            postcode = Some("ZZ1 1ZZ"),
+            country = None
           )))
         ))
       )
@@ -149,7 +150,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))

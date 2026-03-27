@@ -20,7 +20,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -198,7 +198,8 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         "1 long road",
         "lonely street"
       ),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     ))),
     confirmed = true
   )

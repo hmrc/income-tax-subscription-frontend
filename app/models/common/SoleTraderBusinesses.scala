@@ -17,8 +17,8 @@
 package models.common
 
 import play.api.libs.functional.syntax.unlift
-import play.api.libs.json.{OFormat, __}
-import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+import play.api.libs.json.{Format, OFormat, __}
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
 case class SoleTraderBusinesses(businesses: Seq[SoleTraderBusiness])
 
@@ -26,7 +26,7 @@ object SoleTraderBusinesses {
 
   def unapply(soleTraderBusinesses: SoleTraderBusinesses): Option[Seq[SoleTraderBusiness]] = Some(soleTraderBusinesses.businesses)
 
-  def encryptedFormat(implicit crypto: Encrypter with Decrypter): OFormat[SoleTraderBusinesses] = {
+  def encryptedFormat(implicit sensitiveFormat: Format[SensitiveString]): OFormat[SoleTraderBusinesses] = {
     implicit val soleTraderBusinessFormat: OFormat[SoleTraderBusiness] = SoleTraderBusiness.encryptedFormat
     (__ \ "businesses").format[Seq[SoleTraderBusiness]].bimap(SoleTraderBusinesses.apply, unlift(SoleTraderBusinesses.unapply))
   }

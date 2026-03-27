@@ -21,7 +21,7 @@ import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscript
 import controllers.individual.ControllerBaseSpec
 import forms.individual.business.RemoveBusinessForm
 import models.common.SoleTraderBusinesses
-import models.common.business._
+import models.common.business.*
 import models.{DateModel, No, Yes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 import views.html.individual.tasklist.selfemployments.RemoveSelfEmploymentBusiness
 
@@ -54,7 +54,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
     )
   )
 

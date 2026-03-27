@@ -63,7 +63,8 @@ class PrePopDataSpec extends PlaySpec with Matchers {
         trade = Some("test-trade"),
         address = Some(Address(
           lines = Seq("test-line-one", "test-line-two"),
-          postcode = Some("test-postcode")
+          postcode = Some("test-postcode"),
+          country = None
         )),
         startDate = Some(DateModel("1", "1", "2000"))
       )

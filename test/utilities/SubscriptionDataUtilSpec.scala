@@ -17,14 +17,14 @@
 package utilities
 
 import models.common.AccountingYearModel
-import models.common.business._
+import models.common.business.*
 import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
 import models.{Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import services.GetCompleteDetailsService
 import utilities.AccountingPeriodUtil.getCurrentTaxYear
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import java.time.LocalDate
 
@@ -102,7 +102,8 @@ class SubscriptionDataUtilSpec extends PlaySpec {
 
   lazy val address: Address = Address(
     lines = Seq("1 long road"),
-    postcode = Some("ZZ1 1ZZ")
+    postcode = Some("ZZ1 1ZZ"),
+    country = Some(Country("GB", "United Kingdom"))
   )
 
   def completeDetails(hasStartDate: Boolean): GetCompleteDetailsService.CompleteDetails = GetCompleteDetailsService.CompleteDetails(

@@ -162,7 +162,8 @@ class ProgressSavedControllerSpec extends ControllerSpec
     businessTradeName = Some(BusinessTradeNameModel("test-trade")),
     businessAddress = Some(BusinessAddressModel(Address(
       lines = Seq("1 long road"),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     )))
   )
 

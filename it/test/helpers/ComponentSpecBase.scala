@@ -43,11 +43,13 @@ import play.api.http.HeaderNames
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{JsArray, JsString, JsValue, Writes}
+import play.api.libs.json.*
 import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.WSResponse
 import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.UUIDProvider
 
@@ -119,6 +121,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     .build()
 
   implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+
+  implicit lazy val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
   override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

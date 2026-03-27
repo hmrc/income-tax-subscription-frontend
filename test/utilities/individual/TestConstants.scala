@@ -95,7 +95,7 @@ object TestConstants {
       businessStartDate = Some(businessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"), Some(Country("GB", "United Kingdom")))))
     )
     )
 

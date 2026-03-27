@@ -38,7 +38,7 @@ class RemoveBusinessServiceSpec extends UnitTestTrait
       businessStartDate = Some(BusinessStartDate(DateModel("1", "1", "1980"))),
       businessName = Some(BusinessNameModel("business name")),
       businessTradeName = Some(BusinessTradeNameModel("business trade")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
     )
 
   object TestRemoveBusiness extends RemoveBusinessService(

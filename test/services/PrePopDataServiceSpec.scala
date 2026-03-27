@@ -20,8 +20,8 @@ import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import connectors.mocks.MockPrePopConnector
-import models._
-import models.common.business._
+import models.*
+import models.common.business.*
 import models.prepop.{PrePopData, PrePopSelfEmployment}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
@@ -213,7 +213,8 @@ class PrePopDataServiceSpec extends PlaySpec
     lines = Seq(
       "1 long road"
     ),
-    postcode = Some("ZZ1 1ZZ")
+    postcode = Some("ZZ1 1ZZ"),
+    country = Some(Country("GB", "United Kingdom"))
   )
 
   val startDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)

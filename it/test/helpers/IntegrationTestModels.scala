@@ -46,7 +46,8 @@ object IntegrationTestModels {
         "lonely town",
         "quiet county"
       ),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     )
   )
   val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.plusDays(6))
@@ -101,7 +102,7 @@ object IntegrationTestModels {
       businessStartDate = Some(testBusinessStartDate),
       businessName = Some(testBusinessName),
       businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"), Some(Country("GB", "United Kingdom")))))
     ))
 
   lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails

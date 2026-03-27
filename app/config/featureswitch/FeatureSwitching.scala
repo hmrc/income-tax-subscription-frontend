@@ -17,11 +17,13 @@
 package config.featureswitch
 
 import config.AppConfig
+import play.api.Logging
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
-trait FeatureSwitching {
+trait FeatureSwitching extends Logging {
 
   val appConfig: AppConfig
 
@@ -30,18 +32,27 @@ trait FeatureSwitching {
 
   def isEnabled(featureSwitch: FeatureSwitch): Boolean = {
     lazy val systemProperty = sys.props.get(featureSwitch.name)
+    lazy val configProperty = appConfig.configuration.getOptional[String](featureSwitch.name)
     lazy val configEnabled = featureSwitch match {
       case switch: DatedFeatureSwitch =>
-        appConfig.configuration.getOptional[String](featureSwitch.name).map(LocalDate.parse) match {
-          case Some(date) => !LocalDate.now().isBefore(date)
-          case None => false
+        Try {
+          (systemProperty orElse configProperty).map(LocalDate.parse) match {
+            case Some(date) => !LocalDate.now().isBefore(date)
+            case None =>
+              logger.error(s"[FeatureSwitching][isEnabled] - No date specified for ${featureSwitch.name}")
+              false
+          }
+        } getOrElse {
+          logger.error(s"[FeatureSwitching][isEnabled] - Failed to parse date for ${featureSwitch.name}")
+          false
         }
-      case _ => appConfig.configuration.getOptional[String](featureSwitch.name) contains FEATURE_SWITCH_ON
+      case _ => configProperty contains FEATURE_SWITCH_ON
     }
 
     systemProperty match {
-      case Some(value) => value contains FEATURE_SWITCH_ON
-      case None => configEnabled
+      case Some(FEATURE_SWITCH_ON) => true
+      case Some(FEATURE_SWITCH_OFF) => false
+      case _ => configEnabled
     }
   }
 

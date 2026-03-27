@@ -187,7 +187,7 @@
                 ),
                 SummaryListRow(
                     key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
-                    value = Value(content = Text(business.address.toString))
+                    value = Value(content = HtmlContent(business.address.toString))
                 )
             )
         ))

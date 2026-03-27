@@ -16,7 +16,7 @@
 
 package models.common.business
 
-import models.common.{EncryptingAddress, SoleTraderBusiness}
+import models.common.SoleTraderBusiness
 import play.api.libs.json.*
 
 case class SelfEmploymentData(id: String,
@@ -41,7 +41,7 @@ case class SelfEmploymentData(id: String,
     startDate = businessStartDate.map(_.startDate),
     name = businessName.map(_.businessName),
     trade = businessTradeName.map(_.businessTradeName),
-    address = businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
+    address = businessAddress.map(_.address)
   )
 
 }
