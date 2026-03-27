@@ -31,18 +31,22 @@
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("business.next-year-mandatory-sign-up.heading"), optForm = Some(accountingYearForm)) {
+@mainTemplate(title = messages("business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString), optForm = Some(accountingYearForm)) {
 
-    <h1 class="govuk-heading-l">@messages("business.next-year-mandatory-sign-up.heading")</h1>
+    <h1 class="govuk-heading-l">
+        @messages("business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
+    </h1>
 
-    <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para")</p>
+    <p class="govuk-body">
+        @messages("business.next-year-mandatory-sign-up.para", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
+    </p>
 
     @ul(
         leadIn=messages("business.next-year-mandatory-sign-up.para2"),
         Seq(
             Text(messages("business.next-year-mandatory-sign-up.bullet1")),
             Text(messages("business.next-year-mandatory-sign-up.bullet2")),
-            Text(messages("business.next-year-mandatory-sign-up.bullet3"))
+            Text(messages("business.next-year-mandatory-sign-up.bullet3", endYearOfCurrentTaxPeriod.toString))
         )
     )
 
@@ -53,7 +57,7 @@
 @form(action = postAction) {
     @radioHelper(
         field = accountingYearForm(AccountingYearForm.accountingYear),
-        legend = messages("business.next-year-mandatory-sign-up.heading"),
+        legend = messages("business.next-year-mandatory-sign-up.heading",endYearOfCurrentTaxPeriod.toString,(endYearOfCurrentTaxPeriod + 1).toString),
         isPageHeading = false,
         headingClasses = "govuk-visually-hidden",
         radioItems = Seq(
@@ -61,14 +65,14 @@
                 content = Text(messages("business.next-year-mandatory-sign-up.option1",(endYearOfCurrentTaxPeriod - 1).toString,
                 endYearOfCurrentTaxPeriod.toString)),
                 value = Some(Current.toString)
-                ),
+            ),
             RadioItem(
                 content = Text(messages("business.next-year-mandatory-sign-up.option2", endYearOfCurrentTaxPeriod.toString,
                 (endYearOfCurrentTaxPeriod + 1).toString)),
                 value = Some(Next.toString)
-                )
             )
         )
+    )
     @continueButton(isEditMode = isEditMode)
 
     }

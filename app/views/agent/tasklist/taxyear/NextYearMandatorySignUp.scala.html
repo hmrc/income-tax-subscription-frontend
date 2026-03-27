@@ -35,10 +35,10 @@
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.business.next-year-mandatory-sign-up.heading"), optForm = Some(accountingYearForm)) {
+@mainTemplate(title = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString), optForm = Some(accountingYearForm)) {
 
     @pageHeadingHelper(
-        heading = messages("agent.business.next-year-mandatory-sign-up.heading"),
+        heading = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
         caption = messages("agent.business.next-year-mandatory-sign-up.caption", clientName, clientNino),
         isSection = false
     )
@@ -56,12 +56,12 @@
         content = Text(messages("agent.business.next-year-mandatory-sign-up.indent", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))
     ))
 
-    <h2 class="govuk-heading-m">@messages("agent.business.next-year-mandatory-sign-up.subheading")</h2>
+    <h2 class="govuk-heading-m">@messages("agent.business.next-year-mandatory-sign-up.subheading", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)</h2>
 
 @form(action = postAction) {
     @radioHelper(
         field = accountingYearForm(AccountingYearForm.accountingYear),
-        legend = messages("agent.business.next-year-mandatory-sign-up.heading"),
+        legend = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
         isPageHeading = false,
         headingClasses = "govuk-visually-hidden",
         radioItems = Seq(
@@ -69,15 +69,15 @@
                 content = Text(messages("agent.business.next-year-mandatory-sign-up.option1")),
                 hint = Some(Hint(content = Text(messages("agent.business.next-year-mandatory-sign-up.option1.hint")))),
                 value = Some(Current.toString)
-                ),
+            ),
             RadioItem(
                 content = Text(messages("agent.business.next-year-mandatory-sign-up.option2")),
                 value = Some(Next.toString)
-                )
             )
         )
+    )
     @continueButton(isEditMode = isEditMode)
-    }
+}
 
     <div class="govuk-form-group">
         <div>

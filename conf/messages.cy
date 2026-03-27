@@ -171,12 +171,12 @@ business.what-year-to-sign-up.option-1.hint                     = Bydd angen i c
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
 #Voluntary Current Mandatory Next Year Sign Up
-business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef 2026 i 2027
-business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer 2026 i 2027.
+business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
+business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer {0} i {1}.
 business.next-year-mandatory-sign-up.para2                      = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu’r canlynol:
 business.next-year-mandatory-sign-up.bullet1                    = byddwch yn cael gwybodaeth drwy e-bost am faterion sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion nodweddion newydd sydd wedi’u hychwanegu
 business.next-year-mandatory-sign-up.bullet2                    = byddwch yn cael mynediad at dîm cymorth penodedig dros y ffôn
-business.next-year-mandatory-sign-up.bullet3                    = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am unrhyw ddiweddariadau chwarterol coll cyn 6 Ebrill 2026
+business.next-year-mandatory-sign-up.bullet3                    = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am unrhyw ddiweddariadau chwarterol coll cyn 6 Ebrill {0}
 business.next-year-mandatory-sign-up.subheading                 = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 business.next-year-mandatory-sign-up.para3                      = Hoffwn gofrestru nawr, a:
 business.next-year-mandatory-sign-up.option1                    = dechrau ei ddefnyddio nawr ar gyfer y flwyddyn dreth hon, sef {0} i {1}
@@ -889,14 +889,14 @@ agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flw
 agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 #Voluntary Current Mandatory Next Year Sign Up
-agent.business.next-year-mandatory-sign-up.heading                       = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, 2026 i 2027
+agent.business.next-year-mandatory-sign-up.heading                       = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
 agent.business.next-year-mandatory-sign-up.caption                       = {0} - {1}
 agent.business.next-year-mandatory-sign-up.para                          = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu:
 agent.business.next-year-mandatory-sign-up.bullet1                       = byddwch yn cael gwybodaeth am broblemau sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion ynglŷn â nodweddion newydd sy’n cael eu hychwanegu
 agent.business.next-year-mandatory-sign-up.bullet2                       = bydd gennych fynediad at dîm cymorth ymroddedig dros y ffôn
 agent.business.next-year-mandatory-sign-up.bullet3                       = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am fethu diweddariadau chwarterol yn y flwyddyn dreth hon
-agent.business.next-year-mandatory-sign-up.indent                        = Mae’n rhaid i’ch cleient barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, 2025 i 2026, fel yr arfer.
-agent.business.next-year-mandatory-sign-up.subheading                    = A ydych am gofrestru’r cleient hwn yn gynnar ar gyfer y flwyddyn dreth bresennol, 2025 i 2026?
+agent.business.next-year-mandatory-sign-up.indent                        = Mae’n rhaid i’ch cleient barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
+agent.business.next-year-mandatory-sign-up.subheading                    = A ydych am gofrestru’r cleient hwn yn gynnar ar gyfer y flwyddyn dreth bresennol, {0} i {1}?
 agent.business.next-year-mandatory-sign-up.option1                       = Iawn
 agent.business.next-year-mandatory-sign-up.option1.hint                  = Bydd angen i chi sicrhau eich bod yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno unrhyw ddiweddariadau chwarterol sydd wedi’u methu ar gyfer y flwyddyn hyd yma
 agent.business.next-year-mandatory-sign-up.option2                       = Na

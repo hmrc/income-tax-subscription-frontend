@@ -132,12 +132,12 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
     Jsoup.parse(page(editMode = editMode, hasError).body)
 
   object NextYearMandatorySignUp {
-    val heading = "You must use Making Tax Digital for Income Tax next tax year, 2026 to 2027"
-    val paragraph = "You must use Making Tax Digital for Income Tax next tax year to submit your 2026 to 2027 income."
+    val heading: String = s"You must use Making Tax Digital for Income Tax next tax year, $taxYearEnd to ${taxYearEnd + 1}"
+    val paragraph: String = s"You must use Making Tax Digital for Income Tax next tax year to submit your $taxYearEnd to ${taxYearEnd + 1} income."
     val paragraph2 = "But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:"
     val bullet1 = "get information by email on issues affecting your use of the service and details of new features added"
     val bullet2 = "have access to a dedicated telephone support team"
-    val bullet3 = "not get penalties during this period for any missed quarterly updates before 6 April 2026"
+    val bullet3: String = s"not get penalties during this period for any missed quarterly updates before 6 April $taxYearEnd"
     val subheading = "When do you want to start using Making Tax Digital for Income Tax?"
     val paragraph3 = "I want to sign up now, and:"
     val currentYearOption: String = s"start using it now for this tax year, ${taxYearEnd - 1} to $taxYearEnd"
