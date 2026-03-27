@@ -1228,4 +1228,3 @@ agent.non-eligible-voluntary.heading                                    = Gall e
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
 agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
-agent.non-eligible-voluntary.sign-up.para                               = Neu gallwch wirio a allwch gofrestru cleient arall. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {0}.

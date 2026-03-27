@@ -1231,4 +1231,3 @@ agent.non-eligible-voluntary.heading                                    = Your c
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = They must still submit their Self Assessment tax return for this tax year, {0} to {1} as normal.
 agent.non-eligible-voluntary.sign-up                                    = Sign up this client
-agent.non-eligible-voluntary.sign-up.para                               = Or you can check if you can sign up another client. We will not save the details you entered about {0}.

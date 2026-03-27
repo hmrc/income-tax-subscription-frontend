@@ -51,7 +51,8 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
     val caption = s"$clientName – $clientNino"
     val para = s"They must still submit their Self Assessment tax return for this tax year, $startYear to $endYear as normal."
     val continue: String = "Sign up this client"
-    val continuePara = s"Or you can check if you can sign up another client. We will not save the details you entered about $clientName."
+    val linkText = "check if you can sign up another client"
+    val continuePara = s"Or you can $linkText. We will not save the details you entered about $clientName."
   }
 
   "NonEligibleVoluntary" when {
@@ -69,17 +70,23 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
       }
 
       "have a form" which {
+        val form = document().selectHead("form")
+
         "has the correct attributes" in {
-          document().selectHead("form").attr("method") mustBe testCall.method
-          document().selectHead("form").attr("action") mustBe testCall.url
+          form.attr("method") mustBe testCall.method
+          form.attr("action") mustBe testCall.url
         }
 
         "has an accept and continue button to submit the form" in {
-          document().selectHead("form").selectHead("button").text mustBe NonEligibleVoluntaryMessages.continue
+          form.selectHead("button").text mustBe NonEligibleVoluntaryMessages.continue
         }
 
         "have a paragraph" in {
-          document().selectHead("form").selectNth("p", 1).text mustBe NonEligibleVoluntaryMessages.continuePara
+          form.selectNth("p", 1).text mustBe NonEligibleVoluntaryMessages.continuePara
+        }
+
+        "contains a link" in {
+          form.selectNth("a.govuk-link", 1).text mustBe NonEligibleVoluntaryMessages.linkText
         }
       }
     }

@@ -40,7 +40,16 @@
     @form(action = postAction) {
         @continueButton(alternateText = Some(messages("agent.non-eligible-voluntary.sign-up")))
 
-        <p class="govuk-body">@messages("agent.non-eligible-voluntary.sign-up.para", clientName)</p>
+        <div class="govuk-form-group">
+            <div>
+                <p class="govuk-body">
+                    @Html(messages(
+                        key = "agent.client-can-sign-up.check-another",
+                        args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.client-can-sign-up.check-another-link")}</a>, clientName
+                    ))
+                </p>
+            </div>
+        </div>
     }
 
 }
