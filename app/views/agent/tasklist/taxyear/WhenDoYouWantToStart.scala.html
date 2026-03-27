@@ -1,0 +1,104 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.agent.AccountingYearForm
+@import services.AccountingPeriodService
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.ReturnDeadlineTable
+@import views.html.helpers.{RadioHelper, PageHeadingHelper, ContinueButton, UnorderedList}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    form : FormWithCSRF,
+    pageHeadingHelper: PageHeadingHelper,
+    continueButton: ContinueButton,
+    radioHelper: RadioHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    ul:UnorderedList,
+    govukInsetText: GovukInsetText
+)
+
+@(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("agent.business.when-do-you-want-to-start.heading"), optForm = Some(accountingYearForm)) {
+
+    @pageHeadingHelper(
+        heading = messages("agent.business.when-do-you-want-to-start.heading"),
+        caption = messages("agent.business.when-do-you-want-to-start.caption", clientName, clientNino),
+        isSection = false
+    )
+
+    <p class="govuk-body">
+        @messages("agent.business.when-do-you-want-to-start.para", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)
+    </p>
+
+    <p class="govuk-body">
+        @Html(messages("agent.business.when-do-you-want-to-start.para2",
+            hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.business.when-do-you-want-to-start.para2.link-text"),
+            Some(messages("agent.business.when-do-you-want-to-start.para2.link-href"))))
+        ))
+    </p>
+
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.business.when-do-you-want-to-start.para3", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))
+    ))
+
+    <h2 class="govuk-heading-m">@messages("agent.business.when-do-you-want-to-start.heading2")</h2>
+
+    <p class="govuk-body">
+        @messages( "agent.business.when-do-you-want-to-start.para4")
+    </p>
+
+    @form(action = postAction) {
+        @radioHelper(
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = messages("agent.business.when-do-you-want-to-start.heading"),
+            isPageHeading = false,
+            headingClasses = "govuk-visually-hidden",
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages(
+                        "agent.business.when-do-you-want-to-start.option1",
+                        (endYearOfCurrentTaxPeriod - 1).toString,
+                        endYearOfCurrentTaxPeriod.toString
+                    )),
+                    hint = Some(Hint(content = Text(messages("agent.business.when-do-you-want-to-start.option1.hint")))),
+                    value = Some(Current.toString)
+                ),
+                RadioItem(
+                    content = Text(messages(
+                        "agent.business.when-do-you-want-to-start.option2",
+                        endYearOfCurrentTaxPeriod.toString,
+                        (endYearOfCurrentTaxPeriod + 1).toString
+                    )),
+                    value = Some(Next.toString)
+                )
+            )
+        )
+        @continueButton(isEditMode = isEditMode)
+    }
+
+    <div class="govuk-form-group">
+        <p class="govuk-body">
+            @Html(messages(
+                key = "agent.client-can-sign-up.check-another",
+                args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.client-can-sign-up.check-another-link")}</a>, clientName
+            ))
+        </p>
+    </div>
+}

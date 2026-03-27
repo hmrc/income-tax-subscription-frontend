@@ -393,9 +393,18 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def getRouting: WSResponse = get("/business/routing")
 
     def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
-
+    
     def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        ))
+    }
+    def whenDoYouWantToStart():  WSResponse = get("/tax-year/select-tax-year")
+
+    def submitWhenDoYouWantToStart(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
+      val uri = s"/tax-year/select-tax-year?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }

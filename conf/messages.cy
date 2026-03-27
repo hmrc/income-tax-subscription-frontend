@@ -1242,3 +1242,24 @@ individual.opted-out.title                                              = Rheoli
 individual.opted-out.heading                                            = Rheoli eich ymrwymiadau o ran adrodd
 individual.opted-out.p1                                                 = Mae`n rhaid i chi newid eich ymrwymiadau o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 individual.opted-out.p2                                                 = Bydd angen i chi fewngofnodi eto gan ddefnyddio`r un manylion mewngofnodi y gwnaethoch eu defnyddio ar gyfer eich Ffurflen Dreth Hunanasesiad.
+
+# Agent When do you want to start
+agent.business.when-do-you-want-to-start.heading                       = Gallwch gofrestru’r cleient hwn
+agent.business.when-do-you-want-to-start.caption                       = {0} - {1}
+agent.business.when-do-you-want-to-start.para                          = Gallwch gofrestru eich cleient yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0} ymlaen), neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
+agent.business.when-do-you-want-to-start.para2                         = Dysgwch ragor am {0}.
+agent.business.when-do-you-want-to-start.para2.link-text               = anfon diweddariadau chwarterol
+agent.business.when-do-you-want-to-start.para2.link-href               = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates.cy
+agent.business.when-do-you-want-to-start.para3                         = Mae’n dal i fod yn rhaid i’ch cleient gyflwyno ei Ffurflen Dreth Hunanasesiad {0} i {1} yn ôl yr arfer.
+agent.business.when-do-you-want-to-start.heading2                      = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.business.when-do-you-want-to-start.para4                         = Hoffwn gofrestru nawr, a:
+agent.business.when-do-you-want-to-start.option1                       = dechrau ei ddefnyddio nawr ar gyfer y flwyddyn dreth hon, {0} i {1}
+agent.business.when-do-you-want-to-start.option1.hint                  = Bydd angen i chi neu’n cleient ddefnyddio eich meddalwedd i gyflwyno unrhyw ddiweddariadau chwarterol sydd wedi’u methu ar gyfer y flwyddyn hyd yma
+agent.business.when-do-you-want-to-start.option2                       = ei ddefnyddio o’r flwyddyn dreth nesaf ymlaen,{0} i {1}
+
+# Individual When do you want to start
+business.when-do-you-want-to-start.heading                             = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+business.when-do-you-want-to-start.para                                = Os byddwch yn dechrau yn ystod y flwyddyn dreth bresennol, bydd angen i chi ddefnyddio meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm er mwyn anfon unrhyw ddiweddariadau chwarterol sydd ar goll ar gyfer y flwyddyn hyd yma.
+business.when-do-you-want-to-start.para2                               = Treth Incwm yn wirfoddol tan 6 Ebrill 2026, felly ni chewch gosbau am unrhyw ddiweddariadau chwarterol coll cyn hynny.
+business.when-do-you-want-to-start.option-1                            = Rwyf am ddechrau yn y flwyddyn dreth bresennol, sef  {0} i {1}
+business.when-do-you-want-to-start.option-2                            = Rwyf am ddechrau yn y flwyddyn dreth bresennol, sef  {0} i {1}

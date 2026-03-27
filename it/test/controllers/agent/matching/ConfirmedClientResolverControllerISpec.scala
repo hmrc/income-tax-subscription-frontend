@@ -19,16 +19,15 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.MockConfig.appConfig.ggLoginUrl
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import config.featureswitch.FeatureSwitch.{ThrottlingFeature, WhenDoYouWantToStartPage}
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.PrePopStub
 import models.EligibilityStatus
 import models.common.business.*
-import models.common.{OverseasPropertyModel, PropertyModel}
-import models.status.MandationStatus.Voluntary
-import models.status.MandationStatusModel
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.{MandationStatus, MandationStatusModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.AgentStartOfJourneyThrottle
@@ -44,6 +43,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(ThrottlingFeature)
+    disable(WhenDoYouWantToStartPage)
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
@@ -77,83 +77,135 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
-    "pre-pop income sources and continue as normal" in {
+    "the client is ineligible" should {
+      "redirect to the cannot take part page" in {
+        AuthStub.stubAuthSuccess()
+        stubFullSession(eligibleCurrent = false, eligibleNext = false)
 
-      AuthStub.stubAuthSuccess()
-      SessionDataConnectorStub.stubGetAllSessionData(Map(
-        ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
-        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
-        ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
-      ))
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-      IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
-      PrePopStub.stubGetPrePop(testNino)(
-        status = OK,
-        body = Json.obj(
-          "selfEmployment" -> Json.arr(
-            Json.obj(
-              "name" -> "ABC",
-              "trade" -> "Plumbing",
-              "address" -> Json.obj(
-                "lines" -> Json.arr(
-                  "1 long road"
-                ),
-                "postcode" -> "ZZ1 1ZZ"
-              ),
-              "startDate" -> Json.obj(
-                "day" -> "01",
-                "month" -> "02",
-                "year" -> "2000"
-              )
-            )
-          )
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.agent.eligibility.routes.CannotTakePartController.show.url)
         )
-      )
-      IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
-      IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
-        selfEmployments = Seq(SelfEmploymentData(
-          id = "test-uuid",
-          startDateBeforeLimit = Some(true),
-          businessName = Some(BusinessNameModel("ABC")),
-          businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-          businessAddress = Some(BusinessAddressModel(Address(
-            lines = Seq(
-              "1 long road"
-            ),
-            postcode = Some("ZZ1 1ZZ"),
-            country = None
-          )))
-        ))
-      )
-      IncomeTaxSubscriptionConnectorStub.stubSaveProperty(
-        PropertyModel()
-      )
-      IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(
-        OverseasPropertyModel()
-      )
+      }
+    }
+    "the WhenDoYouWantToStartPage feature switch is enabled" when {
+      "the user is eligible and voluntary for both current year and next year" should {
+        "redirect to the WhenDoYouWantToStartController page" in {
+          enable(WhenDoYouWantToStartPage)
 
-      val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          AuthStub.stubAuthSuccess()
+          stubFullSession()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          stubFullPrePop()
 
-      res must have(
-        httpStatus(SEE_OTHER),
-        redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-      )
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
 
-      getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+    }
+    "the WhenDoYouWantToStartPage feature switch is disabled" when {
+      "there is an eligibility interrupt flag set" when {
+        "the user is mandated for the current tax year" should {
+          "go to the what you need to do page" in {
+            AuthStub.stubAuthSuccess()
+            stubFullSession(statusCurrent = Mandated)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+            stubFullPrePop()
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+        "the user is eligible for the next year only" should {
+          "go to the what you need to do page" in {
+            AuthStub.stubAuthSuccess()
+            stubFullSession(eligibleCurrent = false)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+            stubFullPrePop()
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+        "the user is neither mandated for the current tax year or eligible for the next tax year only" should {
+          "go to the what year to sign up page" in {
+            AuthStub.stubAuthSuccess()
+            stubFullSession()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
+            stubFullPrePop()
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+      }
+      "there is no eligibility interrupt flag set" when {
+        "the user is eligible for the next year only" should {
+          "go to the cannot sign up this year page" in {
+            AuthStub.stubAuthSuccess()
+            stubFullSession(eligibleCurrent = false)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+            stubFullPrePop()
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+        "the user is eligible for both years" should {
+          "go to the client can sign up page" in {
+            AuthStub.stubAuthSuccess()
+            stubFullSession()
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+            stubFullPrePop()
+
+            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
+            )
+
+            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          }
+        }
+      }
     }
     "result in technical difficulties" when {
       "there was an error returned from the pre-pop connection" in {
-
         AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
+        stubFullSession()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(
@@ -168,6 +220,64 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
         )
       }
     }
+  }
+
+  def stubFullSession(eligibleCurrent: Boolean = true,
+                      eligibleNext: Boolean = true,
+                      statusCurrent: MandationStatus = Voluntary,
+                      statusNext: MandationStatus = Voluntary): Unit = {
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true),
+      ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(statusCurrent, statusNext)),
+      ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
+        eligibleCurrentYear = eligibleCurrent, eligibleNextYear = eligibleNext, exemptionReason = None
+      )),
+      ITSASessionKeys.NINO -> JsString(testNino),
+      ITSASessionKeys.UTR -> JsString(testUtr)
+    ))
+  }
+
+  def stubFullPrePop(): Unit = {
+    IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
+    PrePopStub.stubGetPrePop(testNino)(
+      status = OK,
+      body = Json.obj(
+        "selfEmployment" -> Json.arr(
+          Json.obj(
+            "name" -> "ABC",
+            "trade" -> "Plumbing",
+            "address" -> Json.obj(
+              "lines" -> Json.arr(
+                "1 long road"
+              ),
+              "postcode" -> "ZZ1 1ZZ"
+            ),
+            "startDate" -> Json.obj(
+              "day" -> "01",
+              "month" -> "02",
+              "year" -> "2000"
+            )
+          )
+        )
+      )
+    )
+    IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+    IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
+    IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
+      selfEmployments = Seq(SelfEmploymentData(
+        id = "test-uuid",
+        startDateBeforeLimit = Some(true),
+        businessName = Some(BusinessNameModel("ABC")),
+        businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+        businessAddress = Some(BusinessAddressModel(Address(
+          lines = Seq(
+            "1 long road"
+          ),
+          postcode = Some("ZZ1 1ZZ"),
+          country = None
+        )))
+      ))
+    )
   }
 
 }
