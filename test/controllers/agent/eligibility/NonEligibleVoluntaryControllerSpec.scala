@@ -51,7 +51,9 @@ class NonEligibleVoluntaryControllerSpec
       when(NonEligibleVoluntary(
         ArgumentMatchers.eq(routes.NonEligibleVoluntaryController.submit),
         ArgumentMatchers.eq(clientDetails.name),
-        ArgumentMatchers.eq(clientDetails.formattedNino)
+        ArgumentMatchers.eq(clientDetails.formattedNino),
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = controller.show(

@@ -26,13 +26,13 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, startYear: Int, endYear: Int)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.non-eligible-voluntary.title")) {
+@mainTemplate(title = messages("individual.non-eligible-voluntary.title", (startYear + 1).toString, (endYear + 1).toString)) {
 
-    <h1 class="govuk-heading-l">@messages("individual.non-eligible-voluntary.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("individual.non-eligible-voluntary.heading", (startYear + 1).toString, (endYear + 1).toString)</h1>
 
-    <p class="govuk-body">@messages("individual.non-eligible-voluntary.para")</p>
+    <p class="govuk-body">@messages("individual.non-eligible-voluntary.para", startYear.toString, endYear.toString)</p>
 
     @form(action = postAction) {
         @continueButton(alternateText = Some(messages("individual.non-eligible-voluntary.sign-up")))

@@ -21,6 +21,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import play.api.mvc.*
 import services.*
+import utilities.AccountingPeriodUtil
 import views.html.individual.eligibility.NonEligibleVoluntary
 
 import javax.inject.{Inject, Singleton}
@@ -35,8 +36,11 @@ class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary)
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
+      val model = AccountingPeriodUtil.getCurrentTaxYear
       Ok(view(
-        postAction = routes.NonEligibleVoluntaryController.submit
+        postAction = routes.NonEligibleVoluntaryController.submit,
+        startYear = model.startDate.year.toInt,
+        endYear = model.endDate.year.toInt
       ))
   }
 

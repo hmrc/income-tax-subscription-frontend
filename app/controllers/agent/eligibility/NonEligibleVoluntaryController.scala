@@ -20,6 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.*
+import utilities.AccountingPeriodUtil
 import views.html.agent.eligibility.NonEligibleVoluntary
 
 import javax.inject.{Inject, Singleton}
@@ -34,10 +35,13 @@ class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary,
   extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    val model = AccountingPeriodUtil.getCurrentTaxYear
     Ok(view(
       postAction = routes.NonEligibleVoluntaryController.submit,
       clientName = request.clientDetails.name,
-      clientNino = request.clientDetails.formattedNino
+      clientNino = request.clientDetails.formattedNino,
+      startYear = model.startDate.year.toInt,
+      endYear = model.endDate.year.toInt
     ))
   }
 

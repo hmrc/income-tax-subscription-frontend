@@ -67,7 +67,9 @@ class NonEligibleVoluntaryControllerSpec
   "show" must {
     "return OK with the page content" in new Setup {
       when(NonEligibleVoluntary(
-        ArgumentMatchers.eq(routes.NonEligibleVoluntaryController.submit)
+        ArgumentMatchers.eq(routes.NonEligibleVoluntaryController.submit),
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = controller.show(

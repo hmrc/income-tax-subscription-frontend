@@ -30,13 +30,14 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
   val clientName: String = "FirstName LastName"
   val clientNino: String = "AA 11 11 11 A"
 
+  val startYear = 2025
+  val endYear = 2026
+
   val nonEligibleVoluntary: NonEligibleVoluntary = app.injector.instanceOf[NonEligibleVoluntary]
 
   def page(clientName: String, clientNino: String): HtmlFormat.Appendable = {
     nonEligibleVoluntary(
-      postAction = testCall,
-      clientName = clientName,
-      clientNino = clientNino
+      testCall, clientName, clientNino, startYear, endYear
     )
   }
 
@@ -45,10 +46,10 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
   }
 
   object NonEligibleVoluntaryMessages {
-    val title = "Your client can sign up next tax year, 2026 to 2027"
-    val heading = "Your client can use Making Tax Digital for Income Tax next tax year, 2026 to 2027 if they choose"
+    val title = s"Your client can sign up next tax year, ${startYear + 1} to ${endYear + 1}"
+    val heading = s"Your client can use Making Tax Digital for Income Tax next tax year, ${startYear + 1} to ${endYear + 1} if they choose"
     val caption = s"$clientName – $clientNino"
-    val para = "They must still submit their Self Assessment tax return for this tax year, 2025 to 2026 as normal."
+    val para = s"They must still submit their Self Assessment tax return for this tax year, $startYear to $endYear as normal."
     val continue: String = "Sign up this client"
     val continuePara = s"Or you can check if you can sign up another client. We will not save the details you entered about $clientName."
   }

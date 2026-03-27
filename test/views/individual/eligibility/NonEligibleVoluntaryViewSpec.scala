@@ -24,16 +24,22 @@ import views.html.individual.eligibility.NonEligibleVoluntary
 
 class NonEligibleVoluntaryViewSpec extends ViewSpec {
 
+  val startYear = 2025
+  val endYear = 2026
+  
   def nonEligibleVoluntary: NonEligibleVoluntary = app.injector.instanceOf[NonEligibleVoluntary]
 
-  def page(): HtmlFormat.Appendable = nonEligibleVoluntary(testCall)
+  def page(): HtmlFormat.Appendable =
+    nonEligibleVoluntary(
+      testCall, startYear, endYear
+    )
 
   def document(): Document = Jsoup.parse(page().body)
 
   object NonEligibleVoluntaryMessages {
-    val title = "You can sign up next tax year, 2026 to 2027"
-    val heading = "You can use Making Tax Digital for Income Tax next tax year, 2026 to 2027"
-    val para = "You must still submit your Self Assessment tax return for this tax year, 2025 to 2026, as normal."
+    val title = s"You can sign up next tax year, ${startYear + 1} to ${endYear + 1}"
+    val heading = s"You can use Making Tax Digital for Income Tax next tax year, ${startYear + 1} to ${endYear + 1}"
+    val para = s"You must still submit your Self Assessment tax return for this tax year, $startYear to $endYear, as normal."
     val continue: String = "Continue"
   }
 
