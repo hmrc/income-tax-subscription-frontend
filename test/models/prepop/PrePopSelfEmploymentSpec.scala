@@ -17,10 +17,10 @@
 package models.prepop
 
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 import utilities.AccountingPeriodUtil
 
 class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
@@ -50,7 +50,8 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
             lines = Seq(
               "1 long road"
             ),
-            postcode = Some("ZZ1 1ZZ")
+            postcode = Some("ZZ1 1ZZ"),
+            country = None
           ))))
       }
       "start date is not older than the limit" in {
@@ -65,7 +66,8 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
             lines = Seq(
               "1 long road"
             ),
-            postcode = Some("ZZ1 1ZZ")
+            postcode = Some("ZZ1 1ZZ"),
+            country = None
           ))))
       }
 
@@ -97,7 +99,8 @@ class PrePopSelfEmploymentSpec extends PlaySpec with Matchers {
       lines = Seq(
         "1 long road"
       ),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = None
     )),
     startDate = Some(date)
   )

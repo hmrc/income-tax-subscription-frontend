@@ -19,7 +19,7 @@ package controllers.individual
 import models.Current
 import models.common.AccountingYearModel
 import models.common.BusinessAccountingPeriod.SixthAprilToFifthApril
-import models.common.business.Address
+import models.common.business.{Address, Country}
 import models.common.subscription.CreateIncomeSourcesModel
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -29,9 +29,9 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.GetCompleteDetailsService
-import services.GetCompleteDetailsService._
+import services.GetCompleteDetailsService.*
 import services.individual.SignUpOrchestrationService
-import services.mocks._
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.individual.TestConstants.{testNino, testSpsEntityId, testUtr}
 import views.html.individual.GlobalCheckYourAnswers
@@ -98,15 +98,16 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         businesses = Seq(
           SoleTraderBusiness(
             id = "id",
-            name = s"ABC",
-            trade = s"Plumbing",
+            name = "ABC",
+            trade = "Plumbing",
             startDate = Some(LocalDate.of(1980, 1, 1)),
             address = Address(
               lines = Seq(
-                s"1 Long Road",
+                "1 Long Road",
                 "Lonely City"
               ),
-              postcode = Some(s"ZZ11ZZ")
+              postcode = Some("ZZ11ZZ"),
+              country = Some(Country("GB", "United Kingdom"))
             )
           )
         )

@@ -20,16 +20,18 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
-import models.SessionData
-import models._
-import models.common._
-import models.common.business._
+import models.*
+import models.common.*
+import models.common.business.*
+import play.api.libs.json.Format
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
-import utilities.SubscriptionDataKeys._
+import utilities.SubscriptionDataKeys.*
 
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.{ExecutionContext, Future}
 
 //scalastyle:off
@@ -43,6 +45,8 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
                                           (implicit ec: ExecutionContext) {
 
   implicit val jsonCrypto: Encrypter with Decrypter = applicationCrypto.JsonCrypto
+
+  implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
   def deleteAll(reference: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     incomeTaxSubscriptionConnector.deleteAll(reference)
@@ -73,7 +77,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
         Some(AccountingYearModel(Next, confirmed = true, editable = false))
       } else if (mandatedCurrentYear) {
         Some(AccountingYearModel(Current, confirmed = true, editable = false))
-      }  else {
+      } else {
         storedTaxYear
       }
     }
@@ -120,7 +124,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
           startDate = se.businessStartDate.map(_.startDate),
           name = se.businessName.map(_.businessName),
           trade = se.businessTradeName.map(_.businessTradeName),
-          address = se.businessAddress.map(_.address).map(address => EncryptingAddress(address.lines, address.postcode))
+          address = se.businessAddress.map(_.address)
         )
       }
     )

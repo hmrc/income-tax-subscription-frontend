@@ -33,7 +33,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
       businessStartDate = Some(BusinessStartDate(DateModel("6", "5", "2020"))),
       businessName = Some(BusinessNameModel("Money Business")),
       businessTradeName = Some(BusinessTradeNameModel("Consulting")),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
     )
   )
   private val property = Some(PropertyModel(
@@ -75,7 +75,11 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |          "lines": [
           |            "line 1"
           |          ],
-          |          "postcode": "ZZ1 1ZZ"
+          |          "postcode": "ZZ1 1ZZ",
+          |          "country": {
+          |            "code" : "GB",
+          |            "name": "United Kingdom"
+          |          }
           |        }
           |      }
           |    ]
@@ -130,7 +134,11 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |          "lines": [
           |            "line 1"
           |          ],
-          |          "postcode": "ZZ1 1ZZ"
+          |          "postcode": "ZZ1 1ZZ",
+          |          "country": {
+          |            "code" : "GB",
+          |            "name": "United Kingdom"
+          |          }
           |        }
           |      },
           |      {
@@ -141,7 +149,11 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
           |          "lines": [
           |            "line 1"
           |          ],
-          |          "postcode": "ZZ1 1ZZ"
+          |          "postcode": "ZZ1 1ZZ",
+          |          "country": {
+          |            "code" : "GB",
+          |            "name": "United Kingdom"
+          |          }
           |        }
           |      }
           |    ]
@@ -164,7 +176,7 @@ class SaveAndComeBackAuditModelSpec extends PlaySpec with GuiceOneServerPerSuite
             businessStartDate = Some(BusinessStartDate(DateModel("6", "5", "2020"))),
             businessName = Some(BusinessNameModel("Money Business")),
             businessTradeName = Some(BusinessTradeNameModel("Consulting")),
-            businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"))))
+            businessAddress = Some(BusinessAddressModel(Address(Seq("line 1"), Some("ZZ1 1ZZ"), Some(Country("GB", "United Kingdom")))))
           ),
         maybePropertyModel = property,
         maybeOverseasPropertyModel = overseasProperty

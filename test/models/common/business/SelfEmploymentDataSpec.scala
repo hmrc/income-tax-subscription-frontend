@@ -18,7 +18,7 @@ package models.common.business
 
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class SelfEmploymentDataSpec extends PlaySpec {
 
@@ -32,7 +32,8 @@ class SelfEmploymentDataSpec extends PlaySpec {
     businessTradeName = Some(BusinessTradeNameModel("test trade")),
     businessAddress = Some(BusinessAddressModel(Address(
       lines = Seq("1 long road"),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     ))),
     confirmed = true
   )
@@ -62,7 +63,11 @@ class SelfEmploymentDataSpec extends PlaySpec {
         "lines" -> Json.arr(
           "1 long road"
         ),
-        "postcode" -> "ZZ1 1ZZ"
+        "postcode" -> "ZZ1 1ZZ",
+        "country" -> Json.obj(
+          "code" -> "GB",
+          "name" -> "United Kingdom"
+        )
       )
     ),
     "confirmed" -> true

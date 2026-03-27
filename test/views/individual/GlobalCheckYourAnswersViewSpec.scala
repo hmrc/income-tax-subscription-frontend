@@ -16,13 +16,13 @@
 
 package views.individual
 
-import models._
+import models.*
 import models.common.AccountingYearModel
-import models.common.business.Address
+import models.common.business.{Address, Country}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import services.GetCompleteDetailsService._
+import services.GetCompleteDetailsService.*
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.GlobalCheckYourAnswers
 
@@ -181,7 +181,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-                value = Some("1 Long Road, Lonely City, ZZ11ZZ"),
+                value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
                 actions = Seq.empty
               )
             ))
@@ -215,7 +215,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-                value = Some("1 Long Road, Lonely City, ZZ11ZZ"),
+                value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
                 actions = Seq.empty
               )
             ))
@@ -250,7 +250,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             ),
             SummaryListRowValues(
               key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-              value = Some("2 Long Road, Lonely City, ZZ22ZZ"),
+              value = Some("2 Long Road Lonely City ZZ22ZZ United Kingdom"),
               actions = Seq.empty
             )
           ))
@@ -484,7 +484,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             s"$index Long Road",
             "Lonely City"
           ),
-          postcode = Some(s"ZZ$index${index}ZZ")
+          postcode = Some(s"ZZ$index${index}ZZ"),
+          country = Some(Country(
+            code = "GB",
+            name = "United Kingdom"
+          ))
         )
       )
     }

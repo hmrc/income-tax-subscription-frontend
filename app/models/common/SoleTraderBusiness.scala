@@ -17,12 +17,10 @@
 package models.common
 
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
-import uk.gov.hmrc.crypto.json.JsonEncryption
-import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 
 case class SoleTraderBusiness(id: String,
                               confirmed: Boolean = false,
@@ -30,7 +28,7 @@ case class SoleTraderBusiness(id: String,
                               startDate: Option[DateModel] = None,
                               name: Option[String] = None,
                               trade: Option[String] = None,
-                              address: Option[EncryptingAddress] = None) {
+                              address: Option[Address] = None) {
 
   def toSelfEmploymentData: SelfEmploymentData = SelfEmploymentData(
     id = id,
@@ -38,7 +36,7 @@ case class SoleTraderBusiness(id: String,
     businessStartDate = startDate.map(BusinessStartDate.apply),
     businessName = name.map(BusinessNameModel.apply),
     businessTradeName = trade.map(BusinessTradeNameModel.apply),
-    businessAddress = address.map(_.toNormalAddress).map(BusinessAddressModel.apply),
+    businessAddress = address.map(BusinessAddressModel.apply),
     confirmed = confirmed
   )
 
@@ -46,11 +44,9 @@ case class SoleTraderBusiness(id: String,
 
 object SoleTraderBusiness {
 
-  def encryptedFormat(implicit crypto: Encrypter with Decrypter): OFormat[SoleTraderBusiness] = {
+  def encryptedFormat(implicit sensitiveFormat: Format[SensitiveString]): OFormat[SoleTraderBusiness] = {
 
-    implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
-
-    implicit val addressFormat: OFormat[EncryptingAddress] = EncryptingAddress.encryptedFormat
+    implicit val addressFormat: OFormat[Address] = Address.encryptedFormat
 
     val reads: Reads[SoleTraderBusiness] = (
       (__ \ "id").read[String] and
@@ -59,7 +55,7 @@ object SoleTraderBusiness {
         (__ \ "startDate").readNullable[DateModel] and
         (__ \ "name").readNullable[SensitiveString] and
         (__ \ "trade").readNullable[String] and
-        (__ \ "address").readNullable[EncryptingAddress]
+        (__ \ "address").readNullable[Address]
       )(
       (id, confirmed, startDateBeforeLimit, startDate, name, trade, address) =>
         SoleTraderBusiness.apply(id, confirmed, startDateBeforeLimit, startDate, name.map(_.decryptedValue), trade, address)
@@ -72,7 +68,7 @@ object SoleTraderBusiness {
         (__ \ "startDate").writeNullable[DateModel] and
         (__ \ "name").writeNullable[SensitiveString] and
         (__ \ "trade").writeNullable[String] and
-        (__ \ "address").writeNullable[EncryptingAddress]
+        (__ \ "address").writeNullable[Address]
       )(
       soleTraderBusiness =>
         (

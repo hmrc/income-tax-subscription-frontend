@@ -24,7 +24,7 @@ import helpers.IntegrationTestModels.testMTDITEnrolmentKey
 import helpers.servicemocks.*
 import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import models.common.business.{Address, SelfEmploymentData}
+import models.common.business.{Address, Country, SelfEmploymentData}
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.individual.JourneyStep.PreSignUp
 import models.prepop.{PrePopData, PrePopSelfEmployment}
@@ -285,7 +285,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     trade = Some("test-trade"),
     address = Some(Address(
       lines = Seq("1 long road"),
-      postcode = Some("ZZ1 1ZZ")
+      postcode = Some("ZZ1 1ZZ"),
+      country = Some(Country("GB", "United Kingdom"))
     )),
     startDate = Some(DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit))
   )
