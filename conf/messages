@@ -183,6 +183,18 @@ business.what-year-to-sign-up.option-1                          = Current tax ye
 business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
 business.what-year-to-sign-up.option-2                          = Next tax year
 
+#Voluntary Current Mandatory Next Year Sign Up
+business.next-year-mandatory-sign-up.heading                    = You must use Making Tax Digital for Income Tax next tax year, 2026 to 2027
+business.next-year-mandatory-sign-up.para                       = You must use Making Tax Digital for Income Tax next tax year to submit your 2026 to 2027 income.
+business.next-year-mandatory-sign-up.para2                      = But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:
+business.next-year-mandatory-sign-up.bullet1                    = get information by email on issues affecting your use of the service and details of new features added
+business.next-year-mandatory-sign-up.bullet2                    = have access to a dedicated telephone support team
+business.next-year-mandatory-sign-up.bullet3                    = not get penalties during this period for any missed quarterly updates before 6 April 2026
+business.next-year-mandatory-sign-up.subheading                 = When do you want to start using Making Tax Digital for Income Tax?
+business.next-year-mandatory-sign-up.para3                      = I want to sign up now, and:
+business.next-year-mandatory-sign-up.option1                    = start using it now for this tax year, {0} to {1}
+business.next-year-mandatory-sign-up.option2                    = use it from next tax year, {0} to {1}
+
 ## Accounting period
 accounting-period.heading                                       = Your business accounting period
 accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
@@ -887,6 +899,19 @@ agent.business.what-year-to-sign-up.option-2                    = Next tax year
 agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to use your software to send any missed quarterly updates for the year so far
 agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
 agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
+
+#Voluntary Current Mandatory Next Year Sign Up
+agent.business.next-year-mandatory-sign-up.heading                       = Your client must use Making Tax Digital for Income Tax next tax year, 2026 to 2027
+agent.business.next-year-mandatory-sign-up.caption                       = {0} - {1}
+agent.business.next-year-mandatory-sign-up.para                          = They can choose to sign up early, so you’re both prepared to use the service. This will mean that you will:
+agent.business.next-year-mandatory-sign-up.bullet1                       = get information on issues affecting your use of the service and details of new features added
+agent.business.next-year-mandatory-sign-up.bullet2                       = have access to a dedicated telephone support team
+agent.business.next-year-mandatory-sign-up.bullet3                       = not get penalties during this period for missed quarterly updates this tax year
+agent.business.next-year-mandatory-sign-up.indent                        = Your client must still submit their Self Assessment tax return for {0} to {1} as normal.
+agent.business.next-year-mandatory-sign-up.subheading                    = Do you want to sign up this client early for the current tax year, 2025 to 2026?
+agent.business.next-year-mandatory-sign-up.option1                       = Yes
+agent.business.next-year-mandatory-sign-up.option1.hint                  = You will need to make sure that you use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far
+agent.business.next-year-mandatory-sign-up.option2                       = No
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property

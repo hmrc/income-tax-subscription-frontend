@@ -62,6 +62,10 @@ GET         /register-for-SA                        controllers.agent.matching.N
 GET         /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+#Voluntary Current Mandatory Next Year Sign Up Routes
+GET         /tax-year/sign-up-early-next-year-voluntary        controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-early-next-year-voluntary        controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.submit(editMode: Boolean ?= false)
+
 # Using software
 GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
 POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()

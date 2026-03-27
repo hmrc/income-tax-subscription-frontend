@@ -60,6 +60,10 @@ POST        /using-software                                      controllers.ind
 GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
+#Voluntary Current Mandatory Next Year Sign Up Routes
+GET         /tax-year/sign-up-early-next-year-voluntary          controllers.individual.tasklist.taxyear.NextYearMandatorySignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-early-next-year-voluntary          controllers.individual.tasklist.taxyear.NextYearMandatorySignUpController.submit(editMode: Boolean ?= false)
+
 # Accounting Period
 GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
 POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit
