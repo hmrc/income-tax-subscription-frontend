@@ -18,12 +18,10 @@ package controllers.individual.tasklist.taxyear
 
 import auth.individual.SignUpController
 import config.AppConfig
-import controllers.utils.ReferenceRetrieval
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.*
 import views.html.individual.tasklist.taxyear.MandatoryBothSignUp
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
