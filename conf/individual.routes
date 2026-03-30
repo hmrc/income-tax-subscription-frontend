@@ -177,3 +177,7 @@ POST        /hand-offs/check-income-sources                      controllers.ind
 # Sign-up check SA enrolment
 GET         /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.show
 POST        /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.submit
+
+GET         /non-eligible-voluntary                              controllers.individual.controllist.NonEligibleVoluntaryController.show
+POST        /non-eligible-voluntary                              controllers.individual.controllist.NonEligibleVoluntaryController.submit
+

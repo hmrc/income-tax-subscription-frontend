@@ -1263,3 +1263,14 @@ business.when-do-you-want-to-start.para                                = Os bydd
 business.when-do-you-want-to-start.para2                               = Treth Incwm yn wirfoddol tan 6 Ebrill 2026, felly ni chewch gosbau am unrhyw ddiweddariadau chwarterol coll cyn hynny.
 business.when-do-you-want-to-start.option-1                            = Rwyf am ddechrau yn y flwyddyn dreth bresennol, sef  {0} i {1}
 business.when-do-you-want-to-start.option-2                            = Rwyf am ddechrau yn y flwyddyn dreth bresennol, sef  {0} i {1}
+
+individual.non-eligible-voluntary.title                                 = Gallwch gofrestru yn ystod y flwyddyn dreth nesaf, {0} i {1}
+individual.non-eligible-voluntary.heading                               = Gallwch ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
+individual.non-eligible-voluntary.para                                  = Bydd yn dal i fod yn rhaid i chi gyflwyno’ch Ffurflen Dreth Hunanasesiad (yn agor tab newydd) ar gyfer y flwyddyn dreth hon, sef {0} i {1}, yn ôl yr arfer.
+individual.non-eligible-voluntary.sign-up                               = Parhau
+
+agent.non-eligible-voluntary.title                                      = Gall eich cleient gofrestru yn ystod y flwyddyn dreth nesaf, {0} i {1}
+agent.non-eligible-voluntary.heading                                    = Gall eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}, os yw’n dymuno
+agent.non-eligible-voluntary.caption                                    = {0} – {1}
+agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
+agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
