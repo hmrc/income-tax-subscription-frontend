@@ -110,13 +110,16 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
         case PrePopResult.PrePopSuccess =>
           val isVoluntaryCurrentYear: Boolean = mandationStatus.currentYearStatus.isVoluntary
           val isVoluntaryNextYear: Boolean = mandationStatus.nextYearStatus.isVoluntary
+          val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+          val isMandatedNextYear: Boolean = mandationStatus.nextYearStatus.isMandated
 
           if (isEnabled(WhenDoYouWantToStartPage) && isVoluntaryCurrentYear && isVoluntaryNextYear) {
             Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show())
-          } else {
+          } else if (isEnabled(WhenDoYouWantToStartPage) && isMandatedCurrentYear && isMandatedNextYear) {
+              Redirect(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show())
+        } else {
             eligibilityInterrupt match {
               case Some(_) =>
-                val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
                 val isEligibleNextYearOnly: Boolean = nextYearOnly
 
                 if (isMandatedCurrentYear || isEligibleNextYearOnly) {

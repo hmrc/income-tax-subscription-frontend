@@ -170,6 +170,10 @@ business.what-year-to-sign-up.option-1                          = Blwyddyn dreth
 business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
+# Tax Year Selection Mandatory Both
+individual.tax-year.mm.heading                                  = Mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr
+individual.tax-year.mm.paragraph                                = Gan fod cyfanswm eich incwm blynyddol o hunangyflogaeth neu eiddo dros £50,000, mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} i {1} ymlaen.
+
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
 business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer {0} i {1}.
@@ -887,6 +891,11 @@ agent.business.what-year-to-sign-up.option-2                    = Blwyddyn dreth
 agent.business.what-year-to-sign-up.option-current-hint         = Bydd angen i chi neu’ch cleient ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+
+# Agent Tax Year Selection Mandatory Both
+agent.tax-year.mm.heading                                       = Eich cleient mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr
+agent.tax-year.mm.caption                                       = {0} - {1}
+agent.tax-year.mm.paragraph.1                                   = Eich cleient incwm blynyddol o hunangyflogaeth neu o eiddo dros £50,000, mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} i {1} ymlaen.
 
 #Voluntary Current Mandatory Next Year Sign Up
 agent.business.next-year-mandatory-sign-up.heading                       = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
