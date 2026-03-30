@@ -34,7 +34,7 @@
         @messages("individual.tax-year.mm.paragraph", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
     </p>
 
-@form(action = postAction) {
-    @continueButton(isEditMode = isEditMode)
-}
+    @form(action = postAction) {
+        @continueButton(isEditMode = isEditMode)
+    }
 }
