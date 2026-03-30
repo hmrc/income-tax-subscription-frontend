@@ -60,14 +60,15 @@ class TaxYearSelectionMandatoryBothViewSpec extends ViewSpec {
     val paragraph = "As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from 2026 to 2027."
   }
 
+  val taxYearSelectionMandatoryBoth: TaxYearSelectionMandatoryBoth = app.injector.instanceOf[TaxYearSelectionMandatoryBoth]
+
   private def page(): Html = {
-    TaxYearSelectionMandatoryBoth(
+    taxYearSelectionMandatoryBoth(
       postAction = testCall,
+      backUrl = Some(testBackUrl),
     )
   }
 
   private def document: Document = Jsoup.parse(page().body)
-
-  private lazy val taxYearSelectionMandatoryBoth = app.injector.instanceOf[TaxYearSelectionMandatoryBoth]
 
 }
