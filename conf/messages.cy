@@ -490,9 +490,9 @@ sign-up-confirmation-what-you-must-do.software-choices-bullet5       = y gwahano
 sign-up-confirmation-what-you-must-do.software-choices-bullet6       = help a chymorth
 
 sign-up-confirmation.what-you-must-do.para1                          = Ni allwch ddefnyddio’ch gwasanaethau ar-lein CThEF i gyflwyno’ch ffynonellau incwm eraill ar gyfer:
-sign-up-confirmation.what-you-must-do.bullet1                        = gweddill blwyddyn dreth 2025 i 2026
-sign-up-confirmation.what-you-must-do.bullet2                        = y flwyddyn dreth sydd i ddod, sef 2026 i 2027
-sign-up-confirmation.what-you-must-do.para2                          = Fodd bynnag, mae’n rhaid i chi gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebrill 2025 yn ôl yr arfer.
+sign-up-confirmation.what-you-must-do.bullet1                        = gweddill blwyddyn dreth {0} i {1}
+sign-up-confirmation.what-you-must-do.bullet2                        = y flwyddyn dreth sydd i ddod, sef {0} i {1}
+sign-up-confirmation.what-you-must-do.para2                          = Fodd bynnag, mae’n rhaid i chi gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebrill {0} yn ôl yr arfer.
 
 sign-up-confirmation.contact-support.heading                         = Cael help gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03003 200 1900

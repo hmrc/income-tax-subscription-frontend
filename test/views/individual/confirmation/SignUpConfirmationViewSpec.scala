@@ -27,7 +27,7 @@ import views.html.individual.confirmation.SignUpConfirmation
 import java.time.LocalDate
 
 class SignUpConfirmationViewSpec extends ViewSpec {
-  
+
   implicit val implicitDateFormatter: ImplicitDateFormatterImpl = app.injector.instanceOf[ImplicitDateFormatterImpl]
 
   private val signUpConfirmation = app.injector.instanceOf[SignUpConfirmation]
@@ -134,6 +134,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a mtd paragraph with a link" in {
 
         def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 7)
+
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
 
         Seq(false, true).foreach { showHelp =>
@@ -331,6 +332,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a mtd paragraph with a link" in {
 
         def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 5)
+
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
         Seq(false, true).foreach { showHelp =>
           usingMtdPara(showHelp).text() mustBe expectedText
@@ -513,6 +515,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a first paragraph with a link" in {
         def firstPara(showHelp: Boolean) = mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(2)
+
         val expectedText = s"${SignUpConfirmationMessages.getSoftware} ${SignUpConfirmationMessages.getSoftwareLink}"
         Seq(false, true).foreach { showHelp =>
           firstPara(showHelp).text() mustBe expectedText
@@ -587,6 +590,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       "contains a mtd paragraph with a link" in {
 
         def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 8)
+
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
         Seq(false, true).foreach { showHelp =>
           usingMtdPara(showHelp).text() mustBe expectedText
@@ -963,18 +967,19 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
+    val currentTaxYearStartYear: Int = AccountingPeriodUtil.getCurrentTaxStartYear
+    val currentTaxYearEndYear: Int = AccountingPeriodUtil.getCurrentTaxEndYear
+    val nextTaxYearStartYear: Int = AccountingPeriodUtil.getNextTaxStartYear
+    val nextTaxYearEndYear: Int = AccountingPeriodUtil.getNextTaxEndYear
+
     val whatYouMustDoHeading = "What happens next"
     val panelHeading = "Sign up complete"
     val panelUserDetails = s"$testName | $testNino"
     private val panelDescriptionThis: String = {
-      val yearStart = AccountingPeriodUtil.getCurrentTaxYear.startDate.year
-      val yearEnd = AccountingPeriodUtil.getCurrentTaxYear.endDate.year
-      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
+      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $currentTaxYearStartYear to 5 April $currentTaxYearEndYear) onwards"
     }
     private val panelDescriptionNext: String = {
-      val yearStart = AccountingPeriodUtil.getNextTaxYear.startDate.year
-      val yearEnd = AccountingPeriodUtil.getNextTaxYear.endDate.year
-      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $yearStart to 5 April $yearEnd) onwards"
+      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $nextTaxYearStartYear to 5 April $nextTaxYearEndYear) onwards"
     }
 
     def panelDescription(yearIsNext: Boolean): String = if (yearIsNext)
@@ -984,9 +989,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val printLink = "Print or save this page"
 
-    val thisYear = AccountingPeriodUtil.getCurrentTaxEndYear - 1
-    private val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
-
     val paraOne = s"You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax."
 
     val dateField: String = {
@@ -995,15 +997,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     }
 
     val whatYouMustDoYesAndCurrentYear = "You cannot use your HMRC online services to submit your other income sources for:"
-    val whatYouMustDoYesAndCurrentYearBullet1 = "the remainder of the 2025 to 2026 tax year"
-    val whatYouMustDoYesAndCurrentYearBullet2 = "the upcoming 2026 to 2027 tax year"
-    val whatYouMustDoYesAndCurrentYearEnd = "But you must submit your Self Assessment tax returns for the tax years up to 5 April 2025 as normal."
+    val whatYouMustDoYesAndCurrentYearBullet1 = s"the remainder of the $currentTaxYearStartYear to $currentTaxYearEndYear tax year"
+    val whatYouMustDoYesAndCurrentYearBullet2 = s"the upcoming $nextTaxYearStartYear to $nextTaxYearEndYear tax year"
+    val whatYouMustDoYesAndCurrentYearEnd = s"But you must submit your Self Assessment tax returns for the tax years up to 5 April $currentTaxYearStartYear as normal."
 
     val whatYouMustDoNoAndCurrentYear = s"You must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkTextNoAndCurrentYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
 
-    val whatYouMustDoYesAndNextYear = s"From 6 April $nextYear, you must use your software that works with Making Tax Digital for Income Tax."
-    val whatYouMustDoNoAndNextYear = s"From 6 April $nextYear, you must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val whatYouMustDoYesAndNextYear = s"From 6 April $nextTaxYearStartYear, you must use your software that works with Making Tax Digital for Income Tax."
+    val whatYouMustDoNoAndNextYear = s"From 6 April $nextTaxYearStartYear, you must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkTextNoAndNextYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
 
     val paraTwo = "Your chosen software will tell you what else you need to do, including:"

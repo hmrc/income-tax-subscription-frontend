@@ -206,12 +206,12 @@ classes = "govuk-!-margin-bottom-4"
 @ul(
   leadIn=messages("sign-up-confirmation.what-you-must-do.para1"),
   Seq(
-    Text(messages("sign-up-confirmation.what-you-must-do.bullet1")),
-    Text(messages("sign-up-confirmation.what-you-must-do.bullet2"))
+    Text(messages("sign-up-confirmation.what-you-must-do.bullet1", AccountingPeriodUtil.getCurrentTaxStartYear.toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)),
+    Text(messages("sign-up-confirmation.what-you-must-do.bullet2", AccountingPeriodUtil.getNextTaxStartYear.toString, AccountingPeriodUtil.getNextTaxEndYear.toString))
   )
 )
 
-<p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2")</p>
+<p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2", AccountingPeriodUtil.getCurrentTaxStartYear.toString)</p>
 }
 
 @voluntary = {
