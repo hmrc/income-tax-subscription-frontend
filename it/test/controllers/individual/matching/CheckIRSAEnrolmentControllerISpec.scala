@@ -192,7 +192,7 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
 
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+            redirectURI(controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
           )
         }
 

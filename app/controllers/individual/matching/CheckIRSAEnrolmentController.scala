@@ -74,7 +74,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
 
               val nextCall =
                 if (isVoluntaryCurrentYear && isVoluntaryNextYear) {
-                  controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
+                  controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
                 } else {
                   controllers.individual.routes.YouCanSignUpController.show
                 }
