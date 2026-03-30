@@ -183,6 +183,10 @@ business.what-year-to-sign-up.option-1                          = Current tax ye
 business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
 business.what-year-to-sign-up.option-2                          = Next tax year
 
+# Tax Year Selection Mandatory Both
+individual.tax-year.mm.title                                    = You must use Making Tax Digital for Income Tax now
+individual.tax-year.mm.paragraph                                = As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from 2026 to 2027.
+
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = You must use Making Tax Digital for Income Tax next tax year, {0} to {1}
 business.next-year-mandatory-sign-up.para                       = You must use Making Tax Digital for Income Tax next tax year to submit your {0} to {1} income.

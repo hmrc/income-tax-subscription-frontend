@@ -170,6 +170,10 @@ business.what-year-to-sign-up.option-1                          = Blwyddyn dreth
 business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
 business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
 
+# Tax Year Selection Mandatory Both
+individual.tax-year.mm.title                                    = Mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr
+individual.tax-year.mm.paragraph                                = Gan fod cyfanswm eich incwm blynyddol o hunangyflogaeth neu eiddo dros £50,000, mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o 2026 i 2027 ymlaen.
+
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
 business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer {0} i {1}.
