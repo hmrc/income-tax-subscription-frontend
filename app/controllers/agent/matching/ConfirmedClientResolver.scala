@@ -20,6 +20,8 @@ import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
@@ -43,13 +45,12 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         referenceRetrieval: ReferenceRetrieval,
                                         subscriptionDetailsService: SubscriptionDetailsService,
                                         prePopDataService: PrePopDataService,
+                                        auditingService: AuditingService,
                                         ninoService: NinoService,
-                                        utrService: UTRService)
-                                       (val auditingService: AuditingService,
-                                        val authService: AuthService,
+                                        utrService: UTRService,
                                         val appConfig: AppConfig)
-                                       (implicit val ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                       (implicit ec: ExecutionContext,
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
     val sessionData = request.sessionData
@@ -107,21 +108,29 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
     } yield {
       prePopResult match {
         case PrePopResult.PrePopSuccess =>
-          eligibilityInterrupt match {
-            case Some(_) =>
-              val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-              val isEligibleNextYearOnly: Boolean = nextYearOnly
-              if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-              } else {
-                Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-              }
-            case None =>
-              if (nextYearOnly) {
-                Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-              } else {
-                Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
-              }
+          val isVoluntaryCurrentYear: Boolean = mandationStatus.currentYearStatus.isVoluntary
+          val isVoluntaryNextYear: Boolean = mandationStatus.nextYearStatus.isVoluntary
+
+          if (isEnabled(WhenDoYouWantToStartPage) && isVoluntaryCurrentYear && isVoluntaryNextYear) {
+            Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show())
+          } else {
+            eligibilityInterrupt match {
+              case Some(_) =>
+                val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+                val isEligibleNextYearOnly: Boolean = nextYearOnly
+
+                if (isMandatedCurrentYear || isEligibleNextYearOnly) {
+                  Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+                } else {
+                  Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
+                }
+              case None =>
+                if (nextYearOnly) {
+                  Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+                } else {
+                  Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+                }
+            }
           }
         case PrePopResult.PrePopFailure(error) =>
           throw new InternalServerException(

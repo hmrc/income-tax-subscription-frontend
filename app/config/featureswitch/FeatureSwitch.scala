@@ -32,7 +32,8 @@ object FeatureSwitch {
     AgentRelationshipSingleCall,
     OptBackIn,
     TaxYear26To27Plus,
-    ClaimEnrolmentOrigins
+    ClaimEnrolmentOrigins,
+    WhenDoYouWantToStartPage
   )
 
   def apply(str: String): FeatureSwitch =
@@ -72,4 +73,8 @@ object FeatureSwitch {
     override val displayText: String = "Claim enrolment origins"
   }
 
+  case object WhenDoYouWantToStartPage extends FeatureSwitch {
+    override val name: String = s"$prefix.when-do-you-want-to-start-page"
+    override val displayText: String = "WhenDoYouWantToStart Page"
+  }
 }

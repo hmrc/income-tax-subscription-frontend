@@ -20,7 +20,7 @@ import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.eligibility.ClientCanSignUp

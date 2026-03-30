@@ -16,6 +16,8 @@
 
 package helpers.servicemocks
 
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.status.{MandationStatus, MandationStatusModel, MandationStatusRequest}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}

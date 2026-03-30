@@ -64,6 +64,10 @@ POST        /business/what-year-to-sign-up                       controllers.ind
 GET         /tax-year/sign-up-early-next-year-voluntary          controllers.individual.tasklist.taxyear.NextYearMandatorySignUpController.show(editMode: Boolean ?= false)
 POST        /tax-year/sign-up-early-next-year-voluntary          controllers.individual.tasklist.taxyear.NextYearMandatorySignUpController.submit(editMode: Boolean ?= false)
 
+#When Do You Want To Start Routes
+GET         /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
+POST        /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
+
 # Accounting Period
 GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
 POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit

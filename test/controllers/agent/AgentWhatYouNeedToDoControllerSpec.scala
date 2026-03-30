@@ -42,6 +42,7 @@ class AgentWhatYouNeedToDoControllerSpec
     with MockIdentifierAction
     with MockConfirmedClientJourneyRefiner
     with MockGetEligibilityStatusService
+    with MockMandationStatusService
     with MockSubscriptionDetailsService
     with MockSessionDataService {
 
@@ -92,6 +93,7 @@ class AgentWhatYouNeedToDoControllerSpec
 
       "the user is voluntary but only eligible for next year" in new Setup {
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
+        mockGetMandationService(Voluntary, Voluntary)
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
         when(whatYouNeedToDo(
@@ -110,6 +112,7 @@ class AgentWhatYouNeedToDoControllerSpec
       }
       "the user is mandated for the current year and eligible for all" in new Setup {
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+        mockGetMandationService(Mandated, Voluntary)
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
@@ -131,6 +134,7 @@ class AgentWhatYouNeedToDoControllerSpec
       }
       "the user is mandated for the next year and eligible for all" in new Setup {
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+        mockGetMandationService(Voluntary, Mandated)
         mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
         mockGetAllSessionData(SessionData(Map(
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
@@ -154,6 +158,7 @@ class AgentWhatYouNeedToDoControllerSpec
       "user is eligible for both years" when {
         "user is voluntary" in new Setup {
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+          mockGetMandationService(Voluntary, Voluntary)
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
           mockGetAllSessionData(SessionData(Map(
             ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
@@ -217,6 +222,7 @@ class AgentWhatYouNeedToDoControllerSpec
         }
         "user is mandated" in new Setup {
           mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
+          mockGetMandationService(Mandated, Voluntary)
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
 
           when(whatYouNeedToDo(
