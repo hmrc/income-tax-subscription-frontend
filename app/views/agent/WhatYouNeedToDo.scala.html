@@ -46,7 +46,15 @@
 
     <h2 class="govuk-heading-m">@messages("agent.what-you-need-to-do.h2.2")</h2>
 
-    <p class="govuk-body">@messages("agent.what-you-need-to-do.p3")</p>
+    <p class="govuk-body">
+        @Html(messages(
+            key = "agent.what-you-need-to-do.p3",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                text = messages("agent.what-you-need-to-do.p3.link-text"),
+                href = Some(messages("agent.what-you-need-to-do.p3.link-href"))
+            ))
+        ))
+    </p>
 
     <p class="govuk-body">@messages("agent.what-you-need-to-do.p4")</p>
 
