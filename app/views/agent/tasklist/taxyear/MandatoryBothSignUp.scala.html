@@ -1,0 +1,58 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.templates.AgentMainTemplate
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import services.AccountingPeriodService
+
+@this(
+    mainTemplate: AgentMainTemplate,
+    continueButton: ContinueButton,
+    form: FormWithCSRF,
+    pageHeadingHelper: PageHeadingHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+)
+
+@(postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title = messages("agent.tax-year.mm.heading")) {
+
+    @pageHeadingHelper(
+        heading = messages("agent.tax-year.mm.heading"),
+        caption = messages("agent.tax-year.mm.caption", clientName, clientNino),
+        isSection = false
+    )
+
+    <p class="govuk-body">
+        @messages("agent.tax-year.mm.paragraph.1", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)
+    </p>
+
+    @form(action = postAction) {
+        @continueButton(isEditMode = isEditMode, alternateText = Some(messages("agent.non-eligible-voluntary.sign-up")))
+    }
+
+    <div class="govuk-form-group">
+        <div>
+            <p class="govuk-body">
+                @Html(messages(
+                key = "agent.client-can-sign-up.check-another",
+                args = <a class="govuk-link" href={controllers.agent.routes.AddAnotherClientController.addAnother().url}>{messages("agent.client-can-sign-up.check-another-link")}</a>, clientName
+                ))
+            </p>
+        </div>
+    </div>
+}

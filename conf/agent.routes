@@ -156,3 +156,6 @@ GET         /hand-offs/already-signed-up-confirm-income          controllers.age
 
 GET         /non-eligible-voluntary                              controllers.agent.eligibility.NonEligibleVoluntaryController.show
 POST        /non-eligible-voluntary                              controllers.agent.eligibility.NonEligibleVoluntaryController.submit
+
+GET         /tax-year/sign-up-mandatory-both-year                controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-mandatory-both-year                controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)

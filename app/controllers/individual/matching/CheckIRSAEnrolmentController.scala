@@ -71,11 +71,15 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
             mandationStatusService.getMandationStatus(request.sessionData).map { mandationStatus =>
               val isVoluntaryCurrentYear: Boolean = mandationStatus.currentYearStatus.isVoluntary
               val isVoluntaryNextYear: Boolean = mandationStatus.nextYearStatus.isVoluntary
+              val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
+              val isMandatedNextYear: Boolean = mandationStatus.nextYearStatus.isMandated
 
               val nextCall =
                 if (isVoluntaryCurrentYear && isVoluntaryNextYear) {
                   controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
-                } else {
+                } else if (isEnabled(WhenDoYouWantToStartPage) && isMandatedCurrentYear && isMandatedNextYear) {
+                    controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show()
+              } else {
                   controllers.individual.routes.YouCanSignUpController.show
                 }
               Redirect(nextCall).withJourneyState(SignUp)
