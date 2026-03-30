@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.controllist
+package controllers.individual.tasklist.taxyear
 
 import _root_.config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
@@ -22,7 +22,7 @@ import config.AppConfig
 import play.api.mvc.*
 import services.*
 import utilities.AccountingPeriodUtil
-import views.html.individual.eligibility.NonEligibleVoluntary
+import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

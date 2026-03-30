@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package views.individual.eligibility
+package views.individual.tasklist.taxyear
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.html.individual.eligibility.NonEligibleVoluntary
+import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 class NonEligibleVoluntaryViewSpec extends ViewSpec {
 
   val startYear = 2025
   val endYear = 2026
-  
+
   def nonEligibleVoluntary: NonEligibleVoluntary = app.injector.instanceOf[NonEligibleVoluntary]
 
   def page(): HtmlFormat.Appendable =
@@ -57,7 +57,7 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
         document().selectHead("form").attr("method") mustBe testCall.method
         document().selectHead("form").attr("action") mustBe testCall.url
       }
-      
+
       "has an accept and continue button to submit the form" in {
         document().selectHead("form").selectHead("button").text mustBe NonEligibleVoluntaryMessages.continue
       }

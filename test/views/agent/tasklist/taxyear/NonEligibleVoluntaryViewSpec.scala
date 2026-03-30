@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package views.agent.eligibility
+package views.agent.tasklist.taxyear
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.html.agent.WhatYouNeedToDo
-import views.html.agent.eligibility.NonEligibleVoluntary
-
-import scala.util.Random
+import views.html.agent.tasklist.taxyear.NonEligibleVoluntary
 
 class NonEligibleVoluntaryViewSpec extends ViewSpec {
 

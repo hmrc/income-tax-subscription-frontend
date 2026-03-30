@@ -62,13 +62,26 @@ GET         /register-for-SA                        controllers.agent.matching.N
 GET         /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
 POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
 
-#Voluntary Current Mandatory Next Year Sign Up Routes
-GET         /tax-year/sign-up-early-next-year-voluntary        controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.show(editMode: Boolean ?= false)
-POST        /tax-year/sign-up-early-next-year-voluntary        controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.submit(editMode: Boolean ?= false)
-
 #When Do You Want To Start Routes
-GET         /tax-year/select-tax-year                            controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
-POST        /tax-year/select-tax-year                            controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
+GET         /tax-year/select-tax-year                           controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
+POST        /tax-year/select-tax-year                           controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
+
+#Voluntary Current Mandatory Next Year Sign Up Routes
+GET         /tax-year/sign-up-early-next-year-voluntary         controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-early-next-year-voluntary         controllers.agent.tasklist.taxyear.NextYearMandatorySignUpController.submit(editMode: Boolean ?= false)
+
+# Non eligible / Mandated Next Year user
+GET         /tax-year/sign-up-next-year-mandatory               controllers.agent.tasklist.taxyear.NonEligibleMandatedController.show
+POST        /tax-year/sign-up-next-year-mandatory               controllers.agent.tasklist.taxyear.NonEligibleMandatedController.submit
+
+# Non eligible / Voluntary Next year
+GET         /tax-year/sign-up-next-year-voluntary               controllers.agent.tasklist.taxyear.NonEligibleVoluntaryController.show
+POST        /tax-year/sign-up-next-year-voluntary               controllers.agent.tasklist.taxyear.NonEligibleVoluntaryController.submit
+
+# Mandated both years
+GET         /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)
+
 
 # Using software
 GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
@@ -153,9 +166,3 @@ POST        /hand-offs/opted-out                                 controllers.age
 POST        /hand-offs/opted-out                                 controllers.agent.handoffs.OptedOutController.change
 
 GET         /hand-offs/already-signed-up-confirm-income          controllers.agent.handoffs.CheckClientIncomeSourcesController.show
-
-GET         /tax-year/sign-up-next-year-voluntary                controllers.agent.eligibility.NonEligibleVoluntaryController.show
-POST        /tax-year/sign-up-next-year-voluntary                controllers.agent.eligibility.NonEligibleVoluntaryController.submit
-
-GET         /tax-year/sign-up-mandatory-both-year                controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
-POST        /tax-year/sign-up-mandatory-both-year                controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)

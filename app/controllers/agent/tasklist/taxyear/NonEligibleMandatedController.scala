@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.agent.eligibility
+package controllers.agent.tasklist.taxyear
 
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.*
 import utilities.AccountingPeriodUtil
-import views.html.agent.eligibility.NonEligibleVoluntary
+import views.html.agent.tasklist.taxyear.NonEligibleMandated
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary,
-                                               identify: IdentifierAction,
-                                               journeyRefiner: ConfirmedClientJourneyRefiner
-                                              )(val appConfig: AppConfig)
-                                              (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
+class NonEligibleMandatedController @Inject()(view: NonEligibleMandated,
+                                              identify: IdentifierAction,
+                                              journeyRefiner: ConfirmedClientJourneyRefiner
+                                             )(val appConfig: AppConfig)
+                                             (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     val model = AccountingPeriodUtil.getCurrentTaxYear
     Ok(view(
-      postAction = routes.NonEligibleVoluntaryController.submit,
+      postAction = routes.NonEligibleMandatedController.submit,
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino,
       startYear = model.startDate.year.toInt,

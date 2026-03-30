@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.agent.eligibility
+package controllers.agent.tasklist.taxyear
 
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
@@ -26,7 +26,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.Result
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import views.html.agent.eligibility.NonEligibleVoluntary
+import views.html.agent.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future
 

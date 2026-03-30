@@ -186,6 +186,12 @@ business.next-year-mandatory-sign-up.para3                      = Hoffwn gofrest
 business.next-year-mandatory-sign-up.option1                    = dechrau ei ddefnyddio nawr ar gyfer y flwyddyn dreth hon, sef {0} i {1}
 business.next-year-mandatory-sign-up.option2                    = ei ddefnyddio o’r flwyddyn dreth nesaf ymlaen, sef {0} i {1}
 
+#Non eligible / Mandated User Next Year
+business.non-eligible-mandated.heading                          = Mae’n rhaid i chi ddechrau defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
+business.non-eligible-mandated.paragraph                        = Bydd yn dal i fod yn rhaid i chi gyflwyno’ch {0} ar gyfer y flwyddyn dreth hon, sef {1} i {2}, yn ôl yr arfer.
+business.non-eligible-mandated.para.link-text                   = Ffurflen Dreth Hunanasesiad
+business.non-eligible-mandated.para.link-href                   = https://www.gov.uk/self-assessment-tax-returns/sending-return.cy
+
 ## Accounting period
 accounting-period.heading                                       = Cyfnod cyfrifyddu eich busnes
 accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod i CThEF am eich incwm a threuliau busnes.
@@ -909,6 +915,12 @@ agent.business.next-year-mandatory-sign-up.subheading                    = A ydy
 agent.business.next-year-mandatory-sign-up.option1                       = Iawn
 agent.business.next-year-mandatory-sign-up.option1.hint                  = Bydd angen i chi sicrhau eich bod yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno unrhyw ddiweddariadau chwarterol sydd wedi’u methu ar gyfer y flwyddyn hyd yma
 agent.business.next-year-mandatory-sign-up.option2                       = Na
+
+#Non eligible / Mandated User Next Year
+agent.business.non-eligible-mandated.heading                             = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
+agent.business.non-eligible-mandated.caption                             = {0} - {1}
+agent.business.non-eligible-mandated.paragraph                           = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru ar gyfer y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1}).
+agent.business.non-eligible-mandated.indent                              = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1}) yn ôl yr arfer.
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
