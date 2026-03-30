@@ -16,6 +16,7 @@
 
 @import views.html.helpers.ContinueButton
 @import views.html.templates.PrincipalMainTemplate
+@import services.AccountingPeriodService
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -23,15 +24,17 @@
     form: FormWithCSRF
 )
 
-@(postAction: Call, backUrl: Option[String])(implicit request: Request[_], messages: Messages)
+@(postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.tax-year.mm.title"), backLink = backUrl) {
+@mainTemplate(title = messages("individual.tax-year.mm.heading")) {
 
-    <h1 class="govuk-heading-l">@messages("individual.what-you-need-to-do.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("individual.tax-year.mm.heading")</h1>
 
-    <p class="govuk-body">@messages("individual.tax-year.mm.paragraph")</p>
+    <p class="govuk-body">
+        @messages("individual.tax-year.mm.paragraph", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
+    </p>
 
-    @form(action = postAction) {
-        @continueButton()
-  }
+@form(action = postAction) {
+    @continueButton(isEditMode = isEditMode)
+}
 }

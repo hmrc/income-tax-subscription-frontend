@@ -184,8 +184,8 @@ business.what-year-to-sign-up.option-1.hint                     = You’ll need 
 business.what-year-to-sign-up.option-2                          = Next tax year
 
 # Tax Year Selection Mandatory Both
-individual.tax-year.mm.title                                    = You must use Making Tax Digital for Income Tax now
-individual.tax-year.mm.paragraph                                = As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from 2026 to 2027.
+individual.tax-year.mm.heading                                  = You must use Making Tax Digital for Income Tax now
+individual.tax-year.mm.paragraph                                = As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from {0} to {1}.
 
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = You must use Making Tax Digital for Income Tax next tax year, {0} to {1}
@@ -910,6 +910,11 @@ agent.business.what-year-to-sign-up.option-2                    = Next tax year
 agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to use your software to send any missed quarterly updates for the year so far
 agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
 agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
+
+# Agent Tax Year Selection Mandatory Both
+agent.tax-year.mm.heading                                       = Your client must use Making Tax Digital for Income Tax now
+agent.tax-year.mm.caption                                       = {0} - {1}
+agent.tax-year.mm.paragraph.1                                   = As your client’s total annual income from self-employment or property is over £50,000, they must use Making Tax Digital for Income Tax for the tax year {0} to {1} and beyond.
 
 #Voluntary Current Mandatory Next Year Sign Up
 agent.business.next-year-mandatory-sign-up.heading                       = Your client must use Making Tax Digital for Income Tax next tax year, {0} to {1}
