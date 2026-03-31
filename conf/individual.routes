@@ -178,8 +178,8 @@ POST        /hand-offs/check-income-sources                      controllers.ind
 GET         /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.show
 POST        /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.submit
 
-GET         /non-eligible-voluntary                              controllers.individual.controllist.NonEligibleVoluntaryController.show
-POST        /non-eligible-voluntary                              controllers.individual.controllist.NonEligibleVoluntaryController.submit
+GET         /tax-year/sign-up-next-year-voluntary                controllers.individual.controllist.NonEligibleVoluntaryController.show
+POST        /tax-year/sign-up-next-year-voluntary                controllers.individual.controllist.NonEligibleVoluntaryController.submit
 
-GET         /tax-year/sign-up-mandatory-both-year                     controllers.individual.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
-POST        /tax-year/sign-up-mandatory-both-year                     controllers.individual.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)
+GET         /tax-year/sign-up-mandatory-both-year                controllers.individual.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
+POST        /tax-year/sign-up-mandatory-both-year                controllers.individual.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)
