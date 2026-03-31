@@ -52,7 +52,7 @@ class WhenDoYouWantToStartController @Inject()(whenDoYouWantToStart: WhenDoYouWa
       postAction = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.submit(editMode = isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode,
-      hideContent = isDisabled(TaxYear26To27Plus)
+      hideContent = isEnabled(TaxYear26To27Plus)
     )
   }
 
