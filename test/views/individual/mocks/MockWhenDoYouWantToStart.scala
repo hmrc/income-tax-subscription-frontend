@@ -34,7 +34,7 @@ trait MockWhenDoYouWantToStart extends PlaySpec with MockitoSugar with BeforeAnd
   }
 
   def mockView(): Unit = {
-    when(whenDoYouWantToStart(any(), any(), any(), any())(any(), any()))
+    when(whenDoYouWantToStart(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 
