@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.individual.controllist
+package controllers.individual.tasklist.taxyear
 
 import config.{AppConfig, MockConfig}
-import controllers.ControllerSpec
 import controllers.individual.ControllerBaseSpec
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +27,7 @@ import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLo
 import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockAuthService
 import services.mocks.MockAuditingService
-import views.html.individual.eligibility.NonEligibleVoluntary
+import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future
 

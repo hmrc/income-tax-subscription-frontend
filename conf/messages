@@ -206,6 +206,12 @@ business.when-do-you-want-to-start.para2                         = Making Tax Di
 business.when-do-you-want-to-start.option-1                      = I want to start in the current tax year, {0} to {1}
 business.when-do-you-want-to-start.option-2                      = I want to start from the next tax year, {0} to {1}
 
+#Non eligible / Mandated User Next Year
+business.non-eligible-mandated.heading                          = You must start using Making Tax Digital for Income Tax next tax year, {0} to {1}
+business.non-eligible-mandated.paragraph                        = You must still submit your {0} for this tax year, {1} to {2}, as normal.
+business.non-eligible-mandated.para.link-text                   = Self Assessment tax return
+business.non-eligible-mandated.para.link-href                   = https://www.gov.uk/self-assessment-tax-returns/sending-return
+
 ## Accounting period
 accounting-period.heading                                       = Your business accounting period
 accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
@@ -942,6 +948,12 @@ agent.business.when-do-you-want-to-start.para4                         = I want 
 agent.business.when-do-you-want-to-start.option1                       = start in the current tax year, {0} to {1}
 agent.business.when-do-you-want-to-start.option1.hint                  = You or your client will need to use your software to send any missed quarterly updates for the year so far
 agent.business.when-do-you-want-to-start.option2                       = start from the next tax year, {0} to {1}
+
+#Non eligible / Mandated User Next Year
+agent.business.non-eligible-mandated.heading                                 = Your client must use Making Tax Digital for Income Tax next tax year, {0} to {1}
+agent.business.non-eligible-mandated.caption                                 = {0} – {1}
+agent.business.non-eligible-mandated.paragraph                               = You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up for next tax year (6 April {0} to 5 April {1}).
+agent.business.non-eligible-mandated.indent                                  = You’ll need to make sure your client submits their Self Assessment tax return for the current tax year (6 April {0} to 5 April {1}) as normal.
 
 # Agent Overseas Property Start Date Before Limit
 agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
