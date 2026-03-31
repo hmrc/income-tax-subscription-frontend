@@ -111,6 +111,7 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
       postAction = testCall,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = editMode,
+      hideContent = false
     )
 
   private def document(editMode: Boolean = false, hasError: Boolean = false): Document =
