@@ -14,11 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import config.FrontendAppConfig
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
 @import views.html.helpers.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import java.time.LocalDate
+@import utilities.ImplicitDateFormatterImpl
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -28,7 +32,7 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(accountingYearForm: Form[AccountingYear], postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+@(accountingYearForm: Form[AccountingYear], postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean,  hideContent: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("business.when-do-you-want-to-start.heading"), optForm = Some(accountingYearForm)) {
 
@@ -38,9 +42,11 @@
         @messages("business.when-do-you-want-to-start.para")
     </p>
 
-    <p class="govuk-body">
-        @messages("business.when-do-you-want-to-start.para2")
-    </p>
+    @if(!hideContent) {
+        <p class="govuk-body">
+            @messages("business.when-do-you-want-to-start.para2")
+        </p>
+    }
 
     @form(action = postAction) {
         @radioHelper(

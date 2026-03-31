@@ -28,6 +28,8 @@ import play.twirl.api.Html
 import services.*
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.taxyear.WhenDoYouWantToStart
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
+import config.featureswitch.FeatureSwitching
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,14 +44,15 @@ class WhenDoYouWantToStartController @Inject()(whenDoYouWantToStart: WhenDoYouWa
                                                val authService: AuthService,
                                                val appConfig: AppConfig)
                                               (implicit val ec: ExecutionContext,
-                                               mcc: MessagesControllerComponents) extends SignUpController {
+                                               mcc: MessagesControllerComponents) extends SignUpController with FeatureSwitching {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whenDoYouWantToStart(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.submit(editMode = isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
-      isEditMode = isEditMode
+      isEditMode = isEditMode,
+      hideContent = isDisabled(TaxYear26To27Plus)
     )
   }
 
