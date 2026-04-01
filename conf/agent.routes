@@ -79,8 +79,8 @@ GET         /tax-year/sign-up-next-year-voluntary               controllers.agen
 POST        /tax-year/sign-up-next-year-voluntary               controllers.agent.tasklist.taxyear.NonEligibleVoluntaryController.submit
 
 # Mandated both years
-GET         /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.show(editMode: Boolean ?= false)
-POST        /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.submit(editMode: Boolean ?= false)
+GET         /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.show
+POST        /tax-year/sign-up-mandatory-both-year               controllers.agent.tasklist.taxyear.MandatoryBothSignUpController.submit
 
 
 # Using software

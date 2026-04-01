@@ -15,6 +15,8 @@
  *@
 
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 @import models._
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models.YesNo
@@ -31,14 +33,16 @@
     pageHeadingHelper: PageHeadingHelper,
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    featureSwitching: FeatureSwitchingImpl
 )
 
 @(postAction: Call,
     backUrl: String,
     completeDetails: CompleteDetails,
     clientDetails: ClientDetails,
-    softwareStatus: Option[YesNo]
+    softwareStatus: Option[YesNo],
+    isMandatedNextYear: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
@@ -204,7 +208,15 @@
                     Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                                href = if(featureSwitching.isEnabled(WhenDoYouWantToStartPage)) {
+                                    if(isMandatedNextYear) {
+                                        controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url
+                                    } else {
+                                        controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url
+                                    }
+                                } else {
+                                    controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url
+                                },
                                 content = Text(messages("base.change")),
                                 visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.heading"))
                             )

@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitchingImpl
+@import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models._
 @import models.common.business.SelfEmploymentData
@@ -33,14 +35,16 @@
         implicitDateFormatter: ImplicitDateFormatterImpl,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
         form: FormWithCSRF,
-        appConfig: AppConfig
+        appConfig: AppConfig,
+        featureSwitching: FeatureSwitchingImpl
 )
 
 @(
         postAction: Call,
         completeDetails: CompleteDetails,
         maybeAccountingPeriod: Option[BusinessAccountingPeriod],
-        softwareStatus: Option[YesNo]
+        softwareStatus: Option[YesNo],
+        isMandatedNextYear: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
@@ -74,9 +78,9 @@
     }
 
     <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-    <a href="#" data-module="hmrc-print-link" class="govuk-link">
-        @messages("individual.global-check-your-answers.print-link")
-    </a>
+        <a href="#" data-module="hmrc-print-link" class="govuk-link">
+            @messages("individual.global-check-your-answers.print-link")
+        </a>
     </p>
 
 }
@@ -117,7 +121,15 @@
                     Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
+                                href = if(featureSwitching.isEnabled(WhenDoYouWantToStartPage)) {
+                                    if(isMandatedNextYear) {
+                                        controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url
+                                    } else {
+                                        controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url
+                                    }
+                                } else {
+                                    controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url
+                                },
                                 content = Text(messages("base.change")),
                                 visuallyHiddenText = Some(messages("individual.global-check-your-answers.tax-year.label"))
                             )

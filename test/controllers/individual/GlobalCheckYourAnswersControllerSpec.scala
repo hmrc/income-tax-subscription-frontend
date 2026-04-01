@@ -21,6 +21,7 @@ import models.common.AccountingYearModel
 import models.common.BusinessAccountingPeriod.SixthAprilToFifthApril
 import models.common.business.{Address, Country}
 import models.common.subscription.CreateIncomeSourcesModel
+import models.status.MandationStatus.Voluntary
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -46,7 +47,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockUTRService
   with MockReferenceRetrieval
   with MockSessionDataService
-  with MockThrottlingService {
+  with MockThrottlingService
+  with MockMandationStatusService {
 
   object TestGlobalCheckYourAnswersController extends GlobalCheckYourAnswersController(
     signUpOrchestrationService = mock[SignUpOrchestrationService],
@@ -57,7 +59,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
     referenceRetrieval = mockReferenceRetrieval,
     globalCheckYourAnswers = mock[GlobalCheckYourAnswers],
     sessionDataService = mockSessionDataService,
-    throttlingService = mockThrottlingService
+    throttlingService = mockThrottlingService,
+    mandationStatusService = mockMandationStatusService
   )(
     auditingService = mockAuditingService,
     authService = mockAuthService,
@@ -84,7 +87,8 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
       referenceRetrieval = mockReferenceRetrieval,
       globalCheckYourAnswers = mockGlobalCheckYourAnswers,
       sessionDataService = mockSessionDataService,
-      throttlingService = mockThrottlingService
+      throttlingService = mockThrottlingService,
+      mandationStatusService = mockMandationStatusService
     )(
       auditingService = mockAuditingService,
       authService = mockAuthService,
@@ -145,9 +149,12 @@ class GlobalCheckYourAnswersControllerSpec extends ControllerBaseSpec
         when(mockSubscriptionDetailsService.fetchAccountingPeriod(any())(any()))
           .thenReturn(Future.successful(Some(SixthAprilToFifthApril)))
 
+        mockGetMandationService(Voluntary, Voluntary)
+
         when(mockGlobalCheckYourAnswers(
           ArgumentMatchers.eq(routes.GlobalCheckYourAnswersController.submit),
           ArgumentMatchers.eq(completeDetails),
+          ArgumentMatchers.any(),
           ArgumentMatchers.any(),
           ArgumentMatchers.any()
         )(ArgumentMatchers.any(), ArgumentMatchers.any()))

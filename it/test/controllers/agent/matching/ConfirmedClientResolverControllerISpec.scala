@@ -91,7 +91,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
       }
     }
     "the WhenDoYouWantToStartPage feature switch is enabled" when {
-      "the user is eligible and voluntary for both current year and next year" should {
+      "CY is eligible and voluntary, CY+1 is eligible and voluntary" should {
         "redirect to the WhenDoYouWantToStartController page" in {
           enable(WhenDoYouWantToStartPage)
 
@@ -105,6 +105,85 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+      "CY is eligible and voluntary, CY+1 is eligible and mandated" should {
+        "redirect to the NextYearMandatorySignUpController page" in {
+          enable(WhenDoYouWantToStartPage)
+
+          AuthStub.stubAuthSuccess()
+          stubFullSession(statusNext = Mandated)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          stubFullPrePop()
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show().url)
+          )
+
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+
+      "CY is eligible and mandated" should {
+        "redirect to the MandatoryBothSignUpController page" in {
+          enable(WhenDoYouWantToStartPage)
+
+          AuthStub.stubAuthSuccess()
+          stubFullSession(statusCurrent = Mandated)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          stubFullPrePop()
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show.url)
+          )
+
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+
+      "CY is ineligible, CY+1 is eligible and voluntary" should {
+        "redirect to the NonEligibleVoluntaryController page" in {
+          enable(WhenDoYouWantToStartPage)
+
+          AuthStub.stubAuthSuccess()
+          stubFullSession(eligibleCurrent = false)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          stubFullPrePop()
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show.url)
+          )
+
+          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+
+      "CY is ineligible, CY+1 is eligible and mandted" should {
+        "redirect to the NonEligibleMandatedController page" in {
+          enable(WhenDoYouWantToStartPage)
+
+          AuthStub.stubAuthSuccess()
+          stubFullSession(eligibleCurrent = false, statusNext = Mandated)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          stubFullPrePop()
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show.url)
           )
 
           getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)

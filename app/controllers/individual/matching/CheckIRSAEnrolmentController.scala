@@ -27,6 +27,7 @@ import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
 import models.EligibilityStatus
 import models.requests.individual.IdentifierRequest
+import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{GetEligibilityStatusService, MandationStatusService, UTRService}
 import views.html.individual.IRSACredential
@@ -64,38 +65,33 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
   }
 
   override protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result] = {
-    eligibilityStatusService.getEligibilityStatus(request.sessionData).flatMap {
-      case EligibilityStatus(eligibleCurrentYear, _, _) =>
-        if (eligibleCurrentYear) {
-          if (isEnabled(WhenDoYouWantToStartPage)) {
-            mandationStatusService.getMandationStatus(request.sessionData).map { mandationStatus =>
-              val isVoluntaryCurrentYear: Boolean = mandationStatus.currentYearStatus.isVoluntary
-              val isVoluntaryNextYear: Boolean = mandationStatus.nextYearStatus.isVoluntary
-              val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-              val isMandatedNextYear: Boolean = mandationStatus.nextYearStatus.isMandated
 
-              val nextCall =
-                if (isVoluntaryCurrentYear && isVoluntaryNextYear) {
-                  controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
-                } else if (isEnabled(WhenDoYouWantToStartPage) && isMandatedCurrentYear && isMandatedNextYear) {
-                    controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show()
-              } else {
-                  controllers.individual.routes.YouCanSignUpController.show
-                }
-              Redirect(nextCall).withJourneyState(SignUp)
-            }
-          } else {
-            Future.successful(
-              Redirect(controllers.individual.routes.YouCanSignUpController.show)
-                .withJourneyState(SignUp)
-            )
+    val next = if (isEnabled(WhenDoYouWantToStartPage)) {
+      eligibilityStatusService.getEligibilityStatus(request.sessionData) flatMap { eligibilityStatus =>
+        mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
+          (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
+            case (true, Voluntary, Voluntary) =>
+              controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
+            case (true, Voluntary, Mandated) =>
+              controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()
+            case (true, Mandated, _) =>
+              controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show
+            case (false, _, Voluntary) =>
+              controllers.individual.tasklist.taxyear.routes.NonEligibleVoluntaryController.show
+            case (false, _, Mandated) =>
+              controllers.individual.tasklist.taxyear.routes.NonEligibleMandatedController.show
           }
-        } else {
-          Future.successful(
-            Redirect(controllers.individual.controllist.routes.CannotSignUpThisYearController.show)
-              .withJourneyState(SignUp)
-          )
         }
+      }
+    } else {
+      eligibilityStatusService.getEligibilityStatus(request.sessionData) map {
+        case EligibilityStatus(true, _, _) =>
+          controllers.individual.routes.YouCanSignUpController.show
+        case _ =>
+          controllers.individual.controllist.routes.CannotSignUpThisYearController.show
+      }
     }
+
+    next.map(Redirect(_).withJourneyState(SignUp))
   }
 }

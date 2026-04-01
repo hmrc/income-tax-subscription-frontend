@@ -45,6 +45,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  ninoService: NinoService,
                                                  utrService: UTRService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
+                                                 mandationStatusService: MandationStatusService,
                                                  throttlingService: ThrottlingService)
                                                 (val appConfig: AppConfig,
                                                  val subscriptionDetailsService: SubscriptionDetailsService,
@@ -54,17 +55,18 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      Future.successful(
+      mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
         Ok(
           view(
             postAction = routes.GlobalCheckYourAnswersController.submit,
             backUrl = backUrl,
             completeDetails = completeDetails,
             clientDetails = request.clientDetails,
-            sessionData = request.request.sessionData
+            sessionData = request.sessionData,
+            isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
           )
         )
-      )
+      }
     }
   }
 
@@ -113,14 +115,16 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                    backUrl: String,
                    completeDetails: CompleteDetails,
                    clientDetails: ClientDetails,
-                   sessionData: SessionData)
+                   sessionData: SessionData,
+                   isMandatedNextYear: Boolean)
                   (implicit request: Request[AnyContent]): Html = {
     globalCheckYourAnswers(
       postAction = postAction,
       backUrl = backUrl,
       completeDetails = completeDetails,
       clientDetails = clientDetails,
-      sessionData.fetchSoftwareStatus
+      softwareStatus = sessionData.fetchSoftwareStatus,
+      isMandatedNextYear = isMandatedNextYear
     )
   }
 

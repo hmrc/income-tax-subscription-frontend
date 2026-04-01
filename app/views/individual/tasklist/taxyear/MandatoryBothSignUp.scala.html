@@ -24,7 +24,7 @@
     form: FormWithCSRF
 )
 
-@(postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, endYearOfCurrentTaxPeriod: Int)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("individual.tax-year.mm.heading")) {
 
@@ -35,6 +35,6 @@
     </p>
 
     @form(action = postAction) {
-        @continueButton(isEditMode = isEditMode)
+        @continueButton()
     }
 }

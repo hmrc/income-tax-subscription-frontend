@@ -16,15 +16,13 @@
 
 package views.agent.tasklist.taxyear
 
-import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.twirl.api.Html
 import services.AccountingPeriodService
 import utilities.ViewSpec
 import views.html.agent.tasklist.taxyear.MandatoryBothSignUp
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
 
 class MandatoryBothSignUpViewSpec extends ViewSpec {
 
@@ -41,7 +39,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
   "Tax Year Selection Mandatory Both" must {
 
     "have the correct template details" in new TemplateViewTest(
-      view = page(editMode = false, clientName = fullName, clientNino = nino),
+      view = page(clientName = fullName, clientNino = nino),
       isAgent = true,
       title = MandatoryBothSignUpMessages.heading
     )
@@ -77,19 +75,17 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
     val continue: String = "Sign up this client"
   }
 
-  private def page(editMode: Boolean, clientName: String = fullName, clientNino: String = nino): Html = {
+  private def page(clientName: String = fullName, clientNino: String = nino): Html = {
     mandatoryBothSignUp(
       postAction = testCall,
       clientName,
       clientNino,
-      endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = editMode,
+      endYearOfCurrentTaxPeriod = taxYearEnd
     )
   }
 
-  private def document(editMode: Boolean = false,
-                       clientName: String = fullName,
+  private def document(clientName: String = fullName,
                        clientNino: String = nino): Document =
-    Jsoup.parse(page(editMode = editMode, clientName, clientNino).body)
+    Jsoup.parse(page(clientName, clientNino).body)
 
 }

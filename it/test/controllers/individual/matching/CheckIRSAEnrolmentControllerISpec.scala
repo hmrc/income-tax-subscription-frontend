@@ -22,7 +22,6 @@ import connectors.stubs.{SessionDataConnectorStub, UsersGroupsSearchStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.EligibilityStub.stubEligibilityResponseBoth
-import helpers.servicemocks.MandationStatusStub.stubGetMandationStatus
 import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub, MandationStatusStub}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.{MandationStatusModel, MandationStatusRequest}
@@ -51,6 +50,11 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       exemptionReason = status.exemptionReason
     )
     SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, status)(OK)
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(WhenDoYouWantToStartPage)
   }
 
   "GET /use-self-assessment-details" should {
@@ -165,85 +169,195 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       }
 
       "the User is interacting with the mandation-status flow" when {
+        "the WhenDoYouWantToStartPage feature switch is enabled" when {
+          "CY is eligible and voluntary, CY+1 is eligible and voluntary" in {
+            enable(WhenDoYouWantToStartPage)
+            AuthStub.stubAuthSuccess()
 
-        "feature switch is enabled and both years are voluntary" in {
-          enable(WhenDoYouWantToStartPage)
-          AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.NINO -> JsString(testNino)
+            ))
 
-          SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.NINO -> JsString(testNino)
-          ))
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
 
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+            setup(eligibleCurrentYear = true)
 
-          setup(eligibleCurrentYear = true)
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
 
-          MandationStatusStub.stubGetMandationStatus(
-            Json.toJson(MandationStatusRequest(testNino, testUtr))
-          )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
+            SessionDataConnectorStub.stubSaveSessionData(
+              ITSASessionKeys.MANDATION_STATUS,
+              MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)
+            )(OK)
 
-          SessionDataConnectorStub.stubSaveSessionData(
-            ITSASessionKeys.MANDATION_STATUS,
-            MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)
-          )(OK)
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
 
-          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+            )
+          }
 
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
-          )
+          "CY is eligible and voluntary, CY+1 is eligible and mandated" in {
+            enable(WhenDoYouWantToStartPage)
+            AuthStub.stubAuthSuccess()
+
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.NINO -> JsString(testNino)
+            ))
+
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+
+            setup(eligibleCurrentYear = true)
+
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)))
+
+            SessionDataConnectorStub.stubSaveSessionData(
+              ITSASessionKeys.MANDATION_STATUS,
+              MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)
+            )(OK)
+
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show().url)
+            )
+          }
+
+          "CY is eligible and mandated" in {
+            enable(WhenDoYouWantToStartPage)
+            AuthStub.stubAuthSuccess()
+
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.NINO -> JsString(testNino)
+            ))
+
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+
+            setup(eligibleCurrentYear = true)
+
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Mandated, nextYearStatus = Mandated)))
+
+            SessionDataConnectorStub.stubSaveSessionData(
+              ITSASessionKeys.MANDATION_STATUS,
+              MandationStatusModel(currentYearStatus = Mandated, nextYearStatus = Mandated)
+            )(OK)
+
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show.url)
+            )
+          }
+
+          "CY is ineligible, CY+1 is eligible and voluntary" in {
+            enable(WhenDoYouWantToStartPage)
+            AuthStub.stubAuthSuccess()
+
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.NINO -> JsString(testNino)
+            ))
+
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+
+            setup(eligibleCurrentYear = false)
+
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
+
+            SessionDataConnectorStub.stubSaveSessionData(
+              ITSASessionKeys.MANDATION_STATUS,
+              MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)
+            )(OK)
+
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.tasklist.taxyear.routes.NonEligibleVoluntaryController.show.url)
+            )
+          }
+
+          "CY is ineligible, CY+1 is eligible and mandated" in {
+            enable(WhenDoYouWantToStartPage)
+            AuthStub.stubAuthSuccess()
+
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.NINO -> JsString(testNino)
+            ))
+
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+
+            setup(eligibleCurrentYear = false)
+
+            MandationStatusStub.stubGetMandationStatus(
+              Json.toJson(MandationStatusRequest(testNino, testUtr))
+            )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)))
+
+            SessionDataConnectorStub.stubSaveSessionData(
+              ITSASessionKeys.MANDATION_STATUS,
+              MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)
+            )(OK)
+
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.tasklist.taxyear.routes.NonEligibleMandatedController.show.url)
+            )
+          }
         }
+        "the WhenDoYouWantToStartPage feature switch is disabled" when {
+          "the user is eligible for both tax years" in {
+            AuthStub.stubAuthSuccess()
 
-        "feature switch is enabled and one or both years are not voluntary" in {
-          enable(WhenDoYouWantToStartPage)
-          AuthStub.stubAuthSuccess()
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
 
-          SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.NINO -> JsString(testNino)
-          ))
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
 
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
+            setup(eligibleCurrentYear = true)
 
-          setup(eligibleCurrentYear = true)
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
 
-          MandationStatusStub.stubGetMandationStatus(
-            Json.toJson(MandationStatusRequest(testNino, testUtr))
-          )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)))
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
+            )
+          }
 
-          SessionDataConnectorStub.stubSaveSessionData(
-            ITSASessionKeys.MANDATION_STATUS,
-            MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Mandated)
-          )(OK)
+          "the user is eligible for next year only" in {
+            AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
 
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
-          )
-        }
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
 
-        "feature switch is disabled and user is eligible" in {
-          disable(WhenDoYouWantToStartPage)
-          AuthStub.stubAuthSuccess()
+            setup(eligibleCurrentYear = false)
 
-          SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.UTR -> JsString(testUtr)
-          ))
+            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
 
-          EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
-
-          setup(eligibleCurrentYear = true)
-
-          val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
-          )
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
+            )
+          }
         }
       }
 

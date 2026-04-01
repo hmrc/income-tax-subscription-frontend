@@ -25,13 +25,16 @@ import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
+import models.EligibilityStatus
 import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
-import models.{EligibilityStatus, SessionData}
+import models.requests.agent.IdentifierRequest
+import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.mvc.*
 import services.*
 import services.PrePopDataService.PrePopResult
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import utilities.UserMatchingSessionUtil.*
 
 import javax.inject.{Inject, Singleton}
@@ -53,92 +56,119 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
-    val sessionData = request.sessionData
-    throttlingService.throttled(AgentStartOfJourneyThrottle, sessionData) {
-      getEligibilityStatusService.getEligibilityStatus(sessionData) flatMap {
+    handleThrottleCheck {
+      ninoService.getNino(request.sessionData) flatMap { nino =>
+        handleEligibility(nino)(
+          goToCannotTakePart,
+          handleEligibleUser(nino, _)
+        )
+      }
+    }
+  }
+
+  private def handleThrottleCheck(f: => Future[Result])(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+    throttlingService.throttled(AgentStartOfJourneyThrottle, request.sessionData) {
+      f
+    }
+  }
+
+  private def handleEligibility(nino: String)
+                               (ineligible: => Future[Result], eligible: EligibilityStatus => Future[Result])
+                               (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+    utrService.getUTR(request.sessionData) flatMap { utr =>
+      getEligibilityStatusService.getEligibilityStatus(request.sessionData) flatMap {
         case EligibilityStatus(false, false, _) =>
-          for {
-            nino <- ninoService.getNino(sessionData)
-            utr <- utrService.getUTR(sessionData)
-            _ <- auditingService.audit(EligibilityAuditModel(
-              agentReferenceNumber = Some(request.arn),
-              utr = Some(utr),
-              nino = Some(nino),
-              eligibility = "ineligible",
-              failureReason = Some("control-list-ineligible")
-            ))
-          } yield {
-            Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
-              .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
-              .removingFromSession(FailedClientMatching)
-              .clearUserDetailsExceptName
+          auditIneligibleResult(nino, utr, request.arn) flatMap { _ =>
+            ineligible
           }
-        case EligibilityStatus(thisYear, _, _) =>
-          for {
-            result <- goToSignUpClient(
-              arn = request.arn,
-              nextYearOnly = !thisYear,
-              sessionData = sessionData
-            )
-          } yield {
-            result.addingToSession(
-              JourneyStateKey -> AgentSignUp.name
-            )
+        case eligibilityStatus =>
+          auditEligibleResult(nino, utr, request.arn, eligibilityStatus) flatMap { _ =>
+            eligible(eligibilityStatus)
           }
       }
     }
   }
 
-  private def goToSignUpClient(arn: String, nextYearOnly: Boolean, sessionData: SessionData)
-                              (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
-    for {
-      reference <- referenceRetrieval.getReference(Some(arn), sessionData)
-      nino <- ninoService.getNino(sessionData)
-      utr <- utrService.getUTR(sessionData)
-      _ <- auditingService.audit(EligibilityAuditModel(
-        agentReferenceNumber = Some(arn),
-        utr = Some(utr),
-        nino = Some(nino),
-        eligibility = if (nextYearOnly) "eligible - next tax year only" else "eligible",
-        failureReason = None
-      ))
-      eligibilityInterrupt <- subscriptionDetailsService.fetchEligibilityInterruptPassed(reference)
-      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-      prePopResult <- prePopDataService.prePopIncomeSources(reference, nino)
-    } yield {
-      prePopResult match {
-        case PrePopResult.PrePopSuccess =>
-          val isVoluntaryCurrentYear: Boolean = mandationStatus.currentYearStatus.isVoluntary
-          val isVoluntaryNextYear: Boolean = mandationStatus.nextYearStatus.isVoluntary
-          val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-          val isMandatedNextYear: Boolean = mandationStatus.nextYearStatus.isMandated
+  private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+    referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
+      handlePrePop(reference, nino) {
+        goToSignUpClient(reference, eligibilityStatus).map(_.addingToSession(JourneyStateKey -> AgentSignUp.name))
+      }
+    }
+  }
 
-          if (isEnabled(WhenDoYouWantToStartPage) && isVoluntaryCurrentYear && isVoluntaryNextYear) {
-            Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show())
-          } else if (isEnabled(WhenDoYouWantToStartPage) && isMandatedCurrentYear && isMandatedNextYear) {
-              Redirect(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show())
-        } else {
-            eligibilityInterrupt match {
-              case Some(_) =>
-                val isEligibleNextYearOnly: Boolean = nextYearOnly
+  private def handlePrePop(reference: String, nino: String)(result: => Future[Result])(implicit request: IdentifierRequest[_]): Future[Result] = {
+    prePopDataService.prePopIncomeSources(reference, nino) flatMap {
+      case PrePopResult.PrePopSuccess =>
+        result
+      case PrePopResult.PrePopFailure(error) =>
+        Future.failed(InternalServerException(
+          s"[ConfirmedClientResolver] - Failure occurred when pre-populating income source details. Error: $error"
+        ))
+    }
+  }
 
-                if (isMandatedCurrentYear || isEligibleNextYearOnly) {
-                  Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-                } else {
-                  Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-                }
-              case None =>
-                if (nextYearOnly) {
-                  Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-                } else {
-                  Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
-                }
+  private def goToCannotTakePart(implicit request: Request[AnyContent]): Future[Result] = {
+    Future.successful(
+      Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
+        .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
+        .removingFromSession(FailedClientMatching)
+        .clearUserDetailsExceptName
+    )
+  }
+
+  private def auditIneligibleResult(nino: String, utr: String, arn: String)(implicit request: Request[_]): Future[AuditResult] = {
+    auditingService.audit(EligibilityAuditModel(
+      agentReferenceNumber = Some(arn),
+      utr = Some(utr),
+      nino = Some(nino),
+      eligibility = "ineligible",
+      failureReason = Some("control-list-ineligible")
+    ))
+  }
+
+  private def auditEligibleResult(nino: String, utr: String, arn: String, eligibilityStatus: EligibilityStatus)
+                                 (implicit request: Request[_]): Future[AuditResult] = {
+    auditingService.audit(EligibilityAuditModel(
+      agentReferenceNumber = Some(arn),
+      utr = Some(utr),
+      nino = Some(nino),
+      eligibility = if (eligibilityStatus.eligibleNextYearOnly) "eligible - next tax year only" else "eligible",
+      failureReason = None
+    ))
+  }
+
+  private def goToSignUpClient(reference: String, eligibilityStatus: EligibilityStatus)
+                              (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
+    mandationStatusService.getMandationStatus(request.sessionData) flatMap { mandationStatus =>
+      if (isEnabled(WhenDoYouWantToStartPage)) {
+        (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
+          case (true, Voluntary, Voluntary) =>
+            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()))
+          case (true, Voluntary, Mandated) =>
+            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()))
+          case (true, Mandated, _) =>
+            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show))
+          case (false, _, Voluntary) =>
+            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show))
+          case (false, _, Mandated) =>
+            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show))
+        }
+      } else {
+        subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
+          case Some(_) =>
+            if (mandationStatus.currentYearStatus.isMandated || eligibilityStatus.eligibleNextYearOnly) {
+              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
+            } else {
+              Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
             }
-          }
-        case PrePopResult.PrePopFailure(error) =>
-          throw new InternalServerException(
-            s"[ConfirmedClientResolver] - Failure occurred when pre-populating income source details. Error: $error"
-          )
+          case None =>
+            if (eligibilityStatus.eligibleNextYearOnly) {
+              Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
+            } else {
+              Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
+            }
+        }
       }
     }
   }

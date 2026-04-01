@@ -19,45 +19,37 @@ package controllers.agent.tasklist.taxyear
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.Current
+import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import models.requests.agent.ConfirmedClientRequest
 import services.*
 import views.html.agent.tasklist.taxyear.MandatoryBothSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp:MandatoryBothSignUp,
+class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBothSignUp,
                                               identify: IdentifierAction,
                                               journeyRefiner: ConfirmedClientJourneyRefiner,
                                               accountingPeriodService: AccountingPeriodService)
                                              (val appConfig: AppConfig)
                                              (implicit mcc: MessagesControllerComponents,
-                                               ec: ExecutionContext) extends SignUpBaseController {
+                                              ec: ExecutionContext) extends SignUpBaseController {
 
-  def view(isEditMode: Boolean)(implicit request: ConfirmedClientRequest[_]): Html =
+  def view(implicit request: ConfirmedClientRequest[_]): Html =
     mandatoryBothSignUp(
-      postAction = controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.submit(editMode = isEditMode),
+      postAction = controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.submit,
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino,
-      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
-      isEditMode = isEditMode
+      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
     )
 
-  def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    Future.successful(Ok(view(isEditMode = isEditMode)))
+  def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(view)
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    Future.successful(
-      if (isEditMode) {
-        Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
-      } else {
-        Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-      }
-    )
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
   }
 }

@@ -22,8 +22,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.*
 import views.html.individual.tasklist.taxyear.MandatoryBothSignUp
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBothSignUp,
@@ -35,27 +36,19 @@ class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBoth
                                              (implicit val ec: ExecutionContext,
                                               mcc: MessagesControllerComponents) extends SignUpController {
 
-  def view(isEditMode: Boolean)(implicit request: Request[_]): Html = {
+  def view(implicit request: Request[_]): Html = {
     mandatoryBothSignUp(
-      postAction = controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.submit(isEditMode),
-      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
-      isEditMode = isEditMode
+      postAction = controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.submit,
+      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
     )
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      Future.successful(Ok(view(isEditMode = isEditMode)))
+  def show: Action[AnyContent] = Authenticated { implicit request =>
+    _ => Ok(view)
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Future.successful(
-        if (isEditMode) {
-          Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-        } else {
-          Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-        }
-      )
+      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
   }
 }

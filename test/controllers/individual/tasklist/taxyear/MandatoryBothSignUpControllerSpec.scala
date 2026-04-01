@@ -31,8 +31,8 @@ class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "MandatoryBothSignUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestMandatoryBothSignUpController.show(isEditMode = false),
-    "submit" -> TestMandatoryBothSignUpController.submit(isEditMode = false)
+    "show" -> TestMandatoryBothSignUpController.show,
+    "submit" -> TestMandatoryBothSignUpController.submit
   )
 
   object TestMandatoryBothSignUpController extends MandatoryBothSignUpController(
@@ -48,25 +48,16 @@ class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
   "show" should {
     "return OK" in {
       mockView()
-      val result = await(TestMandatoryBothSignUpController.show(isEditMode = false)(subscriptionRequest))
+      val result = await(TestMandatoryBothSignUpController.show(subscriptionRequest))
       status(result) mustBe Status.OK
     }
   }
 
-  "submit" when {
-    "not in edit mode" should {
-      "redirect to WhatYouNeedToDo" in {
-        val result = await(TestMandatoryBothSignUpController.submit(isEditMode = false)(subscriptionRequest))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-      }
-    }
-    "in edit mode" should {
-      "redirect to GlobalCheckYourAnswers" in {
-        val result = await(TestMandatoryBothSignUpController.submit(isEditMode = true)(subscriptionRequest))
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
-      }
+  "submit" should {
+    "redirect to WhatYouNeedToDo" in {
+      val result = await(TestMandatoryBothSignUpController.submit(subscriptionRequest))
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
     }
   }
 }
