@@ -16,6 +16,7 @@
 
 package views.individual
 
+import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 import models.*
 import models.common.AccountingYearModel
 import models.common.business.{Address, Country}
@@ -29,6 +30,11 @@ import views.html.individual.GlobalCheckYourAnswers
 import java.time.LocalDate
 
 class GlobalCheckYourAnswersViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(WhenDoYouWantToStartPage)
+  }
 
   "GlobalCheckYourAnswers" must {
 
@@ -120,6 +126,49 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
             value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.next),
             actions = Seq.empty
+          )
+        ))
+      }
+
+      "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is voluntary for next year" in {
+        enable(WhenDoYouWantToStartPage)
+
+        def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
+            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.current),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+              )
+            )
+          )
+        ))
+      }
+
+      "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is mandated for next year" in {
+        enable(WhenDoYouWantToStartPage)
+
+        def summaryList: Element = document(
+          details = completeDetails(taxYear = Current),
+          isMandatedNextYear = true
+        ).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
+            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.current),
+            actions = Seq(
+              SummaryListActionValues(
+                href = controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+              )
+            )
           )
         ))
       }
@@ -394,15 +443,17 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   val globalCheckYourAnswers: GlobalCheckYourAnswers = app.injector.instanceOf[GlobalCheckYourAnswers]
 
-  def page(completeDetails: CompleteDetails): Html = globalCheckYourAnswers(
+  def page(completeDetails: CompleteDetails, isMandatedNextYear: Boolean = false): Html = globalCheckYourAnswers(
     postAction = testCall,
     completeDetails = completeDetails,
     maybeAccountingPeriod = None,
-    softwareStatus = None
+    softwareStatus = None,
+    isMandatedNextYear = isMandatedNextYear
   )
 
-  def document(details: CompleteDetails = completeDetails()): Document = Jsoup.parse(page(
-    completeDetails = details
+  def document(details: CompleteDetails = completeDetails(), isMandatedNextYear: Boolean = false): Document = Jsoup.parse(page(
+    completeDetails = details,
+    isMandatedNextYear = isMandatedNextYear
   ).body)
 
   object GlobalCheckYourAnswersMessages {
@@ -422,8 +473,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     object SelectedTaxYear {
       val key: String = "Selected tax year"
-      val current: String = "2025 to 2026"
-      val next: String = "2026 to 2027"
+      val current: String = s"${AccountingPeriodUtil.getCurrentTaxStartYear} to ${AccountingPeriodUtil.getCurrentTaxEndYear}"
+      val next: String = s"${AccountingPeriodUtil.getNextTaxStartYear} to ${AccountingPeriodUtil.getNextTaxEndYear}"
     }
 
     object IncomeSources {

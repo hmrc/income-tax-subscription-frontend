@@ -62,8 +62,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
   private def page(editMode: Boolean): Html = {
     mandatoryBothSignUp(
       postAction = testCall,
-      endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = editMode,
+      endYearOfCurrentTaxPeriod = taxYearEnd
     )
   }
 

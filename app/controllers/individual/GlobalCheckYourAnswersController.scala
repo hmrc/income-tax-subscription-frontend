@@ -43,7 +43,8 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
                                                  referenceRetrieval: ReferenceRetrieval,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
                                                  sessionDataService: SessionDataService,
-                                                 throttlingService: ThrottlingService)
+                                                 throttlingService: ThrottlingService,
+                                                 mandationStatusService: MandationStatusService)
                                                 (val auditingService: AuditingService,
                                                  val authService: AuthService,
                                                  val appConfig: AppConfig)
@@ -56,12 +57,15 @@ class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: Sig
         referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
           subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
             withCompleteDetails(reference) { completeDetails =>
-              Future.successful(Ok(globalCheckYourAnswers(
-                postAction = routes.GlobalCheckYourAnswersController.submit,
-                completeDetails = completeDetails,
-                maybeAccountingPeriod = maybeAccountingPeriod,
-                softwareStatus = sessionData.fetchSoftwareStatus
-              )))
+              mandationStatusService.getMandationStatus(sessionData) map { mandationStatus =>
+                Ok(globalCheckYourAnswers(
+                  postAction = routes.GlobalCheckYourAnswersController.submit,
+                  completeDetails = completeDetails,
+                  maybeAccountingPeriod = maybeAccountingPeriod,
+                  softwareStatus = sessionData.fetchSoftwareStatus,
+                  isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
+                ))
+              }
             }
           }
         }

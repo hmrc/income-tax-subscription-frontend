@@ -34,7 +34,7 @@ trait MockMandatoryBothSignUp extends PlaySpec with MockitoSugar with BeforeAndA
   }
 
   def mockView(): Unit = {
-    when(mandatoryBothSignUp(any(), any(), any())(any(), any()))
+    when(mandatoryBothSignUp(any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

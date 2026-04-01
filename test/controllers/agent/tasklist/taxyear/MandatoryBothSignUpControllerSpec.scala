@@ -22,8 +22,8 @@ import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockI
 import models.SessionData
 import play.api.http.Status
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import services.mocks._
+import play.api.test.Helpers.*
+import services.mocks.*
 import views.agent.mocks.MockMandatoryBothSignUp
 
 import scala.concurrent.Future
@@ -47,32 +47,20 @@ class MandatoryBothSignUpControllerSpec extends ControllerSpec
     "return OK" in {
       mockView()
 
-      val result = testMandatoryBothSignUpController().show(isEditMode = false)(request)
+      val result = testMandatoryBothSignUpController().show(request)
 
       status(result) mustBe Status.OK
     }
   }
 
-  "submit" when {
-    "in edit mode" should {
-      "redirect to GlobalCheckYourAnswers" in {
-        val result: Future[Result] = testMandatoryBothSignUpController().submit(isEditMode = true)(
-          request.withMethod("POST")
-        )
+  "submit" should {
+    "redirect to WhatYouNeedToDo" in {
+      val result: Future[Result] = testMandatoryBothSignUpController().submit(
+        request.withMethod("POST")
+      )
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-      }
-    }
-    "not in edit mode" should {
-      "redirect to WhatYouNeedToDo" in {
-        val result: Future[Result] = testMandatoryBothSignUpController().submit(isEditMode = false)(
-          request.withMethod("POST")
-        )
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
     }
   }
 }
