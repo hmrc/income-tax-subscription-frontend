@@ -1298,3 +1298,13 @@ agent.non-eligible-voluntary.heading                                    = Your c
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = They must still submit their Self Assessment tax return for this tax year, {0} to {1} as normal.
 agent.non-eligible-voluntary.sign-up                                    = Sign up this client
+
+error.contact-hmrc.title                                                = There is a problem
+error.contact-hmrc.heading                                              = You need to contact us before you can sign up
+error.contact-hmrc.p1                                                   = HMRC needs to make a small change to the service before you can finish signing up.
+error.contact-hmrc.p2                                                   = To contact us:
+error.contact-hmrc.b1                                                   = Open the contact us form.
+error.contact-hmrc.b2                                                   = Fill in your name and email address.
+error.contact-hmrc.b3                                                   = In the box labelled “What do you need help with?”, type “Tell me when I can sign up”.
+error.contact-hmrc.p3                                                   = We’ll contact you with any updates and let you know when you can sign up.
+error.contact-hmrc.contact-us                                           = Contact us form
