@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.featureswitch.FeatureSwitching
+@import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 @import forms.agent.AccountingYearForm
 @import services.AccountingPeriodService
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -28,9 +30,9 @@
     pageHeadingHelper: PageHeadingHelper,
     continueButton: ContinueButton,
     radioHelper: RadioHelper,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     ul:UnorderedList,
-    govukInsetText: GovukInsetText
+    govukInsetText: GovukInsetText,
+    featureSwitching: FeatureSwitching
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
@@ -43,14 +45,18 @@
         isSection = false
     )
 
-    @ul(
-        leadIn=messages("agent.business.next-year-mandatory-sign-up.para"),
-        Seq(
-            Text(messages("agent.business.next-year-mandatory-sign-up.bullet1")),
-            Text(messages("agent.business.next-year-mandatory-sign-up.bullet2")),
-            Text(messages("agent.business.next-year-mandatory-sign-up.bullet3"))
+    @if(featureSwitching.isEnabled(TaxYear26To27Plus)) {
+        <p class="govuk-body">@messages("agent.business.next-year-mandatory-sign-up.para.post-26-27")</p>
+    } else {
+        @ul(
+            leadIn=messages("agent.business.next-year-mandatory-sign-up.para.pre-26-27"),
+            Seq(
+                Text(messages("agent.business.next-year-mandatory-sign-up.bullet1")),
+                Text(messages("agent.business.next-year-mandatory-sign-up.bullet2")),
+                Text(messages("agent.business.next-year-mandatory-sign-up.bullet3"))
+            )
         )
-    )
+    }
 
     @govukInsetText(InsetText(
         content = Text(messages("agent.business.next-year-mandatory-sign-up.indent", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))

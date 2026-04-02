@@ -31,7 +31,7 @@
     <h1 class="govuk-heading-l">@messages("individual.tax-year.mm.heading")</h1>
 
     <p class="govuk-body">
-        @messages("individual.tax-year.mm.paragraph", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
+        @messages("individual.tax-year.mm.paragraph", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)
     </p>
 
     @form(action = postAction) {

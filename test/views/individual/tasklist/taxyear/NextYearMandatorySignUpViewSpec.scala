@@ -16,6 +16,7 @@
 
 package views.individual.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import forms.individual.business.AccountingYearForm
 import messagelookup.agent.MessageLookup
 import models.{Current, Next}
@@ -31,6 +32,11 @@ import utilities.ViewSpec
 import views.html.individual.tasklist.taxyear.NextYearMandatorySignUp
 
 class NextYearMandatorySignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYear26To27Plus)
+  }
 
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
@@ -64,16 +70,37 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 1).text mustBe NextYearMandatorySignUp.paragraph
     }
 
-    "has a second paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2
+    "has a second paragraph" which {
+      "leads into the bullet list" when {
+        "the 26-27 feature switch is disabled" in {
+          document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2Pre2627
+        }
+      }
+      "is an independent paragraph" when {
+        "the 26-27 feature switch is enabled" in {
+          enable(TaxYear26To27Plus)
+
+          document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2Post2627
+        }
+      }
     }
 
-    "have a bullet list" in {
-      def bulletList: Element = document().mainContent.selectNth("ul", 1)
+    "have a bullet list" when {
+      "the 26-27 feature switch is disabled" in {
+        def bulletList: Element = document().mainContent.selectNth("ul", 1)
 
-      bulletList.selectNth("li", 1).text mustBe NextYearMandatorySignUp.bullet1
-      bulletList.selectNth("li", 2).text mustBe NextYearMandatorySignUp.bullet2
-      bulletList.selectNth("li", 3).text mustBe NextYearMandatorySignUp.bullet3
+        bulletList.selectNth("li", 1).text mustBe NextYearMandatorySignUp.bullet1
+        bulletList.selectNth("li", 2).text mustBe NextYearMandatorySignUp.bullet2
+        bulletList.selectNth("li", 3).text mustBe NextYearMandatorySignUp.bullet3
+      }
+    }
+
+    "don't have a bullet list" when {
+      "the 26-27 feature switch is enabled" in {
+        enable(TaxYear26To27Plus)
+
+        document().mainContent.selectOptionalNth("ul", 1) mustBe None
+      }
     }
 
     "have a subheading" in {
@@ -134,7 +161,8 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
   object NextYearMandatorySignUp {
     val heading: String = s"You must use Making Tax Digital for Income Tax next tax year, $taxYearEnd to ${taxYearEnd + 1}"
     val paragraph: String = s"You must use Making Tax Digital for Income Tax next tax year to submit your $taxYearEnd to ${taxYearEnd + 1} income."
-    val paragraph2 = "But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:"
+    val paragraph2Pre2627 = "But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:"
+    val paragraph2Post2627 = "But you can choose to sign up early, so you are prepared to use the service."
     val bullet1 = "get information by email on issues affecting your use of the service and details of new features added"
     val bullet2 = "have access to a dedicated telephone support team"
     val bullet3: String = s"not get penalties during this period for any missed quarterly updates before 6 April $taxYearEnd"
