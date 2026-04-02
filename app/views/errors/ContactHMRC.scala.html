@@ -15,18 +15,27 @@
  *@
 
 @import views.html.helpers.{ContinueButton, NumberedList}
-@import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.{PrincipalMainTemplate, AgentMainTemplate}
 
 @this(
-    mainTemplate: PrincipalMainTemplate,
+    individualMainTemplate: PrincipalMainTemplate,
+    agentMainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
     numberedList: NumberedList,
     continueButton: ContinueButton
 )
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, isAgent: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("error.contact-hmrc.title"), showSignOutLink = true) {
+@mainTemplate(title: String)(block: Html) = @{
+    if(isAgent) {
+        agentMainTemplate(title = title, showSignOutLink = true)(block)
+    } else {
+        individualMainTemplate(title = title, showSignOutLink = true)(block)
+    }
+}
+
+@mainTemplate(title = messages("error.contact-hmrc.title")) {
 
     <h1 class="govuk-heading-l">@messages("error.contact-hmrc.heading")</h1>
 

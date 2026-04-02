@@ -16,36 +16,35 @@
 
 package controllers.errors
 
-import auth.individual.StatelessController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
+import services.AuthService
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-import uk.gov.hmrc.http.{InternalServerException, StringContextOps}
+import uk.gov.hmrc.http.InternalServerException
 import views.html.errors.ContactHMRC
-import views.html.individual.eligibility.YouCanSignUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class ContactHMRCController @Inject()(view: ContactHMRC,
+                                      authService: AuthService,
+                                      appConfig: AppConfig,
                                       cfc: ContactFrontendConfig)
-                                     (val auditingService: AuditingService,
-                                      val appConfig: AppConfig,
-                                      val authService: AuthService)
-                                     (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
-  extends StatelessController {
+                                     (implicit mcc: MessagesControllerComponents, ec: ExecutionContext)
+  extends ErrorBaseController(authService, appConfig) {
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
+  def show: Action[AnyContent] = Action.async { implicit request =>
+    authenticate(request) { isAgent =>
       Ok(view(
-        postAction = controllers.errors.routes.ContactHMRCController.submit
+        postAction = controllers.errors.routes.ContactHMRCController.submit,
+        isAgent = isAgent
       ))
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
+  def submit: Action[AnyContent] = Action.async { implicit request =>
+    authenticate(request) { isAgent =>
       (cfc.baseUrl, cfc.referrerUrl, cfc.serviceId) match {
         case (Some(baseUrl), Some(referrerUrl), Some(serviceId)) =>
           Redirect(
@@ -58,5 +57,6 @@ class ContactHMRCController @Inject()(view: ContactHMRC,
         case _ =>
           throw new InternalServerException("Contact frontend npt defined")
       }
+    }
   }
 }
