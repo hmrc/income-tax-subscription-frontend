@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.{ContinueButton, OrderedList}
+@import views.html.helpers.{ContinueButton, NumberedList}
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
-    ol: OrderedList,
+    numberedList: NumberedList,
     continueButton: ContinueButton
 )
 
@@ -32,7 +32,7 @@
 
     <p class="govuk-body">@messages("error.contact-hmrc.p1")</p>
 
-    @ol(
+    @numberedList(
         text = messages("error.contact-hmrc.p2"),
         items = Seq(
             HtmlContent(messages("error.contact-hmrc.b1")),
