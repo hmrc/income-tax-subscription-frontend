@@ -179,7 +179,8 @@ individual.tax-year.mm.paragraph                                = Gan fod cyfans
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
 business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer {0} i {1}.
-business.next-year-mandatory-sign-up.para2                      = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu’r canlynol:
+business.next-year-mandatory-sign-up.para2.pre-26-27            = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu’r canlynol:
+business.next-year-mandatory-sign-up.para2.post-26-27           = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth.
 business.next-year-mandatory-sign-up.bullet1                    = byddwch yn cael gwybodaeth drwy e-bost am faterion sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion nodweddion newydd sydd wedi’u hychwanegu
 business.next-year-mandatory-sign-up.bullet2                    = byddwch yn cael mynediad at dîm cymorth penodedig dros y ffôn
 business.next-year-mandatory-sign-up.bullet3                    = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am unrhyw ddiweddariadau chwarterol coll cyn 6 Ebrill {0}
@@ -910,7 +911,8 @@ agent.tax-year.mm.paragraph.1                                   = Eich cleient i
 #Voluntary Current Mandatory Next Year Sign Up
 agent.business.next-year-mandatory-sign-up.heading                       = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
 agent.business.next-year-mandatory-sign-up.caption                       = {0} - {1}
-agent.business.next-year-mandatory-sign-up.para                          = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu:
+agent.business.next-year-mandatory-sign-up.para.pre-26-27                = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu:
+agent.business.next-year-mandatory-sign-up.para.post-26-27               = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth.
 agent.business.next-year-mandatory-sign-up.bullet1                       = byddwch yn cael gwybodaeth am broblemau sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion ynglŷn â nodweddion newydd sy’n cael eu hychwanegu
 agent.business.next-year-mandatory-sign-up.bullet2                       = bydd gennych fynediad at dîm cymorth ymroddedig dros y ffôn
 agent.business.next-year-mandatory-sign-up.bullet3                       = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am fethu diweddariadau chwarterol yn y flwyddyn dreth hon

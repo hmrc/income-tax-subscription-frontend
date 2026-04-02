@@ -18,7 +18,7 @@ package views.individual.tasklist.taxyear
 
 import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import services.AccountingPeriodService
 import utilities.ViewSpec
@@ -28,8 +28,6 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
 
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
   val taxYearEnd: Int = accountingPeriodService.currentTaxYear
-  val taxYearPrevious: Int = taxYearEnd - 1
-  val taxYearNext: Int = taxYearEnd + 1
 
   val mandatoryBothSignUp: MandatoryBothSignUp = app.injector.instanceOf[MandatoryBothSignUp]
 
@@ -56,7 +54,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
 
   private object MandatoryBothSignUpMessages {
     val heading = "You must use Making Tax Digital for Income Tax now"
-    val paragraph: String = s"As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from $taxYearEnd to ${taxYearNext}."
+    val paragraph: String = s"As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from ${taxYearEnd - 1} to $taxYearEnd."
   }
 
   private def page(editMode: Boolean): Html = {

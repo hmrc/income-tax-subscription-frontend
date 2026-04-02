@@ -192,7 +192,8 @@ individual.tax-year.mm.paragraph                                = As your total 
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = You must use Making Tax Digital for Income Tax next tax year, {0} to {1}
 business.next-year-mandatory-sign-up.para                       = You must use Making Tax Digital for Income Tax next tax year to submit your {0} to {1} income.
-business.next-year-mandatory-sign-up.para2                      = But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:
+business.next-year-mandatory-sign-up.para2.pre-26-27            = But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:
+business.next-year-mandatory-sign-up.para2.post-26-27           = But you can choose to sign up early, so you are prepared to use the service.
 business.next-year-mandatory-sign-up.bullet1                    = get information by email on issues affecting your use of the service and details of new features added
 business.next-year-mandatory-sign-up.bullet2                    = have access to a dedicated telephone support team
 business.next-year-mandatory-sign-up.bullet3                    = not get penalties during this period for any missed quarterly updates before 6 April {0}
@@ -929,7 +930,8 @@ agent.tax-year.mm.paragraph.1                                   = As your client
 #Voluntary Current Mandatory Next Year Sign Up
 agent.business.next-year-mandatory-sign-up.heading                       = Your client must use Making Tax Digital for Income Tax next tax year, {0} to {1}
 agent.business.next-year-mandatory-sign-up.caption                       = {0} - {1}
-agent.business.next-year-mandatory-sign-up.para                          = They can choose to sign up early, so you’re both prepared to use the service. This will mean that you will:
+agent.business.next-year-mandatory-sign-up.para.pre-26-27                = They can choose to sign up early, so you’re both prepared to use the service. This will mean that you will:
+agent.business.next-year-mandatory-sign-up.para.post-26-27               = They can choose to sign up early, so you’re both prepared to use the service.
 agent.business.next-year-mandatory-sign-up.bullet1                       = get information on issues affecting your use of the service and details of new features added
 agent.business.next-year-mandatory-sign-up.bullet2                       = have access to a dedicated telephone support team
 agent.business.next-year-mandatory-sign-up.bullet3                       = not get penalties during this period for missed quarterly updates this tax year
