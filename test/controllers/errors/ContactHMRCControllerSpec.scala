@@ -27,68 +27,73 @@ import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLo
 import play.twirl.api.HtmlFormat
 import services.individual.mocks.MockAuthService
 import services.mocks.MockAuditingService
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthorisedFunctions}
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import views.html.errors.ContactHMRC
 import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future
 
-class ContactHMRCControllerSpec
-  extends ControllerBaseSpec
-    with MockAuditingService
-    with MockAuthService {
+class ContactHMRCControllerSpec extends ControllerBaseSpec {
 
   override val appConfig: AppConfig = MockConfig
 
-  private val baseUrl = "htto://www.bbc.co.uk"
+  private val baseUrl = "/hello-world"
   private val serviceId = "testId"
   private val referrerUrl = "testUrl"
 
-  object TestContachHMRCController extends ContactHMRCController(
-    mock[ContactHMRC],
-    mock[ContactFrontendConfig]
-  )(
-    mockAuditingService,
-    appConfig,
-    mockAuthService
-  )
+  override val controllerName: String = "ContactHMRCController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
 
   trait Setup {
     val contactHMRC: ContactHMRC = mock[ContactHMRC]
     val cfc: ContactFrontendConfig = mock[ContactFrontendConfig]
     val controller: ContactHMRCController = new ContactHMRCController(
       contactHMRC,
-      cfc
-    )(
-      mockAuditingService,
+      mockAuthService,
       appConfig,
-      mockAuthService
+      cfc
     )
   }
 
-  override val controllerName: String = "WhatYouNeedToDoController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestContachHMRCController.show,
-    "submit" -> TestContachHMRCController.submit
-  )
-
   "show" must {
-    "return OK with the page content" in new Setup {
-      when(contactHMRC(
-        ArgumentMatchers.eq(routes.ContactHMRCController.submit)
-      )(any(), any())).thenReturn(HtmlFormat.empty)
+    "return OK with the page content" should {
+      "for Individual" in new Setup {
+        mockRetrievalSuccess(Some(AffinityGroup.Individual))
+        when(contactHMRC(
+          ArgumentMatchers.eq(routes.ContactHMRCController.submit),
+          ArgumentMatchers.eq(false)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
 
-      val result: Future[Result] = controller.show(
-        subscriptionRequest
-      )
+        val result: Future[Result] = controller.show(
+          subscriptionRequest
+        )
 
-      status(result) mustBe OK
-      contentType(result) mustBe Some(HTML)
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
+
+      "for Agent" in new Setup {
+        mockRetrievalSuccess(Some(AffinityGroup.Agent))
+        when(contactHMRC(
+          ArgumentMatchers.eq(routes.ContactHMRCController.submit),
+          ArgumentMatchers.eq(true)
+        )(any(), any())).thenReturn(HtmlFormat.empty)
+
+        val result: Future[Result] = controller.show(
+          subscriptionRequest
+        )
+
+        status(result) mustBe OK
+        contentType(result) mustBe Some(HTML)
+      }
     }
   }
 
   "submit" must {
     "return SEE_OTHER to the Your Income Sources page" in new Setup {
+      mockRetrievalSuccess(None)
       when(cfc.baseUrl).thenReturn(Some(baseUrl))
       when(cfc.serviceId).thenReturn(Some(serviceId))
       when(cfc.referrerUrl(any())).thenReturn(Some(referrerUrl))
@@ -102,4 +107,6 @@ class ContactHMRCControllerSpec
       redirectLocation(result) mustBe Some(url)
     }
   }
+
+  authorisationTests()
 }

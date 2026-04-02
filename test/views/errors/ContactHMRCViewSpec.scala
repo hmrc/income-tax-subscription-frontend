@@ -17,7 +17,7 @@
 package views.errors
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
 import views.html.errors.ContactHMRC
@@ -26,12 +26,13 @@ class ContactHMRCViewSpec extends ViewSpec {
 
   def contactHMRC: ContactHMRC = app.injector.instanceOf[ContactHMRC]
 
-  def page(): HtmlFormat.Appendable =
+  def page(isAgent: Boolean): HtmlFormat.Appendable =
     contactHMRC(
-      testCall
+      testCall,
+      isAgent
     )
 
-  def document(): Document = Jsoup.parse(page().body)
+  def document(isAgent: Boolean): Document = Jsoup.parse(page(isAgent).body)
 
   object ContactHMRCMessages {
     val title = "There is a problem"
@@ -46,44 +47,75 @@ class ContactHMRCViewSpec extends ViewSpec {
   }
 
   "ContactHMRC" must {
-    "have a page heading" in {
-      document().mainContent.selectHead("h1").text mustBe ContactHMRCMessages.heading
+    "has correct template for individuals" in new TemplateViewTest(
+      view = page(false),
+      isAgent = false,
+      title = ContactHMRCMessages.title
+    )
+
+    "has correct template for agents" in new TemplateViewTest(
+      view = page(true),
+      isAgent = true,
+      title = ContactHMRCMessages.title
+    )
+
+    "has a page heading" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectHead("h1").text mustBe ContactHMRCMessages.heading
+      }
     }
 
-    "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe ContactHMRCMessages.p1
+    "has a first paragraph" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("p", 1).text mustBe ContactHMRCMessages.p1
+      }
     }
 
-    "have a second paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe ContactHMRCMessages.p2
+    "has a second paragraph" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("p", 2).text mustBe ContactHMRCMessages.p2
+      }
     }
 
-    "have a third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe ContactHMRCMessages.p3
+    "has a third paragraph" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("p", 3).text mustBe ContactHMRCMessages.p3
+      }
     }
 
-    "have a first list item" in {
-      document().mainContent.selectNth("li", 1).text mustBe ContactHMRCMessages.b1
+    "has a first list item" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("li", 1).text mustBe ContactHMRCMessages.b1
+      }
     }
 
-    "have a second list item" in {
-      document().mainContent.selectNth("li", 2).text mustBe ContactHMRCMessages.b2
+    "has a second list item" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("li", 2).text mustBe ContactHMRCMessages.b2
+      }
     }
 
-    "have a third list item" in {
-      document().mainContent.selectNth("li", 3).text mustBe ContactHMRCMessages.b3
+    "has a third list item" in {
+      Seq(false, true).foreach { isAgent =>
+        document(isAgent).mainContent.selectNth("li", 3).text mustBe ContactHMRCMessages.b3
+      }
     }
 
-    "have a form" which {
-      val form = document().selectHead("form")
+    "has a form" which {
+      def form(isAgent: Boolean): Element =
+        document(isAgent).selectHead("form")
 
       "has the correct attributes" in {
-        form.attr("method") mustBe testCall.method
-        form.attr("action") mustBe testCall.url
+        Seq(false, true).foreach { isAgent =>
+          form(isAgent).attr("method") mustBe testCall.method
+          form(isAgent).attr("action") mustBe testCall.url
+        }
       }
 
       "has an accept and continue button to submit the form" in {
-        form.selectHead("button").text mustBe ContactHMRCMessages.contactUs
+        Seq(false, true).foreach { isAgent =>
+          form(isAgent).selectHead("button").text mustBe ContactHMRCMessages.contactUs
+        }
       }
     }
   }
