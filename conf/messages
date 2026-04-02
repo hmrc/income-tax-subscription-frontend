@@ -572,11 +572,11 @@ sign-up-confirmation.quarterly.updates.standard.4                    = 6 April t
 sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
 sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
 
-individual.digitally-exempt.heading                                  = You’re exempt from Making Tax Digital for Income Tax
-individual.digitally-exempt.para                                     = You do not need to use Making Tax Digital for Income Tax. This is because you, or someone on your behalf, told us that you’re digitally excluded and HMRC accepted your application.
-individual.digitally-exempt.para1                                    = You must let HMRC know if your circumstances change.
+individual.digitally-exempt.heading                                  = You are exempt from Making Tax Digital for Income Tax
+individual.digitally-exempt.para                                     = HMRC has agreed that you are digitally excluded. This means you do not need to use it unless your circumstances change.
+individual.digitally-exempt.para1                                    = If your circumstances change, you must let HMRC know.
 individual.digitally-exempt.para2.link-text                          = Find out more about exemptions 
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax
 
 ## Errors ##
 

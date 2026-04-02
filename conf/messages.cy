@@ -542,11 +542,11 @@ sign-up-confirmation.quarterly.updates.standard.4                    = 6 Ebrill 
 sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
 sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.
 
-individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.digitally-exempt.para                                     = Does dim angen i chi ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae hyn oherwydd eich bod chi, neu oherwydd bod rhywun ar eich rhan, wedi rhoi gwybod i ni eich bod chi wedi’ch cau allan o’r byd digidol ac mae CThEF wedi derbyn eich cais.
-individual.digitally-exempt.para1                                    = Mae’n rhaid i chi roi gwybod i CThEF os bydd eich amgylchiadau’n newid.
-individual.digitally-exempt.para2.link-text                          = Dysgwch ragor am esemptiadau 
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
+individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.digitally-exempt.para                                     = Mae CThEF wedi cytuno eich bod wedi`ch cau allan o`r byd digidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
+individual.digitally-exempt.para1                                    = Os bydd eich amgylchiadau`n newid, mae`n rhaid i chi roi gwybod i CThEF.
+individual.digitally-exempt.para2.link-text                          = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
 
 ## Errors ##
 
