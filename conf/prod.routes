@@ -3,4 +3,5 @@
 # if the routes changes from /report-quarterly/income-and-expenses/sign-up also update config.filters.UnplannedOutageFilter
 ->         /report-quarterly/income-and-expenses/sign-up                        individual.Routes
 ->         /report-quarterly/income-and-expenses/sign-up/client                 agent.Routes
+->         /report-quarterly/income-and-expenses/sign-up/service-error          errors.Routes
 ->         /                                                                    health.Routes

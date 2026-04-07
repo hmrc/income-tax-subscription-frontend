@@ -1301,3 +1301,13 @@ agent.non-eligible-voluntary.heading                                    = Gall e
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
 agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
+
+error.contact-hmrc.title                                                = Mae problem
+error.contact-hmrc.heading                                              = Mae’n rhaid i chi gysylltu â ni cyn cofrestru
+error.contact-hmrc.p1                                                   = Mae angen i CThEF wneud newid bach i’r gwasanaeth cyn i chi orffen y broses o gofrestru.
+error.contact-hmrc.p2                                                   = Sut i gysylltu â ni:
+error.contact-hmrc.b1                                                   = Agorwch y ffurflen gyswllt.
+error.contact-hmrc.b2                                                   = Nodwch eich enw a’ch cyfeiriad e-bost.
+error.contact-hmrc.b3                                                   = Yn y blwch “Gyda beth ydych angen help?”, nodwch “Rhowch wybod i mi pryd y gallaf gofrestru / Tell me when I can sign up”.
+error.contact-hmrc.p3                                                   = Byddwn yn cysylltu â chi i rannu unrhyw ddiweddariadau ac i roi gwybod i chi pryd y gallwch gofrestru.
+error.contact-hmrc.contact-us                                           = Ffurflen gyswllt

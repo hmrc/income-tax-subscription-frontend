@@ -1,0 +1,61 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.helpers.{ContinueButton, NumberedList}
+@import views.html.templates.{PrincipalMainTemplate, AgentMainTemplate}
+
+@this(
+    individualMainTemplate: PrincipalMainTemplate,
+    agentMainTemplate: AgentMainTemplate,
+    form: FormWithCSRF,
+    numberedList: NumberedList,
+    continueButton: ContinueButton
+)
+
+@(postAction: Call, isAgent: Boolean)(implicit request: Request[_], messages: Messages)
+
+@mainTemplate(title: String)(block: Html) = @{
+    if(isAgent) {
+        agentMainTemplate(title = title, showSignOutLink = true)(block)
+    } else {
+        individualMainTemplate(title = title, showSignOutLink = true)(block)
+    }
+}
+
+@mainTemplate(title = messages("error.contact-hmrc.title")) {
+
+    <h1 class="govuk-heading-l">@messages("error.contact-hmrc.heading")</h1>
+
+    <p class="govuk-body">@messages("error.contact-hmrc.p1")</p>
+
+    @numberedList(
+        text = messages("error.contact-hmrc.p2"),
+        items = Seq(
+            HtmlContent(messages("error.contact-hmrc.b1")),
+            HtmlContent(messages("error.contact-hmrc.b2")),
+            HtmlContent(messages("error.contact-hmrc.b3"))
+        )
+    )
+
+    <p class="govuk-body">@messages("error.contact-hmrc.p3")</p>
+
+    <div class="form-group">
+         @form(action = postAction) {
+             @continueButton(Some(messages("error.contact-hmrc.contact-us")))
+         }
+    </div>
+
+}
