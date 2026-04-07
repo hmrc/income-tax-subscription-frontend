@@ -37,11 +37,13 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     val p1 = "If you’re required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027)."
     val p2 = "Penalties will still apply for late tax returns or if you pay your tax bill after the due date."
     val h2_2 = "If you are signing up voluntarily"
-    val p3 = "You are agreeing that our new penalties will apply if you are late sending your tax return or paying your tax bill."
-    val p4 = "Whilst you are a volunteer, penalties will not apply for submitting quarterly updates late."
-    val p5 = "You can opt out of Making Tax Digital for Income Tax at any time. If you do this, the new penalties will still apply to you."
-    val p6 = "Read more about penalties that apply if you are volunteering. (opens in new tab)"
-    val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
+    val p3 = "Read more about changes to penalties (opens in new tab)"
+    val p3_link = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
+    val p4 = "You are agreeing that our new penalties will apply if you are late submitting your tax return or paying your tax bill."
+    val p5 = "Whilst you are a volunteer, penalties will not apply for sending quarterly updates late."
+    val p6 = "You can opt out of Making Tax Digital for Income Tax at any time. If you do this, the new penalties will still apply to you."
+    val p7 = "Read more about penalties that apply if you are volunteering. (opens in new tab)"
+    val p7_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
     val agreeAndContinue: String = "Agree and continue"
   }
 
@@ -66,8 +68,14 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
       document().mainContent.selectNth("h2", 2).text mustBe WhatYouNeedToDoMessages.h2_2
     }
 
-    "have the third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3
+    "have a third paragraph" in {
+      val paragraph: Element = document().mainContent.selectNth("p", 3)
+      paragraph.text mustBe WhatYouNeedToDoMessages.p3
+
+      val link: Element = paragraph.selectHead("a")
+      link.attr("href") mustBe WhatYouNeedToDoMessages.p3_link
+      link.attr("target") mustBe "_blank"
+      link.attr("rel") mustBe "noopener noreferrer"
     }
 
     "have the fourth paragraph" in {
@@ -79,11 +87,17 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     }
 
     "have the sixth paragraph" in {
-      val paragraph: Element = document().mainContent.selectNth("p", 6)
-      paragraph.text mustBe WhatYouNeedToDoMessages.p6
+      document().mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.p6
+    }
+
+    "have the seventh paragraph" in {
+      val paragraph: Element = document().mainContent.selectNth("p", 7)
+      paragraph.text mustBe WhatYouNeedToDoMessages.p7
 
       val link: Element = paragraph.selectHead("a")
-      link.attr("href") mustBe WhatYouNeedToDoMessages.p6_link
+      link.attr("href") mustBe WhatYouNeedToDoMessages.p7_link
+      link.attr("target") mustBe "_blank"
+      link.attr("rel") mustBe "noopener noreferrer"
     }
 
     "have a form" which {

@@ -153,12 +153,14 @@ individual.what-you-need-to-do.heading                          = Pa gosbau sy�
 individual.what-you-need-to-do.h2.1                             = Os oes rhaid i chi ddefnyddio’r cynllun Troi Treth yn y Ddigidol ar gyfer Treth Incwm
 individual.what-you-need-to-do.p1                               = Os oes gofyn i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill 2026 ymlaen, ni fydd CThEF yn rhoi pwyntiau cosb am ddiweddariadau chwarterol hwyr ar gyfer y flwyddyn dreth gyntaf (2026 i 2027).
 individual.what-you-need-to-do.p2                               = Bydd cosbau yn dal i fod yn berthnasol am gyflwyno Ffurflenni Treth yn hwyr neu os talwch eich bil treth ar ôl y dyddiad cau.
+individual.what-you-need-to-do.p3                               = Darllenwch ragor am gosbau
+individual.what-you-need-to-do.p3.link                          = https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax.cy
 individual.what-you-need-to-do.h2.2                             = Os ydych yn cofrestru’n wirfoddol
-individual.what-you-need-to-do.p3                               = Rydych yn cytuno y bydd ein cosbau newydd yn berthnasol os ydych yn hwyr yn anfon eich Ffurflen Dreth neu’n talu’ch bil treth.
-individual.what-you-need-to-do.p4                               = Tra byddwch yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
-individual.what-you-need-to-do.p5                               = Gallwch optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Os gwnewch hyn, bydd y cosbau newydd yn dal i fod yn berthnasol i chi.
-individual.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli.
-individual.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
+individual.what-you-need-to-do.p4                               = Rydych yn cytuno y bydd ein cosbau newydd yn berthnasol os byddwch yn hwyr yn cyflwyno’ch Ffurflen Dreth neu’n talu’ch bil treth.
+individual.what-you-need-to-do.p5                               = Tra byddwch yn wirfoddolwr, ni fydd cosbau’n berthnasol am anfon diweddariadau chwarterol yn hwyr.
+individual.what-you-need-to-do.p6                               = Gallwch optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Os gwnewch hyn, bydd y cosbau newydd yn dal i fod yn berthnasol i chi.
+individual.what-you-need-to-do.p7                               = Darllenwch ragor am y newidiadau i gosbau sy’n berthnasol os ydych yn gwirfoddoli
+individual.what-you-need-to-do.p7.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 # What tax year to sign up
 business.what-year-to-sign-up.heading                           = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
@@ -177,7 +179,8 @@ individual.tax-year.mm.paragraph                                = Gan fod cyfans
 #Voluntary Current Mandatory Next Year Sign Up
 business.next-year-mandatory-sign-up.heading                    = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf, sef {0} i {1}
 business.next-year-mandatory-sign-up.para                       = Bydd yn rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm y flwyddyn dreth nesaf er mwyn cyflwyno’ch incwm ar gyfer {0} i {1}.
-business.next-year-mandatory-sign-up.para2                      = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu’r canlynol:
+business.next-year-mandatory-sign-up.para2.pre-26-27            = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu’r canlynol:
+business.next-year-mandatory-sign-up.para2.post-26-27           = Ond gallwch ddewis cofrestru’n gynnar, fel eich bod yn barod i ddefnyddio’r gwasanaeth.
 business.next-year-mandatory-sign-up.bullet1                    = byddwch yn cael gwybodaeth drwy e-bost am faterion sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion nodweddion newydd sydd wedi’u hychwanegu
 business.next-year-mandatory-sign-up.bullet2                    = byddwch yn cael mynediad at dîm cymorth penodedig dros y ffôn
 business.next-year-mandatory-sign-up.bullet3                    = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am unrhyw ddiweddariadau chwarterol coll cyn 6 Ebrill {0}
@@ -540,11 +543,11 @@ sign-up-confirmation.quarterly.updates.standard.4                    = 6 Ebrill 
 sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
 sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.
 
-individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
-individual.digitally-exempt.para                                     = Mae CThEF wedi cytuno eich bod wedi`ch cau allan o`r byd digidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
-individual.digitally-exempt.para1                                    = Os bydd eich amgylchiadau`n newid, mae`n rhaid i chi roi gwybod i CThEF.
-individual.digitally-exempt.para2.link-text                          = Gallwch ddod o hyd i wybodaeth am esemptiadau.
-individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
+individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+individual.digitally-exempt.para                                     = Does dim angen i chi ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae hyn oherwydd eich bod chi, neu oherwydd bod rhywun ar eich rhan, wedi rhoi gwybod i ni eich bod chi wedi’ch cau allan o’r byd digidol ac mae CThEF wedi derbyn eich cais.
+individual.digitally-exempt.para1                                    = Mae’n rhaid i chi roi gwybod i CThEF os bydd eich amgylchiadau’n newid.
+individual.digitally-exempt.para2.link-text                          = Dysgwch ragor am esemptiadau 
+individual.digitally-exempt.para2.link-href                          = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax-if-you-are-digitally-excluded#after-you-have-applied
 
 ## Errors ##
 
@@ -811,8 +814,10 @@ agent.what-you-need-to-do.h2.1                             = Os oes angen i’ch
 agent.what-you-need-to-do.p1                               = Os oes gofyn i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill 2026 ymlaen, ni fydd CThEF yn rhoi pwyntiau cosb am ddiweddariadau chwarterol hwyr ar gyfer y flwyddyn gyntaf (2026 i 2027).
 agent.what-you-need-to-do.p2                               = Bydd cosbau yn dal i fod yn berthnasol am gyflwyno Ffurflenni Treth yn hwyr neu os telir bil treth ar ôl y dyddiad cau.
 agent.what-you-need-to-do.h2.2                             = Os yw’ch cleient yn cofrestru’n wirfoddol
-agent.what-you-need-to-do.p3                               = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd yn berthnasol os anfonir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
-agent.what-you-need-to-do.p4                               = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am gyflwyno diweddariadau chwarterol yn hwyr.
+agent.what-you-need-to-do.p3                               = {0} yn berthnasol os cyflwynir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
+agent.what-you-need-to-do.p3.link-text                     = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd
+agent.what-you-need-to-do.p3.link-href                     = https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax.cy
+agent.what-you-need-to-do.p4                               = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am anfon diweddariadau chwarterol yn hwyr.
 agent.what-you-need-to-do.p5                               = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
 agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli.
 agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
@@ -906,7 +911,8 @@ agent.tax-year.mm.paragraph.1                                   = Eich cleient i
 #Voluntary Current Mandatory Next Year Sign Up
 agent.business.next-year-mandatory-sign-up.heading                       = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
 agent.business.next-year-mandatory-sign-up.caption                       = {0} - {1}
-agent.business.next-year-mandatory-sign-up.para                          = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu:
+agent.business.next-year-mandatory-sign-up.para.pre-26-27                = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth. Mae hyn yn golygu:
+agent.business.next-year-mandatory-sign-up.para.post-26-27               = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth.
 agent.business.next-year-mandatory-sign-up.bullet1                       = byddwch yn cael gwybodaeth am broblemau sy’n effeithio ar eich defnydd o’r gwasanaeth, a manylion ynglŷn â nodweddion newydd sy’n cael eu hychwanegu
 agent.business.next-year-mandatory-sign-up.bullet2                       = bydd gennych fynediad at dîm cymorth ymroddedig dros y ffôn
 agent.business.next-year-mandatory-sign-up.bullet3                       = ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am fethu diweddariadau chwarterol yn y flwyddyn dreth hon

@@ -16,6 +16,7 @@
 
 package views.agent.tasklist.taxyear
 
+import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import forms.agent.AccountingYearForm
 import models.{Current, Next}
 import org.jsoup.Jsoup
@@ -29,6 +30,11 @@ import utilities.ViewSpec
 import views.html.agent.tasklist.taxyear.NextYearMandatorySignUp
 
 class NextYearMandatorySignUpViewSpec extends ViewSpec {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYear26To27Plus)
+  }
 
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
@@ -64,8 +70,27 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       )
     }
 
-    "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe NextYearMandatorySignUp.paragraph1
+    "have a first paragraph" which {
+      "leads into the bullet list" when {
+        "the 26-27 feature switch is disabled" in {
+          document().mainContent.selectNth("p", 1).text mustBe NextYearMandatorySignUp.paragraph1Pre2627
+        }
+      }
+      "is an independent paragraph" when {
+        "the 26-27 feature switch is enabled" in {
+          enable(TaxYear26To27Plus)
+
+          document().mainContent.selectNth("p", 1).text mustBe NextYearMandatorySignUp.paragraph1Post2627
+        }
+      }
+    }
+
+    "don't have a bullet list" when {
+      "the 26-27 feature switch is enabled" in {
+        enable(TaxYear26To27Plus)
+
+        document().mainContent.selectOptionalNth("ul", 1) mustBe None
+      }
     }
 
     "have a bullet list" in {
@@ -148,7 +173,8 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
   private object NextYearMandatorySignUp {
     val heading: String = s"Your client must use Making Tax Digital for Income Tax next tax year, $taxYearEnd to ${taxYearEnd + 1}"
     val agentCaption: String = fullName + " - " + nino
-    val paragraph1 = "They can choose to sign up early, so you’re both prepared to use the service. This will mean that you will:"
+    val paragraph1Pre2627 = "They can choose to sign up early, so you’re both prepared to use the service. This will mean that you will:"
+    val paragraph1Post2627 = "They can choose to sign up early, so you’re both prepared to use the service."
     val bullet1 = "get information on issues affecting your use of the service and details of new features added"
     val bullet2 = "have access to a dedicated telephone support team"
     val bullet3 = "not get penalties during this period for missed quarterly updates this tax year"
