@@ -21,15 +21,13 @@ import controllers.agent.actions.{ConfirmationJourneyRefiner, IdentifierAction}
 import models.common.AccountingPeriodModel
 import models.{Next, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services._
+import services.*
 import uk.gov.hmrc.http.InternalServerException
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl}
 import views.html.agent.confirmation.SignUpConfirmation
-import java.time.LocalDate
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
-import utilities.ImplicitDateFormatterImpl
 
 @Singleton
 class ConfirmationController @Inject()(view: SignUpConfirmation,

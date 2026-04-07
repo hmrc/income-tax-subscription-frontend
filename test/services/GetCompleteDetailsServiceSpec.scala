@@ -17,14 +17,14 @@
 package services
 
 import config.{AppConfig, MockConfig}
-import models.common.business._
+import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatus.Voluntary
 import models.{Current, DateModel, EligibilityStatus}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import services.GetCompleteDetailsService._
+import services.GetCompleteDetailsService.*
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
@@ -39,8 +39,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
 
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(
-      subscriptionDetailsService = mockSubscriptionDetailsService,
-      appConfig = MockConfig
+      subscriptionDetailsService = mockSubscriptionDetailsService
     )
   }
 

@@ -21,12 +21,13 @@ import config.featureswitch.FeatureSwitch.AgentRelationshipSingleCall
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.mocks.{MockCreateIncomeSourcesConnector, MockSignUpConnector}
-import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpFailureResponse, UkProperty}
+import models.common.subscription.SignUpFailureResponse.UnprocessableSignUp
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpFailureResponse, SignUpSuccessful, UkProperty}
 import models.{AccountingYear, Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import services.agent.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import services.agent.mocks.{MockAgentSPSConnector, MockClientRelationshipService}
 import services.mocks.MockAutoEnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,22 +44,8 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
   with FeatureSwitching {
 
   "orchestrateSignUp" must {
-    "return a sign up orchestration success response" when {
-      "attempting to sign up the user and they are already signed up" in {
-        mockSignUp(nino, utr, taxYear)(Right(AlreadySignedUp))
-
-        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
-
-        await(result) mustBe Right(SignUpOrchestrationService.SignUpOrchestrationSuccessful)
-
-        verifySignUp(nino, utr, taxYear)
-        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
-        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
-        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
-        verifyCheckMTDAgentRelationship(nino, 0)
-      }
-      "sign up and creation of income sources was successful" in {
+    "return a sign up orchestration success result" when {
+      "signing up and the creating the clients income sources was successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
         mockAutoClaimEnrolment(utr, nino, mtditid)(Right(AutoEnrolmentService.EnrolSuccess))
@@ -150,13 +137,87 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
         verifyCheckMTDAgentRelationship(nino)
       }
     }
-    "return a sign up failure" when {
-      "an error was returned from the sign up connector" in {
+    "return an already signed up result" when {
+      s"signing up returned an unprocessable sign up response with a code of $ALREADY_SIGNED_UP" in {
+        mockSignUp(nino, utr, taxYear)(Left(UnprocessableSignUp(ALREADY_SIGNED_UP, "Customer already signed up to MTD ITSA")))
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Left(SignUpOrchestrationService.AlreadySignedUp)
+
+        verifySignUp(nino, utr, taxYear)
+        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
+        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
+        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
+        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+    }
+    "return a handled unprocessable sign up result" when {
+      s"signing up returned an unprocessable sign up response with a code of $ID_NOT_FOUND" in {
+        mockSignUp(nino, utr, taxYear)(Left(UnprocessableSignUp(ID_NOT_FOUND, "ID not found")))
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Left(SignUpOrchestrationService.HandledUnprocessableSignUp)
+
+        verifySignUp(nino, utr, taxYear)
+        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
+        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
+        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
+        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+      s"signing up returned an unprocessable sign up response with a code of $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
+        mockSignUp(nino, utr, taxYear)(Left(UnprocessableSignUp(BUSINESS_PARTNER_CATEGORY_ORGANISATION, "Business partner category organisation")))
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Left(SignUpOrchestrationService.HandledUnprocessableSignUp)
+
+        verifySignUp(nino, utr, taxYear)
+        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
+        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
+        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
+        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+      s"signing up returned an unprocessable sign up response with a code of $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
+        mockSignUp(nino, utr, taxYear)(Left(UnprocessableSignUp(MULTIPLE_BUSINESS_PARTNERS_FOUND, "Multiple business partners found")))
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Left(SignUpOrchestrationService.HandledUnprocessableSignUp)
+
+        verifySignUp(nino, utr, taxYear)
+        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
+        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
+        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
+        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+    }
+    "return an unhandled sign up error" when {
+      "signing up returned an unprocessable sign up response with a code which we do not handle" in {
+        mockSignUp(nino, utr, taxYear)(Left(UnprocessableSignUp("500", "Unhandled")))
+
+        val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
+
+        await(result) mustBe Left(SignUpOrchestrationService.UnhandledSignUpError)
+
+        verifySignUp(nino, utr, taxYear)
+        verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
+        verifyAutoClaimEnrolment(utr, nino, mtditid, count = 0)
+        verifyCheckPreExistingMTDRelationship(arn, nino, count = 0)
+        verifyAgentSpsConnector(arn, utr, nino, mtditid, count = 0)
+        verifyCheckMTDAgentRelationship(nino, 0)
+      }
+      "signing up returned an unexpected status response" in {
         mockSignUp(nino, utr, taxYear)(Left(SignUpFailureResponse.UnexpectedStatus(INTERNAL_SERVER_ERROR)))
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(arn, nino, utr, taxYear, createIncomeSourcesModel)
 
-        await(result) mustBe Left(SignUpOrchestrationService.SignUpFailure)
+        await(result) mustBe Left(SignUpOrchestrationService.UnhandledSignUpError)
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)

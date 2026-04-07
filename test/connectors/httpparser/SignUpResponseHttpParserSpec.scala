@@ -17,10 +17,10 @@
 package connectors.httpparser
 
 import connectors.httpparser.SignUpResponseHttpParser.{SignUpResponse, SignUpResponseHttpReads}
-import models.common.subscription.{SignUpFailureResponse, SignUpSuccessResponse}
+import models.common.subscription.{SignUpFailureResponse, SignUpSuccessful}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HttpResponse
 
 class SignUpResponseHttpParserSpec extends PlaySpec {
@@ -28,14 +28,23 @@ class SignUpResponseHttpParserSpec extends PlaySpec {
   val reads: HttpResponse => SignUpResponse = SignUpResponseHttpReads.read("", "", _)
   val testMTDBSA: String = "test-mtdbsa"
 
+  val successfulJson: JsObject = Json.obj(
+    "mtdbsa" -> testMTDBSA
+  )
+
+  val unprocessableEntityJson: JsObject = Json.obj(
+    "code" -> "820",
+    "reason" -> "Customer already signed up to MTD ITSA"
+  )
+
   "SignUpResponseHttpReads.read" when {
     s"the API call returns an $OK (OK) status" should {
       "return a sign up successful response" when {
         "the response json could be parsed correctly" in {
-          val httpResponse = HttpResponse(status = OK, json = Json.obj("mtdbsa" -> testMTDBSA), headers = Map.empty)
+          val httpResponse = HttpResponse(status = OK, json = successfulJson, headers = Map.empty)
           val result = reads(httpResponse)
 
-          result mustBe Right(SignUpSuccessResponse.SignUpSuccessful(testMTDBSA))
+          result mustBe Right(SignUpSuccessful(testMTDBSA))
         }
       }
       "return an invalid json failure response" when {
@@ -47,12 +56,22 @@ class SignUpResponseHttpParserSpec extends PlaySpec {
         }
       }
     }
-    s"the API call returns an $UNPROCESSABLE_ENTITY (UNPROCESSABLE_ENTITY) status" should {
-      "return an already signed up response" in {
-        val httpResponse = HttpResponse(status = UNPROCESSABLE_ENTITY, json = Json.obj(), headers = Map.empty)
-        val result = reads(httpResponse)
+    s"the API call returns an $UNPROCESSABLE_ENTITY (UNPROCESSABLE_ENTITY) response" should {
+      "return an unprocessable sign up response" when {
+        "the response json could be parsed correctly" in {
+          val httpResponse = HttpResponse(status = UNPROCESSABLE_ENTITY, json = unprocessableEntityJson, headers = Map.empty)
+          val result = reads(httpResponse)
 
-        result mustBe Right(SignUpSuccessResponse.AlreadySignedUp)
+          result mustBe Left(SignUpFailureResponse.UnprocessableSignUp("820", "Customer already signed up to MTD ITSA"))
+        }
+      }
+      "return an invalid json failure" when {
+        "the response json could not be parsed correctly" in {
+          val httpResponse = HttpResponse(status = UNPROCESSABLE_ENTITY, json = Json.obj(), headers = Map.empty)
+          val result = reads(httpResponse)
+
+          result mustBe Left(SignUpFailureResponse.InvalidJson)
+        }
       }
     }
     "the API call returns an unexpected status" should {

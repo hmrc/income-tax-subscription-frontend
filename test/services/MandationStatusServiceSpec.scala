@@ -68,7 +68,7 @@ class MandationStatusServiceSpec extends PlaySpec
         mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
         mockSaveMandationStatus(mandationStatusModel)(Right(SaveSessionDataSuccessResponse))
 
-        await(service.getMandationStatus()) mustBe mandationStatusModel
+        await(service.getMandationStatus(SessionData())) mustBe mandationStatusModel
       }
     }
     "throw an exception" when {
@@ -78,7 +78,7 @@ class MandationStatusServiceSpec extends PlaySpec
         mockGetUTR(testUtr)
         mockFailedGetMandationStatus()
 
-        intercept[InternalServerException](await(service.getMandationStatus()))
+        intercept[InternalServerException](await(service.getMandationStatus(SessionData())))
           .message mustBe "[MandationStatusService][getMandationStatus] - Failure when fetching mandation status from API: ErrorModel(500,Something went wrong)"
       }
       "there was a problem saving mandation status to session" in new Setup {
@@ -88,7 +88,7 @@ class MandationStatusServiceSpec extends PlaySpec
         mockGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
         mockSaveMandationStatus(mandationStatusModel)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.getMandationStatus()))
+        intercept[InternalServerException](await(service.getMandationStatus(SessionData())))
           .message mustBe "[MandationStatusService][getMandationStatus] - Failure when saving mandation status to session: UnexpectedStatusFailure(500)"
       }
     }

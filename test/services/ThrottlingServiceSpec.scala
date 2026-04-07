@@ -24,7 +24,7 @@ import models.SessionData
 import org.mockito.Mockito.{never, times}
 import play.api.libs.json.JsBoolean
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.{MockSessionDataService, MockThrottlingConnector}
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
       "the feature switch is disabled" in {
         disable(ThrottlingFeature)
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, SessionData())(fuzzyResult)
 
         await(result) mustBe fuzzyResult
 
@@ -65,7 +65,7 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         notThrottled()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, SessionData())(fuzzyResult)
 
         await(result) mustBe fuzzyResult
 
@@ -76,7 +76,7 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         failOpen()
         mockSaveThrottlePassed(mockThrottle)(Right(SaveSessionDataSuccessResponse))
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, SessionData())(fuzzyResult)
 
         await(result) mustBe fuzzyResult
 
@@ -87,7 +87,7 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
       "the throttle call returned false" in {
         throttled()
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, SessionData())(fuzzyResult)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(failFuzzyUrl)
@@ -98,7 +98,7 @@ class ThrottlingServiceSpec extends MockThrottlingConnector with MockSessionData
         throttleFail()
         failClosed()
 
-        val result: Future[Result] = throttlingService.throttled(mockThrottle)(fuzzyResult)
+        val result: Future[Result] = throttlingService.throttled(mockThrottle, SessionData())(fuzzyResult)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(failFuzzyUrl)

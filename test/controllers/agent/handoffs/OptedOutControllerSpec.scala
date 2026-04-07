@@ -16,7 +16,6 @@
 
 package controllers.agent.handoffs
 
-import config.AppConfig
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
 import play.api.Configuration

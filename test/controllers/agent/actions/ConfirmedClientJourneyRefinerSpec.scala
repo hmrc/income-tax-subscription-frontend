@@ -17,6 +17,7 @@
 package controllers.agent.actions
 
 import common.Constants.ITSASessionKeys
+import models.SessionData
 import models.agent.JourneyStep
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
 import org.scalatestplus.play.PlaySpec
@@ -47,8 +48,8 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
 
   def identifierRequest(journeyStep: Option[JourneyStep]): IdentifierRequest[_] = {
     journeyStep match {
-      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN)
-      case None => IdentifierRequest(FakeRequest(), testARN)
+      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN, SessionData())
+      case None => IdentifierRequest(FakeRequest(), testARN, SessionData())
     }
   }
 

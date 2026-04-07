@@ -41,7 +41,7 @@ trait MockSessionClearingService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockClearAgentSessionFailure(failure: Throwable): Unit = {
-    when(mockSessionClearingService.clearAgentSession(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    when(mockSessionClearingService.clearAgentSession(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenThrow(failure)
   }
 

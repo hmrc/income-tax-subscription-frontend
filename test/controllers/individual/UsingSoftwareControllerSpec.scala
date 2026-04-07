@@ -30,7 +30,6 @@ import play.twirl.api.HtmlFormat
 import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.agent.TestModels.testSelectedTaxYearCurrent
-import views.ViewSpecTrait.testBackUrl
 import views.html.individual.UsingSoftware
 
 import scala.concurrent.Future

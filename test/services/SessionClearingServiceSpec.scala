@@ -71,7 +71,7 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
       "the deletion of session data returns an error" in new Setup {
         mockDeleteSessionAll(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(service.clearAgentSession(testCall)))
+        intercept[InternalServerException](await(service.clearAgentSession(testCall, SessionData())))
           .message mustBe s"[SessionClearingService][deleteSessionData] - Unexpected failure: UnexpectedStatusFailure(500)"
       }
       "the saving of session data returns an error" in new Setup {

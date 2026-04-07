@@ -18,7 +18,7 @@ package connectors
 
 import connectors.stubs.SignUpAPIStub
 import helpers.ComponentSpecBase
-import models.common.subscription.{SignUpFailureResponse, SignUpRequestModel, SignUpSuccessResponse}
+import models.common.subscription.{SignUpFailureResponse, SignUpRequestModel, SignUpSuccessful}
 import models.{Current, Next}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.Json
@@ -38,7 +38,7 @@ class SignUpConnectorISpec extends ComponentSpecBase {
 
           val result = connector.signUp(nino, utr, Current)
 
-          await(result) mustBe Right(SignUpSuccessResponse.SignUpSuccessful(mtdbsa))
+          await(result) mustBe Right(SignUpSuccessful(mtdbsa))
         }
         "signing up for the next year" in {
           SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Next))(
@@ -48,7 +48,7 @@ class SignUpConnectorISpec extends ComponentSpecBase {
 
           val result = connector.signUp(nino, utr, Next)
 
-          await(result) mustBe Right(SignUpSuccessResponse.SignUpSuccessful(mtdbsa))
+          await(result) mustBe Right(SignUpSuccessful(mtdbsa))
         }
       }
       "return an invalid json failure response" when {
@@ -64,14 +64,29 @@ class SignUpConnectorISpec extends ComponentSpecBase {
       }
     }
     "an UNPROCESSABLE_ENTITY status response is received" should {
-      "return an already signed up response" in {
+      "return an unprocessable sign up response with the code and reason" in {
         SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-          status = UNPROCESSABLE_ENTITY
+          status = UNPROCESSABLE_ENTITY,
+          json = Json.obj(
+            "code" -> "500",
+            "reason" -> "reason"
+          )
         )
 
         val result = connector.signUp(nino, utr, Current)
 
-        await(result) mustBe Right(SignUpSuccessResponse.AlreadySignedUp)
+        await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("500", "reason"))
+      }
+      "return an invalid json failure response" when {
+        "the response body could not be parsed" in {
+          SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+            status = UNPROCESSABLE_ENTITY
+          )
+
+          val result = connector.signUp(nino, utr, Current)
+
+          await(result) mustBe Left(SignUpFailureResponse.InvalidJson)
+        }
       }
     }
     "an unhandled status is received" should {

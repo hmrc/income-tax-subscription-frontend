@@ -16,18 +16,18 @@
 
 package controllers.individual
 
-import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{JourneyStateKey, SPSEntityId}
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
-import models.SessionData
+import common.Constants.ITSASessionKeys.JourneyStateKey
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.subscription.CreateIncomeSourcesModel
 import models.individual.JourneyStep.Confirmation
+import models.requests.individual.SignUpRequest
 import play.api.mvc.*
 import services.*
 import services.GetCompleteDetailsService.CompleteDetails
 import services.individual.SignUpOrchestrationService
+import services.individual.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.GlobalCheckYourAnswers
 
@@ -35,81 +35,65 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GlobalCheckYourAnswersController @Inject()(signUpOrchestrationService: SignUpOrchestrationService,
+class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
+                                                 journeyRefiner: SignUpJourneyRefiner,
+                                                 signUpOrchestrationService: SignUpOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
-                                                 ninoService: NinoService,
                                                  utrService: UTRService,
-                                                 referenceRetrieval: ReferenceRetrieval,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
-                                                 sessionDataService: SessionDataService,
                                                  throttlingService: ThrottlingService,
                                                  mandationStatusService: MandationStatusService)
-                                                (val auditingService: AuditingService,
-                                                 val authService: AuthService,
-                                                 val appConfig: AppConfig)
-                                                (implicit val ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpController {
+                                                (implicit ec: ExecutionContext,
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          subscriptionDetailsService.fetchAccountingPeriod(reference) flatMap { maybeAccountingPeriod =>
-            withCompleteDetails(reference) { completeDetails =>
-              mandationStatusService.getMandationStatus(sessionData) map { mandationStatus =>
-                Ok(globalCheckYourAnswers(
-                  postAction = routes.GlobalCheckYourAnswersController.submit,
-                  completeDetails = completeDetails,
-                  maybeAccountingPeriod = maybeAccountingPeriod,
-                  softwareStatus = sessionData.fetchSoftwareStatus,
-                  isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
-                ))
-              }
-            }
-          }
-        }
+  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withCompleteDetails(request.reference) { completeDetails =>
+      for {
+        maybeAccountingPeriod <- subscriptionDetailsService.fetchAccountingPeriod(request.reference)
+        mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
+      } yield {
+        Ok(globalCheckYourAnswers(
+          postAction = routes.GlobalCheckYourAnswersController.submit,
+          completeDetails = completeDetails,
+          maybeAccountingPeriod = maybeAccountingPeriod,
+          softwareStatus = request.sessionData.fetchSoftwareStatus,
+          isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
+        ))
       }
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          withCompleteDetails(reference) { completeDetails =>
-            throttlingService.throttled(IndividualEndOfJourneyThrottle, sessionData) {
-              signUp(sessionData, completeDetails)(
-                onSuccessfulSignUp = Redirect(controllers.individual.routes.ConfirmationController.show)
-              )
-            }
-          }
-        }
-      }
-  }
-
-  private def signUp(sessionData: SessionData, completeDetails: CompleteDetails)
-                    (onSuccessfulSignUp: Result)
-                    (implicit request: Request[AnyContent]): Future[Result] = {
-    val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
-    val session = request.session
-
-    ninoService.getNino(sessionData) flatMap { nino =>
-      utrService.getUTR(sessionData) flatMap { utr =>
-        signUpOrchestrationService.orchestrateSignUp(
-          nino = nino,
-          utr = utr,
-          taxYear = completeDetails.taxYear.accountingYear,
-          incomeSources = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails),
-          maybeEntityId = session.get(SPSEntityId)
-        )(headerCarrier) map {
-          case Right(_) =>
-            onSuccessfulSignUp.addingToSession(JourneyStateKey -> Confirmation.key)
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    withCompleteDetails(request.reference) { completeDetails =>
+      throttlingService.throttled(IndividualEndOfJourneyThrottle, request.sessionData) {
+        signUp(completeDetails) map {
+          case Right(_) | Left(AlreadySignedUp) =>
+            Redirect(routes.ConfirmationController.show)
+              .addingToSession(JourneyStateKey -> Confirmation.key)
+          case Left(HandledUnprocessableSignUp) =>
+            Redirect(controllers.errors.routes.ContactHMRCController.show)
           case Left(failure) =>
             throw new InternalServerException(
-              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: ${failure.toString}"
+              s"[GlobalCheckYourAnswersController] - failure response received from submission: ${failure.toString}"
             )
         }
       }
+    }
+  }
+
+  private def signUp(completeDetails: CompleteDetails)
+                    (implicit request: SignUpRequest[AnyContent]): Future[SignUpOrchestrationResponse] = {
+    val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+
+    utrService.getUTR(request.sessionData) flatMap { utr =>
+      signUpOrchestrationService.orchestrateSignUp(
+        nino = request.nino,
+        utr = utr,
+        taxYear = completeDetails.taxYear.accountingYear,
+        incomeSources = CreateIncomeSourcesModel.createIncomeSources(request.nino, completeDetails),
+        maybeEntityId = request.session.get(ITSASessionKeys.SPSEntityId)
+      )(headerCarrier)
     }
   }
 

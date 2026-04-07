@@ -17,12 +17,12 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparser.SignUpResponseHttpParser._
+import connectors.httpparser.SignUpResponseHttpParser.*
 import models.AccountingYear
 import models.common.subscription.SignUpRequestModel
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
@@ -33,11 +33,22 @@ class SignUpConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
                                (implicit ec: ExecutionContext) {
 
   def signUp(nino: String, utr: String, taxYear: AccountingYear)
-            (implicit hc: HeaderCarrier): Future[SignUpResponse] =
-    http.post(url"${appConfig.signUpUrl}")
-      .withBody(Json.toJson(SignUpRequestModel(
+            (implicit hc: HeaderCarrier): Future[SignUpResponse] = {
+    http
+      .post(signUpUrl)
+      .withBody(signUpRequestBody(
         nino = nino,
         utr = utr,
-        taxYear = taxYear)))
+        taxYear = taxYear
+      ))
       .execute[SignUpResponse]
+  }
+
+  private def signUpUrl = url"${appConfig.signUpUrl}"
+
+  private def signUpRequestBody(nino: String, utr: String, taxYear: AccountingYear): JsValue = Json.toJson(SignUpRequestModel(
+    nino = nino,
+    utr = utr,
+    taxYear = taxYear
+  ))
 }

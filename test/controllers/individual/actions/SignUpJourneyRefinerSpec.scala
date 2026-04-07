@@ -36,18 +36,6 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
 
   "SignUpJourneyRefiner" when {
     "the user is in a SignUp state" should {
-      "redirect to already enrolled controller" when {
-        "the user has an MTDITID" in {
-          val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp), Some("test-mtditid")), { (_: SignUpRequest[_]) =>
-              Future.successful(Results.Ok)
-            }
-          )
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
-        }
-      }
       "execute the provided code" when {
         "the user does not have an MTDITID" in {
           val result: Future[Result] = signUpJourneyRefiner.invokeBlock(

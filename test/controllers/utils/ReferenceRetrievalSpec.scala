@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsString
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout, status}
@@ -71,7 +71,7 @@ class ReferenceRetrievalSpec extends PlaySpec
   implicit val agentUser: IncomeTaxAgentUser = new IncomeTaxAgentUser(
     Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("ARN", arn)), "activated", None)))
     , None, ConfidenceLevel.L50)
-    implicit val userArn: String = arn
+  implicit val userArn: String = arn
 
   implicit val request: Request[AnyContent] = FakeRequest()
 
@@ -97,7 +97,7 @@ class ReferenceRetrievalSpec extends PlaySpec
           .thenReturn(Future.successful(AuditResult.Success))
         mockSaveReferenceSuccess(reference)
 
-        val result = TestReferenceRetrieval.getIndividualReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getIndividualReference(SessionData()) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -109,7 +109,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockGetUTR(utr)
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceSuccess(reference)
-        val result = TestReferenceRetrieval.getIndividualReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getIndividualReference(SessionData()) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -123,7 +123,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-status-failure"))
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }
@@ -132,7 +132,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-json-failure"))
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned"
       }
@@ -142,7 +142,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getIndividualReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-save-status-failure"))
         })).message mustBe s"[ReferenceRetrieval][saveReferenceToSession] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }
@@ -172,7 +172,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         )).thenReturn(Future.successful(AuditResult.Success))
         mockSaveReferenceSuccess(reference)
 
-        val result = TestReferenceRetrieval.getAgentReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getAgentReference(SessionData()) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -185,7 +185,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceSuccess(reference)
 
-        val result = TestReferenceRetrieval.getAgentReference() flatMap { reference =>
+        val result = TestReferenceRetrieval.getAgentReference(SessionData()) flatMap { reference =>
           Future.successful(Ok(reference))
         }
 
@@ -199,7 +199,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-status-failure"))
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }
@@ -208,7 +208,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockGetUTR(utr)
         mockFetchReference(utr)(Left(RetrieveReferenceHttpParser.InvalidJsonFailure))
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-json-failure"))
         })).message mustBe s"[ReferenceRetrieval][handleReferenceNotFound] - Unable to parse json returned"
       }
@@ -218,7 +218,7 @@ class ReferenceRetrievalSpec extends PlaySpec
         mockFetchReference(utr)(Right(RetrieveReferenceHttpParser.Created(reference)))
         mockSaveReferenceStatusFailure(reference)(INTERNAL_SERVER_ERROR)
 
-        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference() flatMap { _ =>
+        intercept[InternalServerException](await(TestReferenceRetrieval.getAgentReference(SessionData()) flatMap { _ =>
           Future.successful(Ok("test-reference-save-status-failure"))
         })).message mustBe s"[ReferenceRetrieval][saveReferenceToSession] - Unexpected status returned: $INTERNAL_SERVER_ERROR"
       }

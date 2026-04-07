@@ -25,13 +25,9 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.individual.mocks.MockAuthService
-import services.mocks.MockAuditingService
-import uk.gov.hmrc.auth.core.{AffinityGroup, AuthorisedFunctions}
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
+import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import views.html.errors.ContactHMRC
-import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future
 
@@ -97,7 +93,7 @@ class ContactHMRCControllerSpec extends ControllerBaseSpec {
       when(cfc.baseUrl).thenReturn(Some(baseUrl))
       when(cfc.serviceId).thenReturn(Some(serviceId))
       when(cfc.referrerUrl(any())).thenReturn(Some(referrerUrl))
-      val url = s"$baseUrl?service=$serviceId&referrerUrl=$referrerUrl"
+      val url = s"$baseUrl/contact/report-technical-problem?service=$serviceId&referrerUrl=$referrerUrl"
 
       val result: Future[Result] = controller.submit(
         subscriptionRequest

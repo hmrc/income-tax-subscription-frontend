@@ -33,7 +33,7 @@ class ThrottlingService @Inject()(throttlingConnector: ThrottlingConnector,
                                   sessionDataService: SessionDataService,
                                   val appConfig: AppConfig) extends Logging with FeatureSwitching {
 
-  def throttled(throttle: Throttle, sessionData: SessionData = SessionData())(success: => Future[Result])
+  def throttled(throttle: Throttle, sessionData: SessionData)(success: => Future[Result])
                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Result] = {
 
     if (isEnabled(ThrottlingFeature)) {

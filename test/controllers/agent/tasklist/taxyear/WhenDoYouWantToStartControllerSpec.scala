@@ -16,26 +16,22 @@
 
 package controllers.agent.tasklist.taxyear
 
-import common.Constants.ITSASessionKeys
 import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.AccountingYearForm
+import models.*
 import models.common.AccountingYearModel
 import models.status.MandationStatus.Voluntary
 import play.api.http.Status
-import play.api.libs.json.JsBoolean
+import play.api.http.Status.*
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import services.mocks._
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import views.agent.mocks.MockWhenDoYouWantToStart
-import models.{AccountingYear, EligibilityStatus, SessionData}
-import models.Current
-import models.Next
-
 
 import scala.concurrent.Future
 
@@ -115,14 +111,14 @@ class WhenDoYouWantToStartControllerSpec extends ControllerSpec
         }
       }
       "current tax year is selected" when {
-          "save the tax year and redirect to the what you need to do page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+        "save the tax year and redirect to the what you need to do page" in {
+          mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
-            val result: Future[Result] = callSubmit(isEditMode = false)
+          val result: Future[Result] = callSubmit(isEditMode = false)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.agent.routes.WhatYouNeedToDoController.show().url)
+        }
       }
       "next tax year is selected" must {
         "save the tax year and redirect to the capture consent page" when {

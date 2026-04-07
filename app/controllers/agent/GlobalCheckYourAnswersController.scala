@@ -17,21 +17,18 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import config.AppConfig
-import config.featureswitch.FeatureSwitching
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.SessionData
 import models.agent.JourneyStep.Confirmation
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
-import play.twirl.api.Html
 import services.*
 import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
+import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -42,27 +39,22 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  identify: IdentifierAction,
                                                  journeyRefiner: ConfirmedClientJourneyRefiner,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
-                                                 ninoService: NinoService,
-                                                 utrService: UTRService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
                                                  mandationStatusService: MandationStatusService,
                                                  throttlingService: ThrottlingService)
-                                                (val appConfig: AppConfig,
-                                                 val subscriptionDetailsService: SubscriptionDetailsService,
-                                                 val sessionDataService: SessionDataService)
-                                                (implicit val ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                                (implicit ec: ExecutionContext,
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
       mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
         Ok(
-          view(
+          globalCheckYourAnswers(
             postAction = routes.GlobalCheckYourAnswersController.submit,
             backUrl = backUrl,
             completeDetails = completeDetails,
             clientDetails = request.clientDetails,
-            sessionData = request.sessionData,
+            softwareStatus = request.sessionData.fetchSoftwareStatus,
             isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
           )
         )
@@ -72,10 +64,17 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      throttlingService.throttled(AgentEndOfJourneyThrottle) {
-        signUp(completeDetails) {
-          Redirect(controllers.agent.routes.ConfirmationController.show)
-            .addingToSession(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
+      throttlingService.throttled(AgentEndOfJourneyThrottle, sessionData = request.sessionData) {
+        signUp(completeDetails) map {
+          case Right(_) | Left(AlreadySignedUp) =>
+            Redirect(routes.ConfirmationController.show)
+              .addingToSession(JourneyStateKey -> Confirmation.key)
+          case Left(HandledUnprocessableSignUp) =>
+            Redirect(controllers.errors.routes.ContactHMRCController.show)
+          case Left(failure) =>
+            throw new InternalServerException(
+              s"[GlobalCheckYourAnswersController] - failure response received from submission: ${failure.toString}"
+            )
         }
       }
     }
@@ -86,46 +85,16 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
   }
 
   private def signUp(completeDetails: CompleteDetails)
-                    (onSuccessfulSignUp: => Result)
-                    (implicit request: ConfirmedClientRequest[AnyContent]): Future[Result] = {
+                    (implicit request: ConfirmedClientRequest[AnyContent]): Future[SignUpOrchestrationResponse] = {
     val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-    val sessionData = request.request.sessionData
-    ninoService.getNino(sessionData) flatMap { nino =>
-      utrService.getUTR(sessionData) flatMap { utr =>
-        signUpOrchestrationService.orchestrateSignUp(
-          arn = request.arn,
-          nino = nino,
-          utr = utr,
-          taxYear = completeDetails.taxYear.accountingYear,
-          incomeSources = CreateIncomeSourcesModel.createIncomeSources(nino, completeDetails)
-        )(headerCarrier) map {
-          case Right(_) =>
-            onSuccessfulSignUp
-          case Left(failure) =>
-            throw new InternalServerException(
-              s"[GlobalCheckYourAnswersController][submit] - failure response received from submission: $failure"
-            )
-        }
-      }
-    }
-  }
-
-  private def view(postAction: Call,
-                   backUrl: String,
-                   completeDetails: CompleteDetails,
-                   clientDetails: ClientDetails,
-                   sessionData: SessionData,
-                   isMandatedNextYear: Boolean)
-                  (implicit request: Request[AnyContent]): Html = {
-    globalCheckYourAnswers(
-      postAction = postAction,
-      backUrl = backUrl,
-      completeDetails = completeDetails,
-      clientDetails = clientDetails,
-      softwareStatus = sessionData.fetchSoftwareStatus,
-      isMandatedNextYear = isMandatedNextYear
-    )
+    signUpOrchestrationService.orchestrateSignUp(
+      arn = request.arn,
+      nino = request.clientDetails.nino,
+      utr = request.utr,
+      taxYear = completeDetails.taxYear.accountingYear,
+      incomeSources = CreateIncomeSourcesModel.createIncomeSources(request.clientDetails.nino, completeDetails)
+    )(headerCarrier)
   }
 
   private def withCompleteDetails(reference: String)
@@ -133,7 +102,9 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                  (implicit request: Request[AnyContent]): Future[Result] = {
     getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
       case Right(completeDetails) => f(completeDetails)
-      case Left(_) => Future.successful(Redirect(backUrl))
+      case Left(_) => Future.successful(Redirect(
+        tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
+      ))
     }
   }
 

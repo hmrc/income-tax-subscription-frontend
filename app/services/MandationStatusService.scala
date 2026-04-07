@@ -31,7 +31,7 @@ class MandationStatusService @Inject()(mandationStatusConnector: MandationStatus
                                        sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def getMandationStatus(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
+  def getMandationStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[MandationStatusModel] = {
     sessionData.fetchMandationStatus match {
       case Some(mandationStatus) => Future.successful(mandationStatus)
       case None =>

@@ -16,6 +16,7 @@
 
 package services.agent
 
+import models.SessionData
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContent
@@ -50,18 +51,17 @@ class ClientDetailsRetrievalSpec extends PlaySpec with Matchers with MockNinoSer
       "the clients name is present in session" in new Setup {
         mockGetNino(testNino)
 
-        await(service.getClientDetails()(request.withSession(
+        await(service.getClientDetails(SessionData())(request.withSession(
           UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName
         ), implicitly)) mustBe clientDetails
       }
-
     }
     "return an exception" when {
       "the clients name is not present in session" in new Setup {
         mockGetNino(testNino)
 
-        intercept[InternalServerException](await(service.getClientDetails()(request, implicitly)))
+        intercept[InternalServerException](await(service.getClientDetails(SessionData())(request, implicitly)))
           .message mustBe "[ClientDetailsRetrieval][getClientDetails] - Unable to retrieve name from session"
       }
     }

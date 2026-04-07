@@ -22,9 +22,10 @@ import config.featureswitch.FeatureSwitching
 import connectors.agent.AgentSPSConnector
 import connectors.{CreateIncomeSourcesConnector, SignUpConnector}
 import models.AccountingYear
-import models.common.subscription.CreateIncomeSourcesModel
-import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
+import models.common.subscription.SignUpFailureResponse.UnprocessableSignUp
+import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessful}
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
+import services.agent.SignUpOrchestrationService.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -39,7 +40,6 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                                            val appConfig: AppConfig)
                                           (implicit ec: ExecutionContext) extends FeatureSwitching {
 
-  import services.agent.SignUpOrchestrationService._
   def orchestrateSignUp(arn: String,
                         nino: String,
                         utr: String,
@@ -47,11 +47,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                         incomeSources: CreateIncomeSourcesModel)
                        (implicit hc: HeaderCarrier): Future[SignUpOrchestrationResponse] = {
 
-    signUpConnector.signUp(
-      nino = nino,
-      utr = utr,
-      taxYear = taxYear
-    ) flatMap {
+    signUp(nino = nino, utr = utr, taxYear = taxYear) flatMap {
       case Right(SignUpSuccessful(mtdbsa)) =>
         val createIncomeSourcesRequest = createIncomeSourcesConnector.createIncomeSources(mtdbsa, incomeSources)
         val autoClaimEnrolmentRequest = autoEnrolmentService.autoClaimEnrolment(utr = utr, nino = nino, mtditid = mtdbsa)
@@ -68,11 +64,24 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
             case Left(_) => Left(CreateIncomeSourcesFailure)
           }
         }
-      case Right(AlreadySignedUp) =>
-        Future.successful(Right(SignUpOrchestrationSuccessful))
-      case Left(_) => Future.successful(Left(SignUpFailure))
+      case Left(failure) =>
+        Future.successful(Left(failure))
     }
 
+  }
+
+  private def signUp(nino: String, utr: String, taxYear: AccountingYear)
+                    (implicit hc: HeaderCarrier): Future[Either[SignUpOrchestrationFailure, SignUpSuccessful]] = {
+    signUpConnector.signUp(nino, utr, taxYear) map {
+      case Right(value) =>
+        Right(value)
+      case Left(UnprocessableSignUp(ALREADY_SIGNED_UP, _)) =>
+        Left(AlreadySignedUp)
+      case Left(UnprocessableSignUp(ID_NOT_FOUND | BUSINESS_PARTNER_CATEGORY_ORGANISATION | MULTIPLE_BUSINESS_PARTNERS_FOUND, _)) =>
+        Left(HandledUnprocessableSignUp)
+      case Left(_) =>
+        Left(UnhandledSignUpError)
+    }
   }
 
   private def confirmAgentEnrolmentToSpsIfEnrolled(arn: String, nino: String, sautr: String, mtditId: String)
@@ -106,13 +115,22 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
 
 object SignUpOrchestrationService {
 
+  val ID_NOT_FOUND = "002"
+  val BUSINESS_PARTNER_CATEGORY_ORGANISATION = "815"
+  val MULTIPLE_BUSINESS_PARTNERS_FOUND = "816"
+  val ALREADY_SIGNED_UP = "820"
+
   type SignUpOrchestrationResponse = Either[SignUpOrchestrationFailure, SignUpOrchestrationSuccessful.type]
 
   case object SignUpOrchestrationSuccessful
 
   sealed trait SignUpOrchestrationFailure
 
-  case object SignUpFailure extends SignUpOrchestrationFailure
+  case object AlreadySignedUp extends SignUpOrchestrationFailure
+
+  case object HandledUnprocessableSignUp extends SignUpOrchestrationFailure
+
+  case object UnhandledSignUpError extends SignUpOrchestrationFailure
 
   case object CreateIncomeSourcesFailure extends SignUpOrchestrationFailure
 
