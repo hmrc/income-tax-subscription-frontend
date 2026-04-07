@@ -14,21 +14,19 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
 @import views.html.helpers.{ContinueButton, RadioHelper, UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import utilities.AccountingPeriodUtil
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
     continueButton: ContinueButton,
-    ul:UnorderedList,
-    featureSwitching: FeatureSwitching
+    ul:UnorderedList
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
@@ -43,43 +41,33 @@
         @messages("business.next-year-mandatory-sign-up.para", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString)
     </p>
 
-    @if(featureSwitching.isEnabled(TaxYear26To27Plus)) {
-        <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para2.post-26-27")</p>
-    } else {
-        @ul(
-            leadIn=messages("business.next-year-mandatory-sign-up.para2.pre-26-27"),
-            Seq(
-                Text(messages("business.next-year-mandatory-sign-up.bullet1")),
-                Text(messages("business.next-year-mandatory-sign-up.bullet2")),
-                Text(messages("business.next-year-mandatory-sign-up.bullet3", endYearOfCurrentTaxPeriod.toString))
-            )
-        )
-    }
+    <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para2")</p>
+
+    <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para3", AccountingPeriodUtil.getNextTaxStartYear.toString)</p>
 
     <h2 class="govuk-heading-m">@messages("business.next-year-mandatory-sign-up.subheading")</h2>
 
-    <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para3")</p>
+    <p class="govuk-body">@messages("business.next-year-mandatory-sign-up.para4")</p>
 
-@form(action = postAction) {
-    @radioHelper(
-        field = accountingYearForm(AccountingYearForm.accountingYear),
-        legend = messages("business.next-year-mandatory-sign-up.heading",endYearOfCurrentTaxPeriod.toString,(endYearOfCurrentTaxPeriod + 1).toString),
-        isPageHeading = false,
-        headingClasses = "govuk-visually-hidden",
-        radioItems = Seq(
-            RadioItem(
-                content = Text(messages("business.next-year-mandatory-sign-up.option1",(endYearOfCurrentTaxPeriod - 1).toString,
-                endYearOfCurrentTaxPeriod.toString)),
-                value = Some(Current.toString)
-            ),
-            RadioItem(
-                content = Text(messages("business.next-year-mandatory-sign-up.option2", endYearOfCurrentTaxPeriod.toString,
-                (endYearOfCurrentTaxPeriod + 1).toString)),
-                value = Some(Next.toString)
+    @form(action = postAction) {
+        @radioHelper(
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = messages("business.next-year-mandatory-sign-up.heading",endYearOfCurrentTaxPeriod.toString,(endYearOfCurrentTaxPeriod + 1).toString),
+            isPageHeading = false,
+            headingClasses = "govuk-visually-hidden",
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("business.next-year-mandatory-sign-up.option1",(endYearOfCurrentTaxPeriod - 1).toString,
+                    endYearOfCurrentTaxPeriod.toString)),
+                    value = Some(Current.toString)
+                ),
+                RadioItem(
+                    content = Text(messages("business.next-year-mandatory-sign-up.option2", endYearOfCurrentTaxPeriod.toString,
+                    (endYearOfCurrentTaxPeriod + 1).toString)),
+                    value = Some(Next.toString)
+                )
             )
         )
-    )
-    @continueButton(isEditMode = isEditMode)
-
+        @continueButton(isEditMode = isEditMode)
     }
 }
