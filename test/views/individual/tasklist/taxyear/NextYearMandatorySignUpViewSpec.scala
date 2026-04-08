@@ -26,17 +26,12 @@ import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import utilities.ViewSpec
+import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.tasklist.taxyear.NextYearMandatorySignUp
 
 class NextYearMandatorySignUpViewSpec extends ViewSpec {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(TaxYear26To27Plus)
-  }
 
   private val accountingPeriodService = app.injector.instanceOf[AccountingPeriodService]
 
@@ -70,45 +65,20 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 1).text mustBe NextYearMandatorySignUp.paragraph
     }
 
-    "has a second paragraph" which {
-      "leads into the bullet list" when {
-        "the 26-27 feature switch is disabled" in {
-          document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2Pre2627
-        }
-      }
-      "is an independent paragraph" when {
-        "the 26-27 feature switch is enabled" in {
-          enable(TaxYear26To27Plus)
-
-          document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2Post2627
-        }
-      }
+    "has a second paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe NextYearMandatorySignUp.paragraph2
     }
 
-    "have a bullet list" when {
-      "the 26-27 feature switch is disabled" in {
-        def bulletList: Element = document().mainContent.selectNth("ul", 1)
-
-        bulletList.selectNth("li", 1).text mustBe NextYearMandatorySignUp.bullet1
-        bulletList.selectNth("li", 2).text mustBe NextYearMandatorySignUp.bullet2
-        bulletList.selectNth("li", 3).text mustBe NextYearMandatorySignUp.bullet3
-      }
-    }
-
-    "don't have a bullet list" when {
-      "the 26-27 feature switch is enabled" in {
-        enable(TaxYear26To27Plus)
-
-        document().mainContent.selectOptionalNth("ul", 1) mustBe None
-      }
+    "has a third paragraph" in {
+      document().mainContent.selectNth("p", 3).text mustBe NextYearMandatorySignUp.paragraph3
     }
 
     "have a subheading" in {
       document().mainContent.selectNth("h2", 1).text mustBe NextYearMandatorySignUp.subheading
     }
 
-    "has a third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe NextYearMandatorySignUp.paragraph3
+    "has a forth paragraph" in {
+      document().mainContent.selectNth("p", 4).text mustBe NextYearMandatorySignUp.paragraph4
     }
 
     "have a form" which {
@@ -161,13 +131,13 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
   object NextYearMandatorySignUp {
     val heading: String = s"You must use Making Tax Digital for Income Tax next tax year, $taxYearEnd to ${taxYearEnd + 1}"
     val paragraph: String = s"You must use Making Tax Digital for Income Tax next tax year to submit your $taxYearEnd to ${taxYearEnd + 1} income."
-    val paragraph2Pre2627 = "But you can choose to sign up early, so you are prepared to use the service. This will mean that you will:"
-    val paragraph2Post2627 = "But you can choose to sign up early, so you are prepared to use the service."
+    val paragraph2 = "But you can choose to sign up early, so you are prepared to use the service."
+    val paragraph3 = s"You will not get penalties during this period for any missed quarterly updates before 6 April ${AccountingPeriodUtil.getNextTaxStartYear}."
     val bullet1 = "get information by email on issues affecting your use of the service and details of new features added"
     val bullet2 = "have access to a dedicated telephone support team"
     val bullet3: String = s"not get penalties during this period for any missed quarterly updates before 6 April $taxYearEnd"
     val subheading = "When do you want to start using Making Tax Digital for Income Tax?"
-    val paragraph3 = "I want to sign up now, and:"
+    val paragraph4 = "I want to sign up now, and:"
     val currentYearOption: String = s"start using it now for this tax year, ${taxYearEnd - 1} to $taxYearEnd"
     val nextYearOption: String = s"use it from next tax year, $taxYearEnd to ${taxYearEnd + 1}"
   }

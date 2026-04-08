@@ -14,8 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureswitch.FeatureSwitching
-@import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 @import forms.agent.AccountingYearForm
 @import services.AccountingPeriodService
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
@@ -23,6 +21,7 @@
 @import views.html.helpers.ReturnDeadlineTable
 @import views.html.helpers.{RadioHelper, PageHeadingHelper, ContinueButton, UnorderedList}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import utilities.AccountingPeriodUtil
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -31,8 +30,7 @@
     continueButton: ContinueButton,
     radioHelper: RadioHelper,
     ul:UnorderedList,
-    govukInsetText: GovukInsetText,
-    featureSwitching: FeatureSwitching
+    govukInsetText: GovukInsetText
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
@@ -45,18 +43,9 @@
         isSection = false
     )
 
-    @if(featureSwitching.isEnabled(TaxYear26To27Plus)) {
-        <p class="govuk-body">@messages("agent.business.next-year-mandatory-sign-up.para.post-26-27")</p>
-    } else {
-        @ul(
-            leadIn=messages("agent.business.next-year-mandatory-sign-up.para.pre-26-27"),
-            Seq(
-                Text(messages("agent.business.next-year-mandatory-sign-up.bullet1")),
-                Text(messages("agent.business.next-year-mandatory-sign-up.bullet2")),
-                Text(messages("agent.business.next-year-mandatory-sign-up.bullet3"))
-            )
-        )
-    }
+    <p class="govuk-body">@messages("agent.business.next-year-mandatory-sign-up.para")</p>
+
+    <p class="govuk-body">@messages("agent.business.next-year-mandatory-sign-up.para2", AccountingPeriodUtil.getNextTaxStartYear.toString)</p>
 
     @govukInsetText(InsetText(
         content = Text(messages("agent.business.next-year-mandatory-sign-up.indent", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))
@@ -64,26 +53,26 @@
 
     <h2 class="govuk-heading-m">@messages("agent.business.next-year-mandatory-sign-up.subheading", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)</h2>
 
-@form(action = postAction) {
-    @radioHelper(
-        field = accountingYearForm(AccountingYearForm.accountingYear),
-        legend = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
-        isPageHeading = false,
-        headingClasses = "govuk-visually-hidden",
-        radioItems = Seq(
-            RadioItem(
-                content = Text(messages("agent.business.next-year-mandatory-sign-up.option1")),
-                hint = Some(Hint(content = Text(messages("agent.business.next-year-mandatory-sign-up.option1.hint")))),
-                value = Some(Current.toString)
-            ),
-            RadioItem(
-                content = Text(messages("agent.business.next-year-mandatory-sign-up.option2")),
-                value = Some(Next.toString)
+    @form(action = postAction) {
+        @radioHelper(
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
+            isPageHeading = false,
+            headingClasses = "govuk-visually-hidden",
+            radioItems = Seq(
+                RadioItem(
+                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option1")),
+                    hint = Some(Hint(content = Text(messages("agent.business.next-year-mandatory-sign-up.option1.hint")))),
+                    value = Some(Current.toString)
+                ),
+                RadioItem(
+                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option2")),
+                    value = Some(Next.toString)
+                )
             )
         )
-    )
-    @continueButton(isEditMode = isEditMode)
-}
+        @continueButton(isEditMode = isEditMode)
+    }
 
     <div class="govuk-form-group">
         <div>
