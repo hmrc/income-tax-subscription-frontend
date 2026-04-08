@@ -869,15 +869,22 @@ agent.client-details.summary.nino                               = National Insur
 agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading                                    = Your client’s income sources
-agent.your-income-source.para-1                                     = Do not add limited companies or partnerships here.
-agent.your-income-source.lead                                       = Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April {0}.
+agent.your-income-source.heading                                    = Confirm your client’s income sources
+agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
+agent.your-income-source.para-2                                     = Do not add limited companies or partnerships here.
+agent.your-income-source.lead                                       = You must:
+agent.your-income-source.bullet1                                    = check that the information we have for your client is correct
+agent.your-income-source.bullet2                                    = change any incorrect details
+agent.your-income-source.bullet3                                    = add any missing income source
+agent.your-income-source.bullet4                                    = remove any businesses that ceased before 6 April {0}
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Sole trader businesses
 agent.your-income-source.self-employed.label-full                   = {0} – {1}
 agent.your-income-source.self-employed.name                         = {0}
+agent.your-income-source.self-employed.startdate                    = {0}
 agent.your-income-source.self-employed.trade                        = {0}
 agent.your-income-source.self-employed.business-name-para           = Business name
+agent.your-income-source.self-employed.business-start-date-para     = Business start date
 agent.your-income-source.self-employed.label-none                   = Business {0}
 agent.your-income-source.self-employed.add-link                     = Add a sole trader business
 agent.your-income-source.income-from-property                       = Income from property
@@ -890,6 +897,9 @@ agent.your-income-source.uk-property.add-link                       = Add UK pro
 agent.your-income-source.foreign-property.add-link                  = Add foreign property
 agent.your-income-source.foreign-property.before-start-date-limit   = Before 6 April {0}
 agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here.
+agent.your-income-source.self-employed.confirm-details              = Confirm details
+agent.your-income-source.self-employed.check-details                = Check business details
+agent.your-income-source.self-employed.add-details                  = Add business details
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = There is a problem with your client’s income sources

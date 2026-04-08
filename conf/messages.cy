@@ -850,15 +850,22 @@ agent.client-details.summary.nino                               = Rhif Yswiriant
 agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
-agent.your-income-source.heading                                    = Ffynonellau incwm eich cleient
-agent.your-income-source.para-1                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
-agent.your-income-source.lead                                       = Ychwanegwch bob un o’r ffynonellau hyn y mae’ch cleient yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
+agent.your-income-source.heading                                    = Confirm your client’s income sources
+agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
+agent.your-income-source.para-2                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
+agent.your-income-source.lead                                       = You must:
+agent.your-income-source.bullet1                                    = check that the information we have for your client is correct
+agent.your-income-source.bullet2                                    = change any incorrect details
+agent.your-income-source.bullet3                                    = add any missing income source
+agent.your-income-source.bullet4                                    = remove any businesses that ceased before 6 April {0}
 agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.self-employed                              = Busnesau unig fasnachwr
 agent.your-income-source.self-employed.label-full                   = {0} – {1}
 agent.your-income-source.self-employed.name                         = {0}
+agent.your-income-source.self-employed.startdate                    = {0}
 agent.your-income-source.self-employed.trade                        = {0}
 agent.your-income-source.self-employed.business-name-para           = Enw’r busnes
+agent.your-income-source.self-employed.business-start-date-para     = Business start date
 agent.your-income-source.self-employed.label-none                   = Busnes {0}
 agent.your-income-source.self-employed.add-link                     = Ychwanegu busnes unig fasnachwr
 agent.your-income-source.income-from-property                       = Incwm o eiddo
@@ -871,6 +878,9 @@ agent.your-income-source.uk-property.add-link                       = Ychwanegu 
 agent.your-income-source.foreign-property.add-link                  = Ychwanegu eiddo tramor
 agent.your-income-source.foreign-property.before-start-date-limit   = Cyn 6 Ebrill {0}
 agent.your-income-source.before-you-continue                        = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
+agent.your-income-source.self-employed.confirm-details              = Confirm details
+agent.your-income-source.self-employed.check-details                = Check business details
+agent.your-income-source.self-employed.add-details                  = Add business details
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = Mae problem gyda ffynonellau incwm eich cleient

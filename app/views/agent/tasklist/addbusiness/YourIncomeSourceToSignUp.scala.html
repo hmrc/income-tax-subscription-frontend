@@ -20,8 +20,10 @@
 @import utilities.AccountingPeriodUtil
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
+@import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper, UnorderedList}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
+@import java.time.LocalDate
+@import utilities.ImplicitDateFormatter
 
 @this(
     agentMainTemplate: AgentMainTemplate,
@@ -31,10 +33,14 @@
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,
     govukTag : GovukTag,
-    govukInsetText: GovukInsetText
+    govukInsetText: GovukInsetText,
+    ul: UnorderedList,
+    implicitDateFormatter: ImplicitDateFormatter
 )
 
 @(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean)(implicit request: Request[_], messages: Messages)
+
+@import implicitDateFormatter.LongDate
 
 @agentMainTemplate(title = messages("agent.your-income-source.heading"), backLink = Some(backUrl)) {
 
@@ -44,9 +50,15 @@
         isSection = false
     )
 
-    <p class="govuk-body">
-            @messages("agent.your-income-source.lead", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)
-    </p>
+    @ul(
+        leadIn=messages("agent.your-income-source.lead"),
+        Seq(
+            Text(messages("agent.your-income-source.bullet1")),
+            Text(messages("agent.your-income-source.bullet2")),
+            Text(messages("agent.your-income-source.bullet3")),
+            Text(messages("agent.your-income-source.bullet4", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString))
+        )
+    )
 
     @selfEmploymentSection
 
@@ -69,6 +81,14 @@
     (business.businessName) match {
         case (Some(BusinessNameModel(name))) => messages("agent.your-income-source.self-employed.name", name)
         case _ => messages("agent.your-income-source.self-employed.label-none", index)
+    }
+}
+
+@selfEmploymentStartDate(business: SelfEmploymentData) = @{
+    (business.startDateBeforeLimit, business.businessStartDate) match {
+        case (Some(true), _)  => messages("agent.your-income-source.self-employed.startdate.before-limit")
+        case (Some(false), Some(BusinessStartDate(startDate))) => messages("agent.your-income-source.self-employed.startdate", startDate.toLocalDate.toLongDate)
+        case _ => ""
     }
 }
 
@@ -132,8 +152,12 @@
 @selfEmploymentSection = {
     <h2 class="govuk-heading-m">@messages("agent.your-income-source.self-employed")</h2>
 
+    <p class="govuk-body">
+        @messages("agent.your-income-source.para-1")
+    </p>
+
     @govukInsetText(InsetText(
-        content = Text(messages("agent.your-income-source.para-1"))
+        content = Text(messages("agent.your-income-source.para-2"))
     ))
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
@@ -144,6 +168,24 @@
                 ),
                 value = Value(Text(selfEmploymentName(business,index)))
             ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("agent.your-income-source.self-employed.business-start-date-para"))
+                ),
+                value = Value(
+                    if(selfEmploymentStartDate(business).nonEmpty && business.confirmed) Text(selfEmploymentStartDate(business))
+                    else statusTag(false)
+                ),
+                actions = maybeStatusTagAction(
+                    isComplete = business.isComplete,
+                    isConfirmed = business.confirmed,
+                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
+                    visuallyHidden = Some(
+                        if(business.isComplete && !business.confirmed) messages("agent.your-income-source.self-employed.confirm-details")
+                        else if(business.isComplete) messages("agent.your-income-source.self-employed.check-details")
+                        else messages("agent.your-income-source.self-employed.add-details")
+                    )
+                )),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(business.isComplete && business.confirmed)),
