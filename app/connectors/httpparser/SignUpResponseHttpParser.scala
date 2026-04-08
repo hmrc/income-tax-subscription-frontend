@@ -16,9 +16,8 @@
 
 package connectors.httpparser
 
-import models.common.subscription.SignUpFailureResponse.{InvalidJson, UnexpectedStatus}
-import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
-import models.common.subscription.{SignUpFailureResponse, SignUpSuccessResponse}
+import models.common.subscription.SignUpFailureResponse.{InvalidJson, UnexpectedStatus, UnprocessableSignUp}
+import models.common.subscription.{SignUpFailureResponse, SignUpSuccessful}
 import play.api.Logging
 import play.api.http.Status.{OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess}
@@ -26,7 +25,7 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object SignUpResponseHttpParser extends Logging {
 
-  type SignUpResponse = Either[SignUpFailureResponse, SignUpSuccessResponse]
+  type SignUpResponse = Either[SignUpFailureResponse, SignUpSuccessful]
 
   implicit object SignUpResponseHttpReads extends HttpReads[SignUpResponse] {
     override def read(method: String, url: String, response: HttpResponse): SignUpResponse = {
@@ -35,14 +34,22 @@ object SignUpResponseHttpParser extends Logging {
           response.json.validate[SignUpSuccessful] match {
             case JsSuccess(successResponse, _) => Right(successResponse)
             case JsError(errors) =>
-              logger.error(s"[SignUpResponseHttpReads][read] - Unexpected json returned from sign up: $errors")
+              logger.error(s"[SignUpResponseHttpReads] - Unexpected json returned from sign up API, Status: $OK, Errors: $errors")
               Left(InvalidJson)
           }
-        case UNPROCESSABLE_ENTITY => Right(AlreadySignedUp)
+        case UNPROCESSABLE_ENTITY =>
+          response.json.validate[UnprocessableSignUp] match {
+            case JsSuccess(unprocessableResponse, _) =>
+              Left(unprocessableResponse)
+            case JsError(errors) =>
+              logger.error(s"[SignUpResponseHttpReads] - Unexpected json returned from sign up API, Status: $UNPROCESSABLE_ENTITY, Errors: $errors")
+              Left(InvalidJson)
+          }
         case status =>
-          logger.error(s"[SignUpResponseHttpReads][read] - Unexpected status returned from sign up: $status")
+          logger.error(s"[SignUpResponseHttpReads] - Unexpected status returned from sign up: $status")
           Left(UnexpectedStatus(status))
       }
     }
   }
+
 }

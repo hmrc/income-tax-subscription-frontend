@@ -20,14 +20,9 @@ import common.Constants.GovernmentGateway.MTDITID
 import common.Constants.mtdItsaEnrolmentName
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
-import models.DateModel
-import models.common.business._
-import models.common.subscription.SignUpSuccessResponse.{AlreadySignedUp, SignUpSuccessful}
-import models.common.subscription._
-import models.usermatching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
-import play.api.http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.domain._
-import utilities.TestModels._
+import models.common.subscription.*
+import models.usermatching.LockedOut
+import uk.gov.hmrc.domain.*
 
 import java.net.URLEncoder
 import java.time.OffsetDateTime
@@ -36,11 +31,9 @@ import java.util.UUID
 object TestConstants {
 
   lazy val testNino: String = new NinoGenerator().nextNino.nino
-  lazy val testId: String = "testId"
   lazy val testUtr: String = UUID.randomUUID().toString
   lazy val testFullName: String = UUID.randomUUID().toString + " " + UUID.randomUUID().toString
   lazy val testMTDID = "XE0001234567890"
-  lazy val businessStartDate: BusinessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
   lazy val testLockoutResponse: LockedOut = LockedOut(testNino, OffsetDateTime.now())
   lazy val testSpsEntityId: String = UUID.randomUUID().toString
 
@@ -49,10 +42,6 @@ object TestConstants {
 
   val testFirstName = "Test"
   val testLastName = "Name"
-
-  val testSoleTraderBusinesses: SoleTraderBusinesses = SoleTraderBusinesses(testAccountingPeriodThisYear, testSelfEmploymentData)
-  val testUkProperty: UkProperty = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
-  val testOverseasProperty: OverseasProperty = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
 
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString
@@ -64,17 +53,9 @@ object TestConstants {
 
   val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
 
-  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID, None)))
-
-  val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
-
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
-
-  val testMatchSuccess = Right(UserMatchSuccessResponseModel)
-
-  val testMatchFailure = Left(UserMatchFailureResponseModel)
 
   val testGroupId: String = UUID.randomUUID().toString
 
@@ -83,28 +64,5 @@ object TestConstants {
   val testEnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
   val testEnrolmentRequest = EmacEnrolmentRequest(testCredId, testNino)
-
-  val testSignUpIncomeSourcesSuccess = Right(SignUpSuccessful(testMTDID))
-
-  val testAlreadySignUpIncomeSources = Right(AlreadySignedUp)
-
-  lazy val testSelfEmploymentData: Seq[SelfEmploymentData] =
-    Seq(SelfEmploymentData
-    (
-      id = testId,
-      businessStartDate = Some(businessStartDate),
-      businessName = Some(testBusinessName),
-      businessTradeName = Some(testBusinessTradeName),
-      businessAddress = Some(BusinessAddressModel(Address(Seq("line 1", "line 2"), Some("TF2 1PF"), Some(Country("GB", "United Kingdom")))))
-    )
-    )
-
-  lazy val testCreateIncomeSources: CreateIncomeSourcesModel =
-    CreateIncomeSourcesModel(
-      testNino,
-      Some(testSoleTraderBusinesses),
-      Some(testUkProperty),
-      Some(testOverseasProperty)
-    )
 
 }

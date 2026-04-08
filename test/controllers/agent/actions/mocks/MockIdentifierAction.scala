@@ -47,7 +47,7 @@ trait MockIdentifierAction extends MockitoSugar with BeforeAndAfterEach {
     mock[AuthConnector], mockSessionDataService, mock[BodyParsers.Default], mock[AppConfig]
   ) {
     override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-      block(IdentifierRequest(request, testARN))
+      block(IdentifierRequest(request, testARN, SessionData()))
     }
   }
 

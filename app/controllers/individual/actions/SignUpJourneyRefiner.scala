@@ -19,7 +19,7 @@ package controllers.individual.actions
 import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
 import models.individual.JourneyStep
-import models.individual.JourneyStep._
+import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -46,21 +46,16 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval, ses
         )
       } match {
       case Some(SignUp) =>
-        request.mtditid match {
-          case Some(_) =>
-            logger.info("[Individual][SignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")
-            Future.successful(Left(Redirect(controllers.individual.matching.routes.AlreadyEnrolledController.show)))
-          case None =>
-            for {
-              sessionData <- sessionDataService.getAllSessionData()
-              reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
-            } yield {
-              Right(SignUpRequest(
-                request = request,
-                reference = reference,
-                nino = request.nino
-              ))
-            }
+        for {
+          sessionData <- sessionDataService.getAllSessionData()
+          reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
+        } yield {
+          Right(SignUpRequest(
+            request = request,
+            reference = reference,
+            nino = request.nino,
+            sessionData = sessionData
+          ))
         }
       case Some(Confirmation) =>
         logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")

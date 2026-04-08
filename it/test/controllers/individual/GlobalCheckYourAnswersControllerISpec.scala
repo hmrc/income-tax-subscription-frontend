@@ -17,26 +17,25 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import common.Constants.ITSASessionKeys.SPSEntityId
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
-import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
+import helpers.*
+import helpers.IntegrationTestConstants.*
+import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
-import helpers._
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub, ThrottlingStub}
-import services.EndOfJourneyThrottleId
-import services.IndividualEndOfJourneyThrottle
-import models._
+import models.*
 import models.common.BusinessAccountingPeriod
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import play.api.http.Status._
-import services.ThrottlingService
-import play.api.libs.json.{JsBoolean, JsString, Json}
-import utilities.SubscriptionDataKeys._
+import play.api.http.Status.*
+import play.api.libs.json.{JsString, Json}
+import services.EndOfJourneyThrottleId
+import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
+import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -52,6 +51,18 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
   )
 
   "GET /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
+    "return SEE_OTHER to the login page" when {
+      "the user is not logged in" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.getGlobalCheckYourAnswers()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
     "return OK" when {
       "all data was received and is complete" in {
         Given("I setup the Wiremock stubs")
@@ -63,7 +74,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
         ))
 
         val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
@@ -75,6 +86,21 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         res must have(
           httpStatus(OK),
           pageTitle(messages("individual.global-check-your-answers.heading") + serviceNameGovUk)
+        )
+      }
+    }
+  }
+
+  "POST /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
+    "return SEE_OTHER to the login page" when {
+      "the user is not logged in" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
         )
       }
     }
@@ -109,7 +135,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
@@ -170,10 +196,13 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
-            SignUpAPIStub.stubSignUp(testSignUpModel(Current))(UNPROCESSABLE_ENTITY)
+            SignUpAPIStub.stubSignUp(testSignUpModel(Current))(
+              status = UNPROCESSABLE_ENTITY,
+              json = Json.obj("code" -> ALREADY_SIGNED_UP, "reason" -> "Customer already signed up")
+            )
 
             When("POST /final-check-your-answers is called")
             val testEntityId: String = "testEntityId"
@@ -214,7 +243,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Next))(OK, Json.obj("mtdbsa" -> testMtdId))
@@ -273,10 +302,13 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
-            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(UNPROCESSABLE_ENTITY)
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+              status = UNPROCESSABLE_ENTITY,
+              json = Json.obj("code" -> ALREADY_SIGNED_UP, "reason" -> "Customer already signed up")
+            )
 
             When("POST /final-check-your-answers is called")
             val testEntityId: String = "testEntityId"
@@ -286,6 +318,103 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             res must have(
               httpStatus(SEE_OTHER),
               redirectURI(IndividualURI.confirmationURI)
+            )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+          }
+        }
+      }
+      "redirect to the contact hmrc page" when {
+        "signing up for the current tax year" when {
+          s"a unprocessable sign up occurs with a code: $ID_NOT_FOUND" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+              status = UNPROCESSABLE_ENTITY,
+              json = Json.obj("code" -> ID_NOT_FOUND, "reason" -> "ID not found")
+            )
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the contact hmrc page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+            )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+          }
+          s"a unprocessable sign up occurs with a code: $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+              status = UNPROCESSABLE_ENTITY,
+              json = Json.obj("code" -> BUSINESS_PARTNER_CATEGORY_ORGANISATION, "reason" -> "ID not found")
+            )
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the contact hmrc page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+            )
+
+            verifyPost("/channel-preferences/confirm", count = Some(0))
+          }
+          s"a unprocessable sign up occurs with a code: $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+              status = UNPROCESSABLE_ENTITY,
+              json = Json.obj("code" -> MULTIPLE_BUSINESS_PARTNERS_FOUND, "reason" -> "ID not found")
+            )
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the contact hmrc page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
             )
 
             verifyPost("/channel-preferences/confirm", count = Some(0))

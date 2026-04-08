@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SessionClearingService @Inject()(sessionDataService: SessionDataService)
                                       (implicit ec: ExecutionContext) {
 
-  def clearAgentSession(nextPage: Call, sessionData: SessionData = SessionData())(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+  def clearAgentSession(nextPage: Call, sessionData: SessionData)(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     for {
       emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData

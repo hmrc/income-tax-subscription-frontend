@@ -25,18 +25,17 @@ import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
 import helpers.agent.*
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
-import helpers.servicemocks.{EnrolmentStoreProxyStub, ThrottlingStub}
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
+import helpers.servicemocks.{EnrolmentStoreProxyStub, ThrottlingStub}
 import models.*
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import services.AgentEndOfJourneyThrottle
-import services.EndOfJourneyThrottleId
 import play.api.http.Status.*
-import play.api.libs.json.{JsBoolean, JsString, Json}
-import services.AgentStartOfJourneyThrottle
+import play.api.libs.json.{JsString, Json}
+import services.EndOfJourneyThrottleId
+import services.agent.SignUpOrchestrationService.{BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
@@ -65,58 +64,56 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         )
       }
     }
-    "the pre-pop feature switch is enabled" should {
-      "return SEE OTHER to the your income sources page" when {
-        "there is missing data from the users subscription" in {
+    "return SEE OTHER to the your income sources page" when {
+      "there is missing data from the users subscription" in {
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
-          SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-            ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
-          ))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
-          When("GET /client/final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+        When("GET /client/final-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
 
-          Then("Should redirect to the task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.yourIncomeSourcesURI)
-          )
-        }
-        "there are unconfirmed income sources in the users subscription" in {
+        Then("Should redirect to the task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.yourIncomeSourcesURI)
+        )
+      }
+      "there are unconfirmed income sources in the users subscription" in {
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
-          SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
-            ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
-          ))
+        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr)
+        ))
 
-          When("GET /client/final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
+        When("GET /client/final-check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.getAgentGlobalCheckYourAnswers()
 
-          Then("Should redirect to the task list page")
-          res must have(
-            httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.yourIncomeSourcesURI)
-          )
-        }
+        Then("Should redirect to the task list page")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.yourIncomeSourcesURI)
+        )
       }
     }
     "return OK" when {
@@ -130,7 +127,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
@@ -187,7 +184,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr)
             ))
@@ -220,7 +217,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
 
             When("POST /client/final-check-your-answers is called")
-            val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+            val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
             Then("Should redirect to the confirmation page")
             res must have(
@@ -257,7 +254,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr)
             ))
@@ -281,7 +278,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             )(NO_CONTENT)
 
             When("POST /client/final-check-your-answers is called")
-            val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+            val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
             Then("Should redirect to the confirmation page")
             res must have(
@@ -312,20 +309,112 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
 
-          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(UNPROCESSABLE_ENTITY)
+          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+            status = UNPROCESSABLE_ENTITY,
+            json = Json.obj("code" -> "820", "reason" -> "Customer already signed up")
+          )
 
           When("POST /client/final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
           Then("Should redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.confirmationURI)
+          )
+        }
+      }
+      "redirect to the contact hmrc page" when {
+        s"a unprocessable sign up occurs with a code: $ID_NOT_FOUND" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
+
+          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+            status = UNPROCESSABLE_ENTITY,
+            json = Json.obj("code" -> ID_NOT_FOUND, "reason" -> "Id not found")
+          )
+
+          When("POST /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the contact hmrc page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+          )
+        }
+        s"a unprocessable sign up occurs with a code: $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
+
+          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+            status = UNPROCESSABLE_ENTITY,
+            json = Json.obj("code" -> ID_NOT_FOUND, "reason" -> "Id not found")
+          )
+
+          When("POST /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the contact hmrc page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+          )
+        }
+        s"a unprocessable sign up occurs with a code: $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
+
+          SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+            status = UNPROCESSABLE_ENTITY,
+            json = Json.obj("code" -> ID_NOT_FOUND, "reason" -> "Id not found")
+          )
+
+          When("POST /client/final-check-your-answers is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+          Then("Should redirect to the contact hmrc page")
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
           )
         }
       }
@@ -352,7 +441,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
@@ -360,7 +449,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(INTERNAL_SERVER_ERROR)
 
           When("POST /client/final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
           Then("Should show the internal service error page")
           res must have(
@@ -389,7 +478,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr)
           ))
@@ -410,7 +499,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           )(INTERNAL_SERVER_ERROR)
 
           When("POST /client/final-check-your-answers is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+          val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
           Then("Should show the internal service error page")
           res must have(
@@ -429,7 +518,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.throttlePassed(AgentEndOfJourneyThrottle) -> JsBoolean(true),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
@@ -437,7 +525,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         ))
         ThrottlingStub.stubThrottle(EndOfJourneyThrottleId)(throttled = true)
 
-        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers(Some(Yes))()
+        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
 
         res must have(
           httpStatus(SEE_OTHER),

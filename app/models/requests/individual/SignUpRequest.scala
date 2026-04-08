@@ -16,6 +16,7 @@
 
 package models.requests.individual
 
+import models.SessionData
 import play.api.mvc.WrappedRequest
 
-case class SignUpRequest[A](request: IdentifierRequest[A], reference: String, nino: String) extends WrappedRequest[A](request)
+case class SignUpRequest[A](request: IdentifierRequest[A], reference: String, nino: String, sessionData: SessionData) extends WrappedRequest[A](request)

@@ -16,20 +16,15 @@
 
 package controllers.agent
 
-import common.Constants.ITSASessionKeys
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccessResponse, UnexpectedStatusFailure}
 import controllers.ControllerSpec
-import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
-import models.status.MandationStatus.{Mandated, Voluntary}
-import models.{EligibilityStatus, No, SessionData, Yes}
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
-import play.api.libs.json.JsString
+import controllers.agent.actions.mocks.MockIdentifierAction
+import models.SessionData
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.Result
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockGetEligibilityStatusService, MockMandationStatusService, MockSessionDataService}
-import uk.gov.hmrc.http.InternalServerException
+import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.MockSessionDataService
 import views.agent.mocks.MockUsingSoftware
 
 import scala.concurrent.Future

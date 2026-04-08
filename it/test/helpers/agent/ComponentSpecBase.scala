@@ -252,7 +252,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/final-check-your-answers", sessionData)
     }
 
-    def submitAgentGlobalCheckYourAnswers(request: Option[YesNo])(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       post("/final-check-your-answers", sessionData)(Map.empty
       )
     }

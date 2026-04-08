@@ -22,5 +22,5 @@ import play.api.mvc.{Request, WrappedRequest}
 case class IdentifierRequest[A](
   request: Request[A],
   arn: String,
-  sessionData: SessionData = SessionData()
+  sessionData: SessionData
 ) extends WrappedRequest[A](request)

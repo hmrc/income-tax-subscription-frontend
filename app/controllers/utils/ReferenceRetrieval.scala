@@ -34,11 +34,11 @@ class ReferenceRetrieval @Inject()(subscriptionDetailsService: SubscriptionDetai
                                    auditingService: AuditingService)
                                   (implicit ec: ExecutionContext) {
 
-  def getIndividualReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
+  def getIndividualReference(sessionData: SessionData)(implicit hc: HeaderCarrier, request: Request[_]): Future[String] = {
     getReference(arn = None, sessionData)
   }
 
-  def getAgentReference(sessionData: SessionData = SessionData())(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
+  def getAgentReference(sessionData: SessionData)(implicit hc: HeaderCarrier, request: Request[_], userArn: String): Future[String] = {
     getReference(arn = Some(userArn), sessionData)
   }
 

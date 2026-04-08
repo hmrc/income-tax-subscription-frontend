@@ -18,6 +18,7 @@ package controllers.individual.actions.mocks
 
 import controllers.individual.actions.SignUpJourneyRefiner
 import controllers.utils.ReferenceRetrieval
+import models.SessionData
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar
@@ -34,7 +35,7 @@ trait MockSignUpJourneyRefiner extends MockitoSugar with MockIdentifierAction wi
 
   val fakeSignUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mock[ReferenceRetrieval], mockSessionDataService) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
-      Future.successful(Right(SignUpRequest(request, reference, nino)))
+      Future.successful(Right(SignUpRequest(request, reference, nino, SessionData())))
     }
   }
 

@@ -17,10 +17,9 @@
 package controllers.errors
 
 import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.*
 import services.AuthService
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-import uk.gov.hmrc.http.InternalServerException
 import views.html.errors.ContactHMRC
 
 import javax.inject.{Inject, Singleton}
@@ -44,19 +43,18 @@ class ContactHMRCController @Inject()(view: ContactHMRC,
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-    authenticate(request) { isAgent =>
-      (cfc.baseUrl, cfc.referrerUrl, cfc.serviceId) match {
-        case (Some(baseUrl), Some(referrerUrl), Some(serviceId)) =>
-          Redirect(
-            url = baseUrl,
-            queryStringParams = Map(
-              "service" -> Seq(serviceId),
-              "referrerUrl" -> Seq(referrerUrl)
-            )
-          )
-        case _ =>
-          throw new InternalServerException("Contact frontend npt defined")
-      }
+    authenticate(request) { _ =>
+      redirectToContactFrontend
     }
+  }
+
+  private def redirectToContactFrontend(implicit request: Request[_]): Result = {
+    val baseUrl: String = cfc.baseUrl.getOrElse("")
+    Redirect(
+      url = s"$baseUrl/contact/report-technical-problem",
+      queryStringParams = Map.empty[String, Seq[String]] ++
+        cfc.serviceId.map("service" -> Seq.apply(_)) ++
+        cfc.referrerUrl.map("referrerUrl" -> Seq.apply(_))
+    )
   }
 }

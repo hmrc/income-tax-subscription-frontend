@@ -16,23 +16,21 @@
 
 package services
 
-import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import play.api.Logging
-import services.GetCompleteDetailsService._
+import services.GetCompleteDetailsService.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
 
 import java.time.LocalDate
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService, val appConfig: AppConfig)
-                                         (implicit ec: ExecutionContext) extends Logging with FeatureSwitching {
+class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService)
+                                         (implicit ec: ExecutionContext) extends Logging {
 
   /*
   * Fetches all information about sign up which we display or submit

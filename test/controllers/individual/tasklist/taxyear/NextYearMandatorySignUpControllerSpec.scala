@@ -25,9 +25,8 @@ import models.{AccountingYear, Current, Next}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
-import views.individual.mocks._
-import services.mocks._
+import play.api.test.Helpers.*
+import services.mocks.*
 
 import scala.concurrent.Future
 
@@ -134,26 +133,26 @@ class NextYearMandatorySignUpControllerSpec extends ControllerBaseSpec
     }
 
     "not in edit mode" when {
-        "the user signs up for the current tax year" should {
-          "redirect to what you need to do page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
+      "the user signs up for the current tax year" should {
+        "redirect to what you need to do page" in {
+          mockSaveSelectedTaxYear(AccountingYearModel(Current))(Right(PostSubscriptionDetailsSuccessResponse))
 
-            val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
+          val goodRequest = callSubmit(isEditMode = false, accountingYear = Current)
 
-            status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
-        "the user signs up for the next tax year" should {
-          "redirect to the what you need to do page" in {
-            mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
+      }
+      "the user signs up for the next tax year" should {
+        "redirect to the what you need to do page" in {
+          mockSaveSelectedTaxYear(AccountingYearModel(Next))(Right(PostSubscriptionDetailsSuccessResponse))
 
-            val goodRequest = callSubmit(isEditMode = false, accountingYear = Next)
+          val goodRequest = callSubmit(isEditMode = false, accountingYear = Next)
 
-            status(goodRequest) mustBe SEE_OTHER
-            redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
-          }
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(controllers.individual.routes.WhatYouNeedToDoController.show.url)
         }
+      }
     }
 
     "return bad request status (400)" when {
