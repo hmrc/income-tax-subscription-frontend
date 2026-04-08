@@ -121,6 +121,8 @@ trait AppConfig {
 
   def getVAndCUrl: String
 
+  def getIncomeTaxSessionDataHost: String
+
   def getAccountUrl: String
   
   def getClientUTRUrl: String
@@ -314,6 +316,8 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
   
   override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
+
+  override def getIncomeTaxSessionDataHost: String = config.baseUrl("income-tax-session-data")
 
   override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
   

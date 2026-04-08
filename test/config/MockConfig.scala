@@ -106,6 +106,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
         "origin" -> Seq(appName)
       )
     )
+
   override def getAllocatedEnrolmentUrl(enrolmentKey: EnrolmentKey): String = ???
 
   override def queryUsersUrl(utr: String): String = ???
@@ -127,8 +128,10 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override def getVAndCUrl: String = "/view-and-change/home"
 
+  override def getIncomeTaxSessionDataHost: String = "http://localhost"
+
   override def getAccountUrl: String = "/account"
-  
+
   override def getClientUTRUrl: String = "/agents/client-utr"
 
 }
