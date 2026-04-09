@@ -23,6 +23,8 @@ base.add-details                                                = Add details
 base.status.label                                               = Status
 base.status.incomplete                                          = Incomplete
 base.status.completed                                           = Completed
+base.status.not-confirmed                                       = Not confirmed
+base.confirm-details                                            = Confirm details
 base.yes                                                        = Yes
 base.no                                                         = No
 base.go-back                                                    = Go back
@@ -870,6 +872,8 @@ agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Confirm your client’s income sources
+agent.your-income-source.heading-2                                  = If any of your client’s businesses ceased trading during the tax year
+agent.your-income-source.paragraph-1                                = If your client’s business was active in the tax year {0}/{1} you still need to add it here, even if it has stopped trading.
 agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
 agent.your-income-source.para-2                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.lead                                       = You must:
@@ -888,7 +892,9 @@ agent.your-income-source.self-employed.business-start-date-para     = Business s
 agent.your-income-source.self-employed.label-none                   = Business {0}
 agent.your-income-source.self-employed.add-link                     = Add a sole trader business
 agent.your-income-source.income-from-property                       = Income from property
-agent.your-income-source.income-from-property.para                  = If your client has more than one property, treat them as one income source.
+agent.your-income-source.income-from-property.para-1                = Tell us about income your client gets from any UK or foreign properties. For example, on a short-term basis such as holiday homes, or on a long-term basis such as letting houses or flats.
+agent.your-income-source.income-from-property.para-2                = If your client’s property is abroad, they have a foreign property business.
+agent.your-income-source.income-from-property.para-3                = If your client has more than one property, treat them as one income source.
 agent.your-income-source.uk-property                                = UK property
 agent.your-income-source.property.start-date-para                   = Start date
 agent.your-income-source.property.before-start-date-limit           = Before 6 April {0}
@@ -897,9 +903,6 @@ agent.your-income-source.uk-property.add-link                       = Add UK pro
 agent.your-income-source.foreign-property.add-link                  = Add foreign property
 agent.your-income-source.foreign-property.before-start-date-limit   = Before 6 April {0}
 agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here.
-agent.your-income-source.self-employed.confirm-details              = Confirm details
-agent.your-income-source.self-employed.check-details                = Check business details
-agent.your-income-source.self-employed.add-details                  = Add business details
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = There is a problem with your client’s income sources

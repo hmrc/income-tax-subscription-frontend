@@ -34,6 +34,8 @@ case class SelfEmploymentData(id: String,
     }
   }
 
+  val isDateComplete: Boolean = businessStartDate.isDefined || startDateBeforeLimit.isDefined
+
   def toSoleTraderBusiness: SoleTraderBusiness = SoleTraderBusiness(
     id = id,
     confirmed = confirmed,

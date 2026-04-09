@@ -19,7 +19,9 @@ package controllers.agent.tasklist.addbusiness
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import play.api.mvc._
+import models.Next
+import models.common.AccountingPeriodModel
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
@@ -40,14 +42,17 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
       incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(request.reference)
+      taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
       prePopFlag <- subscriptionDetailsService.fetchPrePopFlag(request.reference)
     } yield {
+      val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       Ok(view(
         postAction = routes.YourIncomeSourceToSignUpController.submit,
         backUrl = backUrl,
         clientDetails = request.clientDetails,
         incomeSources = incomeSources,
-        prepopulated = prePopFlag.contains(true)
+        prepopulated = prePopFlag.contains(true),
+        taxYearSelectionIsNext = isNextYear,
       ))
     }
   }
