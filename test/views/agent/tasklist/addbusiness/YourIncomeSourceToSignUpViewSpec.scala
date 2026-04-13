@@ -73,15 +73,31 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       )
     }
 
-    "have a lead paragraph" which {
+    "have a lead paragraph with bullets" which {
       "summarises the page and tells the user to check sources" in new ViewTest {
         document.mainContent.selectNth("p", 1).text mustBe AgentIncomeSource.lead
       }
+
+      "has a first item" in new ViewTest {
+        document.mainContent.selectNth("ul", 1).selectNth("li", 1).text mustBe AgentIncomeSource.bullet1
+      }
+      "has a second item" in new ViewTest {
+        document.mainContent.selectNth("ul", 1).selectNth("li", 2).text mustBe AgentIncomeSource.bullet2
+      }
+      "has a third item" in new ViewTest {
+        document.mainContent.selectNth("ul", 1).selectNth("li", 3).text mustBe AgentIncomeSource.bullet3
+      }
+      "has a fourth item" in new ViewTest {
+        document.mainContent.selectNth("ul", 1).selectNth("li", 4).text mustBe AgentIncomeSource.bullet4
+      }
     }
 
-    "have a lead paragraph" which {
-      "tells the agent not to add income from partnerships" in new ViewTest{
-        document.mainContent.selectNth(".govuk-inset-text", 1).text mustBe AgentIncomeSource.paragraph3
+    "have a third heading and  paragraph" when {
+      "user signing up for current year" in new ViewTest(
+        taxYearSelectionIsNext = true
+      ) {
+        document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.lead2Heading
+        document.mainContent.selectNth("p", 2).text mustBe AgentIncomeSource.lead2
       }
     }
 
@@ -104,19 +120,19 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         incomeSources = completeAndConfirmedIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectOptionalNth("p", 4) mustBe None
+        document.mainContent.selectOptionalNth("p", 8) mustBe None
       }
       "the income sources were prepopulated, but they were subsequently removed" in new ViewTest(
         incomeSources = noIncomeSources,
         prepopulated = true
       ) {
-        document.mainContent.selectOptionalNth("p", 6) mustBe None
+        document.mainContent.selectOptionalNth("p", 10) mustBe None
       }
       "the income sources weren't prepopulated" in new ViewTest(
         incomeSources = completeIncomeSources,
         prepopulated = false
       ) {
-        document.mainContent.selectOptionalNth("p", 4) mustBe None
+        document.mainContent.selectOptionalNth("p", 8) mustBe None
       }
     }
 
@@ -142,7 +158,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are no income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.soleTrader
+        }
+        "has a paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.soleTraderParagraph
         }
         "has an add business link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-self-employment").selectHead("a")
@@ -152,10 +171,16 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a property section" which {
         "has a heading" in new ViewTest(noIncomeSources) {
-          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
-        "has a paragraph" in new ViewTest(noIncomeSources) {
-          document.mainContent.selectNth("p", 3).text mustBe AgentIncomeSource.incomeFromPropertyParagraph
+        "has a first paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p", 5).text mustBe AgentIncomeSource.incomeFromPropertyParagraph1
+        }
+        "has a second paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p", 6).text mustBe AgentIncomeSource.incomeFromPropertyParagraph2
+        }
+        "has a third paragraph" in new ViewTest(noIncomeSources) {
+          document.mainContent.selectNth("p", 7).text mustBe AgentIncomeSource.incomeFromPropertyParagraph3
         }
         "have an add uk property link" in new ViewTest(noIncomeSources) {
           val link: Element = document.mainContent.getElementById("add-uk-property").selectHead("a")
@@ -172,7 +197,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are incomplete income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.soleTrader
         }
         "has a first business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
@@ -189,6 +214,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkOne,
+                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
+                  visuallyHidden = s"business name (business trade)"
+                ))
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -220,6 +254,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkTwo,
+                  text = s"${AgentIncomeSource.addDetails} business name (Business 2)",
+                  visuallyHidden = s"business name (Business 2)"
+                ))
+              ),
+              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
@@ -247,6 +290,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 3"),
                 actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkThree,
+                  text = s"${AgentIncomeSource.addDetails} (business trade)",
+                  visuallyHidden = "(business trade)"
+                ))
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -278,6 +330,15 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(AgentIncomeSource.incompleteTag),
+                actions = Seq(SummaryListActionValues(
+                  href = AgentIncomeSource.soleTraderChangeLinkFour,
+                  text = s"${AgentIncomeSource.addDetails} (Business 4)",
+                  visuallyHidden = "(Business 4)"
+                ))
+              ),
+              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
@@ -298,7 +359,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have a income from property section" which {
         "has a heading" in new ViewTest(incompleteIncomeSources) {
-          document.mainContent.getSubHeading("h2", 6).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 7).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a uk property summary card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard("div.govuk-summary-card", Some(5))(
@@ -351,7 +412,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     "there are fully complete but not confirmed income sources added" should {
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.soleTrader
         }
         "has a summary card with incomplete status tags and check details action link" when {
           "all details are present and confirmed" in new ViewTest(completeIncomeSources) {
@@ -371,11 +432,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   actions = Seq.empty
                 ),
                 SummaryListRowValues(
-                  key = AgentIncomeSource.statusTagKey,
-                  value = Some(AgentIncomeSource.incompleteTag),
+                  key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                  value = Some(AgentIncomeSource.notConfirmedTag),
                   actions = Seq(SummaryListActionValues(
                     href = AgentIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${AgentIncomeSource.checkDetails} business name (business trade)",
+                    text = s"${AgentIncomeSource.confirmDetails} business name (business trade)",
+                    visuallyHidden = "business name (business trade)"
+                  ))
+                ),
+                SummaryListRowValues(
+                  key = AgentIncomeSource.statusTagKey,
+                  value = Some(AgentIncomeSource.notConfirmedTag),
+                  actions = Seq(SummaryListActionValues(
+                    href = AgentIncomeSource.soleTraderChangeLinkOne,
+                    text = s"${AgentIncomeSource.confirmDetails} business name (business trade)",
                     visuallyHidden = "business name (business trade)"
                   ))
                 )
@@ -391,7 +461,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have an income from property section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 4).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a UK property card" which {
           "displays a start date" when {
@@ -417,10 +487,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.ukPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -451,10 +521,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.ukPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -483,10 +553,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.ukPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -519,10 +589,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.foreignPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -553,10 +623,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.foreignPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -586,10 +656,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = AgentIncomeSource.statusTagKey,
-                    value = Some(AgentIncomeSource.incompleteTag),
+                    value = Some(AgentIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = AgentIncomeSource.foreignPropertyChangeLink,
-                      text = s"${AgentIncomeSource.checkDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${AgentIncomeSource.confirmDetails} ${AgentIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = AgentIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -613,7 +683,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a sole trader section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.getSubHeading("h2", 1).text mustBe AgentIncomeSource.soleTrader
+          document.mainContent.getSubHeading("h2", 2).text mustBe AgentIncomeSource.soleTrader
         }
         "has a summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
@@ -637,6 +707,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some("1 January 1980"),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.completedTag),
                 actions = Seq.empty
@@ -652,7 +727,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       }
       "have an income source from property section" which {
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
+          document.mainContent.getSubHeading("h2", 4).text mustBe AgentIncomeSource.incomeFromPropertyHeading
         }
         "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
@@ -673,6 +748,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some("1 January 1980"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
@@ -746,17 +826,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   object AgentIncomeSource {
-    val heading = "Your client’s income sources"
-    val lead = s"Add all of these sources that your client gets income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}."
+    val heading = "Confirm your client’s income sources"
+    val lead = "You must:"
+    val bullet1 = "check that the information we have for your client is correct"
+    val bullet2 = "change any incorrect details"
+    val bullet3 = "add any missing income source"
+    val bullet4 = s"remove any businesses that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}"
+    val lead2Heading = "If any of your client’s businesses ceased trading during the tax year"
+    val lead2 = s"If your client’s business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}/${AccountingPeriodUtil.getCurrentTaxEndYear} you still need to add it here, even if it has stopped trading."
     val paragraph3:String= "Do not add limited companies or partnerships here."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
     val paragraph1Overseas: String = "Your client can have up to 50 sole trader businesses. " +
       "However, they can have only one UK property business and one overseas property."
-    val paragraph2 = "Renting out a property includes using a letting agency."
+    val soleTraderParagraph = "Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed."
     val soleTrader = "Sole trader businesses"
     val soleTraderLinkText = "Add a sole trader business"
     val soleTraderBusinessNameKey = "Business name"
+    val soleTraderBusinessStartDateKey = "Business start date"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
     val soleTraderChangeLinkOne: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
     val soleTraderChangeLinkTwo: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
@@ -767,7 +854,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderRemoveLinkThree: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url
     val soleTraderRemoveLinkFour: String = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url
     val incomeFromPropertyHeading = "Income from property"
-    val incomeFromPropertyParagraph = "If your client has more than one property, treat them as one income source."
+    val incomeFromPropertyParagraph1 = "Tell us about income your client gets from any UK or foreign properties. For example, on a short-term basis such as holiday homes, or on a long-term basis such as letting houses or flats."
+    val incomeFromPropertyParagraph2 = "If your client’s property is abroad, they have a foreign property business."
+    val incomeFromPropertyParagraph3 = "If your client has more than one property, treat them as one income source."
     val ukPropertyTitle = "UK property"
     val ukPropertyStartDate = "Start date"
     val ukPropertyLinkText = "Add UK property"
@@ -786,9 +875,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
     val statusTagKey = "Status"
     val incompleteTag: String = "Incomplete"
+    val notConfirmedTag: String = "Not confirmed"
     val completedTag: String = "Completed"
     val addDetails: String = "Add details"
     val checkDetails: String = "Check details"
+    val confirmDetails: String = "Confirm details"
 
     val change: String = "Change"
     val remove: String = "Remove"
@@ -837,17 +928,18 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDateBeforeLimit = Some(false)))
   lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false, taxYearSelectionIsNext: Boolean = false): Html = {
     incomeSourceView(
       postAction = testCall,
       backUrl = testBackUrl,
       clientDetails = clientDetails,
       incomeSources = incomeSources,
-      prepopulated = prepopulated
+      prepopulated = prepopulated,
+      taxYearSelectionIsNext = taxYearSelectionIsNext
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false, taxYearSelectionIsNext: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, prepopulated).body)
   }
 

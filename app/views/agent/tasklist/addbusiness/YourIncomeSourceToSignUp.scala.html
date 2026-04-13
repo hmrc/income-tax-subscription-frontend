@@ -61,17 +61,11 @@
             Text(messages("agent.your-income-source.bullet4", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString))
         )
     )
+    @if(!taxYearSelectionIsNext) {
+        <h2 class="govuk-heading-m">@messages("agent.your-income-source.heading-2")</h2>
 
-    <h2 class="govuk-heading-m">@messages("agent.your-income-source.heading-2")</h2>
-
-    <p class="govuk-body">
-        @if(taxYearSelectionIsNext) {
-            @messages("agent.your-income-source.paragraph-1", (AccountingPeriodUtil.getCurrentTaxEndYear).toString, (AccountingPeriodUtil.getCurrentTaxEndYear + 1).toString)
-        } else {
-            @messages("agent.your-income-source.paragraph-1", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString))
-        }
-    </p>
-
+        <p class="govuk-body">@messages("agent.your-income-source.paragraph-1", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
+    }
     @selfEmploymentSection
 
     @propertySection
@@ -99,7 +93,7 @@
 @selfEmploymentStartDate(business: SelfEmploymentData) = @{
     (business.startDateBeforeLimit, business.businessStartDate) match {
         case (Some(true), _)  => messages("agent.your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-        case (Some(false), Some(BusinessStartDate(startDate))) => messages("agent.your-income-source.self-employed.startdate", startDate.toLocalDate.toLongDate)
+        case (_, Some(BusinessStartDate(startDate))) => messages("agent.your-income-source.self-employed.startdate", startDate.toLocalDate.toLongDate)
         case _ => ""
     }
 }
