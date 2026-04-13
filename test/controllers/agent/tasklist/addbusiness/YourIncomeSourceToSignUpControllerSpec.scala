@@ -52,6 +52,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       "fetching the pre pop flag returned no data" in new Setup {
         mockFetchAllIncomeSources(incomeSources = incomeSources)
         mockFetchPrePopFlag(flag = None)
+        mockFetchSelectedTaxYear(None)
         mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false, taxYearSelectionIsNext = false)
 
         val result: Result = await(controller.show()(subscriptionRequestWithName))
@@ -64,6 +65,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       "fetching the pre pop flag returned a false flag" in new Setup {
         mockFetchAllIncomeSources(incomeSources = incomeSources)
         mockFetchPrePopFlag(flag = Some(false))
+        mockFetchSelectedTaxYear(None)
         mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false, taxYearSelectionIsNext = false)
 
         val result: Result = await(controller.show()(subscriptionRequestWithName))
@@ -76,6 +78,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       "fetching the pre pop flag returned a true flag" in new Setup {
         mockFetchAllIncomeSources(incomeSources = incomeSources)
         mockFetchPrePopFlag(flag = Some(true))
+        mockFetchSelectedTaxYear(None)
         mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = true, taxYearSelectionIsNext = false)
 
         val result: Result = await(controller.show()(subscriptionRequestWithName))
