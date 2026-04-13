@@ -217,12 +217,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(AgentIncomeSource.incompleteTag),
-                actions = Seq(SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
-                ))
+                value = Some(""),
+                actions = Seq.empty
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -255,12 +251,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(AgentIncomeSource.incompleteTag),
-                actions = Seq(SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkTwo,
-                  text = s"${AgentIncomeSource.addDetails} business name (Business 2)",
-                  visuallyHidden = s"business name (Business 2)"
-                ))
+                value = Some(""),
+                actions = Seq.empty
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -293,12 +285,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(AgentIncomeSource.incompleteTag),
-                actions = Seq(SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkThree,
-                  text = s"${AgentIncomeSource.addDetails} (business trade)",
-                  visuallyHidden = "(business trade)"
-                ))
+                value = Some(""),
+                actions = Seq.empty
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -331,12 +319,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(AgentIncomeSource.incompleteTag),
-                actions = Seq(SummaryListActionValues(
-                  href = AgentIncomeSource.soleTraderChangeLinkFour,
-                  text = s"${AgentIncomeSource.addDetails} (Business 4)",
-                  visuallyHidden = "(Business 4)"
-                ))
+                value = Some(""),
+                actions = Seq.empty
               ),
               SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
@@ -433,12 +417,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 ),
                 SummaryListRowValues(
                   key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                  value = Some(AgentIncomeSource.notConfirmedTag),
-                  actions = Seq(SummaryListActionValues(
-                    href = AgentIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${AgentIncomeSource.confirmDetails} business name (business trade)",
-                    visuallyHidden = "business name (business trade)"
-                  ))
+                  value = Some("1 January 1980"),
+                  actions = Seq.empty
                 ),
                 SummaryListRowValues(
                   key = AgentIncomeSource.statusTagKey,

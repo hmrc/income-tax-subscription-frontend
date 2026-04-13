@@ -185,16 +185,8 @@
                 key = Key(
                     content = Text(messages("agent.your-income-source.self-employed.business-start-date-para"))
                 ),
-                value = Value(
-                    if(selfEmploymentStartDate(business).nonEmpty && business.confirmed) Text(selfEmploymentStartDate(business))
-                    else statusTag(business.isDateComplete, business.confirmed)
+                value = Value(Text(selfEmploymentStartDate(business))),
                 ),
-                actions = maybeStatusTagAction(
-                    isComplete = business.isDateComplete,
-                    isConfirmed = business.confirmed,
-                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                    visuallyHidden = business.businessName.map(_.businessName)
-                )),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
                 value = Value(statusTag(business.isComplete, business.confirmed)),
