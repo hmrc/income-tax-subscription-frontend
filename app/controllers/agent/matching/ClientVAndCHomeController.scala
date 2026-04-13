@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.agent.IncomeTaxSessionDataConnector
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import uk.gov.hmrc.http.InternalServerException
 import play.api.mvc.*
 
 import javax.inject.{Inject, Singleton}
@@ -35,11 +34,10 @@ class ClientVAndCHomeController @Inject()(identify: IdentifierAction,
   def handOffVAndC: Action[AnyContent] = identify.async { implicit request =>
     (request.sessionData.fetchMtditid, request.sessionData.fetchNino, request.sessionData.fetchUTR) match {
       case (Some(mtditid), Some(nino), Some(utr)) =>
-        incomeTaxSessionDataConnector.setupViewAndChangeSessionData(mtditid, nino, utr).flatMap {
-          case true => Future.successful(Redirect(appConfig.getVAndCUrl))
-          case false => throw new InternalServerException("[ClientVAndCHomeController][show] - failed to set up view and change session data")
+        incomeTaxSessionDataConnector.setupViewAndChangeSessionData(mtditid, nino, utr).map { _ =>
+          Redirect(appConfig.getVAndCUrl)
         }
-      case _ => Future.failed(new InternalServerException("[ClientVAndCHomeController][show] - missing required session data for view and change handoff"))
+      case _ => Future.successful(Redirect(appConfig.getVAndCUrl))
     }
   }
 
