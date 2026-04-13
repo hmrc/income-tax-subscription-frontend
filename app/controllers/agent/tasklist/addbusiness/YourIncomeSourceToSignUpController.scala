@@ -52,7 +52,7 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
         clientDetails = request.clientDetails,
         incomeSources = incomeSources,
         prepopulated = prePopFlag.contains(true),
-        taxYearSelectionIsNext = isNextYear,
+        taxYearSelectionIsNext = isNextYear
       ))
     }
   }
