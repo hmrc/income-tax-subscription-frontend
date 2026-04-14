@@ -43,15 +43,4 @@ class OptedOutControllerSpec extends AgentControllerBaseSpec with MockIdentifier
     charset(result) must be(Some("utf-8"))
   }
 
-  "submit redirects to add another client" in {
-    val result = new TestController().submit()(fakeRequest)
-    status(result) must be(Status.SEE_OTHER)
-    redirectLocation(result) must be(Some(controllers.agent.routes.AddAnotherClientController.addAnother().url))
-  }
-
-  "change redirects to V&C UR" in {
-    val result = new TestController().change()(fakeRequest)
-    status(result) must be(Status.SEE_OTHER)
-    redirectLocation(result) must be(Some(appConfig.getVAndCUrl))
-  }
 }

@@ -64,7 +64,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       withClientDetails { clientDetails =>
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
-          case Left(ClientAlreadySubscribed(channel, _)) => handleClientAlreadySubscribed(clientDetails, channel)
+          case Left(ClientAlreadySubscribed(channel, mtditid)) => handleClientAlreadySubscribed(clientDetails, channel, mtditid)
           case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
           case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
@@ -145,7 +145,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel])
+  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel], mtditid: String)
                                            (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
@@ -156,13 +156,19 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       failureReason = Some("client-already-signed-up")
     ))
     sessionDataService.saveNino(clientDetails.nino) flatMap {
-      case Right(_) => resolver.resolve(
-        sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
-        channel = reason
-      ).map(_.removingFromSession(FailedClientMatching))
-      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+      case Right(_) =>
+        sessionDataService.saveMTDITID(mtditid) flatMap {
+          case Right(_) =>
+            resolver.resolve(
+              sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
+              channel = reason
+            ).map(_.removingFromSession(FailedClientMatching))
+          case Left(_) =>
+            throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving mtditid to session")
+        }
+      case Left(_) =>
+        throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving nino to session")
     }
-
   }
 
   private def handleUnexpectedFailure(clientDetails: UserDetailsModel)

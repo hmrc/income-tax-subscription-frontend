@@ -51,7 +51,7 @@ class CheckClientIncomeSourcesViewSpec extends ViewSpec {
       val link = firstBullet.selectHead("a")
 
       link.text mustBe CheckClientIncomeSources.bullet1
-      link.attr("href") mustBe appConfig.getClientUTRUrl
+      link.attr("href") mustBe controllers.agent.matching.routes.ClientVAndCHomeController.handOffVAndC.url
     }
 
     "have the correct second bullet point with text and link" in {

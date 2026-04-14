@@ -30,7 +30,7 @@
     ul: UnorderedList
 )
 
-@(changeAction: Call, postAction: Call)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.opted-out.heading")) {
 
@@ -39,24 +39,24 @@
     <p class="govuk-body">@messages("agent.opted-out.paragraph")</p>
 
     @ul(
-        leadIn=messages("agent.opted-out.paragraph2"),
-        Seq(
-        HtmlContent(viewAndChangeLink()),
-        HtmlContent(signUpAnotherClient())
+        leadIn = messages("agent.opted-out.paragraph2"),
+        bulletPoints = Seq(
+            HtmlContent(handoffViewAndChange()),
+            HtmlContent(signUpAnotherClient())
         )
     )
 }
 
-@viewAndChangeLink() = {
-<a href="@appConfig.getVAndCUrl" class="govuk-link">
-    @messages("agent.opted-out.bullet1")
-</a>
+@handoffViewAndChange() = {
+    <a href="@controllers.agent.matching.routes.ClientVAndCHomeController.handOffVAndC.url" class="govuk-link">
+        @messages("agent.opted-out.bullet1")
+    </a>
 }
 
 @signUpAnotherClient() = {
-<a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
-    @messages("agent.opted-out.bullet2")
-</a>
+    <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
+        @messages("agent.opted-out.bullet2")
+    </a>
 }
 
 

@@ -36,7 +36,7 @@ class ClientVAndCHomeControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/client/hand-off-to-view-and-change"))
+          redirectURI(basGatewaySignIn("/client/hand-offs/view-and-change"))
         )
       }
     }
@@ -71,6 +71,5 @@ class ClientVAndCHomeControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    
   }
 }

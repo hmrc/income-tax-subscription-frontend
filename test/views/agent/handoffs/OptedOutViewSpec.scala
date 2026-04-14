@@ -18,7 +18,6 @@ package views.agent.handoffs
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.handoffs.OptedOut
@@ -28,11 +27,11 @@ class OptedOutViewSpec extends ViewSpec {
 
   "OptedOut" must {
     "have the correct template details" in
-        new TemplateViewTest(
-          view = page(),
-          isAgent = true,
-          title = OptedOut.title
-        )
+      new TemplateViewTest(
+        view = page(),
+        isAgent = true,
+        title = OptedOut.title
+      )
 
     "have the correct heading" in {
       document().mainContent.selectHead("h1").text mustBe OptedOut.heading
@@ -51,7 +50,7 @@ class OptedOutViewSpec extends ViewSpec {
       val link = firstBullet.selectHead("a")
 
       link.text mustBe OptedOut.bullet1
-      link.attr("href") mustBe appConfig.getVAndCUrl
+      link.attr("href") mustBe controllers.agent.matching.routes.ClientVAndCHomeController.handOffVAndC.url
     }
 
     "have the correct second bullet point with text and link" in {
@@ -73,10 +72,7 @@ class OptedOutViewSpec extends ViewSpec {
   }
 
   private def page(): Html = {
-    optedOut(
-      postAction = Call("", ""),
-      changeAction = Call("", ""),
-    )
+    optedOut()
   }
 
   private def document(): Document =

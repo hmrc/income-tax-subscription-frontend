@@ -41,20 +41,20 @@
     @ul(
         leadIn=messages("agent.check-income-sources.para-two"),
         Seq(
-        HtmlContent(viewAndChangeLink()),
-        HtmlContent(signUpAnotherClient())
+            HtmlContent(handoffViewAndChange()),
+            HtmlContent(signUpAnotherClient())
         )
     )
 }
 
-@viewAndChangeLink() = {
-<a href="@appConfig.getClientUTRUrl" class="govuk-link">
-    @messages("agent.check-income-sources.next-steps.para-one")
-</a>
+@handoffViewAndChange() = {
+    <a href="@controllers.agent.matching.routes.ClientVAndCHomeController.handOffVAndC.url" class="govuk-link">
+        @messages("agent.check-income-sources.next-steps.para-one")
+    </a>
 }
 
 @signUpAnotherClient() = {
-<a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
-    @messages("agent.check-income-sources.next-steps.para-two")
-</a>
+    <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
+        @messages("agent.check-income-sources.next-steps.para-two")
+    </a>
 }
