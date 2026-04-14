@@ -67,6 +67,10 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
     data.get(ITSASessionKeys.UTR).map(_.toObject[String])
   }
 
+  def fetchMtditid: Option[String] = {
+    data.get(ITSASessionKeys.MTDITID).map(_.toObject[String])
+  }
+
   def fetchSoftwareStatus: Option[YesNo] = {
     data.get(ITSASessionKeys.HAS_SOFTWARE).map(_.toObject[YesNo])
   }

@@ -273,6 +273,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
+    def handOffVAndC(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/hand-off-to-view-and-change", sessionData)
+
     def showUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/using-software", sessionData)
 
     def submitUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/using-software", sessionData)(Map.empty)
