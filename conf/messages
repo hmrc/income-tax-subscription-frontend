@@ -22,6 +22,7 @@ base.check-details                                              = Check details
 base.add-details                                                = Add details
 base.status.label                                               = Status
 base.status.incomplete                                          = Incomplete
+base.status.missing-details                                     = Missing details
 base.status.completed                                           = Completed
 base.status.not-confirmed                                       = Not confirmed
 base.confirm-details                                            = Confirm details

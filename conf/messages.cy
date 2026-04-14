@@ -22,6 +22,7 @@ base.check-details                                              = Gwirio manylio
 base.add-details                                                = Ychwanegu manylion
 base.status.label                                               = Statws
 base.status.incomplete                                          = Heb gwblhau
+base.status.missing-details                                     = Manylion sydd ar goll
 base.status.completed                                           = Wedi cwblhau
 base.status.not-confirmed                                       = Heb eu cadarnhau
 base.confirm-details                                            = Cadarnhau’r manylion

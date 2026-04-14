@@ -854,7 +854,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val saveAndComeBackLater = "Save and come back later"
 
     val statusTagKey = "Status"
-    val incompleteTag: String = "Incomplete"
+    val incompleteTag: String = "Missing details"
     val notConfirmedTag: String = "Not confirmed"
     val completedTag: String = "Completed"
     val addDetails: String = "Add details"
