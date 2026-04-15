@@ -77,6 +77,10 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       document().mainContent.selectNth(".govuk-inset-text", 1).text mustBe NextYearMandatorySignUp.insert
     }
 
+    "have a third paragraph" in {
+      document().mainContent.selectNth("p", 3).text mustBe NextYearMandatorySignUp.paragraph3
+    }
+
     "have a second heading" in {
       document().mainContent.selectNth("h2", 2).text mustBe NextYearMandatorySignUp.subheading
     }
@@ -148,11 +152,12 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
     val paragraph1 = "They can choose to sign up early, so you’re both prepared to use the service."
     val paragraph2 = s"You will not get penalties during this period for any missed quarterly updates before 6 April ${AccountingPeriodUtil.getNextTaxStartYear}."
     val insert = s"Your client must still submit their Self Assessment tax return for ${taxYearEnd - 1} to $taxYearEnd as normal."
-    val subheading: String = s"Do you want to sign up this client early for the current tax year, ${taxYearEnd - 1} to $taxYearEnd?"
-    val currentYearOption = "Yes"
+    val subheading = "When do you want your client to start using Making Tax Digital for Income Tax?"
+    val paragraph3 = "I want to sign my client up now, and:"
+    val currentYearOption: String = s"start using it now for this tax year, ${taxYearEnd - 1} to $taxYearEnd"
+    val nextYearOption: String = s"use it from next tax year, $taxYearEnd to ${taxYearEnd + 1}"
     val currentYearOptionHint = "You will need to make sure that you use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far"
-    val nextYearOption = "No"
-    val continue: String = "Continue"
+    val continue: String = "Sign up this client"
     val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
   }
 }
