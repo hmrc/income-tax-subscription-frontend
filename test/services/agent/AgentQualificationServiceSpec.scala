@@ -19,8 +19,6 @@ package services.agent
 
 import models.audits.ClientMatchingAuditing.ClientMatchingAuditModel
 import models.usermatching.UserDetailsModel
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -89,7 +87,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val response = await(call)
 
-      response mustBe Left(ClientAlreadySubscribed(None, testMTDID))
+      response mustBe Left(ClientAlreadySubscribed(None, matchedClient.clientUtr, testMTDID))
     }
 
     "return ApprovedAgent if the client does not have a subscription" in {
@@ -156,13 +154,13 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
     "return ClientAlreadySubscribed if the client already has subscription" in {
       preExistingRelationship(testARN, testClientDetails.nino)(true)
-      mtdRelationship(testARN,testMTDID)
+      mtdRelationship(testARN, testMTDID)
 
-      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None, testMTDID))
+      setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None, matchedClient.clientUtr, testMTDID))
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 
-      await(result) mustBe Left(ClientAlreadySubscribed(None, testMTDID))
+      await(result) mustBe Left(ClientAlreadySubscribed(None, matchedClient.clientUtr, testMTDID))
 
       verifyClientMatchingSuccessAudit()
     }

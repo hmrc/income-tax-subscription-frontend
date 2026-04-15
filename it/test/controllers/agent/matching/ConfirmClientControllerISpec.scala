@@ -208,6 +208,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
@@ -233,6 +234,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),

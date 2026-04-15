@@ -17,7 +17,7 @@
 package services.agent.mocks
 
 import org.scalatestplus.play.PlaySpec
-import services.agent._
+import services.agent.*
 import services.mocks.{MockAuditingService, MockSubscriptionService, MockUserMatchingService}
 import utilities.agent.TestConstants
 import utilities.agent.TestConstants.testNino
@@ -50,7 +50,7 @@ trait MockAgentQualificationService extends PlaySpec
     }
 
     expectedResult match {
-      case ClientAlreadySubscribed(_,_) => setupMockGetSubscriptionFound(testNino)
+      case ClientAlreadySubscribed(_, _, _) => setupMockGetSubscriptionFound(testNino)
       case UnexpectedFailure => setupMockGetSubscriptionFailure(testNino)
       case _ => setupMockGetSubscriptionNotFound(testNino)
     }
