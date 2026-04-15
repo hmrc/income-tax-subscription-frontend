@@ -51,7 +51,9 @@
         content = Text(messages("agent.business.next-year-mandatory-sign-up.indent", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString))
     ))
 
-    <h2 class="govuk-heading-m">@messages("agent.business.next-year-mandatory-sign-up.subheading", (endYearOfCurrentTaxPeriod - 1).toString, endYearOfCurrentTaxPeriod.toString)</h2>
+    <h2 class="govuk-heading-m">@messages("agent.business.next-year-mandatory-sign-up.subheading")</h2>
+
+    <p class="govuk-body">@messages("agent.business.next-year-mandatory-sign-up.para3")</p>
 
     @form(action = postAction) {
         @radioHelper(
@@ -61,17 +63,19 @@
             headingClasses = "govuk-visually-hidden",
             radioItems = Seq(
                 RadioItem(
-                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option1")),
+                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option1",(endYearOfCurrentTaxPeriod - 1).toString,
+                    endYearOfCurrentTaxPeriod.toString)),
                     hint = Some(Hint(content = Text(messages("agent.business.next-year-mandatory-sign-up.option1.hint")))),
                     value = Some(Current.toString)
                 ),
                 RadioItem(
-                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option2")),
+                    content = Text(messages("agent.business.next-year-mandatory-sign-up.option2", endYearOfCurrentTaxPeriod.toString,
+                    (endYearOfCurrentTaxPeriod + 1).toString)),
                     value = Some(Next.toString)
                 )
             )
         )
-        @continueButton(isEditMode = isEditMode)
+        @continueButton(Some(messages("agent.client-can-sign-up.button-text")))
     }
 
     <div class="govuk-form-group">
