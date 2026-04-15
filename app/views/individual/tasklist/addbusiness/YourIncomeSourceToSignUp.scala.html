@@ -53,18 +53,19 @@
     <h1 class="govuk-heading-xl">@heading</h1>
 
         @ul(
-            leadIn=messages("your-income-source.bulletList.leadIn"),
+            leadIn=messages("your-income-source.bullet.lead"),
             Seq(
-                Text(messages("your-income-source.bulletList1")),
-                Text(messages("your-income-source.bulletList2")),
-                Text(messages("your-income-source.bulletList3")),
-                Text(messages("your-income-source.bulletList4", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString))
+                Text(messages("your-income-source.bullet1")),
+                Text(messages("your-income-source.bullet2")),
+                Text(messages("your-income-source.bullet3")),
+                Text(messages("your-income-source.bullet4", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString))
             )
         )
 
-        @if(taxYearSelection) {
-            @conditionalText
-        }
+    @if(taxYearSelection) {
+        <h2 class="govuk-heading-m">@messages("your-income-source.conditional-text.h")</h2>
+        <p class="govuk-body">@messages("your-income-source.conditional-text.body", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
+    }
 
     @selfEmploymentSection
 
@@ -128,12 +129,12 @@
         Text(messages("base.status.completed"))
     } else if(isComplete && !isConfirmed) {
         HtmlContent(govukTag(Tag(
-            content = Text(messages("your-income-source.status.notConfirmed")),
+            content = Text(messages("your-income-source.status.not-confirmed")),
             classes = "govuk-tag--red"
         )))
     } else {
         HtmlContent(govukTag(Tag(
-            content = Text(messages("your-income-source.status.missingDetails")),
+            content = Text(messages("your-income-source.status.missing-details")),
             classes = "govuk-tag--red"
         )))
     }
@@ -159,11 +160,6 @@
             )
         ))
     }
-}
-
-@conditionalText = {
-    <h2 class="govuk-heading-m">@messages("your-income-source.conditional-text.h")</h2>
-    <p class="govuk-body">@messages("your-income-source.conditional-text.body", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
 }
 
 @selfEmploymentSection = {
@@ -196,7 +192,7 @@
                 )
             )),
             card = Some(Card(
-                title = Some(CardTitle(content = Text(" "))),
+                title = Some(CardTitle(content = Text(selfEmploymentTrade(business, index)))),
                 actions = Some(Actions(
                     items =
                         maybeIncomeSourceChangeAction(

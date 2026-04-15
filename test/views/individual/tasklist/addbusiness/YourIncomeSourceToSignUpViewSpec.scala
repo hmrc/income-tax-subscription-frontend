@@ -242,10 +242,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a conditional heading and paragraph" when {
         "user signing up for current year" in new ViewTest(
-          taxYearSelection = false
+          taxYearSelection = true
         ) {
-          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.conditionalHeading
-          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.conditionalPara
+          document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.conditionalHeading
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.conditionalPara
         }
       }
 
@@ -314,7 +314,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a first sole trader business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "Business 1",
+            title = "business trade",
             cardActions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
@@ -576,7 +576,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
                       text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
@@ -744,7 +744,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
                       text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
@@ -807,6 +807,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some("DateModel(1,1,1980)"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
