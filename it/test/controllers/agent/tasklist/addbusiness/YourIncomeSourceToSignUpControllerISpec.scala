@@ -27,6 +27,9 @@ import play.api.http.Status._
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
+import models.EligibilityStatus
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
@@ -42,9 +45,14 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
+            eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
+          ))
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -63,9 +71,14 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
+            eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
+          ))
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
