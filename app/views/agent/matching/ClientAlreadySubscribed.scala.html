@@ -33,16 +33,16 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = Messages("agent.client-already-subscribed.title")) {
+@mainTemplate(title = messages("agent.client-already-subscribed.title")) {
 
-    <h1 class="govuk-heading-l">@Messages("agent.client-already-subscribed.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("agent.client-already-subscribed.heading")</h1>
 
-    <p class="govuk-body">@Messages("agent.client-already-subscribed.para1")</p>
+    <p class="govuk-body">@messages("agent.client-already-subscribed.para1")</p>
 
     @ul(
-        leadIn=messages("agent.client-already-subscribed.list"),
-        Seq(
-            HtmlContent(getClientUTRLink()),
+        leadIn = messages("agent.client-already-subscribed.list"),
+        bulletPoints = Seq(
+            HtmlContent(handoffViewAndChange()),
             HtmlContent(signUpAnotherClient())
         )
     )
@@ -50,14 +50,14 @@
 }
 
 
-@getClientUTRLink() = {
-<a href="@appConfig.getClientUTRUrl" class="govuk-link">
-    @messages("agent.client-already-subscribed.bullet1.link")
-</a>
+@handoffViewAndChange() = {
+    <a href="@controllers.agent.matching.routes.ClientVAndCHomeController.handOffVAndC.url" class="govuk-link">
+        @messages("agent.client-already-subscribed.bullet1.link")
+    </a>
 }
 
 @signUpAnotherClient() = {
-<a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
-    @messages("agent.client-already-subscribed.bullet2.link")
-</a>
+    <a href="@controllers.agent.routes.AddAnotherClientController.addAnother().url" class="govuk-link sign-out-link">
+        @messages("agent.client-already-subscribed.bullet2.link")
+    </a>
 }

@@ -200,6 +200,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
             setupMockNotLockedOut(testARN)
             mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None,mtdId = testMTDID))
             mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
+            mockSaveMTDITID(testMTDID)(Right(SaveSessionDataSuccessResponse))
 
             val result: Future[Result] = controller.submit()(builtRequest)
 

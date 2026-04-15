@@ -98,6 +98,11 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
       .thenReturn(Future.successful(result))
   }
 
+  def mockSaveMTDITID(mtditid: String)(result: SaveSessionDataResponse): Unit = {
+    when(mockSessionDataService.saveMTDITID(ArgumentMatchers.eq(mtditid))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
   def mockSaveSoftwareStatus(softwareStatus: YesNo)(result: SaveSessionDataResponse): Unit = {
     when(mockSessionDataService.saveSoftwareStatus(ArgumentMatchers.eq(softwareStatus))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))

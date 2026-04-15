@@ -80,6 +80,10 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.UTR, utr)
   }
 
+  def saveMTDITID(mtditid: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.MTDITID, mtditid)
+  }
+
   def saveSoftwareStatus(softwareStatus: YesNo)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.HAS_SOFTWARE, Json.toJson(softwareStatus))
   }
