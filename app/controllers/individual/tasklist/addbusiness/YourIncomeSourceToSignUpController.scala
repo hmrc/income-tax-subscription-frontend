@@ -18,7 +18,8 @@ package controllers.individual.tasklist.addbusiness
 
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import play.api.mvc._
+import models.Current
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
@@ -38,12 +39,15 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
     for {
       incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(request.reference)
       maybePrePop <- subscriptionDetailsService.fetchPrePopFlag(request.reference)
+      taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {
+      val isCurrent: Boolean = taxYearSelection.map(_.accountingYear).contains(Current)
       Ok(view(
         postAction = routes.YourIncomeSourceToSignUpController.submit,
         backUrl = backUrl,
         incomeSources,
-        maybePrePop.contains(true)
+        maybePrePop.contains(true),
+        taxYearSelection = isCurrent
       ))
     }
   }

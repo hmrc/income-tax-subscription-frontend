@@ -32,29 +32,41 @@ import java.time.format.DateTimeFormatter
 class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
   object IndividualIncomeSource {
-    val title = "Your income sources"
+    val title = "Confirm your income sources"
     val heading: String = title
     val currentTaxYearStart: Int = AccountingPeriodUtil.getCurrentTaxEndYear - 1
     val incomeSourcesPara1: String = s"Add all of these sources that you get income from. Check, change or add details to any that were started previously. Remove any that ceased before 6 April $currentTaxYearStart."
     val incomeSourcesPara2: String = "Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here."
     val incomeSourcesPara3: String = "Do not add limited companies or partnerships here."
+    val lead = "You must:"
+    val bullet1 = "check that the information we have is correct"
+    val bullet2 = "change any incorrect details"
+    val bullet3 = "add any missing income sources"
+    val bullet4 = s"remove any businesses that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}"
+    val conditionalHeading = "If any of your businesses ceased trading during the tax year"
+    val conditionalPara = s"If your business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear -1} you still need to add it here, even if it has stopped trading."
 
-    val addDetails: String = "Add details"
+      val addDetails: String = "Add details"
     val checkDetails: String = "Check details"
+    val confirmDetails: String = "Confirm details"
     val change: String = "Change"
     val remove: String = "Remove"
     val statusTagKey = "Status"
     val incompleteTag: String = "Incomplete"
     val completedTag: String = "Completed"
+    val notConfirmedTag: String = "Not confirmed"
+    val missingDetails: String = "Missing details"
+
 
     val ukPropertyHiddenText = "(UK property)"
     val foreignPropertyHiddenText = "(Foreign property)"
 
     val selfEmploymentHeading = "Sole trader businesses"
-    val selfEmploymentPara: String = "You’re a sole trader if you run your own business as an individual and work for yourself. " +
-      "This is also known as being self-employed. You’re not a sole trader if your only business income is from a limited company."
+    val selfEmploymentPara: String = "You’re a sole trader if you run your own business as an individual and work for yourself. This is also known as being self-employed."
+    val selfEmploymentIndent: String =  "Do not add limited companies or partnerships here"
     val addSelfEmploymentLinkText = "Add a sole trader business"
     val soleTraderBusinessNameKey = "Business name"
+    val soleTraderBusinessStartDateKey = "Business start date"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl
     val soleTraderChangeLinkOne: String = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idOne&isEditMode=true"
     val soleTraderChangeLinkTwo: String = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=idTwo&isEditMode=true"
@@ -66,10 +78,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderRemoveLinkFour: String = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(id = "idFour").url
 
     val incomeFromPropertiesHeading: String = "Income from property"
-    val incomeFromPropertiesPara: String = "Tell us about any income you get from property. For example, letting houses, " +
-      "flats or holiday homes either on a long or short term basis. " +
-      "If you have more than one property, treat them as one income source."
-
+    val incomeFromPropertiesPara: String = "Tell us about income you get from any UK or foreign properties. For example, on a short-term basis such as holiday homes, or on a long-term basis such as letting houses or flats."
     val propertyStartDate: String = "Start date"
     val ukPropertyCardTitle: String = "UK property"
     val addUKPropertyLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
@@ -140,16 +149,17 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
   val limitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
       backUrl = testBackUrl,
       incomeSources = incomeSources,
-      isPrePopulated = isPrePopulated
+      isPrePopulated = isPrePopulated,
+      taxYearSelection = taxYearSelection
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false) {
     def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated).body)
   }
 
@@ -211,12 +221,32 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
       }
 
-      "have the correct lead paragraph" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
+      "have a lead paragraph with bullets" which {
+        "tells the user to check their income sources" in new ViewTest {
+          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.lead
+        }
+
+        "has a first item" in new ViewTest {
+          document.mainContent.selectNth("ul", 1).selectNth("li", 1).text mustBe IndividualIncomeSource.bullet1
+        }
+        "has a second item" in new ViewTest {
+          document.mainContent.selectNth("ul", 1).selectNth("li", 2).text mustBe IndividualIncomeSource.bullet2
+        }
+        "has a third item" in new ViewTest {
+          document.mainContent.selectNth("ul", 1).selectNth("li", 3).text mustBe IndividualIncomeSource.bullet3
+        }
+        "has a fourth item" in new ViewTest {
+          document.mainContent.selectNth("ul", 1).selectNth("li", 4).text mustBe IndividualIncomeSource.bullet4
+        }
       }
 
-      "have the correct lead InsetText" in new ViewTest(noIncomeSources) {
-        document.mainContent.selectNth(".govuk-inset-text", 1).text mustBe IndividualIncomeSource.incomeSourcesPara3
+      "have a conditional heading and paragraph" when {
+        "user signing up for current year" in new ViewTest(
+          taxYearSelection = false
+        ) {
+          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.conditionalHeading
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.conditionalPara
+        }
       }
 
       "have a sole trader section" which {
@@ -259,7 +289,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "not have a second paragraph" when {
         "data has been pre-populated" in new ViewTest(noIncomeSources, isPrePopulated = true) {
-          document.mainContent.selectOptionalNth("p", 7) mustBe None
+          document.mainContent.selectOptionalNth("p", 9) mustBe None
         }
       }
     }
@@ -270,10 +300,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading for the page" in new ViewTest(incompleteIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-      }
-
-      "have the correct lead paragraph" in new ViewTest(incompleteIncomeSources) {
-        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
       }
 
       "have a section for sole trader income sources" which {
@@ -291,9 +317,9 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             title = "Business 1",
             cardActions = Seq(
               SummaryListActionValues(
-                href = IndividualIncomeSource.soleTraderRemoveLinkTwo,
-                text = s"${IndividualIncomeSource.remove} business name (Business 1)",
-                visuallyHidden = s"business name (Business 1)"
+                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
+                text = s"${IndividualIncomeSource.remove} business name (business trade)",
+                visuallyHidden = s"business name (business trade)"
               )
             ),
             rows = Seq(
@@ -303,8 +329,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(""),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
                 key = IndividualIncomeSource.statusTagKey,
-                value = Some(IndividualIncomeSource.incompleteTag),
+                value = Some(IndividualIncomeSource.missingDetails),
                 actions = Seq(SummaryListActionValues(
                   href = IndividualIncomeSource.soleTraderChangeLinkTwo,
                   text = s"${IndividualIncomeSource.addDetails} business name (Business 1)",
@@ -332,8 +363,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(""),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
                 key = IndividualIncomeSource.statusTagKey,
-                value = Some(IndividualIncomeSource.incompleteTag),
+                value = Some(IndividualIncomeSource.missingDetails),
                 actions = Seq(SummaryListActionValues(
                   href = IndividualIncomeSource.soleTraderChangeLinkThree,
                   text = s"${IndividualIncomeSource.addDetails} (business trade)",
@@ -361,8 +397,13 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
+                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
+                value = Some(""),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
                 key = IndividualIncomeSource.statusTagKey,
-                value = Some(IndividualIncomeSource.incompleteTag),
+                value = Some(IndividualIncomeSource.missingDetails),
                 actions = Seq(SummaryListActionValues(
                   href = IndividualIncomeSource.soleTraderChangeLinkFour,
                   text = s"${IndividualIncomeSource.addDetails} (Business 3)",
@@ -402,7 +443,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               rows = Seq(
                 SummaryListRowValues(
                   key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.incompleteTag),
+                  value = Some(IndividualIncomeSource.missingDetails),
                   actions = Seq(SummaryListActionValues(
                     href = IndividualIncomeSource.ukPropertyChangeLink,
                     text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
@@ -426,7 +467,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               rows = Seq(
                 SummaryListRowValues(
                   key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.incompleteTag),
+                  value = Some(IndividualIncomeSource.missingDetails),
                   actions = Seq(SummaryListActionValues(
                     href = IndividualIncomeSource.foreignPropertyChangeLink,
                     text = s"${IndividualIncomeSource.addDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
@@ -451,10 +492,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading for the page" in new ViewTest(completeIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-      }
-
-      "have the correct lead paragraph" in new ViewTest(completeIncomeSources) {
-        document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
       }
 
       "have a section for sole trader income sources" which {
@@ -486,10 +523,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 ),
                 SummaryListRowValues(
                   key = IndividualIncomeSource.statusTagKey,
-                  value = Some(IndividualIncomeSource.incompleteTag),
+                  value = Some(IndividualIncomeSource.notConfirmedTag),
                   actions = Seq(SummaryListActionValues(
                     href = IndividualIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${IndividualIncomeSource.checkDetails} business name (business trade)",
+                    text = s"${IndividualIncomeSource.confirmDetails} business name (business trade)",
                     visuallyHidden = "business name (business trade)"
                   ))
                 )
@@ -542,7 +579,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     value = Some(IndividualIncomeSource.incompleteTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -573,10 +610,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -605,10 +642,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.ukPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.ukPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.ukPropertyHiddenText
                     ))
                   )
@@ -641,10 +678,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -675,10 +712,10 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   ),
                   SummaryListRowValues(
                     key = IndividualIncomeSource.statusTagKey,
-                    value = Some(IndividualIncomeSource.incompleteTag),
+                    value = Some(IndividualIncomeSource.notConfirmedTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -710,7 +747,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                     value = Some(IndividualIncomeSource.incompleteTag),
                     actions = Seq(SummaryListActionValues(
                       href = IndividualIncomeSource.foreignPropertyChangeLink,
-                      text = s"${IndividualIncomeSource.checkDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
+                      text = s"${IndividualIncomeSource.confirmDetails} ${IndividualIncomeSource.foreignPropertyHiddenText}",
                       visuallyHidden = IndividualIncomeSource.foreignPropertyHiddenText
                     ))
                   )
@@ -739,12 +776,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "have a heading for the page" in new ViewTest(completeAndConfirmedIncomeSources) {
         document.mainContent.getH1Element.text mustBe IndividualIncomeSource.heading
-      }
-
-      "have the correct lead paragraph" when {
-        "have the correct lead paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.incomeSourcesPara1
-        }
       }
 
       "have a section for sole trader income sources" which {
@@ -867,7 +898,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       "not have a second paragraph" when {
         "data has been pre-populated" in new ViewTest(completeAndConfirmedIncomeSources, isPrePopulated = true) {
-          document.mainContent.selectOptionally("p:nth-of-type(5)") mustBe None
+          document.mainContent.selectOptionally("p:nth-of-type(6)") mustBe None
         }
       }
     }
