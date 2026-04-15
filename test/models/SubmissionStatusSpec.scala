@@ -24,18 +24,16 @@ class SubmissionStatusSpec extends PlaySpec {
 
   private val delay = 1000
 
-  private val inProgress = InProgress
+  private val data: Seq[SubmissionStatus] = Seq(
+    InProgress,
+    Success,
+    HandledError,
+    OtherError
+  )
 
   Thread.sleep(delay)
 
-  "Should convert to/from Json" in {
-    val data: Seq[SubmissionStatus] = Seq(
-      inProgress,
-      Success,
-      HandledError,
-      OtherError
-    )
-
+  "Convert to/from Json" in {
     data.foreach { status =>
       val json = Json.toJson(status)
       val obj = Json.fromJson[SubmissionStatus](json)
@@ -44,13 +42,17 @@ class SubmissionStatusSpec extends PlaySpec {
     }
   }
 
-  "has not expired" in {
+  "Not have expired" in {
     Thread.sleep(delay)
-    inProgress.hasExpired mustBe false
+    data.foreach { status =>
+      status.hasExpired mustBe false
+    }
   }
 
-  "has expired" in {
+  "Have expired (only for InProgress)" in {
     Thread.sleep(delay * limit)
-    inProgress.hasExpired mustBe true
+    data.foreach { status =>
+      status.hasExpired mustBe (status == InProgress)
+    }
   }
 }

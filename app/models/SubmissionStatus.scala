@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDateTime
 
-sealed trait SubmissionStatus(status: Int, timestamp: Option[LocalDateTime] = None) {
+sealed trait SubmissionStatus(timestamp: Option[LocalDateTime] = None) {
   def hasExpired: Boolean = {
     timestamp match {
       case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(limit))
@@ -36,18 +36,18 @@ object SubmissionStatus {
   implicit val format: OFormat[SubmissionStatus] = Json.format[SubmissionStatus]
 }
 
-case object InProgress extends SubmissionStatus(1, Some(LocalDateTime.now())) {
+case object InProgress extends SubmissionStatus(Some(LocalDateTime.now())) {
   implicit val format: OFormat[InProgress.type] = Json.format[InProgress.type]
 }
 
-case object Success extends SubmissionStatus(2) {
+case object Success extends SubmissionStatus() {
   implicit val format: OFormat[Success.type] = Json.format[Success.type]
 }
 
-case object HandledError extends SubmissionStatus(3) {
+case object HandledError extends SubmissionStatus() {
   implicit val format: OFormat[HandledError.type] = Json.format[HandledError.type]
 }
 
-case object OtherError extends SubmissionStatus(4) {
+case object OtherError extends SubmissionStatus() {
   implicit val format: OFormat[OtherError.type] = Json.format[OtherError.type]
 }
