@@ -38,12 +38,14 @@ class SubmissionStatusSpec extends PlaySpec {
   "Convert to/from Json" in {
     data.foreach { entry =>
       val status = entry._1
+      val value = entry._2
+
       val json = Json.toJson(status)
       val obj = Json.fromJson[SubmissionStatus](json)
-
       obj mustBe JsSuccess(status)
-      Json.toJson(status.status) mustBe entry._2
-      Json.fromJson[Status](entry._2) mustBe JsSuccess(status.status)
+
+      Json.toJson(status.status) mustBe value
+      Json.fromJson[Status](value) mustBe JsSuccess(status.status)
     }
   }
 
