@@ -18,7 +18,7 @@ package models
 
 import models.SubmissionStatus.{handledError, maxSeconds, otherError, success}
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.{JsString, JsSuccess, Json}
 
 class SubmissionStatusSpec extends PlaySpec {
 
@@ -26,35 +26,39 @@ class SubmissionStatusSpec extends PlaySpec {
 
   private val inProgress = SubmissionStatus.inProgress
 
-  private val data: Seq[SubmissionStatus] = Seq(
-    inProgress,
-    success,
-    handledError,
-    otherError
+  private val data: Map[SubmissionStatus, JsString] = Map(
+    inProgress -> JsString("P"),
+    success -> JsString("S"),
+    handledError -> JsString("H"),
+    otherError -> JsString("O")
   )
 
   Thread.sleep(delay)
 
   "Convert to/from Json" in {
-    data.foreach { status =>
+    data.foreach { entry =>
+      val status = entry._1
       val json = Json.toJson(status)
-      println(s"$status = ${json.toString}")
       val obj = Json.fromJson[SubmissionStatus](json)
 
       obj mustBe JsSuccess(status)
+      Json.toJson(status.status) mustBe entry._2
+      Json.fromJson[Status](entry._2) mustBe JsSuccess(status.status)
     }
   }
 
   "Not have expired" in {
     Thread.sleep(delay)
-    data.foreach { status =>
+    data.foreach { entry =>
+      val status = entry._1
       status.hasExpired mustBe false
     }
   }
 
   "Have expired (only for InProgress)" in {
     Thread.sleep(delay * maxSeconds)
-    data.foreach { status =>
+    data.foreach { entry =>
+      val status = entry._1
       status.hasExpired mustBe (status == inProgress)
     }
   }
