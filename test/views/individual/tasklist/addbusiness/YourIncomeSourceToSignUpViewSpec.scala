@@ -160,7 +160,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   }
 
   class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false) {
-    def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated).body)
+    def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated, taxYearSelection).body)
   }
 
   "YourIncomeSourceToSignUp" should {
@@ -245,7 +245,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           taxYearSelection = true
         ) {
           document.mainContent.selectNth("h2", 1).text mustBe IndividualIncomeSource.conditionalHeading
-          document.mainContent.selectNth("p", 1).text mustBe IndividualIncomeSource.conditionalPara
+          document.mainContent.selectNth("p", 2).text mustBe IndividualIncomeSource.conditionalPara
         }
       }
 
@@ -314,12 +314,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a first sole trader business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
+            title = "Business 1",
             cardActions = Seq(
               SummaryListActionValues(
-                href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${IndividualIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url,
+                text = s"${IndividualIncomeSource.remove} business name (Business 1)",
+                visuallyHidden = s"business name (Business 1)"
               )
             ),
             rows = Seq(
@@ -519,6 +519,11 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 SummaryListRowValues(
                   key = IndividualIncomeSource.soleTraderBusinessNameKey,
                   value = Some("business name"),
+                  actions = Seq.empty
+                ),
+                SummaryListRowValues(
+                  key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
+                  value = Some("1980-01-01"),
                   actions = Seq.empty
                 ),
                 SummaryListRowValues(
@@ -811,7 +816,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some("DateModel(1,1,1980)"),
+                value = Some("1980-01-01"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
