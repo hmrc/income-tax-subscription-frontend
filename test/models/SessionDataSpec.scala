@@ -17,6 +17,7 @@
 package models
 
 import _root_.common.Constants.ITSASessionKeys
+import models.SubmissionStatus.inProgress
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import org.scalatestplus.play.PlaySpec
@@ -34,6 +35,7 @@ class SessionDataSpec extends PlaySpec {
   private val softwareStatus = Yes
   private val consentStatus = Yes
   private val emailPassed = true
+  private val submissionStatus = inProgress
 
   private val sessionData = SessionData(Map(
     ITSASessionKeys.REFERENCE -> JsString(reference),
@@ -44,7 +46,8 @@ class SessionDataSpec extends PlaySpec {
     ITSASessionKeys.UTR -> JsString(utr),
     ITSASessionKeys.HAS_SOFTWARE -> JsString(softwareStatus.toString),
     ITSASessionKeys.CAPTURE_CONSENT -> JsString(consentStatus.toString),
-    ITSASessionKeys.EMAIL_PASSED -> JsBoolean(emailPassed)
+    ITSASessionKeys.EMAIL_PASSED -> JsBoolean(emailPassed),
+    ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(submissionStatus)
   ))
 
   "fetchReference" in {
@@ -81,5 +84,9 @@ class SessionDataSpec extends PlaySpec {
 
   "fetchEmailPassed" in {
     sessionData.fetchEmailPassed mustBe Some(emailPassed)
+  }
+
+  "fetchSubmissionStatus" in {
+    sessionData.fetchSubmissionStatus mustBe Some(submissionStatus)
   }
 }

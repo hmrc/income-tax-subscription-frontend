@@ -16,7 +16,7 @@
 
 package models
 
-import models.SubmissionStatus.limit
+import models.SubmissionStatus.{handledError, maxSeconds, otherError, success}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsSuccess, Json}
 
@@ -24,11 +24,13 @@ class SubmissionStatusSpec extends PlaySpec {
 
   private val delay = 1000
 
+  private val inProgress = SubmissionStatus.inProgress
+
   private val data: Seq[SubmissionStatus] = Seq(
-    InProgress,
-    Success,
-    HandledError,
-    OtherError
+    inProgress,
+    success,
+    handledError,
+    otherError
   )
 
   Thread.sleep(delay)
@@ -50,9 +52,9 @@ class SubmissionStatusSpec extends PlaySpec {
   }
 
   "Have expired (only for InProgress)" in {
-    Thread.sleep(delay * limit)
+    Thread.sleep(delay * maxSeconds)
     data.foreach { status =>
-      status.hasExpired mustBe (status == InProgress)
+      status.hasExpired mustBe (status == inProgress)
     }
   }
 }

@@ -87,4 +87,7 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
     data.get(ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN).map(_.toObject[ClaimEnrolmentOrigin])
   }
 
+  def fetchSubmissionStatus: Option[SubmissionStatus] = {
+    data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
+  }
 }

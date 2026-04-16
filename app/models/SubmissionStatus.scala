@@ -16,38 +16,50 @@
 
 package models
 
-import models.SubmissionStatus.limit
-import play.api.libs.json.{Json, OFormat}
+import models.SubmissionStatus.maxSeconds
+import play.api.libs.json.{Json, OFormat, OWrites, Reads, __}
 
 import java.time.LocalDateTime
 
-sealed abstract class SubmissionStatus(timestamp: Option[LocalDateTime] = None) {
+sealed case class SubmissionStatus(status: Status, timestamp: Option[LocalDateTime] = None) {
   def hasExpired: Boolean = {
     timestamp match {
-      case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(limit))
+      case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(maxSeconds))
       case None => false
     }
   }
 }
 
 object SubmissionStatus {
-  val limit: Int = 8
-  
+  val maxSeconds: Int = 8
+
   implicit val format: OFormat[SubmissionStatus] = Json.format[SubmissionStatus]
+
+  def inProgress: SubmissionStatus = SubmissionStatus(InProgress, Some(LocalDateTime.now()))
+  def success: SubmissionStatus = SubmissionStatus(Success)
+  def handledError: SubmissionStatus = SubmissionStatus(HandledError)
+  def otherError: SubmissionStatus = SubmissionStatus(OtherError)
 }
 
-case object InProgress extends SubmissionStatus(Some(LocalDateTime.now())) {
+sealed trait Status
+
+object Status {
+  implicit val format: OFormat[Status] = Json.format[Status]
+}
+
+case object InProgress extends Status {
   implicit val format: OFormat[InProgress.type] = Json.format[InProgress.type]
 }
 
-case object Success extends SubmissionStatus() {
+case object Success extends Status {
   implicit val format: OFormat[Success.type] = Json.format[Success.type]
 }
 
-case object HandledError extends SubmissionStatus() {
+case object HandledError extends Status {
   implicit val format: OFormat[HandledError.type] = Json.format[HandledError.type]
 }
 
-case object OtherError extends SubmissionStatus() {
+case object OtherError extends Status {
   implicit val format: OFormat[OtherError.type] = Json.format[OtherError.type]
 }
+

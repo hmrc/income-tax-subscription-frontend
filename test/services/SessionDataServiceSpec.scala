@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.mocks.MockSessionDataConnector
 import models.SessionData
+import models.SubmissionStatus.inProgress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.play.PlaySpec
@@ -37,6 +38,7 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
   }
 
   val testReference: String = "test-reference"
+  val testSubmissopnStatus = inProgress
 
   private val sessionData = SessionData(Map(
     ITSASessionKeys.REFERENCE -> JsString(testReference)
@@ -95,6 +97,40 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
         mockDeleteSessionData(ITSASessionKeys.REFERENCE)(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
         await(service.deleteReference) mustBe Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  "saveSubmissionStatus" must {
+    "return a success response" when {
+      "the connector returns a success response" in new Setup {
+        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissopnStatus)(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse))
+
+        await(service.saveSubmissionStatus(testSubmissopnStatus)) mustBe Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)
+      }
+    }
+    "return a failure response" when {
+      "the connector returns a failure response" in new Setup {
+        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissopnStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        await(service.saveSubmissionStatus(testSubmissopnStatus)) mustBe Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+      }
+    }
+  }
+
+  "deleteSubmissionStatus" must {
+    "return a success response" when {
+      "the connector returns a success response" in new Setup {
+        mockDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)(Right(DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse))
+
+        await(service.deleteSubmissionStatus) mustBe Right(DeleteSessionDataHttpParser.DeleteSessionDataSuccessResponse)
+      }
+    }
+    "return a failure response" when {
+      "the connector returns a failure response" in new Setup {
+        mockDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)(Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+        await(service.deleteSubmissionStatus) mustBe Left(DeleteSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
       }
     }
   }
