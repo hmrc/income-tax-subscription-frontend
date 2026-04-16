@@ -16,10 +16,8 @@
 
 package models
 
-import models.No.NO
 import models.SubmissionStatus.maxSeconds
-import models.Yes.YES
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, OWrites, Reads, Writes, __}
+import play.api.libs.json.*
 
 import java.time.LocalDateTime
 
