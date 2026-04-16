@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDateTime
 
-sealed trait SubmissionStatus(timestamp: Option[LocalDateTime] = None) {
+sealed abstract class SubmissionStatus(timestamp: Option[LocalDateTime] = None) {
   def hasExpired: Boolean = {
     timestamp match {
       case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(limit))
