@@ -38,6 +38,7 @@ class SubmissionStatusSpec extends PlaySpec {
   "Convert to/from Json" in {
     data.foreach { status =>
       val json = Json.toJson(status)
+      println(s"$status = ${json.toString}")
       val obj = Json.fromJson[SubmissionStatus](json)
 
       obj mustBe JsSuccess(status)

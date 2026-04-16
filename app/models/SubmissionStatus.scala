@@ -16,8 +16,10 @@
 
 package models
 
+import models.No.NO
 import models.SubmissionStatus.maxSeconds
-import play.api.libs.json.{Json, OFormat, OWrites, Reads, __}
+import models.Yes.YES
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Json, OFormat, OWrites, Reads, Writes, __}
 
 import java.time.LocalDateTime
 
@@ -44,22 +46,33 @@ object SubmissionStatus {
 sealed trait Status
 
 object Status {
-  implicit val format: OFormat[Status] = Json.format[Status]
+  private val IN_PROGRESS = "P"
+  private val SUCCESS = "S"
+  private val HANDLED_ERROR = "H"
+  private val OTHER_ERROR = "O"
+  
+  private val reads: Reads[Status] = Reads[Status] {
+    case JsString(IN_PROGRESS) => JsSuccess(InProgress)
+    case JsString(SUCCESS) => JsSuccess(Success)
+    case JsString(HANDLED_ERROR) => JsSuccess(HandledError)
+    case JsString(OTHER_ERROR) => JsSuccess(OtherError)
+    case _ => JsError("Invalid status")
+  }
+
+  private val writes: Writes[Status] = {
+    case InProgress => JsString(IN_PROGRESS)
+    case Success => JsString(SUCCESS)
+    case HandledError => JsString(HANDLED_ERROR)
+    case OtherError => JsString(OTHER_ERROR)
+  }
+
+  implicit val format: Format[Status] = Format[Status](reads, writes)
 }
 
-case object InProgress extends Status {
-  implicit val format: OFormat[InProgress.type] = Json.format[InProgress.type]
-}
+case object InProgress extends Status
 
-case object Success extends Status {
-  implicit val format: OFormat[Success.type] = Json.format[Success.type]
-}
+case object Success extends Status
 
-case object HandledError extends Status {
-  implicit val format: OFormat[HandledError.type] = Json.format[HandledError.type]
-}
+case object HandledError extends Status
 
-case object OtherError extends Status {
-  implicit val format: OFormat[OtherError.type] = Json.format[OtherError.type]
-}
-
+case object OtherError extends Status
