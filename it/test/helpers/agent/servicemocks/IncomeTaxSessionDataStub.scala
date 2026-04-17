@@ -16,6 +16,7 @@
 
 package helpers.agent.servicemocks
 
+import helpers.agent.WiremockHelper
 import play.api.libs.json.Json
 
 object IncomeTaxSessionDataStub extends WireMockMethods {
@@ -30,6 +31,13 @@ object IncomeTaxSessionDataStub extends WireMockMethods {
         "utr" -> utr
       )
     ).thenReturn(status = status)
+  }
+
+  def verifySetupViewAndChangeData(count: Int = 1): Unit = {
+    WiremockHelper.verifyPost(
+      uri = "/income-tax-session-data",
+      count = Some(count)
+    )
   }
 
 }

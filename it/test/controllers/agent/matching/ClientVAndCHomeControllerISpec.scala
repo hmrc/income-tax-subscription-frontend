@@ -17,6 +17,8 @@
 package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.SetupVAndCSessionData
+import config.featureswitch.FeatureSwitching
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testMtdId, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
@@ -24,7 +26,12 @@ import helpers.agent.servicemocks.{AuthStub, IncomeTaxSessionDataStub}
 import play.api.http.Status.*
 import play.api.libs.json.JsString
 
-class ClientVAndCHomeControllerISpec extends ComponentSpecBase {
+class ClientVAndCHomeControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(SetupVAndCSessionData)
+  }
 
   s"GET ${appConfig.getVAndCUrl}" should {
 
@@ -42,33 +49,74 @@ class ClientVAndCHomeControllerISpec extends ComponentSpecBase {
     }
 
     "redirect to view and change" when {
-      "all session data is present and the connector returns a success response" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MTDITID -> JsString(testMtdId),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
-        IncomeTaxSessionDataStub.stubSetupViewAndChangeData(testMtdId, testNino, testUtr)(OK)
+      "the SetupVAndCSessionData feature switch is enabled" when {
+        "all session data is present and the connector returns a success response" in {
+          enable(SetupVAndCSessionData)
 
-        val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
+          AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.MTDITID -> JsString(testMtdId),
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
+          IncomeTaxSessionDataStub.stubSetupViewAndChangeData(testMtdId, testNino, testUtr)(OK)
 
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(appConfig.getVAndCUrl)
-        )
+          val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(appConfig.getVAndCUrl)
+          )
+
+          IncomeTaxSessionDataStub.verifySetupViewAndChangeData()
+        }
+        "session data is missing" in {
+          enable(SetupVAndCSessionData)
+
+          AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map())
+
+          val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(appConfig.getVAndCUrl)
+          )
+
+          IncomeTaxSessionDataStub.verifySetupViewAndChangeData(0)
+        }
       }
+      "the SetupVAndCSessionData feature switch is disabled" when {
+        "all session data is present" in {
+          AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.MTDITID -> JsString(testMtdId),
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr)
+          ))
 
-      "session data is missing" in {
-        AuthStub.stubAuthSuccess()
-        SessionDataConnectorStub.stubGetAllSessionData(Map())
+          val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
 
-        val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(appConfig.getVAndCUrl)
+          )
 
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(appConfig.getVAndCUrl)
-        )
+          IncomeTaxSessionDataStub.verifySetupViewAndChangeData(0)
+        }
+        "session data is missing" in {
+          AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map())
+
+          val res = IncomeTaxSubscriptionFrontend.handOffVAndC()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(appConfig.getVAndCUrl)
+          )
+
+          IncomeTaxSessionDataStub.verifySetupViewAndChangeData(0)
+        }
       }
     }
   }

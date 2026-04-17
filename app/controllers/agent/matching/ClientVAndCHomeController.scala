@@ -17,6 +17,8 @@
 package controllers.agent.matching
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.SetupVAndCSessionData
+import config.featureswitch.FeatureSwitching
 import connectors.agent.IncomeTaxSessionDataConnector
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
@@ -28,12 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ClientVAndCHomeController @Inject()(identify: IdentifierAction,
                                           incomeTaxSessionDataConnector: IncomeTaxSessionDataConnector,
-                                          appConfig: AppConfig)
-                                         (implicit val ec: ExecutionContext, mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                          val appConfig: AppConfig)
+                                         (implicit val ec: ExecutionContext,
+                                          mcc: MessagesControllerComponents)
+  extends SignUpBaseController with FeatureSwitching {
 
   def handOffVAndC: Action[AnyContent] = identify.async { implicit request =>
     (request.sessionData.fetchMtditid, request.sessionData.fetchNino, request.sessionData.fetchUTR) match {
-      case (Some(mtditid), Some(nino), Some(utr)) =>
+      case (Some(mtditid), Some(nino), Some(utr)) if isEnabled(SetupVAndCSessionData) =>
         incomeTaxSessionDataConnector.setupViewAndChangeSessionData(mtditid, nino, utr).map { _ =>
           Redirect(appConfig.getVAndCUrl)
         }
