@@ -59,6 +59,7 @@
                 RadioItem(
                     content = Text(messages("business.next-year-mandatory-sign-up.option1",(endYearOfCurrentTaxPeriod - 1).toString,
                     endYearOfCurrentTaxPeriod.toString)),
+                    hint = Some(Hint(content = Text(messages("business.next-year-mandatory-sign-up.option1.hint")))),
                     value = Some(Current.toString)
                 ),
                 RadioItem(

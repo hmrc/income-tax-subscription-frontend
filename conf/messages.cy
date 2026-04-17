@@ -187,6 +187,7 @@ business.next-year-mandatory-sign-up.para3                      = Ni fyddwch yn 
 business.next-year-mandatory-sign-up.subheading                 = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
 business.next-year-mandatory-sign-up.para4                      = Hoffwn gofrestru nawr, a:
 business.next-year-mandatory-sign-up.option1                    = dechrau ei ddefnyddio nawr ar gyfer y flwyddyn dreth hon, sef {0} i {1}
+business.next-year-mandatory-sign-up.option1.hint               = Bydd angen i chi sicrhau eich bod yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno unrhyw ddiweddariadau chwarterol sydd wedi’u methu ar gyfer y flwyddyn hyd yma
 business.next-year-mandatory-sign-up.option2                    = ei ddefnyddio o’r flwyddyn dreth nesaf ymlaen, sef {0} i {1}
 
 #Non eligible / Mandated User Next Year
@@ -925,10 +926,11 @@ agent.business.next-year-mandatory-sign-up.caption                       = {0} -
 agent.business.next-year-mandatory-sign-up.para                          = Gall eich cleient ddewis cofrestru’n gynnar fel eich bod chi’ch dau yn barod i ddefnyddio’r gwasanaeth.
 agent.business.next-year-mandatory-sign-up.para2                         = Ni fyddwch yn cael cosbau yn ystod y cyfnod hwn am unrhyw ddiweddariadau chwarterol a fethwyd cyn 6 Ebrill {0}.
 agent.business.next-year-mandatory-sign-up.indent                        = Mae’n rhaid i’ch cleient barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
-agent.business.next-year-mandatory-sign-up.subheading                    = A ydych am gofrestru’r cleient hwn yn gynnar ar gyfer y flwyddyn dreth bresennol, {0} i {1}?
-agent.business.next-year-mandatory-sign-up.option1                       = Iawn
+agent.business.next-year-mandatory-sign-up.subheading                    = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
+agent.business.next-year-mandatory-sign-up.para3                         = Hoffwn gofrestru fy nghleient nawr, a:
+agent.business.next-year-mandatory-sign-up.option1                       = dechrau ei ddefnyddio nawr ar gyfer y flwyddyn dreth hon, sef {0} i {1}
 agent.business.next-year-mandatory-sign-up.option1.hint                  = Bydd angen i chi sicrhau eich bod yn defnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm i gyflwyno unrhyw ddiweddariadau chwarterol sydd wedi’u methu ar gyfer y flwyddyn hyd yma
-agent.business.next-year-mandatory-sign-up.option2                       = Na
+agent.business.next-year-mandatory-sign-up.option2                       = ei ddefnyddio o’r flwyddyn dreth nesaf ymlaen, sef {0} i {1}
 
 #Non eligible / Mandated User Next Year
 agent.business.non-eligible-mandated.heading                             = Mae’n rhaid i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}
