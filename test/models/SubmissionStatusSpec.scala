@@ -36,10 +36,7 @@ class SubmissionStatusSpec extends PlaySpec {
   Thread.sleep(delay)
 
   "Convert to/from Json" in {
-    data.foreach { entry =>
-      val status = entry._1
-      val value = entry._2
-
+    data.foreach { case (status, value) =>
       val json = Json.toJson(status)
       val obj = Json.fromJson[SubmissionStatus](json)
       obj mustBe JsSuccess(status)
@@ -51,16 +48,14 @@ class SubmissionStatusSpec extends PlaySpec {
 
   "Not have expired" in {
     Thread.sleep(delay)
-    data.foreach { entry =>
-      val status = entry._1
+    data.foreach { case (status, _) =>
       status.hasExpired mustBe false
     }
   }
 
   "Have expired (only for InProgress)" in {
     Thread.sleep(delay * maxSeconds)
-    data.foreach { entry =>
-      val status = entry._1
+    data.foreach { case (status, _) =>
       status.hasExpired mustBe (status == inProgress)
     }
   }
