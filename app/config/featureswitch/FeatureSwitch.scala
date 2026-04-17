@@ -77,4 +77,10 @@ object FeatureSwitch {
     override val name: String = s"$prefix.when-do-you-want-to-start-page"
     override val displayText: String = "WhenDoYouWantToStart Page"
   }
+
+  case object SetupVAndCSessionData extends FeatureSwitch {
+    override val name: String = s"$prefix.setup-v-and-c-session-data"
+    override val displayText: String = "Setup agent V&C session data"
+  }
+
 }
