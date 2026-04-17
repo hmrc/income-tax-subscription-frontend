@@ -54,7 +54,6 @@ base.tax-year.next                                              = Blwyddyn dreth
 base.print-page                                                 = Argraffu neu gadw’r dudalen hon
 base.section-caption.hidden                                     = Teitl yr adran hon yw
 base.or                                                         = neu
-base.confirm-details                                            = Cadarnhau manylion
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?

@@ -54,7 +54,6 @@ base.tax-year.next                                              = Next tax year 
 base.print-page                                                 = Print or save this page
 base.section-caption.hidden                                     = This section is
 base.or                                                         = or
-base.confirm-details                                            = Confirm details
 
 ## Preferences call back page
 preferences-callback.title                                      = Do you want to continue?
