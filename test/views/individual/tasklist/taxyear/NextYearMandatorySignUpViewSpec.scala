@@ -26,7 +26,7 @@ import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.tasklist.taxyear.NextYearMandatorySignUp
@@ -99,7 +99,8 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
           radioContents = Seq(
             RadioItem(
               content = Text(NextYearMandatorySignUp.currentYearOption),
-              value = Some(Current.toString)
+              value = Some(Current.toString),
+              hint = Some(Hint(content = Text(NextYearMandatorySignUp.currentYearOptionHint))),
             ),
             RadioItem(
               content = Text(NextYearMandatorySignUp.nextYearOption),
@@ -140,5 +141,6 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
     val paragraph4 = "I want to sign up now, and:"
     val currentYearOption: String = s"start using it now for this tax year, ${taxYearEnd - 1} to $taxYearEnd"
     val nextYearOption: String = s"use it from next tax year, $taxYearEnd to ${taxYearEnd + 1}"
+    val currentYearOptionHint = "You will need to make sure that you use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far"
   }
 }
