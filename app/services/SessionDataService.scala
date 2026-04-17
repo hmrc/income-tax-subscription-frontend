@@ -22,7 +22,7 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
-import models.{EligibilityStatus, SessionData, YesNo}
+import models.{EligibilityStatus, SessionData, SubmissionStatus, YesNo}
 import play.api.libs.json.*
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -98,5 +98,13 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def saveClaimEnrolmentOrigin(origin: ClaimEnrolmentOrigin)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, origin)
+  }
+
+  def saveSubmissionStatus(status: SubmissionStatus)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.SUBMISSION_STATUS, status)
+  }
+
+  def deleteSubmissionStatus(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)
   }
 }
