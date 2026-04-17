@@ -18,11 +18,14 @@
 @import play.api.data.Form
 @import models.common._
 @import models.common.business._
-@import views.html.helpers.SaveAndContinueButtonHelper
+@import views.html.helpers.{SaveAndContinueButtonHelper, UnorderedList}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
+@import java.time.LocalDate
+@import utilities.ImplicitDateFormatter
+@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -31,10 +34,13 @@
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
     govukTag : GovukTag,
-    govukInsetText: GovukInsetText
+    ul: UnorderedList,
+    govukInsetText: GovukInsetText,
+    implicitDateFormatter: ImplicitDateFormatter,
+    languageUtils: LanguageUtils
 )
 
-@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
 
 @heading = @{
     messages("your-income-source.heading")
@@ -46,12 +52,20 @@
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
 
-        <p class="govuk-body">
-            @messages(
-                "your-income-source.manage.para-1",
-                (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString
+        @ul(
+            leadIn=messages("your-income-source.bullet.lead"),
+            Seq(
+                Text(messages("your-income-source.bullet1")),
+                Text(messages("your-income-source.bullet2")),
+                Text(messages("your-income-source.bullet3")),
+                Text(messages("your-income-source.bullet4", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString))
             )
-        </p>
+        )
+
+    @if(taxYearSelection) {
+        <h2 class="govuk-heading-m">@messages("your-income-source.conditional-text.h")</h2>
+        <p class="govuk-body">@messages("your-income-source.conditional-text.body", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
+    }
 
     @selfEmploymentSection
 
@@ -84,6 +98,14 @@
     }
 }
 
+@selfEmploymentStartDate(business: SelfEmploymentData) = @{
+    (business.startDateBeforeLimit, business.businessStartDate) match {
+        case (Some(true), _)  => messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+        case (_, Some(BusinessStartDate(startDate))) => messages("your-income-source.self-employed.business-start-date", startDate.toLocalDate)
+        case _ => ""
+    }
+}
+
 @startDate(maybeStartDate: Option[DateModel]) = @{
     maybeStartDate match {
         case Some(startDate) => startDate.toCheckYourAnswersDateFormat
@@ -103,13 +125,18 @@
     }
 }
 
-@statusTag(isCompleteAndConfirmed: Boolean) = @{
-    if(isCompleteAndConfirmed) {
+@statusTag(isComplete: Boolean, isConfirmed: Boolean) = @{
+    if(isComplete && isConfirmed) {
         Text(messages("base.status.completed"))
+    } else if(isComplete && !isConfirmed) {
+        HtmlContent(govukTag(Tag(
+            content = Text(messages("your-income-source.status.not-confirmed")),
+            classes = "govuk-tag--red"
+        )))
     } else {
         HtmlContent(govukTag(Tag(
-            content = Text(messages("base.status.incomplete")),
-            classes = "govuk-tag--blue"
+            content = Text(messages("your-income-source.status.missing-details")),
+            classes = "govuk-tag--red"
         )))
     }
 }
@@ -122,7 +149,9 @@
             items = Seq(
                 ActionItem(
                     href = href,
-                    content = if(isComplete) {
+                    content = if(isComplete && !isConfirmed) {
+                        Text(messages("base.confirm-details"))
+                    } else if(isComplete) {
                         Text(messages("base.check-details"))
                     } else {
                         Text(messages("base.add-details"))
@@ -139,7 +168,7 @@
     <p class="govuk-body">@messages("your-income-source.self-employed.description")</p>
 
     @govukInsetText(InsetText(
-        content = Text(messages("your-income-source.manage.para-3"))
+        content = Text(messages("your-income-source.self-employed.indent"))
     ))
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
@@ -149,9 +178,13 @@
                     key = Key(content = Text(messages("your-income-source.self-employed.business-name.para"))),
                     value = Value(Text(selfEmploymentName(business, index)))
                 ),
+                SummaryListRow(
+                    key = Key(content = Text(messages("your-income-source.self-employed.business-start-date-para"))),
+                    value = Value(Text(selfEmploymentStartDate(business)))
+                ),
             SummaryListRow(
                 key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(business.isComplete && business.confirmed)),
+                value = Value(statusTag(business.isComplete, business.confirmed)),
                 actions = maybeStatusTagAction(
                     isComplete = business.isComplete,
                     isConfirmed = business.confirmed,
@@ -172,13 +205,13 @@
                         Seq(ActionItem(
                             href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
                             content = Text(messages("base.remove")),
-                            visuallyHiddenText = business.businessName.map(_.businessName
-                        )
+                            visuallyHiddenText = business.businessName.map(_.businessName)
                     ))
                 ))
             ))
         ))
     }
+
     <div id="add-self-employment" class="govuk-!-padding-bottom-6">
         <p class="govuk-body">
             <a class="govuk-link" href="@appConfig.incomeTaxSelfEmploymentsFrontendInitialiseUrl">
@@ -191,6 +224,8 @@
 @incomeFromProperty = {
     <h2 class="govuk-heading-m">@messages("your-income-source.income-from-property.heading")</h2>
     <p class="govuk-body">@messages("your-income-source.income-from-property.para")</p>
+    <p class="govuk-body">@messages("your-income-source.income-from-property.para1")</p>
+    <p class="govuk-body">@messages("your-income-source.income-from-property.para2")</p>
 
     @incomeSources.ukProperty.map { ukProperty =>
         @{
@@ -214,7 +249,7 @@
             govukSummaryList(SummaryList(
                 rows = row ++ Seq(SummaryListRow(
                     key = Key(content = Text(messages("base.status.label"))),
-                    value = Value(statusTag(ukProperty.confirmed)),
+                    value = Value(statusTag(ukProperty.isComplete, ukProperty.confirmed)),
                     actions = maybeStatusTagAction(
                         isComplete = ukProperty.isComplete,
                         isConfirmed = ukProperty.confirmed,
@@ -267,7 +302,7 @@
             govukSummaryList(SummaryList(
                 rows = row ++ Seq(SummaryListRow(
                     key = Key(content = Text(messages("base.status.label"))),
-                    value = Value(statusTag(foreignProperty.confirmed)),
+                    value = Value(statusTag(foreignProperty.isComplete, foreignProperty.confirmed)),
                     actions = maybeStatusTagAction(
                         isComplete = foreignProperty.isComplete,
                         isConfirmed = foreignProperty.confirmed,

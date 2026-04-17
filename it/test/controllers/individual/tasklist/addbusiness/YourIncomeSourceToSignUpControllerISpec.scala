@@ -16,14 +16,18 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import connectors.stubs.IncomeTaxSubscriptionConnectorStub
+import common.Constants.ITSASessionKeys
+import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI.{apaHandOffControllerUrI, globalCheckYourAnswersURI, spsHandoffURI}
-import helpers.IntegrationTestConstants.basGatewaySignIn
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
+import helpers.IntegrationTestModels.*
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
-import play.api.libs.json.Json
+import models.EligibilityStatus
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
+import play.api.http.Status.*
+import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
@@ -55,6 +59,15 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, Json.toJson(Some(true)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+        ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
+          eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
+          ))
+        ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
@@ -73,6 +86,15 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, Json.toJson(Some(true)))
+        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
+            eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
+          ))
+        ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
         val res = IncomeTaxSubscriptionFrontend.yourIncomeSources()
