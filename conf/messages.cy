@@ -855,7 +855,7 @@ agent.client-details.summary.dob                                = Dyddiad geni
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Cadarnhau ffynonellau incwm eich cleient
 agent.your-income-source.heading-2                                  = Os daeth unrhyw un o fusnesau eich cleient i ben yn ystod y flwyddyn dreth
-agent.your-income-source.paragraph-1                                = Os oedd busnes eich cleient yn weithredol yn y flwyddyn dreth {0}/{1}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
+agent.your-income-source.paragraph-1                                = Os oedd busnes eich cleient yn weithredol yn y flwyddyn dreth {0} i {1}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
 agent.your-income-source.para-1                                     = Mae’ch cleient yn unig fasnachwr os yw’n rhedeg ei fusnes ei hun fel unigolyn ac yn gweithio iddo ef ei hunan. Enw arall ar hyn yw bod yn hunangyflogedig.
 agent.your-income-source.para-2                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 agent.your-income-source.lead                                       = Mae’n rhaid i chi wneud y canlynol:
