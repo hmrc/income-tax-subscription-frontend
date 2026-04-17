@@ -889,7 +889,7 @@ agent.client-details.summary.dob                                = Date of birth
 ## agent your income sources to sign up page
 agent.your-income-source.heading                                    = Confirm your client’s income sources
 agent.your-income-source.heading-2                                  = If any of your client’s businesses ceased trading during the tax year
-agent.your-income-source.paragraph-1                                = If your client’s business was active in the tax year {0}/{1} you still need to add it here, even if it has stopped trading.
+agent.your-income-source.paragraph-1                                = If your client’s business was active in the tax year {0} to {1} you still need to add it here, even if it has stopped trading.
 agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
 agent.your-income-source.para-2                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.lead                                       = You must:

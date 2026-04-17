@@ -813,7 +813,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val bullet3 = "add any missing income source"
     val bullet4 = s"remove any businesses that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}"
     val lead2Heading = "If any of your client’s businesses ceased trading during the tax year"
-    val lead2 = s"If your client’s business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}/${AccountingPeriodUtil.getCurrentTaxEndYear} you still need to add it here, even if it has stopped trading."
+    val lead2 = s"If your client’s business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear - 1} to ${AccountingPeriodUtil.getCurrentTaxEndYear} you still need to add it here, even if it has stopped trading."
     val paragraph3:String= "Do not add limited companies or partnerships here."
     val paragraph1: String = "If your client is self-employed, you must add all of their sole trader businesses if they have more than one. " +
       "If they have income from property you must add it, but this is limited to one UK property business."
