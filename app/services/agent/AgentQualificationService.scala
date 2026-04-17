@@ -22,7 +22,6 @@ import models.common.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import services.{AuditingService, SubscriptionService, UserMatchingService}
-import uk.gov.hmrc.domain.SaAgentReference
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import javax.inject.{Inject, Singleton}
@@ -32,7 +31,7 @@ sealed trait UnqualifiedAgent
 
 case object NoClientMatched extends UnqualifiedAgent
 
-case class ClientAlreadySubscribed(channel: Option[Channel], mtdId: String) extends UnqualifiedAgent
+case class ClientAlreadySubscribed(channel: Option[Channel], utr: Option[String], mtdId: String) extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
@@ -75,7 +74,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       agentClientResponse <- subscriptionService.getSubscription(matchedClient.clientNino)
         .collect {
           case Right(None) => Right(matchedClient)
-          case Right(Some(SubscriptionSuccess(mtditId, channel))) => Left(ClientAlreadySubscribed(channel,mtditId))
+          case Right(Some(SubscriptionSuccess(mtditId, channel))) => Left(ClientAlreadySubscribed(channel, matchedClient.clientUtr, mtditId))
         }
     } yield agentClientResponse
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
@@ -83,15 +82,15 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
   private[services]
   def checkMTDClientRelationship(agentReferenceNumber: String, mtdId: String, matchedClient: QualifiedAgent, channel: Option[Channel])(implicit hc: HeaderCarrier): Future[ReturnType] = {
     clientRelationshipService.isMTDRelationship(agentReferenceNumber, mtdId) flatMap {
-      case Right(true) => Future.successful(Left(ClientAlreadySubscribed(channel,mtdId)))
+      case Right(true) => Future.successful(Left(ClientAlreadySubscribed(channel, matchedClient.clientUtr, mtdId)))
       case Right(false) => clientRelationshipService.isMTDSupportingRelationship(agentReferenceNumber, mtdId) map {
-        case Right(true) => Left(ClientAlreadySubscribed(channel, mtdId))
+        case Right(true) => Left(ClientAlreadySubscribed(channel, matchedClient.clientUtr, mtdId))
         case Right(false) => Left(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
         case Left(_) => throw new InternalServerException("unable to fetch client relationship")
       }
       case Left(_) => throw new InternalServerException("unable to fetch client relationship")
     }
-  }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure))}
+  }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
   private[services]
   def checkSAClientRelationship(agentReferenceNumber: String,
@@ -120,7 +119,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
           checkExistingSubscription(qualifiedAgent).flatMap {
             case Right(qualifiedAgent: QualifiedAgent) =>
               checkSAClientRelationship(agentReferenceNumber = agentReferenceNumber, matchedClient = qualifiedAgent)
-            case Left(ClientAlreadySubscribed(channel,mtdId)) =>
+            case Left(ClientAlreadySubscribed(channel, _, mtdId)) =>
               checkMTDClientRelationship(agentReferenceNumber = agentReferenceNumber, mtdId = mtdId, matchedClient = qualifiedAgent, channel = channel)
             case Left(unqualifiedAgent: UnqualifiedAgent) => Future.successful(Left(unqualifiedAgent))
           }

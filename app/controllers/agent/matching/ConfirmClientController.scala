@@ -18,6 +18,7 @@ package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
+import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataResponse, SaveSessionDataSuccessResponse}
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import controllers.agent.resolvers.AlreadySignedUpResolver
@@ -64,7 +65,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       withClientDetails { clientDetails =>
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
-          case Left(ClientAlreadySubscribed(channel, mtditid)) => handleClientAlreadySubscribed(clientDetails, channel, mtditid)
+          case Left(ClientAlreadySubscribed(channel, utr, mtditid)) => handleClientAlreadySubscribed(clientDetails, channel, utr, mtditid)
           case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
           case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
@@ -145,7 +146,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel], mtditid: String)
+  private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel], utr: Option[String], mtditid: String)
                                            (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
     auditingService.audit(EligibilityAuditModel(
@@ -157,14 +158,19 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
     ))
     sessionDataService.saveNino(clientDetails.nino) flatMap {
       case Right(_) =>
-        sessionDataService.saveMTDITID(mtditid) flatMap {
+        utr.fold[Future[SaveSessionDataResponse]](Future.successful(Right(SaveSessionDataSuccessResponse)))(sessionDataService.saveUTR) flatMap {
           case Right(_) =>
-            resolver.resolve(
-              sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
-              channel = reason
-            ).map(_.removingFromSession(FailedClientMatching))
+            sessionDataService.saveMTDITID(mtditid) flatMap {
+              case Right(_) =>
+                resolver.resolve(
+                  sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
+                  channel = reason
+                ).map(_.removingFromSession(FailedClientMatching))
+              case Left(_) =>
+                throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving mtditid to session")
+            }
           case Left(_) =>
-            throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving mtditid to session")
+            throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving utr to session")
         }
       case Left(_) =>
         throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving nino to session")
@@ -223,10 +229,10 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
         }
       case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
     }
-
   }
 
   def backUrl: String = {
     controllers.agent.matching.routes.ClientDetailsController.show().url
   }
+
 }

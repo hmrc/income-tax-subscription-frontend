@@ -198,8 +198,9 @@ class ConfirmClientControllerSpec extends ControllerSpec
         "the client entered has already been signed up" should {
           "redirect to resolver" in withController { controller =>
             setupMockNotLockedOut(testARN)
-            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None,mtdId = testMTDID))
+            mockOrchestrateAgentQualificationFailure(testARN, ClientAlreadySubscribed(None, utr = Some(testUtr), mtdId = testMTDID))
             mockSaveNino(testNino)(Right(SaveSessionDataSuccessResponse))
+            mockSaveUTR(testUtr)(Right(SaveSessionDataSuccessResponse))
             mockSaveMTDITID(testMTDID)(Right(SaveSessionDataSuccessResponse))
 
             val result: Future[Result] = controller.submit()(builtRequest)
