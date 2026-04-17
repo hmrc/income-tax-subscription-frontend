@@ -81,19 +81,18 @@ agent.business-already-removed.back-to-income-sources-para      = Ewch yn ôl i 
 agent.business-already-removed.back-to-income-sources-link-text = ffynonellau incwm eich cleient
 
 ## Individual your income sources to sign up page
-your-income-source.heading                                      = Eich ffynonellau incwm
+your-income-source.heading                                      = Cadarnhau eich ffynonellau incwm
 your-income-source.manage.para-1                                = Ychwanegwch bob un o’r ffynonellau hyn yr ydych yn cael incwm ohonynt. Gwiriwch, newidiwch neu ychwanegwch fanylion at unrhyw un a ddechreuwyd yn flaenorol. Dilëwch unrhyw un sydd wedi dod i ben cyn 6 Ebrill {0}.
 your-income-source.manage.para-2                                = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
 your-income-source.manage.para-3                                = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
-your-income-source.self-employed.heading                        = Busnesau unig fasnachwr
-your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig. Nid ydych yn unig fasnachwr os daw eich incwm busnes o gwmni cyfyngedig yn unig.
+your-income-source.self-employed.heading                        = Eich busnes fel unig fasnachwr
 your-income-source.self-employed.label-none                     = Busnes {0}
 your-income-source.self-employed.business-name.para             = Enw’r busnes
 your-income-source.self-employed.business-name                  = {0}
 your-income-source.self-employed.business-trade                 = {0}
 your-income-source.self-employed.add-link                       = Ychwanegu busnes unig fasnachwr
 your-income-source.income-from-property.heading                 = Incwm o eiddo
-your-income-source.income-from-property.para                    = Rhowch wybod i ni am unrhyw incwm rydych yn ei gael o eiddo. Er enghraifft, incwm o roi tai, fflatiau, neu gartrefi gwyliau ar osod a hynny naill ai ar sail tymor hir neu dymor byr. Os oes gennych fwy nag un eiddo, dylech eu trin un fel un ffynhonnell incwm.
+your-income-source.income-from-property.para                    = Rhowch wybod i ni am incwm rydych yn ei gael o unrhyw eiddo yn y DU neu dramor. Er enghraifft, ar sail tymor byr fel cartrefi gwyliau, neu ar sail tymor hir fel rhoi tai neu fflatiau ar osod.
 your-income-source.uk-property                                  = Eiddo yn y DU
 your-income-source.property.start-date-para                     = Dyddiad dechrau
 your-income-source.property.before-start-date-limit             = Cyn 6 Ebrill {0}
@@ -102,6 +101,21 @@ your-income-source.foreign-property                             = Eiddo tramor
 your-income-source.foreign-property.start-date-para             = Dyddiad dechrau
 your-income-source.foreign-property.before-start-date-limit     = Cyn 6 Ebrill {0}
 your-income-source.foreign-property.add-link                    = Ychwanegu eiddo tramor
+your-income-source.bullet.lead                                  = Mae’n rhaid i chi wneud y canlynol:
+your-income-source.bullet1                                      = gwirio bod yr wybodaeth sydd gennym yn gywir
+your-income-source.bullet2                                      = newid unrhyw fanylion anghywir
+your-income-source.bullet3                                      = ychwanegu unrhyw ffynonellau incwm sydd ar goll
+your-income-source.bullet4                                      =  dileu unrhyw fusnesau sydd wedi dod i ben cyn 6 Ebrill {0}
+your-income-source.conditional-text.h                           = Os daeth unrhyw un o’ch busnesau i ben yn ystod y flwyddyn dreth
+your-income-source.conditional-text.body                        = Os oedd eich busnes yn weithredol yn y flwyddyn dreth {0}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
+your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig.
+your-income-source.self-employed.indent                         = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
+your-income-source.self-employed.business-start-date-para       = Dyddiad dechrau’r busnes
+your-income-source.self-employed.business-start-date            = {0}
+your-income-source.status.not-confirmed                         = Heb eu cadarnhau
+your-income-source.status.missing-details                       = Cadarnhau’r manylion
+your-income-source.income-from-property.para1                   = Os yw’ch eiddo dramor, mae gennych fusnes eiddo tramor.
+your-income-source.income-from-property.para2                   = Os oes gennych fwy nag un eiddo, dylech eu trin fel un ffynhonnell incwm.
 
 # Individual income sources incomplete page
 individual.income-sources-incomplete.title                    = Mae problem wedi codi

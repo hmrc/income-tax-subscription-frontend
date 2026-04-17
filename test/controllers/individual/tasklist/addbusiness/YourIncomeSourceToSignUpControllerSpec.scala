@@ -51,8 +51,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
         mockFetchPrePopFlag(Some(true))
+        mockFetchSelectedTaxYear(None)
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true, taxYearSelection = false)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -67,6 +68,7 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           Some(testForeignProperty)
         ))
         mockFetchPrePopFlag(Some(true))
+        mockFetchSelectedTaxYear(None)
 
         mockYourIncomeSourceToSignUpView(
           IncomeSources(
@@ -77,7 +79,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           ),
-          isPrePopped = true
+          isPrePopped = true,
+          taxYearSelection = false
         )
 
         val result: Result = await(controller.show()(subscriptionRequest))
@@ -88,8 +91,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "there is a PrePop flag" in new Setup {
         mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
         mockFetchPrePopFlag(Some(true))
+        mockFetchSelectedTaxYear(None)
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true, taxYearSelection = false)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -100,8 +104,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         "fetching the flag returns false" in new Setup {
           mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
           mockFetchPrePopFlag(Some(false))
+          mockFetchSelectedTaxYear(None)
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false, taxYearSelection = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -111,8 +116,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
         "fetching the flag returns none" in new Setup {
           mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
           mockFetchPrePopFlag(None)
+          mockFetchSelectedTaxYear(None)
 
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false)
+          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false, taxYearSelection = false)
 
           val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -218,12 +224,13 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       yourIncomeSourceToSignUpView,
       mockSubscriptionDetailsService)
 
-    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean): Unit = {
+    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean, taxYearSelection: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(controllers.individual.routes.UsingSoftwareController.show().url),
         ArgumentMatchers.eq(incomeSources),
         ArgumentMatchers.eq(isPrePopped),
+        ArgumentMatchers.eq(taxYearSelection)
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
     }
