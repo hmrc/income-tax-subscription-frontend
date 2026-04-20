@@ -1335,3 +1335,7 @@ error.contact-hmrc.b2                                                   = Nodwch
 error.contact-hmrc.b3                                                   = Yn y blwch “Gyda beth ydych angen help?”, nodwch “Rhowch wybod i mi pryd y gallaf gofrestru / Tell me when I can sign up”.
 error.contact-hmrc.p3                                                   = Byddwn yn cysylltu â chi i rannu unrhyw ddiweddariadau ac i roi gwybod i chi pryd y gallwch gofrestru.
 error.contact-hmrc.contact-us                                           = Ffurflen gyswllt
+
+service-error.title                                                     = Mae’n ddrwg gennym, ond mae problem gyda’r gwasanaeth
+service-error.agent.paragraph                                           = Nid oedd modd i ni gadarnhau’ch manylion. Rhowch gynnig arall arni.
+service-error.individual.paragraph                                      = Nid oedd modd i ni gadarnhau manylion eich cleient. Rhowch gynnig arall arni.
