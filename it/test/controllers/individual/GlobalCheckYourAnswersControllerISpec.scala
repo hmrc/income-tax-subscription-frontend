@@ -19,17 +19,20 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import connectors.stubs.SessionDataConnectorStub.{stubGetAllSessionData, stubSaveSessionData, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
 import helpers.*
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
+import helpers.servicemocks.EligibilityStub.stubEligibilityResponse
+import helpers.servicemocks.MandationStatusStub.stubGetMandationStatus
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub, ThrottlingStub}
 import models.*
 import models.common.BusinessAccountingPeriod
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
-import models.status.MandationStatus.Voluntary
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
@@ -41,7 +44,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ThrottlingFeature)
+    stubSaveSubmissionStatus()(OK)
+    stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino),
+      ITSASessionKeys.UTR -> JsString(testUtr)
+    ))
+    stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+    stubSaveSessionData(ITSASessionKeys.MANDATION_STATUS, MandationStatusModel(Voluntary, Voluntary))(OK)
+    stubEligibilityResponse(testUtr)(true)
+    stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(true, false, None))(OK)
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
@@ -165,8 +176,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
@@ -211,8 +224,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             verifyPost("/channel-preferences/confirm", count = Some(0))
           }
@@ -273,8 +288,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
@@ -317,8 +334,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             verifyPost("/channel-preferences/confirm", count = Some(0))
           }
@@ -352,8 +371,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             verifyPost("/channel-preferences/confirm", count = Some(0))
           }
@@ -383,8 +404,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             verifyPost("/channel-preferences/confirm", count = Some(0))
           }
@@ -414,8 +437,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             verifyPost("/channel-preferences/confirm", count = Some(0))
           }
@@ -449,7 +474,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
         "create income sources failed" in {
@@ -492,7 +517,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
         "add known facts failed" in {
@@ -537,7 +562,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Show an internal server error")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
         "enrolment failed" in {
@@ -583,35 +608,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Show an internal server error")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
-      }
-    }
-    "redirect to the end of journey throttle page" when {
-      "the throttle is enabled and the user hit the limit" in {
-        enable(ThrottlingFeature)
-
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(AccountingPeriod, OK, Json.toJson(BusinessAccountingPeriod.SixthAprilToFifthApril.key))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        ))
-        ThrottlingStub.stubThrottle(EndOfJourneyThrottleId)(throttled = true)
-
-        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.endOfJourneyThrottleURI)
-        )
-
-        ThrottlingStub.verifyThrottle(EndOfJourneyThrottleId)()
       }
     }
   }

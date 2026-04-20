@@ -51,6 +51,13 @@ object SessionDataConnectorStub extends WireMockMethods {
     ).thenReturn(responseStatus)
   }
 
+  def stubSaveSubmissionStatus()(responseStatus: Int): Unit = {
+    when(
+      method = POST,
+      uri = sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS)
+    ).thenReturn(responseStatus)
+  }
+ 
   def stubDeleteSessionData(id: String)(responseStatus: Int): Unit = {
     when(
       method = DELETE,

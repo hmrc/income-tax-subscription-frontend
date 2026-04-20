@@ -82,7 +82,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
       case Success(Left(failure)) =>
         sessionDataService.saveSubmissionStatus(otherError)
       case _ =>
-        throw new InternalServerException("[GlobalCheckYourAnswersController][backgroundSignUp]")
+        sessionDataService.saveSubmissionStatus(otherError)
     }
   }
 

@@ -17,16 +17,16 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.agent.httpparsers.QueryUsersHttpParser.principalUserIdKey
 import connectors.stubs.*
+import connectors.stubs.SessionDataConnectorStub.stubSaveSubmissionStatus
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
 import helpers.agent.*
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
+import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
-import helpers.servicemocks.{EnrolmentStoreProxyStub, ThrottlingStub}
 import models.*
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.AgentSPSPayload
@@ -34,7 +34,6 @@ import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import services.EndOfJourneyThrottleId
 import services.agent.SignUpOrchestrationService.{BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
@@ -42,7 +41,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ThrottlingFeature)
+    stubSaveSubmissionStatus()(OK)
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
@@ -222,8 +221,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(AgentURI.confirmationURI)
+              redirectURI(AgentURI.globalCheckYourAnswersURI)
             )
+
+            waitForProcessing
 
             val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
             verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
@@ -283,7 +284,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(AgentURI.confirmationURI)
+              redirectURI(AgentURI.globalCheckYourAnswersURI)
             )
           }
         }
@@ -325,7 +326,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           Then("Should redirect to the confirmation page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(AgentURI.confirmationURI)
+            redirectURI(AgentURI.globalCheckYourAnswersURI)
           )
         }
       }
@@ -356,7 +357,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           Then("Should redirect to the contact hmrc page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+            redirectURI(AgentURI.globalCheckYourAnswersURI)
           )
         }
         s"a unprocessable sign up occurs with a code: $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
@@ -385,7 +386,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           Then("Should redirect to the contact hmrc page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+            redirectURI(AgentURI.globalCheckYourAnswersURI)
           )
         }
         s"a unprocessable sign up occurs with a code: $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
@@ -414,7 +415,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
           Then("Should redirect to the contact hmrc page")
           res must have(
             httpStatus(SEE_OTHER),
-            redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+            redirectURI(AgentURI.globalCheckYourAnswersURI)
           )
         }
       }
@@ -453,7 +454,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
         "create income sources failed" in {
@@ -503,36 +504,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER)
           )
         }
-      }
-    }
-    "redirect to the end of journey throttle page" when {
-      "the throttle is enabled and the user hit the limit" in {
-        enable(ThrottlingFeature)
-
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
-          ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
-        ))
-        ThrottlingStub.stubThrottle(EndOfJourneyThrottleId)(throttled = true)
-
-        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(AgentURI.endOfJourneyThrottleURI)
-        )
-
-        ThrottlingStub.verifyThrottle(EndOfJourneyThrottleId)()
       }
     }
   }

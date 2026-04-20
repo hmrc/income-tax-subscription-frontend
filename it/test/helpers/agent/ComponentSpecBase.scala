@@ -702,6 +702,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
   }
+  
+  def waitForProcessing: Unit = {
+    Thread.sleep(1000)
+  }
 }
 
 object ComponentSpecBase {

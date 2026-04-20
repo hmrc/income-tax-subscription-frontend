@@ -80,7 +80,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       case Success(Left(failure)) =>
         sessionDataService.saveSubmissionStatus(otherError)
       case _ =>
-        throw new InternalServerException("[GlobalCheckYourAnswersController][backgroundSignUp]")
+        sessionDataService.saveSubmissionStatus(otherError)
     }
   }
 
