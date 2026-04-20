@@ -1338,3 +1338,7 @@ error.contact-hmrc.b2                                                   = Fill i
 error.contact-hmrc.b3                                                   = In the box labelled “What do you need help with?”, type “Tell me when I can sign up”.
 error.contact-hmrc.p3                                                   = We’ll contact you with any updates and let you know when you can sign up.
 error.contact-hmrc.contact-us                                           = Contact us form
+
+service-error.title                                                     = Sorry, there is a problem with the service
+service-error.agent.paragraph                                           = We could not confirm your client’s details. Please try again.
+service-error.individual.paragraph                                      = We could not confirm your details. Please try again.
