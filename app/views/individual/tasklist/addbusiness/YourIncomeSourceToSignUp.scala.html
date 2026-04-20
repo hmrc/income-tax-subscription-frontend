@@ -64,7 +64,8 @@
 
     @if(taxYearSelection) {
         <h2 class="govuk-heading-m">@messages("your-income-source.conditional-text.h")</h2>
-        <p class="govuk-body">@messages("your-income-source.conditional-text.body", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString)</p>
+
+        <p class="govuk-body">@messages("your-income-source.conditional-text.body", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
     }
 
     @selfEmploymentSection
