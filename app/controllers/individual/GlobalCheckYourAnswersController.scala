@@ -17,11 +17,10 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
+import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.common.subscription.CreateIncomeSourcesModel
-import models.individual.JourneyStep.Confirmation
 import models.requests.individual.SignUpRequest
 import play.api.mvc.*
 import services.*
@@ -33,16 +32,17 @@ import views.html.individual.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  journeyRefiner: SignUpJourneyRefiner,
+                                                 sessionDataService: SessionDataService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
                                                  utrService: UTRService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
-                                                 throttlingService: ThrottlingService,
                                                  mandationStatusService: MandationStatusService)
                                                 (implicit ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
@@ -66,19 +66,23 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      throttlingService.throttled(IndividualEndOfJourneyThrottle, request.sessionData) {
-        signUp(completeDetails) map {
-          case Right(_) | Left(AlreadySignedUp) =>
-            Redirect(routes.ConfirmationController.show)
-              .addingToSession(JourneyStateKey -> Confirmation.key)
-          case Left(HandledUnprocessableSignUp) =>
-            Redirect(controllers.errors.routes.ContactHMRCController.show)
-          case Left(failure) =>
-            throw new InternalServerException(
-              s"[GlobalCheckYourAnswersController] - failure response received from submission: ${failure.toString}"
-            )
-        }
+      sessionDataService.saveSubmissionStatus(inProgress) map { _ =>
+        backgroundSignUp(completeDetails)
+        Redirect(routes.GlobalCheckYourAnswersController.show)
       }
+    }
+  }
+
+  private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: SignUpRequest[AnyContent]): Unit = {
+    signUp(completeDetails).onComplete {
+      case Success(Right(_)) | Success(Left(AlreadySignedUp)) =>
+        sessionDataService.saveSubmissionStatus(success)
+      case Success(Left(HandledUnprocessableSignUp)) =>
+        sessionDataService.saveSubmissionStatus(handledError)
+      case Success(Left(failure)) =>
+        sessionDataService.saveSubmissionStatus(otherError)
+      case _ =>
+        throw new InternalServerException("[GlobalCheckYourAnswersController][backgroundSignUp]")
     }
   }
 
