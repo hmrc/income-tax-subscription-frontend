@@ -44,7 +44,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val bullet3 = "add any missing income sources"
     val bullet4 = s"remove any businesses that ceased before 6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1}"
     val conditionalHeading = "If any of your businesses ceased trading during the tax year"
-    val conditionalPara = s"If your business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear -1} you still need to add it here, even if it has stopped trading."
+    val conditionalPara = s"If your business was active in the tax year ${AccountingPeriodUtil.getCurrentTaxEndYear -1} to ${AccountingPeriodUtil.getCurrentTaxEndYear} you still need to add it here, even if it has stopped trading."
 
       val addDetails: String = "Add details"
     val checkDetails: String = "Check details"
