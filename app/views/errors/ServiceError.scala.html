@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import views.html.helpers.SaveAndContinueButtonHelper
+@import views.html.helpers.ButtonHelper
 @import views.html.templates.{PrincipalMainTemplate, AgentMainTemplate}
 
 @this(
     individualMainTemplate: PrincipalMainTemplate,
     agentMainTemplate: AgentMainTemplate,
     form: FormWithCSRF,
-    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    buttonHelper: ButtonHelper
 )
 
 @(postAction: Call, isAgent: Boolean)(implicit request: Request[_], messages: Messages)
@@ -40,25 +40,17 @@
 
     @if(isAgent) {
         <p class="govuk-body">@messages("service-error.agent.paragraph")</p>
-        <div class="form-group">
-            @form(action = postAction) {
-                @saveAndContinueButtonHelper(
-                    isIndividual = false,
-                    saveAndContinueText = Some(messages("base.try-again")),
-                    saveAndReturnReference = None
-                )
-            }
-        </div>
+
     } else {
         <p class="govuk-body">@messages("service-error.individual.paragraph")</p>
-        <div class="form-group">
-            @form(action = postAction) {
-                @saveAndContinueButtonHelper(
-                    isIndividual = true,
-                    saveAndContinueText = Some(messages("base.try-again")),
-                    saveAndReturnReference = None
-                )
-            }
-        </div>
     }
+
+    <div class="form-group">
+        @form(action = postAction) {
+            @buttonHelper(
+            buttonText = messages("base.try-again"),
+            href = None
+            )
+        }
+    </div>
 }
