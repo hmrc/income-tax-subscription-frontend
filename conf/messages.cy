@@ -107,7 +107,7 @@ your-income-source.bullet2                                      = newid unrhyw f
 your-income-source.bullet3                                      = ychwanegu unrhyw ffynonellau incwm sydd ar goll
 your-income-source.bullet4                                      =  dileu unrhyw fusnesau sydd wedi dod i ben cyn 6 Ebrill {0}
 your-income-source.conditional-text.h                           = Os daeth unrhyw un o’ch busnesau i ben yn ystod y flwyddyn dreth
-your-income-source.conditional-text.body                        = Os oedd eich busnes yn weithredol yn y flwyddyn dreth {0}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
+your-income-source.conditional-text.body                        = Os oedd eich busnes yn weithredol yn y flwyddyn dreth {0} i {1}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
 your-income-source.self-employed.description                    = Rydych yn unig fasnachwr os ydych yn rhedeg eich busnes eich hun fel unigolyn ac yn gweithio i chi’ch hun. Enw arall ar hyn yw bod yn hunangyflogedig.
 your-income-source.self-employed.indent                         = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 your-income-source.self-employed.business-start-date-para       = Dyddiad dechrau’r busnes
@@ -1335,3 +1335,7 @@ error.contact-hmrc.b2                                                   = Nodwch
 error.contact-hmrc.b3                                                   = Yn y blwch “Gyda beth ydych angen help?”, nodwch “Rhowch wybod i mi pryd y gallaf gofrestru / Tell me when I can sign up”.
 error.contact-hmrc.p3                                                   = Byddwn yn cysylltu â chi i rannu unrhyw ddiweddariadau ac i roi gwybod i chi pryd y gallwch gofrestru.
 error.contact-hmrc.contact-us                                           = Ffurflen gyswllt
+
+service-error.title                                                     = Mae’n ddrwg gennym, ond mae problem gyda’r gwasanaeth
+service-error.agent.paragraph                                           = Nid oedd modd i ni gadarnhau’ch manylion. Rhowch gynnig arall arni.
+service-error.individual.paragraph                                      = Nid oedd modd i ni gadarnhau manylion eich cleient. Rhowch gynnig arall arni.
