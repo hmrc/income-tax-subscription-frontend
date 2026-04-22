@@ -56,8 +56,8 @@ base.section-caption.hidden                                     = Teitl yr adran
 base.or                                                         = neu
 
 # Loading Spinner
-loading-spinner.heading                                         = Confirming, please wait
-loading-spinner.paragraph                                       = Do not refresh this page.
+loading-spinner.heading                                         = Wrthi’n cadarnhau, arhoswch
+loading-spinner.paragraph                                       = Peidiwch ag adnewyddu’r dudalen.
 
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
