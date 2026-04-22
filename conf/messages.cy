@@ -55,6 +55,10 @@ base.print-page                                                 = Argraffu neu g
 base.section-caption.hidden                                     = Teitl yr adran hon yw
 base.or                                                         = neu
 
+# Loading Spinner
+loading-spinner.heading                                         = Confirming, please wait
+loading-spinner.paragraph                                       = Do not refresh this page.
+
 ## Preferences call back page
 preferences-callback.title                                      = Ydych chi am fynd yn eich blaen?
 preferences-callback.heading                                    = Rhaid i chi gytuno i fynd yn ‘ddi-bapur’

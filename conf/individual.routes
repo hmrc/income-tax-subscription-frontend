@@ -190,3 +190,6 @@ POST        /hand-offs/check-income-sources                      controllers.ind
 # Sign-up check SA enrolment
 GET         /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.show
 POST        /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.submit
+
+# Loading Spinner
+GET         /sign-up-confirmation/latency                        controllers.individual.LoadingSpinnerController.show
