@@ -37,7 +37,7 @@
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate, showHelp: Boolean)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
-@principalMainTemplate(title = messages("sign-up-confirmation.heading")) {
+@principalMainTemplate(title = messages("sign-up-confirmation.heading"), hasBackLink = false) {
 
 @govukPanel(Panel(
 title = Text(messages("sign-up-confirmation.heading")),

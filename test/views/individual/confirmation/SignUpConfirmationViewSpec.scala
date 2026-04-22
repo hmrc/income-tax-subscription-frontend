@@ -54,6 +54,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus, signedUpDate, showHelp).body)
   }
 
+  "SignUpConfirmation" must {
+    "use the correct template" in new TemplateViewTest(
+      view = page(true, true, None, None, true, LocalDate.now, true),
+      title = SignUpConfirmationMessages.panelHeading,
+      isAgent = false,
+      hasBackLink = false
+    )
+  }
+
   "The sign up confirmation view" when {
     "the user has software and eligible for current year" should {
       def mainContent(preference: Option[Boolean] = None, showHelp: Boolean): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now(), showHelp).mainContent
