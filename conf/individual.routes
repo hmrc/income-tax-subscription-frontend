@@ -192,4 +192,4 @@ GET         /use-self-assessment-details                         controllers.ind
 POST        /use-self-assessment-details                         controllers.individual.matching.CheckIRSAEnrolmentController.submit
 
 # Loading Spinner
-GET         /sign-up-confirmation/latency                        controllers.individual.LoadingSpinnerController.show
+GET         /confirming-please-wait                              controllers.individual.LoadingSpinnerController.show

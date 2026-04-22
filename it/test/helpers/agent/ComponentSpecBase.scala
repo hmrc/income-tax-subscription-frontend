@@ -324,7 +324,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName))
 
-    def loadingConfirmationStatus(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/sign-up-confirmation/latency", sessionData)
+    def loadingConfirmationStatus(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/confirming-please-wait", sessionData)
     
     def submitConfirmation(): WSResponse = {
       post(

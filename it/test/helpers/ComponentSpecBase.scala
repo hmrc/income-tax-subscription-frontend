@@ -451,7 +451,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def continueClaimEnrolmentJourneyConfirmation(): WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
 
-    def loadingConfirmationStatus(): WSResponse = get("/sign-up-confirmation/latency")
+    def loadingConfirmationStatus(): WSResponse = get("/confirming-please-wait")
     
     def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
 

@@ -44,7 +44,7 @@ class ClientLoadingSpinnerControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/client/sign-up-confirmation/latency"))
+          redirectURI(basGatewaySignIn("/client/confirming-please-wait"))
         )
       }
     }
