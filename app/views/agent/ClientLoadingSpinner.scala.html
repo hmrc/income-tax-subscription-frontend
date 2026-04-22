@@ -18,57 +18,23 @@
 @import views.html.templates.AgentMainTemplate
 
 @this(
-        mainTemplate: AgentMainTemplate,
-        form: FormWithCSRF
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRF
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("loading-spinner.heading")) {
+@spinnerStylesheet = {
+    <link href='@controllers.routes.Assets.versioned("stylesheets/loading-spinner.css")' media="all" rel="stylesheet" type="text/css" />
+}
+
+@mainTemplate(title = messages("loading-spinner.heading"), additionalScripts = Some(spinnerStylesheet)) {
 
     <noscript>
         <meta http-equiv="refresh" content="10" />
     </noscript>
 
-    <style>
-        .hods-loading-spinner__spinner {
-        margin-left: auto;
-        margin-right: auto;
-        border: 12px solid #DEE0E2;
-        border-radius: 50%;
-        border-top-color: #005EA5;
-        width: 80px;
-        height: 80px;
-        -webkit-animation: spin 2s linear infinite;
-        animation: spin 2s linear infinite;
-      }
-
-      @@-webkit-keyframes spin {
-        0% {
-          -webkit-transform: rotate(0deg);
-        }
-
-        100% {
-          -webkit-transform: rotate(360deg);
-        }
-      }
-
-      @@keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      .hods-loading-spinner__content {
-        padding-top: 20px;
-      }
-    </style>
-
-    <div class="govuk-grid-row" style="text-align: center;">
+    <div class="govuk-grid-row govuk-!-text-align-centre">
         <div class="govuk-grid-column-full">
             <div class="hods-loading-spinner" role="status">
                 <div class="hods-loading-spinner__spinner"></div>
