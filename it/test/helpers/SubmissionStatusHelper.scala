@@ -20,18 +20,21 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub.sessionDataUri
 import helpers.WiremockHelper.verifyPost
 import models.SubmissionStatus
+import org.junit.runners.model.TestTimedOutException
 import play.api.libs.json.Json
 
-trait SubmissionStatuisHelper {
+import java.util.concurrent.TimeUnit
+
+trait SubmissionStatusHelper {
   private val delay = 100;
 
-  def waitUntilStatusIs(expectedStatus: SubmissionStatus, timeout: Int = 10 * delay): Unit = {
+  def waitUntilStatusIs(expected: SubmissionStatus, timeout: Int = 10 * delay): Unit = {
     def continue(start: Long, current: Long): Boolean = {
       if (current > start + timeout) {
-        false
+        throw new TestTimedOutException(timeout, TimeUnit.MILLISECONDS)
       } else {
         try {
-          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(expectedStatus).toString), Some(1))
+          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(expected).toString), Some(1))
           false
         } catch {
           case e: Throwable => true

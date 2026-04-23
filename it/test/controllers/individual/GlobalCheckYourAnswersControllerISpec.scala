@@ -41,7 +41,7 @@ import services.EndOfJourneyThrottleId
 import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
-class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatuisHelper with SessionCookieCrumbler {
+class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatusHelper with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
