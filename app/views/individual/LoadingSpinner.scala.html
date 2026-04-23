@@ -26,7 +26,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("loading-spinner.heading")) {
+@mainTemplate(title = messages("loading-spinner.heading"), hasBackLink = false) {
 
     <noscript>
         <meta http-equiv="refresh" content="10"/>

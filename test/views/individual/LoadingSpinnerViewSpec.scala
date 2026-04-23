@@ -30,6 +30,7 @@ class LoadingSpinnerViewSpec extends ViewSpec {
     "have the correct template details" in new TemplateViewTest(
       view = page,
       isAgent = false,
+      hasBackLink = false,
       title = LoadingSpinner.heading
     )
     "have the correct heading" in {
