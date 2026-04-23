@@ -578,8 +578,4 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
   def removeHtmlMarkup(stringWithMarkup: String): String =
     stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
-
-  def waitForProcessing: Unit = {
-    Thread.sleep(1000)
-  }
 }

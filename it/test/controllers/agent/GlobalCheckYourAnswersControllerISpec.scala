@@ -22,6 +22,7 @@ import connectors.stubs.*
 import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubSaveSubmissionStatus}
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.*
+import helpers.SubmissionStatuisHelper
 import helpers.WiremockHelper.verifyPost
 import helpers.agent.*
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
@@ -38,7 +39,7 @@ import play.api.libs.json.{JsString, Json}
 import services.agent.SignUpOrchestrationService.{BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
-class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatuisHelper with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -225,7 +226,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               redirectURI(AgentURI.spinnyWheelURI)
             )
 
-            waitForProcessing
+            waitUntilStatusIs(success)
 
             val expectedSPSBody: AgentSPSPayload = AgentSPSPayload(testARN, testNino, testUtrEnrolmentKey, testMTDIDEnrolmentKey)
             verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
@@ -289,7 +290,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
               redirectURI(AgentURI.spinnyWheelURI)
             )
 
-            waitForProcessing
+            waitUntilStatusIs(success)
 
             verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
@@ -335,7 +336,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(success)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
         }
@@ -370,7 +371,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(handledError)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
         }
@@ -403,7 +404,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(handledError)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
         }
@@ -436,7 +437,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(handledError)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
         }
@@ -480,7 +481,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(otherError)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
@@ -535,7 +536,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             redirectURI(AgentURI.spinnyWheelURI)
           )
 
-          waitForProcessing
+          waitUntilStatusIs(otherError)
 
           verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
