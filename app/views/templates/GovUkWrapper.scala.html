@@ -29,7 +29,7 @@
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, backLink: Option[String] = None, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false, hasWelsh: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false, hasWelsh: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @hmrcStandardPage(HmrcStandardPageParams(
     serviceURLs = ServiceURLs(
@@ -46,7 +46,7 @@
     serviceName = serviceName,
     isWelshTranslationAvailable = hasWelsh,
     pageTitle = Some(title),
-    backLink = Some(BackLink.mimicsBrowserBackButtonViaJavaScript)
+    backLink = if(hasBackLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None
 ))(content)
 
 @content = {
