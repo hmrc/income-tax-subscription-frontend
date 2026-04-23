@@ -41,7 +41,7 @@
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel, usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
-@agentMainTemplate(title = messages("agent.sign-up-confirmation.heading")) {
+@agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), hasBackLink = false) {
 
     @headingPanel
 

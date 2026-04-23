@@ -23,8 +23,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.Checkpoints.Checkpoint
-import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.{HavePropertyMatchResult, HavePropertyMatcher}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{Assertion, BeforeAndAfterEach, Succeeded}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -38,7 +38,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 import java.time.LocalDate
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with BeforeAndAfterEach with FeatureSwitching {
 
@@ -56,6 +56,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
   class TemplateViewTest(view: Html,
                          title: String,
                          isAgent: Boolean = false,
+                         hasBackLink: Boolean = true,
                          backLink: Option[String] = None,
                          backLinkText: Option[String] = None,
                          hasSignOutLink: Boolean = true,
@@ -78,6 +79,15 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       signOutLink.attr("href") mustBe controllers.routes.SignOutController.signOut.url
     } else {
       document.selectOptionally(".hmrc-sign-out-nav__link") mustBe None
+    }
+
+    if (hasBackLink) {
+      val backLink = document.selectHead(".govuk-back-link")
+      backLink.text mustBe "Back"
+      backLink.attr("href") mustBe "#"
+      backLink.attr("data-module") mustBe "hmrc-back-link"
+    } else {
+      document.selectOptionally(".govuk-back-link") mustBe None
     }
 
     error.map { formError =>
