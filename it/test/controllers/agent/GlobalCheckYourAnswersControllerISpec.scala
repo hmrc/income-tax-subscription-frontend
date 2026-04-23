@@ -221,7 +221,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
             Then("Should redirect to the confirmation page")
             res must have(
-              httpStatus(SEE_OTHER)
+              httpStatus(SEE_OTHER),
+              redirectURI(AgentURI.spinnyWheelURI)
             )
 
             waitForProcessing
@@ -284,7 +285,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
             Then("Should redirect to the confirmation page")
             res must have(
-              httpStatus(SEE_OTHER)
+              httpStatus(SEE_OTHER),
+              redirectURI(AgentURI.spinnyWheelURI)
             )
 
             waitForProcessing
@@ -329,7 +331,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should redirect to the confirmation page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
@@ -363,7 +366,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should redirect to the contact hmrc page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
@@ -395,7 +399,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should redirect to the contact hmrc page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
@@ -427,7 +432,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should redirect to the contact hmrc page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
@@ -470,7 +476,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
@@ -524,7 +531,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(SEE_OTHER)
+            httpStatus(SEE_OTHER),
+            redirectURI(AgentURI.spinnyWheelURI)
           )
 
           waitForProcessing
