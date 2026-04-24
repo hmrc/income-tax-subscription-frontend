@@ -26,6 +26,7 @@ import helpers.SubmissionStatusHelper
 import helpers.WiremockHelper.verifyPost
 import helpers.agent.*
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
+import helpers.servicemocks.ChannelPreferencesStub.stubAgentChannelPreferencesConfirm
 import helpers.servicemocks.EnrolmentStoreProxyStub
 import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import models.*
@@ -44,6 +45,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
   override def beforeEach(): Unit = {
     super.beforeEach()
     stubSaveSubmissionStatus()(OK)
+    stubAgentChannelPreferencesConfirm()
+    EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(OK)
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
