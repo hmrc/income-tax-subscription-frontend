@@ -134,6 +134,11 @@ trait MockConfig extends UnitTestTrait with AppConfig {
 
   override def getClientUTRUrl: String = "/agents/client-utr"
 
+  override val confirmingSubmissionMaxWaitTimeSeconds: Int = 20
+  override val confirmingSubmissionQueryTimeSeconds: Int = 1
+  override val confirmingSubmissionAutoRefreshTimeSeconds: Int = 5
+
+
 }
 
 object MockConfig extends MockConfig {

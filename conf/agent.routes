@@ -166,4 +166,5 @@ GET         /hand-offs/already-signed-up-confirm-income          controllers.age
 GET         /hand-offs/view-and-change                           controllers.agent.matching.ClientVAndCHomeController.handOffVAndC
 
 # Loading Spinner
-GET         /confirming-please-wait                              controllers.agent.ClientLoadingSpinnerController.show
+GET         /confirming-please-wait                              controllers.agent.LoadingSpinnerController.show
+GET         /confirming-please-wait/query                        controllers.agent.LoadingSpinnerController.query

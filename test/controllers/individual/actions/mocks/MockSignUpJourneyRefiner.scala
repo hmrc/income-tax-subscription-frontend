@@ -33,7 +33,7 @@ trait MockSignUpJourneyRefiner extends MockitoSugar with MockIdentifierAction wi
 
   val reference: String = "test-reference"
 
-  val fakeSignUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mock[ReferenceRetrieval], mockSessionDataService) {
+  val fakeSignUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mock[ReferenceRetrieval]) {
     override def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
       Future.successful(Right(SignUpRequest(request, reference, nino, SessionData())))
     }

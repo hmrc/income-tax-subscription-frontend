@@ -20,11 +20,12 @@ import config.AppConfig
 import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.ws.writeableOf_JsValue
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 import java.net.URLEncoder
