@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package controllers.individual
+package controllers.agent
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
-import helpers.servicemocks.AuthStub
-import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import helpers.agent.servicemocks.AuthStub
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.Status.{HandledError, InProgress, OtherError, Success}
 import models.SubmissionStatus
-import models.individual.JourneyStep
+import models.agent.JourneyStep
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
-import utilities.individual.TestConstants.testUtr
+import utilities.agent.TestConstants.testUtr
 
 import java.time.LocalDateTime
 
 class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+  val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${routes.LoadingSpinnerController.show.url}" must {
     "return SEE_OTHER to the login page" when {
@@ -43,7 +43,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn())
+          redirectURI(basGatewaySignIn("/client/confirming-please-wait"))
         )
       }
     }
@@ -163,7 +163,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn())
+          redirectURI(basGatewaySignIn("/client/confirming-please-wait"))
         )
       }
     }

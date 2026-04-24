@@ -14,22 +14,22 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
+@import config.AppConfig
+@import views.html.helpers.scripts.PollConfirmationRefresh
 @import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers._
-@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF
+    pollConfirmationRefresh: PollConfirmationRefresh,
+    appConfig: AppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(queryRoute: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("loading-spinner.heading"), hasBackLink = false) {
+@mainTemplate(title = messages("loading-spinner.heading"), hasBackLink = false, additionalScripts = Some(pollConfirmationRefresh(queryRoute))) {
 
     <noscript>
-        <meta http-equiv="refresh" content="10"/>
+        <meta http-equiv="refresh" content="@{appConfig.confirmingSubmissionAutoRefreshTimeSeconds}"/>
     </noscript>
 
     <div class="hods-loading-spinner govuk-!-text-align-centre govuk-!-margin-bottom-9" role="status">

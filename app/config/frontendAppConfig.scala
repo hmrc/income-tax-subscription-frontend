@@ -29,51 +29,87 @@ import javax.inject.{Inject, Singleton}
 trait AppConfig {
 
   def configuration: Configuration
+
   def appName: String
 
   def contactFormServiceIdentifier: String
+
   def ggSignInContinueUrl: String
+
   def subscriptionUrl: String
+
   def throttlingUrl: String
+
   def mandationStatusUrl: String
+
   def getITSAStatusUrl: String
 
   def prePopUrl(nino: String): String
 
   def userMatchingUrl: String
+
   def clientMatchingUrl: String
+
   def signUpUrl: String
+
   def createIncomeSourcesUrl: String
+
   def authUrl: String
+
   def preferencesFrontend: String
+
   def preferencesFrontendRedirect: String
+
   def baseUrl: String
+
   def ggUrl: String
+
   def microServiceUrl: String
+
   def timeoutWarningInSeconds: String
+
   def timeoutInSeconds: String
+
   def channelPreferencesUrl: String
 
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
   def btaUrl: String
+
   def wrongCredentials: String
+
   def haveSaUtr: String
+
   def btaBaseUrl: String
+
   def agentServicesUrl: String
+
   def agentServicesAccountHomeUrl: String
+
   def agentClientRelationshipsUrl: String
+
   def authenticatorUrl: String
+
   def hasEnabledTestOnlyRoutes: Boolean
+
   def identityVerificationURL: String
+
   def identityVerificationRequiredConfidenceLevel: ConfidenceLevel
+
   def govukGuidanceLink: String
+
   def govukGuidanceITSASignUpIndivLink: String
+
   def govukGuidanceITSASignUpAgentLink: String
+
   def govukGuidanceITSAWhoCanSignUpVoluntarily: String
+
   def citizenDetailsURL: String
+
   def matchingAttempts: Int
+
   def matchingLockOutSeconds: Int
+
   def urBannerUrl: String
 
   def redirectToLogin(continueUrl: String): Result
@@ -95,6 +131,7 @@ trait AppConfig {
   def assignEnrolmentUrl(userId: String, enrolmentKey: String): String
 
   def signUpToSaLink: String
+
   def agentSignUpUrl: String
 
   def backendFeatureSwitchUrl: String
@@ -124,8 +161,15 @@ trait AppConfig {
   def getIncomeTaxSessionDataHost: String
 
   def getAccountUrl: String
-  
+
   def getClientUTRUrl: String
+
+  def confirmingSubmissionMaxWaitTimeSeconds: Int
+
+  def confirmingSubmissionQueryTimeSeconds: Int
+
+  def confirmingSubmissionAutoRefreshTimeSeconds: Int
+
 }
 
 @Singleton
@@ -137,6 +181,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   private lazy val usersGroupsSearchUrl: String = config.baseUrl("users-groups-search")
 
   def getUsersForGroupUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
+
   def getUserDetailsFromCredIdUrl(credId: String): String = s"$usersGroupsSearchUrl/users-groups-search/users/$credId"
 
   // Frontend Config
@@ -314,15 +359,19 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val timeoutWarningInSeconds: String = config.getString("session-timeout.warning")
   override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
-  
+
   override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
 
   override def getIncomeTaxSessionDataHost: String = config.baseUrl("income-tax-session-data")
 
   override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
-  
+
   def getClientUTRUrl: String = {
     s"${config.getString("income-tax-view-change-frontend.url")}/agents/client-utr"
   }
+
+  override val confirmingSubmissionMaxWaitTimeSeconds: Int = config.getInt("confirming-submission.max-wait-time-seconds")
+  override val confirmingSubmissionQueryTimeSeconds: Int = config.getInt("confirming-submission.query-time-seconds")
+  override val confirmingSubmissionAutoRefreshTimeSeconds: Int = config.getInt("confirming-submission.auto-refresh-time-seconds")
 
 }

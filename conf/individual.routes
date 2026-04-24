@@ -193,3 +193,4 @@ POST        /use-self-assessment-details                         controllers.ind
 
 # Loading Spinner
 GET         /confirming-please-wait                              controllers.individual.LoadingSpinnerController.show
+GET         /confirming-please-wait/query                        controllers.individual.LoadingSpinnerController.query

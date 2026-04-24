@@ -24,7 +24,6 @@ import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import services.SessionDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -32,7 +31,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval, sessionDataService: SessionDataService)
+class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
                                     (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, SignUpRequest] with Logging {
 
@@ -47,15 +46,20 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval, ses
       } match {
       case Some(SignUp) =>
         for {
-          sessionData <- sessionDataService.getAllSessionData()
-          reference <- referenceRetrieval.getIndividualReference(sessionData)(hc, request)
+          reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)
         } yield {
-          Right(SignUpRequest(
-            request = request,
-            reference = reference,
-            nino = request.nino,
-            sessionData = sessionData
-          ))
+          request.sessionData.fetchSubmissionStatus match {
+            case Some(value) =>
+              logger.info(s"[Individual][SignUpJourneyRefiner] - User accessing pre-submission journey whilst submission ongoing")
+              Left(Redirect(controllers.individual.routes.LoadingSpinnerController.show))
+            case None =>
+              Right(SignUpRequest(
+                request = request,
+                reference = reference,
+                nino = request.nino,
+                sessionData = request.sessionData
+              ))
+          }
         }
       case Some(Confirmation) =>
         logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")

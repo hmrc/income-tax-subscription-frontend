@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers.individual
+package controllers.agent
 
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
+import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.Status.*
 import models.SubmissionStatus
-import models.individual.JourneyStep.Confirmation
+import models.agent.JourneyStep.Confirmation
 import play.api.mvc.*
+import views.html.agent.LoadingSpinner
 import views.html.errors.ServiceError
-import views.html.individual.LoadingSpinner
 
 import javax.inject.{Inject, Singleton}
 
@@ -57,16 +57,14 @@ class LoadingSpinnerController @Inject()(view: LoadingSpinner,
 
   private def displayServiceError()(implicit request: Request[_]): Result = InternalServerError(serviceError(
     postAction = routes.GlobalCheckYourAnswersController.submit,
-    isAgent = false
+    isAgent = true
   ))
 
 
   def query: Action[AnyContent] = identify { implicit request =>
     request.sessionData.fetchSubmissionStatus match {
-      case Some(status@SubmissionStatus(InProgress, _)) if !status.hasExpired(appConfig.confirmingSubmissionMaxWaitTimeSeconds) =>
-        NoContent
-      case _ =>
-        Ok
+      case Some(status@SubmissionStatus(InProgress, _)) if !status.hasExpired(appConfig.confirmingSubmissionMaxWaitTimeSeconds) => NoContent
+      case _ => Ok
     }
   }
 

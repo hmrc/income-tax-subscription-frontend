@@ -17,11 +17,13 @@
 package controllers.agent.actions
 
 import common.Constants.ITSASessionKeys
-import models.SessionData
+import models.Status.InProgress
 import models.agent.JourneyStep
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
+import models.{SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.Json
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -46,16 +48,16 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
   val utr: String = "1234567890"
   val clientDetails: ClientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
 
-  def identifierRequest(journeyStep: Option[JourneyStep]): IdentifierRequest[_] = {
+  def identifierRequest(journeyStep: Option[JourneyStep], sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
     journeyStep match {
-      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN, SessionData())
-      case None => IdentifierRequest(FakeRequest(), testARN, SessionData())
+      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN, sessionData)
+      case None => IdentifierRequest(FakeRequest(), testARN, sessionData)
     }
   }
 
   "ConfirmedClientJourneyRefiner" must {
     "return a refined ConfirmedClientRequest" when {
-      "the request is in a ConfirmedClient journey state" in {
+      "the request is in a ConfirmedClient journey state and there is no submission status" in {
         mockGetUTR(utr)
         mockGetClientDetails(clientDetails.name, clientDetails.nino)
         mockReference()
@@ -118,6 +120,26 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.agent.routes.ConfirmationController.show.url)
+      }
+    }
+
+    "redirect to the loading spinner page" when {
+      "the user is in a confirmed client state with an ongoing submission" in {
+        mockGetUTR(utr)
+        mockGetClientDetails(clientDetails.name, clientDetails.nino)
+        mockReference()
+
+        val result: Future[Result] = confirmedClientJourneyRefiner.invokeBlock(
+          request = identifierRequest(Some(JourneyStep.ConfirmedClient), SessionData(Map(
+            ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(InProgress))
+          ))),
+          block = { (confirmedClientRequest: ConfirmedClientRequest[_]) =>
+            Future.successful(Results.Ok)
+          }
+        )
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.LoadingSpinnerController.show.url)
       }
     }
 

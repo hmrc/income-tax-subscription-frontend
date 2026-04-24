@@ -16,29 +16,29 @@
 
 package models
 
-import models.SubmissionStatus.maxSeconds
 import play.api.libs.json.*
 
 import java.time.LocalDateTime
 
 sealed case class SubmissionStatus(status: Status, timestamp: Option[LocalDateTime] = None) {
-  def hasExpired: Boolean = {
+  def hasExpired(expireSeconds: Int): Boolean = {
     timestamp match {
-      case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(maxSeconds))
+      case Some(value) => LocalDateTime.now().isAfter(value.plusSeconds(expireSeconds))
       case None => false
     }
   }
 }
 
 object SubmissionStatus {
-  val maxSeconds: Int = 8
-
   implicit val format: OFormat[SubmissionStatus] = Json.format[SubmissionStatus]
 
-  def inProgress: SubmissionStatus = SubmissionStatus(InProgress, Some(LocalDateTime.now()))
-  def success: SubmissionStatus = SubmissionStatus(Success)
-  def handledError: SubmissionStatus = SubmissionStatus(HandledError)
-  def otherError: SubmissionStatus = SubmissionStatus(OtherError)
+  def inProgress: SubmissionStatus = SubmissionStatus(Status.InProgress, Some(LocalDateTime.now()))
+
+  def success: SubmissionStatus = SubmissionStatus(Status.Success)
+
+  def handledError: SubmissionStatus = SubmissionStatus(Status.HandledError)
+
+  def otherError: SubmissionStatus = SubmissionStatus(Status.OtherError)
 }
 
 sealed trait Status
@@ -48,7 +48,15 @@ object Status {
   private val SUCCESS = "S"
   private val HANDLED_ERROR = "H"
   private val OTHER_ERROR = "O"
-  
+
+  case object InProgress extends Status
+
+  case object Success extends Status
+
+  case object HandledError extends Status
+
+  case object OtherError extends Status
+
   private val reads: Reads[Status] = Reads[Status] {
     case JsString(IN_PROGRESS) => JsSuccess(InProgress)
     case JsString(SUCCESS) => JsSuccess(Success)
@@ -66,11 +74,3 @@ object Status {
 
   implicit val format: Format[Status] = Format[Status](reads, writes)
 }
-
-case object InProgress extends Status
-
-case object Success extends Status
-
-case object HandledError extends Status
-
-case object OtherError extends Status
