@@ -66,7 +66,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     withCompleteDetails(request.reference) { completeDetails =>
       sessionDataService.saveSubmissionStatus(inProgress) map { _ =>
         backgroundSignUp(completeDetails)
-        Redirect(routes.ClientLoadingSpinnerController.show)
+        Redirect(routes.LoadingSpinnerController.show)
       }
     }
   }
