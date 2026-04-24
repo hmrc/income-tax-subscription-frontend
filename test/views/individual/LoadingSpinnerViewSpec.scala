@@ -39,6 +39,11 @@ class LoadingSpinnerViewSpec extends ViewSpec {
     "have the correct first paragraph" in {
       document.mainContent.selectNth("p", 1).text mustBe LoadingSpinner.paragraphOne
     }
+    "have a script for automatically querying to refresh" in {
+      val script = document.selectHead("head").selectHead(s"""script[src="${controllers.routes.Assets.versioned("javascripts/pollConfirmationRefresh.js")}"]""")
+      script.attr("data-url") mustBe testCall.url
+      script.attr("data-interval") mustBe (appConfig.confirmingSubmissionQueryTimeSeconds * 1000).toString
+    }
   }
 
   private object LoadingSpinner {
@@ -47,7 +52,7 @@ class LoadingSpinnerViewSpec extends ViewSpec {
   }
 
   private def page: Html = {
-    loadingSpinner()
+    loadingSpinner(testCall)
   }
 
   private def document: Document =

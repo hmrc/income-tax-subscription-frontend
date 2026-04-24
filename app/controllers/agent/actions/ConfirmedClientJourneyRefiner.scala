@@ -50,28 +50,34 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
           hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } match {
-        case Some(ConfirmedClient) =>
-          val sessionData = request.sessionData
-          for {
-            clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
-            utr <- utrService.getUTR(sessionData)
-            reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
-          } yield {
-            Right(ConfirmedClientRequest(
-              request = request,
-              clientDetails = clientDetails,
-              utr = utr,
-              reference = reference,
-              sessionData = sessionData
-            ))
+      case Some(ConfirmedClient) =>
+        val sessionData = request.sessionData
+        for {
+          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+          utr <- utrService.getUTR(sessionData)
+          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
+        } yield {
+          sessionData.fetchSubmissionStatus match {
+            case Some(value) =>
+              logger.info("[Agent][ConfirmedClientJourneyRefiner] - User accessing pre-submission journey whilst submission ongoing")
+              Left(Redirect(controllers.agent.routes.LoadingSpinnerController.show))
+            case None =>
+              Right(ConfirmedClientRequest(
+                request = request,
+                clientDetails = clientDetails,
+                utr = utr,
+                reference = reference,
+                sessionData = sessionData
+              ))
           }
-        case state@(None | Some(ClientDetails | SignPosted)) =>
-          logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to cannot go back page")
-          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-        case Some(Confirmation) =>
-          logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
-          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
-      }
+        }
+      case state@(None | Some(ClientDetails | SignPosted)) =>
+        logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to cannot go back page")
+        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+      case Some(Confirmation) =>
+        logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
+        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+    }
   }
 
 }

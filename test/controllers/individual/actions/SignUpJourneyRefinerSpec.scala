@@ -17,12 +17,14 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
-import models.SessionData
+import models.Status.InProgress
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
+import models.{SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.Json
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -45,6 +47,21 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
           )
 
           status(result) mustBe OK
+        }
+      }
+      "redirect to the loading spinner page" when {
+        "there is an ongoing submission" in {
+          val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
+            request = identifierRequest(journeyStep = Some(SignUp), sessionData = SessionData(Map(
+              ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(InProgress))
+            ))),
+            block = { (_: SignUpRequest[_]) =>
+              Future.successful(Results.Ok)
+            }
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.routes.LoadingSpinnerController.show.url)
         }
       }
     }
@@ -89,7 +106,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     }
   }
 
-  lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval, mockSessionDataService)
+  lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval)
 
   def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
     maybeJourneyStep match {
@@ -101,14 +118,14 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
   lazy val nino: String = "AA000000A"
   lazy val utr: String = "1234567890"
 
-  def identifierRequest(journeyStep: Option[JourneyStep] = None, mtditid: Option[String] = None): IdentifierRequest[_] = {
+  def identifierRequest(journeyStep: Option[JourneyStep] = None, mtditid: Option[String] = None, sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
     IdentifierRequest(
       request = requestWithSession(journeyStep),
       mtditid = mtditid,
       nino = nino,
       utr = None,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = SessionData()
+      sessionData = sessionData
     )
   }
 }

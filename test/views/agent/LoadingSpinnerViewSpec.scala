@@ -20,34 +20,39 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.agent.ClientLoadingSpinner
+import views.html.agent.LoadingSpinner
 
-class ClientLoadingSpinnerViewSpec extends ViewSpec {
+class LoadingSpinnerViewSpec extends ViewSpec {
 
-  private val clientLoadingSpinner: ClientLoadingSpinner = app.injector.instanceOf[ClientLoadingSpinner]
+  private val clientLoadingSpinner: LoadingSpinner = app.injector.instanceOf[LoadingSpinner]
 
   "ClientLoadingSpinner" must {
     "have the correct template details" in new TemplateViewTest(
       view = page,
       isAgent = true,
       hasBackLink = false,
-      title = ClientLoadingSpinner.heading
+      title = LoadingSpinner.heading
     )
     "have the correct heading" in {
-      document.mainContent.selectHead("h1").text mustBe ClientLoadingSpinner.heading
+      document.mainContent.selectHead("h1").text mustBe LoadingSpinner.heading
     }
     "have the correct first paragraph" in {
-      document.mainContent.selectNth("p", 1).text mustBe ClientLoadingSpinner.paragraphOne
+      document.mainContent.selectNth("p", 1).text mustBe LoadingSpinner.paragraphOne
+    }
+    "have a script for automatically querying to refresh" in {
+      val script = document.selectHead("head").selectHead(s"""script[src="${controllers.routes.Assets.versioned("javascripts/pollConfirmationRefresh.js")}"]""")
+      script.attr("data-url") mustBe testCall.url
+      script.attr("data-interval") mustBe (appConfig.confirmingSubmissionQueryTimeSeconds * 1000).toString
     }
   }
 
-  private object ClientLoadingSpinner {
+  private object LoadingSpinner {
     val heading = "Confirming, please wait"
     val paragraphOne = "Do not refresh this page."
   }
 
   private def page: Html = {
-    clientLoadingSpinner()
+    clientLoadingSpinner(testCall)
   }
 
   private def document: Document =
