@@ -19,46 +19,53 @@ package controllers.agent
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import controllers.agent.actions.IdentifierAction
 import models.Status.*
 import models.SubmissionStatus
 import models.agent.JourneyStep.Confirmation
 import play.api.mvc.*
+import services.SessionDataService
 import views.html.agent.LoadingSpinner
 import views.html.errors.ServiceError
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LoadingSpinnerController @Inject()(view: LoadingSpinner,
                                          serviceError: ServiceError,
                                          identify: IdentifierAction,
-                                         appConfig: AppConfig)
-                                        (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                         appConfig: AppConfig,
+                                         sessionDataService: SessionDataService)
+                                        (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = identify { implicit request =>
+  def show: Action[AnyContent] = identify.async { implicit request =>
     request.sessionData.fetchSubmissionStatus match {
       case Some(status@SubmissionStatus(InProgress, _)) if status.hasExpired(appConfig.confirmingSubmissionMaxWaitTimeSeconds) =>
         displayServiceError()
       case Some(SubmissionStatus(status, _)) =>
         status match {
           case InProgress =>
-            Ok(view(routes.LoadingSpinnerController.query))
+            Future.successful(Ok(view(routes.LoadingSpinnerController.query)))
           case Success =>
-            Redirect(routes.ConfirmationController.show).addingToSession(JourneyStateKey -> Confirmation.key)
+            Future.successful(Redirect(routes.ConfirmationController.show).addingToSession(JourneyStateKey -> Confirmation.key))
           case HandledError =>
-            Redirect(controllers.errors.routes.ContactHMRCController.show)
+            Future.successful(Redirect(controllers.errors.routes.ContactHMRCController.show))
           case OtherError =>
             displayServiceError()
         }
-      case None => Redirect(routes.GlobalCheckYourAnswersController.show)
+      case None => Future.successful(Redirect(routes.GlobalCheckYourAnswersController.show))
     }
   }
 
-  private def displayServiceError()(implicit request: Request[_]): Result = InternalServerError(serviceError(
-    postAction = routes.GlobalCheckYourAnswersController.submit,
-    isAgent = true
-  ))
+  private def displayServiceError()(implicit request: Request[_]): Future[Result] = {
+    sessionDataService.deleteSubmissionStatus map { _ =>
+      InternalServerError(serviceError(
+        postAction = routes.GlobalCheckYourAnswersController.submit,
+        isAgent = true
+      ))
+    }
+  }
 
 
   def query: Action[AnyContent] = identify { implicit request =>
