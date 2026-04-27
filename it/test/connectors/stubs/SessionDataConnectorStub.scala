@@ -19,7 +19,6 @@ package connectors.stubs
 import common.Constants.ITSASessionKeys
 import helpers.agent.ComponentSpecBase.reference
 import helpers.servicemocks.WireMockMethods
-import models.SessionData
 import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsString, JsValue, Json, Writes}
 
@@ -27,10 +26,10 @@ object SessionDataConnectorStub extends WireMockMethods {
 
   def sessionDataUri(id: String): String =
     s"/income-tax-subscription/session-data/id/$id"
-    
+
   def sessionIdDataUri(): String =
     s"/income-tax-subscription/session-data/id"
-    
+
   def allSessionDataUri: String =
     "/income-tax-subscription/session-data/all"
 
@@ -62,12 +61,19 @@ object SessionDataConnectorStub extends WireMockMethods {
       uri = sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS)
     ).thenReturn(responseStatus)
   }
- 
+
   def stubDeleteSessionData(id: String)(responseStatus: Int): Unit = {
     when(
       method = DELETE,
       uri = sessionDataUri(id)
     ).thenReturn(responseStatus)
+  }
+
+  def verifyDeleteSessionData(id: String): Unit = {
+    verify(
+      method = DELETE,
+      uri = sessionDataUri(id)
+    )
   }
 
   def stubDeleteAllSessionData(responseStatus: Int): Unit = {

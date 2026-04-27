@@ -107,6 +107,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           ITSASessionKeys.UTR -> JsString(testUtr),
           ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(OtherError))
         ))
+        SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.loadingConfirmationStatus()
 
@@ -114,6 +115,8 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           httpStatus(INTERNAL_SERVER_ERROR),
           pageTitle(messages("service-error.title") + serviceNameGovUk)
         )
+
+        SessionDataConnectorStub.verifyDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)
       }
       "there is a submission status of IN_PROGRESS, but the timestamp indicates it's been that way for longer than the max allowed wait" in {
         AuthStub.stubAuthSuccess()
@@ -125,6 +128,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
             timestamp = Some(LocalDateTime.now.minusSeconds(appConfig.confirmingSubmissionMaxWaitTimeSeconds))
           ))
         ))
+        SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.loadingConfirmationStatus()
 
@@ -132,6 +136,8 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           httpStatus(INTERNAL_SERVER_ERROR),
           pageTitle(messages("service-error.title") + serviceNameGovUk)
         )
+
+        SessionDataConnectorStub.verifyDeleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)
       }
     }
     "return OK with the page content" in {
