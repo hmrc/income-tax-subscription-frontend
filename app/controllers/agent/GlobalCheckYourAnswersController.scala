@@ -17,10 +17,9 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.agent.JourneyStep.Confirmation
+import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
@@ -33,15 +32,16 @@ import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalCheckYourAnswers,
                                                  identify: IdentifierAction,
                                                  journeyRefiner: ConfirmedClientJourneyRefiner,
+                                                 sessionDataService: SessionDataService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
-                                                 mandationStatusService: MandationStatusService,
-                                                 throttlingService: ThrottlingService)
+                                                 mandationStatusService: MandationStatusService)
                                                 (implicit ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
@@ -64,19 +64,23 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      throttlingService.throttled(AgentEndOfJourneyThrottle, sessionData = request.sessionData) {
-        signUp(completeDetails) map {
-          case Right(_) | Left(AlreadySignedUp) =>
-            Redirect(routes.ConfirmationController.show)
-              .addingToSession(JourneyStateKey -> Confirmation.key)
-          case Left(HandledUnprocessableSignUp) =>
-            Redirect(controllers.errors.routes.ContactHMRCController.show)
-          case Left(failure) =>
-            throw new InternalServerException(
-              s"[GlobalCheckYourAnswersController] - failure response received from submission: ${failure.toString}"
-            )
-        }
+      sessionDataService.saveSubmissionStatus(inProgress) map { _ =>
+        backgroundSignUp(completeDetails)
+        Redirect(routes.LoadingSpinnerController.show)
       }
+    }
+  }
+
+  private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent]): Unit = {
+    signUp(completeDetails).onComplete {
+      case Success(Right(_)) | Success(Left(AlreadySignedUp)) =>
+        sessionDataService.saveSubmissionStatus(success)
+      case Success(Left(HandledUnprocessableSignUp)) =>
+        sessionDataService.saveSubmissionStatus(handledError)
+      case Success(Left(failure)) =>
+        sessionDataService.saveSubmissionStatus(otherError)
+      case _ =>
+        sessionDataService.saveSubmissionStatus(otherError)
     }
   }
 

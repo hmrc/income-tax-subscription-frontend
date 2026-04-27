@@ -19,17 +19,21 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
+import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubGetAllSessionData, stubSaveSessionData, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
 import helpers.*
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
+import helpers.servicemocks.EligibilityStub.stubEligibilityResponse
+import helpers.servicemocks.MandationStatusStub.stubGetMandationStatus
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub, ThrottlingStub}
 import models.*
+import models.SubmissionStatus.{handledError, otherError, success}
 import models.common.BusinessAccountingPeriod
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
-import models.status.MandationStatus.Voluntary
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
@@ -37,11 +41,19 @@ import services.EndOfJourneyThrottleId
 import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
-class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
+class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatusHelper with SessionCookieCrumbler {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(ThrottlingFeature)
+    stubSaveSubmissionStatus()(OK)
+    stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino),
+      ITSASessionKeys.UTR -> JsString(testUtr)
+    ))
+    stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
+    stubSaveSessionData(ITSASessionKeys.MANDATION_STATUS, MandationStatusModel(Voluntary, Voluntary))(OK)
+    stubEligibilityResponse(testUtr)(true)
+    stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(true, false, None))(OK)
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
@@ -93,7 +105,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
   "POST /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
     "return SEE_OTHER to the login page" when {
-      "the user is not logged in" in {
+      "user is unauthenticated" in {
         AuthStub.stubUnauthorised()
 
         val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
@@ -104,9 +116,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
         )
       }
     }
-  }
-
-  "POST /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" when {
     "there is complete data" should {
       "sign up and redirect to the confirmation page" when {
         "signing up for the current tax year" when {
@@ -165,11 +174,14 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
+
+            waitUntilStatusIs(success)
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
@@ -211,10 +223,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
 
-            verifyPost("/channel-preferences/confirm", count = Some(0))
+            waitUntilStatusIs(success)
+
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
         }
         "signing up for the next tax year" when {
@@ -273,11 +287,14 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
+
+            waitUntilStatusIs(success)
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
@@ -317,10 +334,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the confirmation page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.confirmationURI)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
 
-            verifyPost("/channel-preferences/confirm", count = Some(0))
+            waitUntilStatusIs(success)
+
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
         }
       }
@@ -352,10 +371,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
 
-            verifyPost("/channel-preferences/confirm", count = Some(0))
+            waitUntilStatusIs(handledError)
+
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
           }
           s"a unprocessable sign up occurs with a code: $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
             Given("I setup the Wiremock stubs")
@@ -383,10 +404,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
 
-            verifyPost("/channel-preferences/confirm", count = Some(0))
+            waitUntilStatusIs(handledError)
+
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
           }
           s"a unprocessable sign up occurs with a code: $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
             Given("I setup the Wiremock stubs")
@@ -414,10 +437,12 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
             Then("Should redirect to the contact hmrc page")
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(controllers.errors.routes.ContactHMRCController.show.url)
+              redirectURI(IndividualURI.spinnyWheelURI)
             )
 
-            verifyPost("/channel-preferences/confirm", count = Some(0))
+            waitUntilStatusIs(handledError)
+
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
           }
         }
       }
@@ -449,8 +474,13 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.spinnyWheelURI)
           )
+
+          waitUntilStatusIs(otherError)
+
+          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
         "create income sources failed" in {
           Given("I setup the Wiremock stubs")
@@ -492,8 +522,13 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Should show the internal service error page")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.spinnyWheelURI)
           )
+
+          waitUntilStatusIs(otherError)
+
+          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
         "add known facts failed" in {
           Given("I setup the Wiremock stubs")
@@ -537,8 +572,13 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Show an internal server error")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.spinnyWheelURI)
           )
+
+          waitUntilStatusIs(otherError)
+
+          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
         "enrolment failed" in {
           Given("I setup the Wiremock stubs")
@@ -583,35 +623,14 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Sessi
 
           Then("Show an internal server error")
           res must have(
-            httpStatus(INTERNAL_SERVER_ERROR)
+            httpStatus(SEE_OTHER),
+            redirectURI(IndividualURI.spinnyWheelURI)
           )
+
+          waitUntilStatusIs(otherError)
+
+          verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(otherError).toString), Some(1))
         }
-      }
-    }
-    "redirect to the end of journey throttle page" when {
-      "the throttle is enabled and the user hit the limit" in {
-        enable(ThrottlingFeature)
-
-        AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(AccountingPeriod, OK, Json.toJson(BusinessAccountingPeriod.SixthAprilToFifthApril.key))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        ))
-        ThrottlingStub.stubThrottle(EndOfJourneyThrottleId)(throttled = true)
-
-        val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers()
-
-        res must have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IndividualURI.endOfJourneyThrottleURI)
-        )
-
-        ThrottlingStub.verifyThrottle(EndOfJourneyThrottleId)()
       }
     }
   }
