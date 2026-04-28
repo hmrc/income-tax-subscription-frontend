@@ -699,28 +699,44 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         textInput.attr("name") mustBe name
       }
 
-      autoComplete.foreach { value =>
+      autoComplete.fold(
+        checkpoint {
+          textInput.hasAttr("autocomplete") mustBe false
+        }
+      ) { value =>
         checkpoint {
           textInput.attr("autocomplete") mustBe value
         }
       }
 
-      spellcheck.foreach { value =>
+      spellcheck.fold(
+        checkpoint {
+          textInput.hasAttr("spellcheck") mustBe false
+        }
+      ) { value =>
         checkpoint {
           textInput.attr("spellcheck") mustBe value.toString
         }
       }
 
-      hint.foreach { value =>
+      hint.fold(
         checkpoint {
-          element.selectHead(s"#$name-hint").text mustBe value
+          element.selectOptionally(s"#$name-hint") mustBe None
+        }
+      ) { hintText =>
+        checkpoint {
+          element.selectHead(s"#$name-hint").text mustBe hintText
         }
         checkpoint {
           textInput.attr("aria-describedby") must include(s"$name-hint")
         }
       }
 
-      error.foreach { errorMessage =>
+      error.fold(
+        checkpoint {
+          element.selectOptionally(s"#$name-error") mustBe None
+        }
+      ) { errorMessage =>
         checkpoint {
           element.selectHead(s"#$name-error").text mustBe s"Error: $errorMessage"
         }
