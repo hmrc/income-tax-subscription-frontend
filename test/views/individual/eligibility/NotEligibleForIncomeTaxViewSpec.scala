@@ -220,7 +220,7 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   object CannotSignUpYetMessages {
     val heading = "You cannot sign up yet"
-    val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax. (opens in new tab)"
+    val paragraph1 = "People with some types of income or deductions cannot sign up to Making Tax Digital for Income Tax (opens in new tab)"
     val paragraph2 = "In the future, we may extend this service to more people."
     val paragraph3 = "Meanwhile, you must continue to submit your Self Assessment tax return as normal."
     val linkHref = "https://www.gov.uk/guidance/sign-up-your-business-for-making-tax-digital-for-income-tax#who-can-sign-up-voluntarily"
@@ -229,16 +229,16 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   object MTDExemptEnduring {
     val heading = "You are exempt from Making Tax Digital for Income Tax"
-    val paragraph1 = "This means you do not have to use it unless your circumstances change. If your circumstances change, you must let HMRC know. (opens in new tab)"
-    val paragraph1LinkText = "you must let HMRC know. (opens in new tab)"
-    val paragraph2 = "You can find out about exemptions. (opens in new tab)"
+    val paragraph1 = "This means you do not have to use it unless your circumstances change. If your circumstances change, you must let HMRC know (opens in new tab)"
+    val paragraph1LinkText = "you must let HMRC know (opens in new tab)"
+    val paragraph2 = "You can find out about exemptions (opens in new tab)"
     val signoutButton = "Sign out"
   }
 
   object MTDExempt2627 {
     val heading = "You are exempt from Making Tax Digital for Income Tax"
     val paragraph1 = "This means you do not need to use it unless your circumstances change. You must let HMRC know if your circumstances change."
-    val paragraph2 = "Find out more about exemptions. (opens in new tab)"
+    val paragraph2 = "Find out more about exemptions (opens in new tab)"
     val signoutButton = "Sign out"
   }
 

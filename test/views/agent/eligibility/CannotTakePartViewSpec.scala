@@ -327,16 +327,16 @@ class CannotTakePartViewSpec extends ViewSpec {
 
   object MTDExemptEnduring {
     val heading = "Your client is exempt from Making Tax Digital for Income Tax"
-    val paragraph1 = "This means you do not have to use it unless your client’s circumstances change. If their circumstances change, you or your client must let HMRC know. (opens in new tab)"
-    val paragraph1LinkText = "you or your client must let HMRC know. (opens in new tab)"
-    val paragraph2 = "You can find out about exemptions. (opens in new tab)"
+    val paragraph1 = "This means you do not have to use it unless your client’s circumstances change. If their circumstances change, you or your client must let HMRC know (opens in new tab)"
+    val paragraph1LinkText = "you or your client must let HMRC know (opens in new tab)"
+    val paragraph2 = "You can find out about exemptions (opens in new tab)"
     val signUpAnotherClientLink = "Sign up another client"
   }
 
   object MTDExempt2627 {
     val heading = "Your client is exempt from Making Tax Digital for Income Tax"
     val paragraph1 = "This means you do not need to use it unless your circumstances change. You or your client must let HMRC know if their circumstances change."
-    val paragraph2 = "Find out if and when your client may be able to use Making Tax Digital for Income Tax in the future. (opens in new tab)"
+    val paragraph2 = "Find out if and when your client may be able to use Making Tax Digital for Income Tax in the future (opens in new tab)"
     val signUpAnotherClientLink = "Sign up another client"
   }
 
@@ -354,7 +354,7 @@ class CannotTakePartViewSpec extends ViewSpec {
   object DigitallyExempt {
     val heading = "Your client is exempt from Making Tax Digital for Income Tax"
     val paragraph = "HMRC has agreed that your client is digitally excluded. This means you do not need to use it unless your circumstances change."
-    val paragraph1 = "If your client’s circumstances change, you or your client must let HMRC know. (opens in new tab)"
+    val paragraph1 = "If your client’s circumstances change, you or your client must let HMRC know (opens in new tab)"
     val paragraph1LinkHref = "https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax"
     val signUpAnotherClientLink = "Sign up another client"
   }

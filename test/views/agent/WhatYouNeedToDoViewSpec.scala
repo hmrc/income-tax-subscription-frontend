@@ -126,7 +126,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     val p3 = s"$p3LinkText will apply if your client’s tax return is submitted late, or their tax bill is paid late."
     val p4 = "Whilst your client is a volunteer, penalties will not apply for sending quarterly updates late."
     val p5 = "Your client can opt out of Making Tax Digital for Income Tax at any time. If they do this, the new penalties will still apply."
-    val p6 = "Read more about penalties that apply if you are volunteering. (opens in new tab)"
+    val p6 = "Read more about penalties that apply if you are volunteering (opens in new tab)"
     val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
     val agreeAndContinue: String = "Agree and continue"
   }
