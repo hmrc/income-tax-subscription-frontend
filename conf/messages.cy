@@ -663,8 +663,8 @@ feedback.thankyou.title                                         = Adborth wedi d
 affinity-group-error.title                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.heading                                    = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.line1                                      = Gallwch ond defnyddio’r gwasanaeth hwn os oes gennych gyfrif Porth y Llywodraeth fel unigolyn.
-affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
-affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
+affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif</a>.
+affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant</a>.
 
 ## ADD MTDIT Overview
 mtdit-overview.heading                                          = Ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
