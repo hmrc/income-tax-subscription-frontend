@@ -41,7 +41,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     }
 
     "have a summary" in {
-      document().select(".govuk-notification-banner__heading strong").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
+      document().select(".govuk-notification-banner__heading").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
     }
 
     "have a subheading" in {
