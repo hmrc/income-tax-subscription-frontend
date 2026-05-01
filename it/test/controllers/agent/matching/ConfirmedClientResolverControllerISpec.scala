@@ -19,7 +19,7 @@ package controllers.agent.matching
 import auth.agent.{AgentSignUp, AgentUserMatching}
 import common.Constants.ITSASessionKeys
 import config.MockConfig.appConfig.ggLoginUrl
-import config.featureswitch.FeatureSwitch.{ThrottlingFeature, WhenDoYouWantToStartPage}
+import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
@@ -43,7 +43,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(ThrottlingFeature)
-    disable(WhenDoYouWantToStartPage)
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
@@ -90,10 +89,9 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
         )
       }
     }
-    "the WhenDoYouWantToStartPage feature switch is enabled" when {
+    "the different tax year selection scenarios" when {
       "CY is eligible and voluntary, CY+1 is eligible and voluntary" should {
         "redirect to the WhenDoYouWantToStartController page" in {
-          enable(WhenDoYouWantToStartPage)
 
           AuthStub.stubAuthSuccess()
           stubFullSession()
@@ -112,7 +110,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
       }
       "CY is eligible and voluntary, CY+1 is eligible and mandated" should {
         "redirect to the NextYearMandatorySignUpController page" in {
-          enable(WhenDoYouWantToStartPage)
 
           AuthStub.stubAuthSuccess()
           stubFullSession(statusNext = Mandated)
@@ -132,7 +129,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
 
       "CY is eligible and mandated" should {
         "redirect to the MandatoryBothSignUpController page" in {
-          enable(WhenDoYouWantToStartPage)
 
           AuthStub.stubAuthSuccess()
           stubFullSession(statusCurrent = Mandated)
@@ -152,7 +148,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
 
       "CY is ineligible, CY+1 is eligible and voluntary" should {
         "redirect to the NonEligibleVoluntaryController page" in {
-          enable(WhenDoYouWantToStartPage)
 
           AuthStub.stubAuthSuccess()
           stubFullSession(eligibleCurrent = false)
@@ -172,7 +167,6 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
 
       "CY is ineligible, CY+1 is eligible and mandted" should {
         "redirect to the NonEligibleMandatedController page" in {
-          enable(WhenDoYouWantToStartPage)
 
           AuthStub.stubAuthSuccess()
           stubFullSession(eligibleCurrent = false, statusNext = Mandated)
@@ -190,97 +184,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
         }
       }
     }
-    "the WhenDoYouWantToStartPage feature switch is disabled" when {
-      "there is an eligibility interrupt flag set" when {
-        "the user is mandated for the current tax year" should {
-          "go to the what you need to do page" in {
-            AuthStub.stubAuthSuccess()
-            stubFullSession(statusCurrent = Mandated)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-            stubFullPrePop()
-
-            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-            )
-
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-          }
-        }
-        "the user is eligible for the next year only" should {
-          "go to the what you need to do page" in {
-            AuthStub.stubAuthSuccess()
-            stubFullSession(eligibleCurrent = false)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-            stubFullPrePop()
-
-            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.routes.WhatYouNeedToDoController.show().url)
-            )
-
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-          }
-        }
-        "the user is neither mandated for the current tax year or eligible for the next tax year only" should {
-          "go to the what year to sign up page" in {
-            AuthStub.stubAuthSuccess()
-            stubFullSession()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, OK, JsBoolean(true))
-            stubFullPrePop()
-
-            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
-            )
-
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-          }
-        }
-      }
-      "there is no eligibility interrupt flag set" when {
-        "the user is eligible for the next year only" should {
-          "go to the cannot sign up this year page" in {
-            AuthStub.stubAuthSuccess()
-            stubFullSession(eligibleCurrent = false)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-            stubFullPrePop()
-
-            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url)
-            )
-
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-          }
-        }
-        "the user is eligible for both years" should {
-          "go to the client can sign up page" in {
-            AuthStub.stubAuthSuccess()
-            stubFullSession()
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
-            stubFullPrePop()
-
-            val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-            )
-
-            getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-          }
-        }
-      }
-    }
+    
     "result in technical difficulties" when {
       "there was an error returned from the pre-pop connection" in {
         AuthStub.stubAuthSuccess()

@@ -16,7 +16,6 @@
 
 package views.individual
 
-import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 import models.*
 import models.common.AccountingYearModel
 import models.common.business.{Address, Country}
@@ -33,7 +32,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(WhenDoYouWantToStartPage)
   }
 
   "GlobalCheckYourAnswers" must {
@@ -82,42 +80,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         ))
       }
 
-      "display the tax year when the client has selected current tax year" in {
-        def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 2)
-
-        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
-            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.current),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
-                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
-                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
-              )
-            )
-          )
-        ))
-      }
-
-      "display the tax year when the client has selected next tax year" in {
-        def summaryList: Element = document(details = completeDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
-
-        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-          SummaryListRowValues(
-            key = GlobalCheckYourAnswersMessages.SelectedTaxYear.key,
-            value = Some(GlobalCheckYourAnswersMessages.SelectedTaxYear.next),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show(editMode = true).url,
-                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
-                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
-              )
-            )
-          )
-        ))
-      }
-
       "display the tax year with no change link when the user did not have a tax year choice" in {
         def summaryList: Element = document(details = minDetails(taxYear = Next)).mainContent.selectNth(".govuk-summary-list", 2)
 
@@ -131,7 +93,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is voluntary for next year" in {
-        enable(WhenDoYouWantToStartPage)
 
         def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 2)
 
@@ -151,7 +112,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is mandated for next year" in {
-        enable(WhenDoYouWantToStartPage)
 
         def summaryList: Element = document(
           details = completeDetails(taxYear = Current),

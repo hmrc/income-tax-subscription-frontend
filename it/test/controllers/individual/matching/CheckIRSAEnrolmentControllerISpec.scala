@@ -17,7 +17,6 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 import connectors.stubs.{SessionDataConnectorStub, UsersGroupsSearchStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
@@ -32,8 +31,8 @@ import play.api.libs.json.{JsString, Json}
 class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
 
   val journeyStart: Map[Boolean, String] = Map(
-    true -> controllers.individual.routes.YouCanSignUpController.show.url,
-    false -> controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url
+    true -> controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url,
+    false -> controllers.individual.tasklist.taxyear.routes.NonEligibleVoluntaryController.show.url
   )
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
@@ -50,11 +49,17 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       exemptionReason = status.exemptionReason
     )
     SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, status)(OK)
+    MandationStatusStub.stubGetMandationStatus(
+      Json.toJson(MandationStatusRequest(testNino, testUtr))
+    )(OK, Json.toJson(MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)))
+    SessionDataConnectorStub.stubSaveSessionData(
+      ITSASessionKeys.MANDATION_STATUS,
+      MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)
+    )(OK)
   }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(WhenDoYouWantToStartPage)
   }
 
   "GET /use-self-assessment-details" should {
@@ -75,7 +80,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       "it is identified that there are no other credentials with the IR-SA enrolment" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.NINO -> JsString(testNino)
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(NO_CONTENT)
 
@@ -93,7 +99,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       "it is identified that the current credential has the IR-SA enrolment" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.NINO -> JsString(testNino)
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
 
@@ -111,7 +118,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       "there was a problem fetching the credentials assigned to an IR-SA enrolment" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.NINO -> JsString(testNino)
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
@@ -129,7 +137,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       "there was a problem fetching the user details for the SA credential" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.NINO -> JsString(testNino)
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.obj("principalUserIds" -> Json.arr(testCredentialId2)))
         UsersGroupsSearchStub.stubGetUserDetailsByCredId(testCredentialId2)(INTERNAL_SERVER_ERROR)
@@ -148,7 +157,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       "there was a problem fetching the user details for the current credential" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.NINO -> JsString(testNino)
         ))
         EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.obj("principalUserIds" -> Json.arr(testCredentialId2)))
         UsersGroupsSearchStub.stubGetUserDetailsByCredId(testCredentialId2)(NON_AUTHORITATIVE_INFORMATION, Json.obj(
@@ -169,9 +179,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       }
 
       "the User is interacting with the mandation-status flow" when {
-        "the WhenDoYouWantToStartPage feature switch is enabled" when {
+        "the different tax year scanrios" when {
           "CY is eligible and voluntary, CY+1 is eligible and voluntary" in {
-            enable(WhenDoYouWantToStartPage)
             AuthStub.stubAuthSuccess()
 
             SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -201,7 +210,6 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
           }
 
           "CY is eligible and voluntary, CY+1 is eligible and mandated" in {
-            enable(WhenDoYouWantToStartPage)
             AuthStub.stubAuthSuccess()
 
             SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -231,7 +239,6 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
           }
 
           "CY is eligible and mandated" in {
-            enable(WhenDoYouWantToStartPage)
             AuthStub.stubAuthSuccess()
 
             SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -261,7 +268,6 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
           }
 
           "CY is ineligible, CY+1 is eligible and voluntary" in {
-            enable(WhenDoYouWantToStartPage)
             AuthStub.stubAuthSuccess()
 
             SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -291,7 +297,6 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
           }
 
           "CY is ineligible, CY+1 is eligible and mandated" in {
-            enable(WhenDoYouWantToStartPage)
             AuthStub.stubAuthSuccess()
 
             SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -317,45 +322,6 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
             res must have(
               httpStatus(SEE_OTHER),
               redirectURI(controllers.individual.tasklist.taxyear.routes.NonEligibleMandatedController.show.url)
-            )
-          }
-        }
-        "the WhenDoYouWantToStartPage feature switch is disabled" when {
-          "the user is eligible for both tax years" in {
-            AuthStub.stubAuthSuccess()
-
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.UTR -> JsString(testUtr)
-            ))
-
-            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
-
-            setup(eligibleCurrentYear = true)
-
-            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.individual.routes.YouCanSignUpController.show.url)
-            )
-          }
-
-          "the user is eligible for next year only" in {
-            AuthStub.stubAuthSuccess()
-
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.UTR -> JsString(testUtr)
-            ))
-
-            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, Json.arr(testCredId))
-
-            setup(eligibleCurrentYear = false)
-
-            val res = IncomeTaxSubscriptionFrontend.matchingUseSelfAssessment()
-
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
             )
           }
         }
@@ -455,7 +421,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
         "there was a problem fetching information for the page when an error occurs" in {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.NINO -> JsString(testNino)
           ))
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
@@ -473,7 +440,8 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
         "the user selects to not change accounts" in {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.NINO -> JsString(testNino)
           ))
           EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(INTERNAL_SERVER_ERROR)
 
