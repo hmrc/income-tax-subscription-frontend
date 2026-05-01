@@ -22,6 +22,7 @@ object MessageLookup {
     val continue = "Continue"
     val update = "Update"
     val signOut = "Sign out"
+    val signIn = "Sign in"
     val goBack = "Go back"
     val tryAgain = "Try again"
     val saveAndContinue = "Save and continue"
@@ -29,9 +30,9 @@ object MessageLookup {
   }
 
   object Timeout {
-    val title = "Your session has timed out"
-    val heading = "Your session has timed out"
-    val returnToHome = """To sign your client up for quarterly reporting, you’ll have to sign in using your Government Gateway ID."""
+    val title = "For your security, we signed you out"
+    val heading: String = title
+    val paragraph = "We saved your answers."
   }
 
   object ClientAlreadySubscribed {

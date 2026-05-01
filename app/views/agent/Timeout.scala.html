@@ -16,14 +16,17 @@
 
 @import config.AppConfig
 @import views.html.templates.AgentMainTemplate
+@import views.html.helpers.SignInButton
 
 @this(
-  agentMainTemplate: AgentMainTemplate
+  agentMainTemplate: AgentMainTemplate,
+  signInButton: SignInButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@agentMainTemplate(title = messages("agent.timeout.title"), showSignOutLink = false) {
- <h1 class="govuk-heading-l">@messages("agent.timeout.title")</h1>
- <p class="govuk-body">@Html(messages("agent.timeout.return-to-home", controllers.agent.matching.routes.HomeController.index.url))</p>
+@agentMainTemplate(title = messages("timeout.title"), showSignOutLink = false) {
+ <h1 class="govuk-heading-l">@messages("timeout.title")</h1>
+ <p class="govuk-body">@Html(messages("timeout.paragraph"))</p>
+ @signInButton(isIndividual = false)
 }

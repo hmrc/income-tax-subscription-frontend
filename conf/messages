@@ -10,6 +10,7 @@ base.ready-to-sign-up                                           = Yes, I’m rea
 base.update                                                     = Update
 base.sign-out                                                   = Sign out
 base.sign-up                                                    = Sign up
+base.sign-in                                                    = Sign in
 base.start-now                                                  = Start now
 base.submit                                                     = Submit
 base.day                                                        = Day
@@ -351,9 +352,9 @@ agent.error.overseas.property.invalid                           = The date must 
 agent.error.overseas.property.year.length                       = Year must include 4 numbers
 
 ## Timeout page ##
-timeout.title                                                   = Your session has timed out
-timeout.heading                                                 = Your session has timed out
-timeout.return-to-home                                           = To sign up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.title                                                   = For your security, we signed you out
+timeout.heading                                                 = For your security, we signed you out
+timeout.paragraph                                               = We saved your answers.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You’re already signed up to use Making Tax Digital for Income Tax
@@ -1000,11 +1001,6 @@ agent.error.overseas.property.start-date-before-limit.invalid   = Select ‘Yes�
 agent.business.name.title                                       = Business name
 agent.business.name.heading                                     = What’s the name of your client’s business?
 agent.business.name.line-1                                      = This is the business name they used to register for Self Assessment. If their business doesn’t have a name, enter your client’s name.
-
-## Timeout page ##
-agent.timeout.title                                             = Your session has timed out
-agent.timeout.heading                                           = Your session has timed out
-agent.timeout.return-to-home                                      = To sign your client up for quarterly reporting, you’ll have to <a class="govuk-link" href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Your client has already signed up

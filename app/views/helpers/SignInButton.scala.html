@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.PrincipalMainTemplate
-@import views.html.helpers.SignInButton
+@this()
 
-@this(
-  mainTemplate: PrincipalMainTemplate,
-  signInButton: SignInButton
-)
+@(isIndividual: Boolean, alternativeText: Option[String] = None)(implicit messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages)
-
-@mainTemplate(title = messages("timeout.title"), showSignOutLink = false) {
-  <h1 class="govuk-heading-l">@messages("timeout.title")</h1>
-  <p class="govuk-body">@Html(messages("timeout.paragraph"))</p>
-  @signInButton(isIndividual = true)
+@href = @{
+    if(isIndividual) {
+        controllers.individual.matching.routes.HomeController.index.url
+    } else {
+        controllers.agent.matching.routes.HomeController.index.url
+    }
 }
+
+<div>
+    <a id="sign-in-button" class="govuk-button" role="button" href="@href">
+        @alternativeText.getOrElse(messages("base.sign-in"))
+    </a>
+</div>
