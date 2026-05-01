@@ -20,7 +20,6 @@ import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
@@ -141,7 +140,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   private def goToSignUpClient(reference: String, eligibilityStatus: EligibilityStatus)
                               (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     mandationStatusService.getMandationStatus(request.sessionData) flatMap { mandationStatus =>
-      if (isEnabled(WhenDoYouWantToStartPage)) {
         (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
           case (true, Voluntary, Voluntary) =>
             Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()))
@@ -154,22 +152,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
           case (false, _, Mandated) =>
             Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show))
         }
-      } else {
-        subscriptionDetailsService.fetchEligibilityInterruptPassed(reference) map {
-          case Some(_) =>
-            if (mandationStatus.currentYearStatus.isMandated || eligibilityStatus.eligibleNextYearOnly) {
-              Redirect(controllers.agent.routes.WhatYouNeedToDoController.show())
-            } else {
-              Redirect(controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show())
-            }
-          case None =>
-            if (eligibilityStatus.eligibleNextYearOnly) {
-              Redirect(controllers.agent.eligibility.routes.CannotSignUpThisYearController.show)
-            } else {
-              Redirect(controllers.agent.eligibility.routes.ClientCanSignUpController.show())
-            }
-        }
-      }
     }
   }
 }
