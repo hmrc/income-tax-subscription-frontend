@@ -347,6 +347,15 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
+    def mustHaveSignInButton(text: String, href: String): Unit =
+      s"$name must have a link button '$text'" in {
+        val signInButton = element.select("a.govuk-button")
+
+        signInButton.size mustBe 1
+        signInButton.head.text() mustBe text
+        signInButton.head.attr("href") mustBe href
+      }
+
     def mustHaveSignOutLinkGovUk(text: String, optOrigin: Option[String] = None): Unit = {
       val id = "sign-out-button"
       optOrigin match {
