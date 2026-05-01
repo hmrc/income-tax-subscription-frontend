@@ -18,8 +18,6 @@ package controllers.agent.resolvers
 
 import common.Constants.hmrcAsAgent
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.FeatureSwitching
 import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
@@ -33,9 +31,8 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusService,
-                                        val appConfig: AppConfig
-                                       )(implicit ec: ExecutionContext) extends FeatureSwitching {
+class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusService
+                                       )(implicit ec: ExecutionContext) {
 
   def resolve(sessionData: SessionData, channel: Option[Channel])
              (implicit hc: HeaderCarrier, request: IdentifierRequest[AnyContent]): Future[Result] = {
@@ -53,9 +50,5 @@ class AlreadySignedUpResolver @Inject()(getITSAStatusService: GetITSAStatusServi
     }
 
   private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] =
-    if (isEnabled(OptBackIn)) {
-      getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
-    } else {
-      Future.successful(None)
-    }
+    getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
 }
