@@ -30,12 +30,7 @@
 @mainTemplate(title = messages("business.progress-saved.title")) {
     @govukNotificationBanner(NotificationBanner(
         title = Text(messages("business.progress-saved.banner-title")),
-        content = HtmlContent(
-            s"""
-            <h3 class="govuk-notification-banner__heading">
-            <strong>${messages("business.progress-saved.content.summary", expirationDate)}</strong>
-            </h3>"""
-    ),
+        content = Text(messages("business.progress-saved.content.summary", expirationDate)),
         bannerType = Some("success")
 ))
 

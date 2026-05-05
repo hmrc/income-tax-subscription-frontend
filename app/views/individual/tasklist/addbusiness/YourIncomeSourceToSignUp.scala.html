@@ -194,7 +194,10 @@
                 )
             )),
             card = Some(Card(
-                title = Some(CardTitle(content = Text(selfEmploymentTrade(business, index)))),
+                title = Some(CardTitle(
+                    content = Text(selfEmploymentTrade(business, index)),
+                    headingLevel = Some(3)
+                )),
                 actions = Some(Actions(
                     items =
                         maybeIncomeSourceChangeAction(
@@ -258,7 +261,10 @@
                     )
                 )),
                 card = Some(Card(
-                    title = Some(CardTitle(content = Text(messages("your-income-source.uk-property")))),
+                    title = Some(CardTitle(
+                        content = Text(messages("your-income-source.uk-property")),
+                        headingLevel = Some(3)
+                    )),
                     actions = Some(Actions(
                         items = maybeIncomeSourceChangeAction(
                             isComplete = ukProperty.isComplete,
@@ -312,7 +318,8 @@
                 )),
                 card = Some(Card(
                     title = Some(CardTitle(
-                        content = Text(messages("your-income-source.foreign-property"))
+                        content = Text(messages("your-income-source.foreign-property")),
+                        headingLevel = Some(3)
                     )),
                     actions = Some(Actions(
                         items = maybeIncomeSourceChangeAction(
