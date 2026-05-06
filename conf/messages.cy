@@ -139,22 +139,22 @@ cannot-use-service.line1                                        = Gallwch ond co
 ## Cannot sign up yet page
 cannot-sign-up-yet.title                                          = Ni allwch gofrestru ar hyn o bryd
 cannot-sign-up-yet.heading                                        = Ni allwch gofrestru ar hyn o bryd
-cannot-sign-up-yet.para1                                          = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+cannot-sign-up-yet.para1                                          = Ni all pobl sydd â mathau penodol o incwm neu ddidyniadau gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm
 cannot-sign-up-yet.para2                                          = Yn y dyfodol, mae’n bosibl y caiff y gwasanaeth hwn ei ymestyn i ragor o bobl.
 cannot-sign-up-yet.para3                                          = Yn y cyfamser, mae’n rhaid i chi barhau i gyflwyno’ch Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
 # Cannot sign up Enduring and 28/29
 individual.cannot-take-part-enduring.heading                           = Rydych yn esempt rhag defnyddio Trio Treth yn Ddigidol ar gyfer Treth Incwm
 individual.cannot-take-part-enduring.para1                             = Mae hyn yn golygu nad oes rhaid i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Os bydd eich amgylchiadau’n newid, {0}
-individual.cannot-take-part-enduring.para1.link-text                   = mae’n rhaid i chi roi gwybod i CThEF.
+individual.cannot-take-part-enduring.para1.link-text                   = mae’n rhaid i chi roi gwybod i CThEF
 individual.cannot-take-part-enduring.para1.link-href                   = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
-individual.cannot-take-part-enduring.link                              = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+individual.cannot-take-part-enduring.link                              = Gallwch ddod o hyd i wybodaeth am esemptiadau
 individual.cannot-take-part-enduring.link-href                         = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
 # Cannot sign up MTD Exempt 26/27
 individual.cannot-take-part-exempt-26-27.heading                     = Rydych yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.cannot-take-part-exempt-26-27.para1                       = Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Rhaid i chi hysbysu CTheEF os yw eu hamgylchiadau’n newid.
-individual.cannot-take-part-exempt-26-27.link                        = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+individual.cannot-take-part-exempt-26-27.link                        = Gallwch ddod o hyd i wybodaeth am esemptiadau
 individual.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
 # Cannot cannot sign up No Data
@@ -349,7 +349,7 @@ claim-enrolment.confirmation.bullets.2                          = anfon eich diw
 claim-enrolment.confirmation.bullets.3                          = cyflwyno’ch Ffurflen Dreth a thalu’r dreth sy’n ddyledus erbyn 31 Ionawr y flwyddyn ganlynol
 claim-enrolment.confirmation.content.para1                      = Gallwch fwrw golwg dros a rheoli manylion Troi Treth yn Ddigidol ar gyfer Treth Incwm yn eich {0}.
 claim-enrolment.confirmation.content.para2                      = Gwiriwch eich bod wedi cwblhau pob cam ar gyfer {0}.
-claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm (yn agor tab newydd)
+claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/troi-treth-yn-ddigidol-ar-gyfer-treth-incwm-i-unigolion-cam-wrth-gam.cy
 claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant penodedig, os oes gennych un.
 claim-enrolment.confirmation.continue-button                    = Parhau i {0}
@@ -514,8 +514,8 @@ sign-up-confirmation-what-you-must-do.software-choices-bullet2       = anfon eic
 sign-up-confirmation-what-you-must-do.software-choices-bullet3       = cyflwyno’ch Ffurflen Dreth a thalu’r dreth sy’n ddyledus erbyn 31 Ionawr y flwyddyn ganlynol
 
 sign-up-confirmation-what-you-must-do.software-choices.heading       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation-what-you-must-do.software-choices-para2         = Darllenwch  {0} i gael rhagor o wybodaeth am y canlynol:
-sign-up-confirmation-what-you-must-do.no-para2.link-text             = "Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm"
+sign-up-confirmation-what-you-must-do.software-choices-para2         = Darllenwch {0} i gael rhagor o wybodaeth am y canlynol:
+sign-up-confirmation-what-you-must-do.no-para2.link-text             = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 sign-up-confirmation-what-you-must-do.no-para2.link-href             = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
 sign-up-confirmation-what-you-must-do.software-choices-bullet4       = yr hyn i’w ddisgwyl ar ôl i chi gofrestru
 sign-up-confirmation-what-you-must-do.software-choices-bullet5       = y gwahanol gamau y bydd angen i chi eu cymryd yn ystod y flwyddyn dreth
@@ -663,8 +663,8 @@ feedback.thankyou.title                                         = Adborth wedi d
 affinity-group-error.title                                      = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.heading                                    = Ni allwch ddefnyddio’r gwasanaeth hwn
 affinity-group-error.line1                                      = Gallwch ond defnyddio’r gwasanaeth hwn os oes gennych gyfrif Porth y Llywodraeth fel unigolyn.
-affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif.</a>
-affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant.</a>
+affinity-group-error.line2                                      = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" id="sign-out" href="{0}">fewngofnodi gan ddefnyddio math gwahanol o gyfrif</a>.
+affinity-group-error.agent.line1                                = I gofrestru ar gyfer hysbysu chwarterol gyda’r manylion mewngofnodi hyn, rhaid i chi <a class="govuk-link" id="agent-service" href="{0}">ddefnyddio ein gwasanaeth asiant</a>.
 
 ## ADD MTDIT Overview
 mtdit-overview.heading                                          = Ychwanegu Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
@@ -707,15 +707,15 @@ agent.cannot-take-part.para3.link-text                            = gofrestru i 
 # Agent cannot sign up Enduring and 28/29
 agent.cannot-take-part-enduring.heading                         = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.cannot-take-part-enduring.para1                           = Nid oes angen i chi ei ddefnyddio oni bai bod amgylchiadau eich cleient yn newid. Os bydd ei amgylchiadau’n newid, {0}
-agent.cannot-take-part-enduring.para1.link-text                 = mae’n rhaid i chi neu’ch cleient roi gwybod i CThEF.
+agent.cannot-take-part-enduring.para1.link-text                 = mae’n rhaid i chi neu’ch cleient roi gwybod i CThEF
 agent.cannot-take-part-enduring.para1.link-href                 = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
-agent.cannot-take-part-enduring.link                            = Gallwch ddod o hyd i wybodaeth am esemptiadau.
+agent.cannot-take-part-enduring.link                            = Gallwch ddod o hyd i wybodaeth am esemptiadau
 agent.cannot-take-part-enduring.link-href                       = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy
 
 # Cannot sign up MTD Exempt 26/27
 agent.cannot-take-part-exempt-26-27.heading                     = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.cannot-take-part-exempt-26-27.para1                       = Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid. Mae’n rhaid i chi neu eich cleient roi gwybod i CThEF os bydd ei amgylchiadau’n newid.
-agent.cannot-take-part-exempt-26-27.link                        = Dysgwch a fydd modd i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y dyfodol, a phryd i’w ddefnyddiol.
+agent.cannot-take-part-exempt-26-27.link                        = Dysgwch a fydd modd i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y dyfodol, a phryd i’w ddefnyddiol
 agent.cannot-take-part-exempt-26-27.link-href                   = https://www.gov.uk/guidance/check-if-youre-eligible-for-making-tax-digital-for-income-tax.cy#pwy-syn-esempt-rhag-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
 
 # Agent cannot sign up No Data
@@ -838,7 +838,7 @@ agent.what-you-need-to-do.p3.link-text                     = Rydych chi a’ch c
 agent.what-you-need-to-do.p3.link-href                     = https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax.cy
 agent.what-you-need-to-do.p4                               = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am anfon diweddariadau chwarterol yn hwyr.
 agent.what-you-need-to-do.p5                               = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
-agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli.
+agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli
 agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 ## You can sign up now ##
@@ -1290,7 +1290,7 @@ sign-up.para-3                                                          = I fynd
 agent.digitally-exempt.heading                                           = Mae eich cleient yn esempt rhag defnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.digitally-exempt.para                                             = Mae CThEF wedi cytuno bod eich cleient wedi`i gau allan o`r byd ddigidol. Mae hyn yn golygu nad oes angen i chi ei ddefnyddio oni bai bod eich amgylchiadau’n newid.
 agent.digitally-exempt.para1                                            = Os bydd amgylchiadau eich cleient yn newid, {0}
-agent.digitally-exempt.para1.link-text                                  = mae`n rhaid i chi neu eich cleient roi gwybod i CThEF.
+agent.digitally-exempt.para1.link-text                                  = mae`n rhaid i chi neu eich cleient roi gwybod i CThEF
 agent.digitally-exempt.para1.link-href                                  = https://www.gov.uk/guidance/apply-for-an-exemption-from-making-tax-digital-for-income-tax.cy
 
 individual.opted-out.title                                              = Rheoli eich ymrwymiadau o ran adrodd
