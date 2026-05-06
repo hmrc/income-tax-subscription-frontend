@@ -95,7 +95,7 @@ object MessageLookup {
 
     object Agent {
       val linkId: String = "agent-service"
-      val linkText = "use our agent service."
+      val linkText = "use our agent service"
       val line1 = s"To sign up for quarterly reporting with these sign in details, you need to $linkText"
     }
 
