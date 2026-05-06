@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.helper.CSPNonce
 
 @this(govukDateInput : GovukDateInput)
 
@@ -26,7 +27,7 @@
         isPageHeading: Boolean = true,
         isLegendVisible: Boolean = true,
         isDateOfBirth: Boolean = false
-)(implicit messages: Messages)
+)(implicit messages: Messages, request: Request[_])
 
 @error = @{
   (parentForm.error(field.name)
@@ -96,7 +97,7 @@
   ))
 ))
 
-<script>
+<script @CSPNonce.attr>
   const dayField = '@{s"${field.name}-dateDay"}';
   const monthField = '@{s"${field.name}-dateMonth"}';
   const yearField = '@{s"${field.name}-dateYear"}';
