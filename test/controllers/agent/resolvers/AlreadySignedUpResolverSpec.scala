@@ -17,9 +17,6 @@
 package controllers.agent.resolvers
 
 import common.Constants.hmrcAsAgent
-import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.FeatureSwitching
-import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
 import models.*
 import models.requests.agent.IdentifierRequest
@@ -40,16 +37,12 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 
 class AlreadySignedUpResolverSpec extends ControllerSpec
-  with FeatureSwitching
   with BeforeAndAfterEach {
-
-  override val appConfig: AppConfig = MockConfig
 
   private val mockGetITSAStatusService = mock[GetITSAStatusService]
 
   private val resolver = new AlreadySignedUpResolver(
-    mockGetITSAStatusService,
-    appConfig
+    mockGetITSAStatusService
   )(ec)
 
   private val sessionData = SessionData()
@@ -71,10 +64,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(
-      mockGetITSAStatusService
-    )
-    enable(OptBackIn)
+    reset(mockGetITSAStatusService)
   }
 
   "resolve" should {
@@ -121,24 +111,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       )(ArgumentMatchers.any())
     }
 
-    "redirect to Client already signed up (HOA06C) when OptBackIn feature switch is disabled" in {
-      disable(OptBackIn)
-      val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)
-      channels.foreach { channel =>
-        reset(mockGetITSAStatusService)
-
-        val result = resolver.resolve(sessionData, channel)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientAlreadySubscribedController.show.url)
-        session(result).get(hmrcAsAgent) mustBe Some("true")
-
-        verify(mockGetITSAStatusService, times(0)).getITSAStatus(
-          ArgumentMatchers.eq(sessionData)
-        )(ArgumentMatchers.any())
-      }
-    }
-
     "throw an exception for Client migrated by HMRC (HOA06A) when channel is unconfirmed" in {
       val channels = Seq[Option[Channel]](Some(HmrcLedUnconfirmed))
       channels.foreach { channel =>
@@ -157,7 +129,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
         )(ArgumentMatchers.any())
       }
     }
-
 
     "Go to Client opted out (HOA06B) when not triggered migration and ITSA status is Annual" in {
       val channels = Seq[Option[Channel]](Some(CustomerLed), Some(HmrcLedConfirmed), None)

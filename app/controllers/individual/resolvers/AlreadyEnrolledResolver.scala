@@ -17,8 +17,6 @@
 package controllers.individual.resolvers
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.FeatureSwitching
 import connectors.SubscriptionConnector
 import models.common.subscription.SubscriptionSuccess
 import models.status.GetITSAStatus
@@ -34,22 +32,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class AlreadyEnrolledResolver @Inject()(subscriptionConnector: SubscriptionConnector,
                                         getITSAStatusService: GetITSAStatusService,
                                         val appConfig: AppConfig)
-                                       (implicit executionContext: ExecutionContext) extends FeatureSwitching {
+                                       (implicit executionContext: ExecutionContext) {
 
   def resolve(nino: String, sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Call] = {
     subscriptionConnector.getSubscription(nino) flatMap {
       case Right(Some(SubscriptionSuccess(_, Some(HmrcLedUnconfirmed)))) =>
         Future.successful(controllers.individual.handoffs.routes.CheckIncomeSourcesController.show)
       case Right(_) =>
-        if (isEnabled(OptBackIn)) {
-          getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status)) map {
-            case Some(GetITSAStatus.Annual) => controllers.individual.handoffs.routes.OptedOutController.show
-            case _ => controllers.individual.matching.routes.AlreadyEnrolledController.show
-          }
-        } else {
-          Future.successful(controllers.individual.matching.routes.AlreadyEnrolledController.show)
+        getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status)) map {
+          case Some(GetITSAStatus.Annual) => controllers.individual.handoffs.routes.OptedOutController.show
+          case _ => controllers.individual.matching.routes.AlreadyEnrolledController.show
         }
-
       case Left(_) => throw new InternalServerException("[AlreadyEnrolledResolver][resolve] - Unable to fetch the business details.")
     }
   }

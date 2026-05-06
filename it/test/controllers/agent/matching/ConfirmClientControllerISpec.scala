@@ -22,12 +22,12 @@ import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
+import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import helpers.servicemocks.{AuthStub as _, *}
 import models.status.GetITSAStatus.NoStatus
-import models.status.GetITSAStatusModel
+import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-
 
 class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
@@ -214,6 +214,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
           ))
+          stubGetITSAStatus(
+            Json.toJson(GetITSAStatusRequest(testNino))
+          )(OK, Json.toJson(GetITSAStatusModel(status = NoStatus)))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -240,7 +243,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
           ))
-
+          stubGetITSAStatus(
+            Json.toJson(GetITSAStatusRequest(testNino))
+          )(OK, Json.toJson(GetITSAStatusModel(status = NoStatus)))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

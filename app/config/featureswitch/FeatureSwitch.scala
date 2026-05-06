@@ -30,7 +30,6 @@ object FeatureSwitch {
     ThrottlingFeature,
     SignalControlGatewayEligibility,
     AgentRelationshipSingleCall,
-    OptBackIn,
     TaxYear26To27Plus,
     ClaimEnrolmentOrigins,
     WhenDoYouWantToStartPage
@@ -57,11 +56,6 @@ object FeatureSwitch {
   case object AgentRelationshipSingleCall extends FeatureSwitch {
     override val name: String = s"$prefix.agent-relationship-as-single-call"
     override val displayText: String = "Use single call for agent client relationship check"
-  }
-
-  case object OptBackIn extends FeatureSwitch {
-    override val name: String = s"$prefix.opt-back-in"
-    override val displayText: String = "Opt back in"
   }
 
   case object TaxYear26To27Plus extends DatedFeatureSwitch {
