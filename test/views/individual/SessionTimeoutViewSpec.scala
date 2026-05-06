@@ -16,7 +16,8 @@
 
 package views.individual
 
-import messagelookup.individual.MessageLookup.{Timeout => messages}
+import messagelookup.individual.MessageLookup
+import messagelookup.individual.MessageLookup.Timeout as messages
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
@@ -39,11 +40,8 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
       page = page,
       showSignOutInBanner = false)
 
-    testPage.mustHavePara(messages.returnToHome)
-
-    val para = testPage.selectHead("return content body", "#main-content").selectHead("return home paragraph", "p")
-
-    para.mustHaveALink("sign in", controllers.individual.matching.routes.HomeController.index.url)
+    testPage.mustHavePara(messages.paragraph)
+    testPage.mustHaveSignInButton(MessageLookup.Base.signIn, controllers.individual.matching.routes.HomeController.index.url)
   }
 
 }
