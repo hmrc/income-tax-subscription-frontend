@@ -299,7 +299,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       val titleWrapper: Element = card.selectHead(".govuk-summary-card__title-wrapper")
 
       checkpoint {
-        titleWrapper.selectHead("h2").text mustBe title
+        titleWrapper.selectHead("h3").text mustBe title
       }
 
       cardActions match {

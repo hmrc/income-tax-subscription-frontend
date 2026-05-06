@@ -423,7 +423,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "have a income from properties section" which {
 
           "has a heading" in new ViewTest(incompleteIncomeSources) {
-            document.mainContent.selectNth("h2", 5).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+            document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
           }
 
           "has a paragraph" in new ViewTest(incompleteIncomeSources) {
@@ -550,7 +550,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "has a income from properties section" which {
 
         "has a heading" in new ViewTest(completeIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
         }
 
         "has a paragraph" in new ViewTest(completeIncomeSources) {
@@ -838,7 +838,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
       "has a income from properties section" which {
 
         "has a heading" in new ViewTest(completeAndConfirmedIncomeSources) {
-          document.mainContent.selectNth("h2", 3).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
+          document.mainContent.selectNth("h2", 2).text mustBe IndividualIncomeSource.incomeFromPropertiesHeading
         }
 
         "has a paragraph" in new ViewTest(completeAndConfirmedIncomeSources) {
