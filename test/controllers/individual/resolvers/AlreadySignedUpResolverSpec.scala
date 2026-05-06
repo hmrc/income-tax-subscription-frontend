@@ -17,8 +17,6 @@
 package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
-import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.FeatureSwitching
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
 import models.common.subscription.EnrolmentKey
@@ -39,17 +37,13 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 
 class AlreadySignedUpResolverSpec extends ControllerSpec
-  with MockCheckEnrolmentAllocationService
-  with FeatureSwitching {
-
-  override val appConfig: AppConfig = MockConfig
+  with MockCheckEnrolmentAllocationService {
 
   private val mockGetITSAStatusService = mock[GetITSAStatusService]
 
   private val resolver = new AlreadySignedUpResolver(
     mockCheckEnrolmentAllocationService,
-    mockGetITSAStatusService,
-    appConfig
+    mockGetITSAStatusService
   )
 
   private val sessionData = SessionData()
@@ -71,7 +65,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockGetITSAStatusService)
-    enable(OptBackIn)
   }
 
   "resolve" should {
@@ -80,7 +73,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       "and has enrolled" +
       "and has not opted-out" +
       "and OptBackIn FS in enabled" in {
-      enable(OptBackIn)
       Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
         notOptedOut.foreach { ITSAStatus =>
           reset(mockGetITSAStatusService)
@@ -106,7 +98,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       "and has enrolled" +
       "and has no status returned" +
       "and OptBackIn FS in enabled" in {
-      enable(OptBackIn)
 
       mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
       when(mockGetITSAStatusService.getITSAStatus(
@@ -121,40 +112,6 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       verify(mockGetITSAStatusService, times(1)).getITSAStatus(
         ArgumentMatchers.eq(sessionData)
       )(ArgumentMatchers.any())
-    }
-
-    "Go to the already signed up page when user " +
-      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
-      "and has enrolled" +
-      "and OptBackIn FS in disabled" in {
-      disable(OptBackIn)
-      Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
-        notOptedOut.foreach { ITSAStatus =>
-          reset(mockGetITSAStatusService)
-          mockGetGroupIdForEnrolment(enrolmentKey)(Left(EnrolmentAlreadyAllocated(testMTDITID)))
-          val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
-          verify(mockGetITSAStatusService, times(0)).getITSAStatus(
-            ArgumentMatchers.eq(sessionData)
-          )(ArgumentMatchers.any())
-        }
-      }
-    }
-
-    "Go to the claim enrolment check irsa enrolment when user " +
-      "has signed-up manually or has been signed-up by HMRC and confirmed income sources " +
-      "and has not enrolled" +
-      "and OptBackIn FS is disabled" in {
-      disable(OptBackIn)
-      Seq(CustomerLed, HmrcLedConfirmed).foreach { channel =>
-        mockGetGroupIdForEnrolment(enrolmentKey)(Right(EnrolmentNotAllocated))
-        val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.CheckIRSAEnrolmentController.show.url)
-      }
     }
 
     "Go to the check income sources page when user " +

@@ -20,12 +20,11 @@ import helpers.ComponentSpecBase
 import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import models.ErrorModel
 import models.status.GetITSAStatus.NoStatus
-import models.status.MandationStatus.Voluntary
 import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.matchers.should.Matchers.*
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
-import play.api.libs.json.{JsValue, Json}
+import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 class GetITSAStatusConnectorISpec extends ComponentSpecBase {

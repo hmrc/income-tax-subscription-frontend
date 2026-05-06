@@ -16,12 +16,11 @@
 
 package controllers.individual.resolvers
 
-import config.featureswitch.FeatureSwitch.OptBackIn
 import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.mocks.MockSubscriptionConnector
 import models.common.subscription.SubscriptionSuccess
 import models.status.GetITSAStatus.{Annual, MTDMandated, MTDVoluntary}
-import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed, SessionData}
+import models.{CustomerLed, HmrcLedConfirmed, SessionData}
 import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.MockGetITSAStatusService
@@ -37,23 +36,9 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
   val testMTDITID: String = "test-mtditid"
   val testSessionData: SessionData = SessionData()
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(OptBackIn)
-  }
-
   "resolve" must {
-    "return the HMRC led unconfirmed route" when {
-      "the user is already signed up with a channel of HMRC led unconfirmed" in {
-        setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedUnconfirmed))))))
-
-        await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
-          controllers.individual.handoffs.routes.CheckIncomeSourcesController.show.url
-      }
-    }
     "return the opt back in route" when {
       "the user has an annual status" in {
-        enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
         mockGetITSAStatusSuccess(testNino)(Some(Annual))
 
@@ -62,14 +47,7 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
       }
     }
     "return the already enrolled route" when {
-      "the opt back in feature switch is disabled" in {
-        setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-
-        await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
-          controllers.individual.matching.routes.AlreadyEnrolledController.show.url
-      }
       "the user is already signed up with a channel of confirmed triggered migrated with no status" in {
-        enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
         mockGetITSAStatusSuccess(testNino)(None)
 
@@ -77,7 +55,6 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
           controllers.individual.matching.routes.AlreadyEnrolledController.show.url
       }
       "the user is already signed up with a channel of confirmed triggered migrated with a non annual status" in {
-        enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
         mockGetITSAStatusSuccess(testNino)(Some(MTDMandated))
 
@@ -85,7 +62,6 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
           controllers.individual.matching.routes.AlreadyEnrolledController.show.url
       }
       "the user is already signed up with a channel of customer sign up with a non annual status" in {
-        enable(OptBackIn)
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(CustomerLed))))))
         mockGetITSAStatusSuccess(testNino)(Some(MTDVoluntary))
 

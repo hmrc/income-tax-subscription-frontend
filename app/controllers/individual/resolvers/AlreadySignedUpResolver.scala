@@ -18,8 +18,6 @@ package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.OptBackIn
-import config.featureswitch.FeatureSwitching
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual
@@ -36,9 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAllocationService,
-                                        getITSAStatusService: GetITSAStatusService,
-                                        val appConfig: AppConfig)
-                                       (implicit ec: ExecutionContext) extends FeatureSwitching {
+                                        getITSAStatusService: GetITSAStatusService)
+                                       (implicit ec: ExecutionContext) {
 
   def resolve(sessionData: SessionData,
               mtdItId: String,
@@ -66,11 +63,7 @@ class AlreadySignedUpResolver @Inject()(checkEnrolmentService: CheckEnrolmentAll
   }
 
   private def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatus]] = {
-    if (isEnabled(OptBackIn)) {
-      getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
-    } else {
-      Future.successful(None)
-    }
+    getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status))
   }
 
 }
