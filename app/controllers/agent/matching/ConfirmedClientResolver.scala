@@ -51,7 +51,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         utrService: UTRService,
                                         val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends SignUpBaseController  {
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
     handleThrottleCheck {
