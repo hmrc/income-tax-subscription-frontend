@@ -29,7 +29,7 @@
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false, hasWelsh: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, backLinkContent: Option[String] = None, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false, hasWelsh: Boolean = true, timeoutUrl: Option[String])(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @hmrcStandardPage(HmrcStandardPageParams(
     serviceURLs = ServiceURLs(
@@ -75,7 +75,8 @@
         @hmrcTimeoutDialogHelper(
             timeout = Some(appConfig.timeoutInSeconds.toInt),
             countdown = Some(appConfig.timeoutWarningInSeconds.toInt),
-            signOutUrl = controllers.routes.SignOutController.signOut.url
+            signOutUrl = controllers.routes.SignOutController.signOut.url,
+            timeoutUrl = timeoutUrl
         )
     }
 }

@@ -33,7 +33,9 @@
 @govukWrapper(
     title = pageTitle,
     serviceName = Some(if(isAgent) messages("agent.base.service-name") else messages("base.service-name")),
-    serviceUrl = if(isAgent) appConfig.govukGuidanceITSASignUpAgentLink else appConfig.govukGuidanceITSASignUpIndivLink){
-      <h1 class="govuk-heading-l">@heading</h1>
-      <p class="govuk-body">@message</p>
+    serviceUrl = if(isAgent) appConfig.govukGuidanceITSASignUpAgentLink else appConfig.govukGuidanceITSASignUpIndivLink,
+    timeoutUrl = if(isAgent) Some(controllers.agent.routes.SessionTimeoutController.show.url) else Some(controllers.individual.routes.SessionTimeoutController.show.url)
+) {
+    <h1 class="govuk-heading-l">@heading</h1>
+    <p class="govuk-body">@message</p>
 }
