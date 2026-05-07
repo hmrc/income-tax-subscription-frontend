@@ -20,7 +20,6 @@ import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
 import config.AppConfig
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
@@ -52,7 +51,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         utrService: UTRService,
                                         val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController  {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
     handleThrottleCheck {

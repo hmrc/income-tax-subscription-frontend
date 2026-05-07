@@ -19,7 +19,6 @@ package controllers.individual.matching
 import auth.individual.JourneyState.ResultFunctions
 import auth.individual.SignUp
 import config.AppConfig
-import config.featureswitch.*
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import controllers.individual.CheckIRSAEnrolmentBaseController
@@ -51,7 +50,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
     enrolmentStoreProxyConnector,
     irsaCredential,
     appConfig
-  ) with FeatureSwitching {
+  ) {
 
   private lazy val postAction = routes.CheckIRSAEnrolmentController.submit
 
