@@ -41,5 +41,6 @@
     backLinkContent = backLinkContent,
     showSignOutLink = showSignOutLink,
     fullWidth = fullWidth,
-    additionalScripts = additionalScripts
+    additionalScripts = additionalScripts,
+    timeoutUrl = Some(controllers.agent.routes.SessionTimeoutController.show.url)
 )(contentBlock)

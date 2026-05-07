@@ -10,6 +10,7 @@ base.ready-to-sign-up                                           = Iawn, rwy’n 
 base.update                                                     = Yn eich blaen
 base.sign-out                                                   = Allgofnodi
 base.sign-up                                                    = Cofrestru
+base.sign-in                                                    = Mewngofnodi
 base.start-now                                                  = Dechrau nawr
 base.submit                                                     = Cyflwyno
 base.day                                                        = Diwrnod
@@ -321,9 +322,9 @@ agent.overseas-property.start-date.para1                         = Mae angen i n
 agent.overseas-property.start-date.hint                          = Er enghraifft, 27 9 {0}
 
 ## Timeout page ##
-timeout.title                                                   = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-timeout.heading                                                 = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-timeout.return-to-home                                          = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
+timeout.title                                                   = Er eich diogelwch, gwnaethom eich allgofnodi
+timeout.heading                                                 = Er eich diogelwch, gwnaethom eich allgofnodi
+timeout.paragraph                                               = Gwnaethom gadw’ch atebion.
 
 ## Already enrolled page ##
 already-enrolled.title                                          = Rydych eisoes wedi cofrestru i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -967,11 +968,6 @@ agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘I
 agent.business.name.title                                       = Enw’r busnes
 agent.business.name.heading                                     = Beth yw enw busnes eich cleient?
 agent.business.name.line-1                                      = Dyma enw’r busnes a ddefnyddiodd i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar ei fusnes, nodwch enw’ch cleient.
-
-## Timeout page ##
-agent.timeout.title                                             = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-agent.timeout.heading                                           = Mae’ch sesiwn wedi cyrraedd y terfyn amser
-agent.timeout.return-to-home                                    = I gofrestru’ch cleient ar gyfer hysbysu chwarterol, rhaid i chi <a class="govuk-link" href="{0}" rel="external">fewngofnodi</a> gan ddefnyddio’ch Dynodydd Defnyddiwr (ID) Porth y Llywodraeth.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                           = Mae’ch cleient eisoes wedi cofrestru
