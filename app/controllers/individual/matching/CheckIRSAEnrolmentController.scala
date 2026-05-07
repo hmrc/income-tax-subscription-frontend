@@ -19,8 +19,6 @@ package controllers.individual.matching
 import auth.individual.JourneyState.ResultFunctions
 import auth.individual.SignUp
 import config.AppConfig
-import config.featureswitch.*
-import config.featureswitch.FeatureSwitch.WhenDoYouWantToStartPage
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import controllers.individual.CheckIRSAEnrolmentBaseController
@@ -52,7 +50,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
     enrolmentStoreProxyConnector,
     irsaCredential,
     appConfig
-  ) with FeatureSwitching {
+  ) {
 
   private lazy val postAction = routes.CheckIRSAEnrolmentController.submit
 
@@ -66,8 +64,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
 
   override protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result] = {
 
-    val next = if (isEnabled(WhenDoYouWantToStartPage)) {
-      eligibilityStatusService.getEligibilityStatus(request.sessionData) flatMap { eligibilityStatus =>
+    val next = eligibilityStatusService.getEligibilityStatus(request.sessionData) flatMap { eligibilityStatus =>
         mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
           (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
             case (true, Voluntary, Voluntary) =>
@@ -83,14 +80,6 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
           }
         }
       }
-    } else {
-      eligibilityStatusService.getEligibilityStatus(request.sessionData) map {
-        case EligibilityStatus(true, _, _) =>
-          controllers.individual.routes.YouCanSignUpController.show
-        case _ =>
-          controllers.individual.controllist.routes.CannotSignUpThisYearController.show
-      }
-    }
 
     next.map(Redirect(_).withJourneyState(SignUp))
   }
