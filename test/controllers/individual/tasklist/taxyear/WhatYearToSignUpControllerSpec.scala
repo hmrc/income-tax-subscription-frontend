@@ -207,11 +207,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
         mockView()
         TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
       }
-
-      "redirect the user to the Using Software page when in edit mode" in {
-        mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe None
-      }
     }
 
   }

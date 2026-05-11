@@ -96,10 +96,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   }
 
   def backUrl(isEditMode: Boolean): Option[String] = {
-    if (isEditMode) {
-      Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
-    } else {
-      None
-    }
+    Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
   }
 }
