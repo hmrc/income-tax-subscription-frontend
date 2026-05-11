@@ -48,7 +48,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
     whatYearToSignUp(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
-      backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )
@@ -93,9 +92,5 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
           )
         }
       }
-  }
-
-  def backUrl(isEditMode: Boolean): Option[String] = {
-    Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
   }
 }

@@ -202,12 +202,5 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url" when {
-      "redirect the user to the Global CYA page when in edit mode" in {
-        mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = true) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
-      }
-    }
-
   }
 }

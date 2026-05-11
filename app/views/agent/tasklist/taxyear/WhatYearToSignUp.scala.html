@@ -30,9 +30,9 @@
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, backUrl: Option[String], endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
+@(accountingYearForm: Form[AccountingYear], postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.business.what-year-to-sign-up.heading"), optForm = Some(accountingYearForm), backLink = backUrl) {
+@mainTemplate(title = messages("agent.business.what-year-to-sign-up.heading"), optForm = Some(accountingYearForm)) {
 
     @pageHeadingHelper(
         heading = messages("agent.business.what-year-to-sign-up.heading"),

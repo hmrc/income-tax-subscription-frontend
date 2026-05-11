@@ -51,7 +51,6 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       "the page has a back link + error" in new TemplateViewTest(
         view = page(editMode = false, hasBackLink = true, hasError = true),
         title = WhatYearToSignUp.heading,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
     }
@@ -118,7 +117,6 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
     whatYearToSignUp(
       if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
       postAction = testCall,
-      backUrl = if (hasBackLink) Some(testBackUrl) else None,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = editMode,
     )
