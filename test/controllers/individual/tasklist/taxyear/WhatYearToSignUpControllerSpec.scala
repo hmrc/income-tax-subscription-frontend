@@ -210,7 +210,7 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
       "redirect the user to the Using Software page when in edit mode" in {
         mockView()
-        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe Some(controllers.individual.routes.YouCanSignUpController.show.url)
+        TestWhatYearToSignUpController.backUrl(isEditMode = false) mustBe None
       }
     }
 

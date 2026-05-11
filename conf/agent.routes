@@ -9,10 +9,6 @@ GET         /error/cannot-sign-up                   controllers.agent.eligibilit
 GET         /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.show
 POST        /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.submit
 
-# Client Can Sign Up Page
-GET         /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.show()
-POST        /can-sign-up                            controllers.agent.eligibility.ClientCanSignUpController.submit()
-
 GET         /error/business-already-removed         controllers.agent.tasklist.addbusiness.BusinessAlreadyRemovedController.show()
 
 # Confirmation Routes

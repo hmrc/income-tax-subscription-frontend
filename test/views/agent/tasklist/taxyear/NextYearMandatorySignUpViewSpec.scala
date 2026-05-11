@@ -16,7 +16,6 @@
 
 package views.agent.tasklist.taxyear
 
-import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import forms.agent.AccountingYearForm
 import models.{Current, Next}
 import org.jsoup.Jsoup

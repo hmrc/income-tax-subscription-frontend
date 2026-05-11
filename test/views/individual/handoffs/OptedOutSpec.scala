@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.individual.eligibility.YouCanSignUp
 import views.html.individual.handoffs.OptedOut
 
 class OptedOutSpec extends ViewSpec {
