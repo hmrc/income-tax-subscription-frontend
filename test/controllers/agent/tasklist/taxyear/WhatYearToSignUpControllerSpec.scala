@@ -197,17 +197,4 @@ class WhatYearToSignUpControllerSpec extends ControllerSpec
       }
     }
   }
-
-  "backUrl" when {
-    "in edit mode" must {
-      s"return ${controllers.agent.routes.GlobalCheckYourAnswersController.show.url}" in {
-        testWhatYearToSignUpController().backUrl(true) mustBe Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-      }
-    }
-    "not in edit mode" must {
-      s"return ${controllers.agent.eligibility.routes.ClientCanSignUpController.show().url}" in {
-        testWhatYearToSignUpController().backUrl(false) mustBe Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-      }
-    }
-  }
 }

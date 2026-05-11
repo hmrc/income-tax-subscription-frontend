@@ -50,7 +50,6 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
         view = page(editMode = false, hasBackLink = true, hasError = true),
         isAgent = true,
         title = WhatYearToSignUp.heading,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
     }
@@ -139,7 +138,6 @@ class WhatYearToSignUpViewSpec extends ViewSpec {
       postAction = testCall,
       clientName,
       clientNino,
-      backUrl = if (hasBackLink) Some(testBackUrl) else None,
       endYearOfCurrentTaxPeriod = taxYearEnd,
       isEditMode = editMode,
     )

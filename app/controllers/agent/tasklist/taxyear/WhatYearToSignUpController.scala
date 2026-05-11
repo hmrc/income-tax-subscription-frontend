@@ -53,7 +53,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
       postAction = controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino,
-      backUrl = backUrl(isEditMode),
       endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
       isEditMode = isEditMode
     )
@@ -106,14 +105,6 @@ class WhatYearToSignUpController @Inject()(whatYearToSignUp: WhatYearToSignUp,
   private def fetchEmailPassed(implicit request: ConfirmedClientRequest[_]): Future[Boolean] = {
     val sessionData = request.request.sessionData
     Future.successful(sessionData.fetchEmailPassed.getOrElse(false))
-  }
-
-  def backUrl(isEditMode: Boolean): Option[String] = {
-    if (isEditMode) {
-      Some(controllers.agent.routes.GlobalCheckYourAnswersController.show.url)
-    } else {
-      Some(controllers.agent.eligibility.routes.ClientCanSignUpController.show().url)
-    }
   }
 
 }

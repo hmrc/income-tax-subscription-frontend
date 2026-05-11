@@ -749,24 +749,6 @@ agent.cannot-sign-up.button-text                                = Cofrestru’r 
 agent.cannot-sign-up.check-another                              = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
 agent.cannot-sign-up.check-another.link                         = wirio a allwch gofrestru cleient arall
 
-
-# Agent Client Can Sign Up Page
-agent.client-can-sign-up.heading                                = Gallwch gofrestru’r cleient hwn
-agent.client-can-sign-up.caption                                = {0} – {1}
-agent.client-can-sign-up.para1                                  = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr.
-agent.client-can-sign-up.subheading1                            = Yr hyn sy’n digwydd nesaf
-agent.client-can-sign-up.para2                                  = Ar gyfer pob un o fusnesau eich cleient neu ei incwm o eiddo, bydd angen y dyddiad dechrau arnoch – os gwnaeth hyn ddechrau o fewn y 2 flynedd dreth ddiwethaf.
-agent.client-can-sign-up.para3                                  = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
-agent.client-can-sign-up.bullet1                                = enw masnachu a chyfeiriad busnes eich cleient
-agent.client-can-sign-up.bullet2                                = masnach eich cleient (natur ei fusnes)
-agent.client-can-sign-up.subheading2                            = Os na fyddwch yn cofrestru’ch cleient nawr
-agent.client-can-sign-up.para4                                  = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
-agent.client-can-sign-up.bullet3                                = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
-agent.client-can-sign-up.bullet4                                = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
-agent.client-can-sign-up.button-text                            = Cofrestru’r cleient hwn
-agent.client-can-sign-up.check-another                          = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
-agent.client-can-sign-up.check-another-link                     = wirio a allwch gofrestru cleient arall
-
 # Individual cannot sign up page
 cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
 cannot-sign-up.paragraph1                                       = Mae rhywbeth wedi eich atal rhag cofrestru ar gyfer y flwyddyn dreth bresennol ({0} i {1}). Er enghraifft, mathau penodol eraill o incwm neu weithgareddau, neu’r cyfnod o amser rydych wedi bod yn hunangyflogedig, neu’n landlord.
@@ -841,17 +823,6 @@ agent.what-you-need-to-do.p4                               = Er bod eich cleient
 agent.what-you-need-to-do.p5                               = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
 agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli
 agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
-
-## You can sign up now ##
-individual.you-can-sign-up-now.heading = Gallwch gofrestru nawr
-individual.you-can-sign-up-now.paragraph-1 = Os byddwch yn parhau, byddwn yn gofyn i chi am eich busnes unig fasnachwr a’ch incwm o eiddo.
-individual.you-can-sign-up-now.paragraph-2 = Os ydych yn unig fasnachwr, bydd angen y canlynol arnoch:
-individual.you-can-sign-up-now.bullet-1 = eich masnach (natur eich busnes)
-individual.you-can-sign-up-now.bullet-2 = enw masnachu’ch busnes (os yw’n wahanol i’ch enw chi eich hun)
-individual.you-can-sign-up-now.bullet-3 = dyddiad dechrau’ch busnes
-individual.you-can-sign-up-now.bullet-4 = cyfeiriad eich busnes
-individual.you-can-sign-up-now.paragraph-3 = Os ydych yn cael incwm o eiddo, byddwn yn gofyn i chi p’un a yw’r eiddo yn y DU neu mewn gwlad arall. Byddwn hefyd yn gofyn i chi pryd y gwnaethoch ddechrau cael incwm o eiddo.
-individual.you-can-sign-up-now.paragraph-4 = Bydd hefyd angen i chi ddewis os ydych am gofrestru yn ystod y flwyddyn dreth presennol neu o’r flwyddyn dreth nesaf ymlaen.
 
 # Client details page
 agent.client-details-error.heading                              = Mae problem gyda’r manylion ynghylch eich cleient
@@ -1325,6 +1296,10 @@ agent.non-eligible-voluntary.heading                                    = Gall e
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
 agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
+
+agent.client-can-sign-up.button-text                                    = Cofrestru’r cleient hwn
+agent.client-can-sign-up.check-another                                  = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
+agent.client-can-sign-up.check-another-link                             = wirio a allwch gofrestru cleient arall
 
 error.contact-hmrc.title                                                = Mae problem
 error.contact-hmrc.heading                                              = Mae’n rhaid i chi gysylltu â ni cyn cofrestru
