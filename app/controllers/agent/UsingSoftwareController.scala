@@ -18,8 +18,8 @@ package controllers.agent
 
 import config.AppConfig
 import controllers.SignUpBaseController
-import play.api.mvc.*
 import controllers.agent.actions.IdentifierAction
+import play.api.mvc.*
 import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}

@@ -16,15 +16,13 @@
 
 @import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import services.AccountingPeriodService
 
 @this(
     mainTemplate: AgentMainTemplate,
     continueButton: ContinueButton,
     form: FormWithCSRF,
-    pageHeadingHelper: PageHeadingHelper,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(postAction: Call, clientName: String, clientNino: String, endYearOfCurrentTaxPeriod: Int)(implicit request: Request[_], messages: Messages)

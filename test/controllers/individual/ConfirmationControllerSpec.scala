@@ -57,8 +57,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(true)),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
@@ -78,8 +77,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(false)),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
@@ -100,8 +98,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(None),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
@@ -123,8 +120,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(true)),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
@@ -144,8 +140,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(Some(false)),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
@@ -166,8 +161,7 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
             ArgumentMatchers.eq(nino),
             ArgumentMatchers.eq(None),
             ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate](),
-            ArgumentMatchers.any[Boolean]()
+            ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))

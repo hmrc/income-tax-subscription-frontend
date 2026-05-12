@@ -30,7 +30,7 @@ object FeatureSwitch {
     ThrottlingFeature,
     SignalControlGatewayEligibility,
     AgentRelationshipSingleCall,
-    TaxYear26To27Plus,
+    TaxYear27To28Plus,
     ClaimEnrolmentOrigins
   )
 
@@ -57,9 +57,9 @@ object FeatureSwitch {
     override val displayText: String = "Use single call for agent client relationship check"
   }
 
-  case object TaxYear26To27Plus extends DatedFeatureSwitch {
-    override val name: String = s"$prefix.tax-year-26-27-plus"
-    override val displayText: String = "Tax year is 26/27 or later"
+  case object TaxYear27To28Plus extends DatedFeatureSwitch {
+    override val name: String = s"$prefix.tax-year-27-28-plus"
+    override val displayText: String = "Tax year is 27/28 or later"
   }
   case object ClaimEnrolmentOrigins extends FeatureSwitch {
     override val name: String = s"$prefix.claim-enrolment-origins"

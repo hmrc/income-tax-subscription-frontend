@@ -23,9 +23,7 @@ import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
 import forms.individual.*
-import forms.individual.accountingperiod.{AccountingPeriodForm, AccountingPeriodNonStandardForm}
 import forms.individual.business.*
-import forms.individual.email.{CaptureConsentForm, EmailCaptureForm}
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.*
@@ -246,27 +244,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def showCaptureConsent(includeState: Boolean = true): WSResponse = get("/capture-consent", includeState = includeState)
-
-    def submitCaptureConsent(request: Option[YesNo])(includeState: Boolean = true): WSResponse = {
-      post("/capture-consent", includeJourneyState = includeState)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => CaptureConsentForm.captureConsentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
     def showNoSoftware(): WSResponse = get("/no-compatible-software")
-
-    def showEmailCapture(includeState: Boolean = true): WSResponse = get("/email-capture", includeState = includeState)
-
-    def submitEmailCapture(request: Option[String])(includeState: Boolean = true): WSResponse = {
-      post("/email-capture", includeJourneyState = includeState)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => EmailCaptureForm.form.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 
@@ -391,16 +369,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def noSA(): WSResponse = get("/register-for-SA")
 
     def getRouting: WSResponse = get("/business/routing")
-
-    def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
     
-    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
-      val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        ))
-    }
     def whenDoYouWantToStart():  WSResponse = get("/tax-year/select-tax-year")
 
     def submitWhenDoYouWantToStart(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
@@ -410,28 +379,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
           model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         ))
     }
-
-    def accountingPeriod: WSResponse = get("/accounting-period-check")
-
-    def submitAccountingPeriod(request: Option[BusinessAccountingPeriod]): WSResponse = {
-      post("/accounting-period-check")(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => AccountingPeriodForm.accountingPeriodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def showNonStandardAccountingPeriod(): WSResponse = get("/accounting-period-non-standard")
-
-    def submitNonStandardAccountingPeriod(request: Option[YesNo]): WSResponse = {
-      post("/accounting-period-non-standard")(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => AccountingPeriodNonStandardForm.nonStandardAccountingPeriodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
-
-    def accountingPeriodNotSupported: WSResponse = get("/accounting-period-not-supported")
 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 

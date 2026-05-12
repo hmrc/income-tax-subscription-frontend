@@ -90,7 +90,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
         ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false)),
-        ArgumentMatchers.eq(controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url)
+        ArgumentMatchers.eq(controllers.individual.routes.WhatYouNeedToDoController.show.url)
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = TestUsingSoftwareController.show(false)(

@@ -186,16 +186,6 @@ individual.what-you-need-to-do.p6                               = You can opt ou
 individual.what-you-need-to-do.p7                               = Read more about penalties that apply if you are volunteering
 individual.what-you-need-to-do.p7.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers
 
-# What tax year to sign up
-business.what-year-to-sign-up.heading                           = When do you want to start using Making Tax Digital for Income Tax?
-business.what-year-to-sign-up.para                              = You can sign up during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
-business.what-year-to-sign-up.para2                             = Find out more about {0}.
-business.what-year-to-sign-up.para2.link-text                   = how and when to send quarterly updates
-business.what-year-to-sign-up.para2.link-href                   = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
-business.what-year-to-sign-up.option-1                          = Current tax year
-business.what-year-to-sign-up.option-1.hint                     = You’ll need to use your software to send any missed quarterly updates for the year so far
-business.what-year-to-sign-up.option-2                          = Next tax year
-
 # Tax Year Selection Mandatory Both
 individual.tax-year.mm.heading                                  = You must use Making Tax Digital for Income Tax now
 individual.tax-year.mm.paragraph                                = As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from {0} to {1}.
@@ -223,36 +213,6 @@ business.non-eligible-mandated.heading                          = You must start
 business.non-eligible-mandated.paragraph                        = You must still submit your {0} for this tax year, {1} to {2}, as normal.
 business.non-eligible-mandated.para.link-text                   = Self Assessment tax return
 business.non-eligible-mandated.para.link-href                   = https://www.gov.uk/self-assessment-tax-returns/sending-return
-
-## Accounting period
-accounting-period.heading                                       = Your business accounting period
-accounting-period.para-1                                        = This is the accounting period you use each year when reporting your business income and expenses to HMRC.
-accounting-period.para-2                                        = Your accounting period runs from the date your books or accounts start. It ends on the date your books or accounts are made up to.
-accounting-period.legend                                        = What accounting period do you use for your business?
-accounting-period.sixth-april-to-fifth-april                    = 6 April to 5 April
-accounting-period.sixth-april-to-fifth-april.hint               = Your books or accounts start on 6 April and are made up to 5 April of the following year (such as, 6 April 2026 to 5 April 2027)
-accounting-period.first-april-to-thirty-first-march             = 1 April to 31 March
-accounting-period.first-april-to-thirty-first-march.hint        = Your books or accounts start on 1 April and are made up to 31 March of the following year (such as, 1 April 2026 to 31 March 2027)
-accounting-period.other                                         = Neither of these
-accounting-period.error                                         = Select which accounting period you use for your business
-
-## Accounting period non standard
-accounting-period-non-standard.heading                         = Your business accounting period is not yet supported
-accounting-period-non-standard.para-one                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods:
-accounting-period-non-standard.bullet-one                      = 6 April to 5 April
-accounting-period-non-standard.bullet-two                      = 1 April to 31 March
-accounting-period-non-standard.form-legend                     = Would you like to sign up for next tax year?
-accounting-period-non-standard.form-error                      = Select if you want to sign up for next tax year, 2026 to 2027
-
-## Accounting period not supported
-accounting-period-not-supported.heading                         = Your business accounting period is not yet supported
-accounting-period-not-supported.para-one                        = Making Tax Digital for Income Tax is only available to people who use these business accounting periods:
-accounting-period-not-supported.bullet-one                      = 6 April to 5 April
-accounting-period-not-supported.bullet-two                      = 1 April to 31 March
-accounting-period-not-supported.para-two                        = From 2026/27, this service will be extended to people with any accounting period.
-accounting-period-not-supported.send-self-assessment            = You’ll need to continue to submit your {0} as normal.
-accounting-period-not-supported.send-self-assessment.link       = Self Assessment tax return
-
 
 # Property Start Date Before Limit Page
 property.start-date-before-limit.heading                        = Did you start getting this income before 6 April {0}?
@@ -546,12 +506,6 @@ sign-up-confirmation.what-you-must-do.bullet1                        = the remai
 sign-up-confirmation.what-you-must-do.bullet2                        = the upcoming {0} to {1} tax year
 sign-up-confirmation.what-you-must-do.para2                          = But you must submit your Self Assessment tax returns for the tax years up to 5 April {0} as normal.
 
-sign-up-confirmation.contact-support.heading                         = Get help with Making Tax Digital for Income Tax
-sign-up-confirmation.contact-support.phone-number                    = Telephone: 03003 229 619
-sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
-sign-up-confirmation.contact-support.link-text                       = Find out about call charges
-sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
-
 sign-up-confirmation.survey.link-text                                = What did you think of this service
 sign-up-confirmation.survey.after                                    = (takes 30 seconds)
 
@@ -592,6 +546,8 @@ individual.digitally-exempt.para2.link-href                          = https://w
 
 error.business.what-year-to-sign-up.empty                         = Select the tax year you want to sign up for
 error.business.what-year-to-sign-up.invalid                       = Select the tax year you want to sign up for
+agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
+agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
 
 error.property.income.empty                                     = You must select an option to continue
 error.property.income.invalid                                   = You must select an option to continue
@@ -798,35 +754,6 @@ agent.no-software.para3.href                                     = https://www.g
 agent.no-software.para4                                          = When you have compatible software, you can come back to sign up your client.
 agent.no-software.para5                                          = Meanwhile, you’ll need to make sure your client submits their Self Assessment tax return as normal.
 
-## Agent Capture Consent Page ##
-agent.capture-consent.heading                               = Help HMRC improve Making Tax Digital for Income Tax
-agent.capture-consent.para-one                              = We would like to ask for your help to improve Making Tax Digital for Income Tax.
-agent.capture-consent.contact-about.heading                 = What we will contact you about
-agent.capture-consent.contact-about.ask.para                = We will ask:
-agent.capture-consent.contact-about.ask.bullet-one          = for your feedback on your experience using Making Tax Digital for Income Tax
-agent.capture-consent.contact-about.ask.bullet-two          = what software you’re using with Making Tax Digital for Income Tax
-agent.capture-consent.contact-about.ask.bullet-three        = to arrange one-on-one contact with you for optional user research sessions
-agent.capture-consent.contact-about.update.para             = We will update you on:
-agent.capture-consent.contact-about.update.bullet-one       = issues affecting your use of Making Tax Digital for Income Tax
-agent.capture-consent.contact-about.update.bullet-two       = how your feedback is helping to improve Making Tax Digital for Income Tax
-agent.capture-consent.contact-about.update.bullet-three     = new features added to Making Tax Digital for Income Tax
-agent.capture-consent.contact-about.update.bullet-four      = when to submit your client’s quarterly updates
-agent.capture-consent.contact-about.never.para              = We will never:
-agent.capture-consent.contact-about.never.bullet-one        = contact you or your client to ask for your personal information
-agent.capture-consent.contact-about.never.bullet-two        = send you or your client a direct link to sign into Making Tax Digital for Income Tax
-agent.capture-consent.para-two                              = If you change your mind about us contacting you, you can withdraw your consent at any time. Information on how to withdraw your consent will be included in the emails we send to you.
-agent.capture-consent.contact-about.heading-two             = Can HMRC contact you by email about Making Tax Digital for Income Tax?
-agent.capture-consent.form-error                            = Select yes if we can contact you by email about Making Tax Digital for Income Tax.
-
-## Agent email capture page ##
-agent.email-capture.heading                                 = Enter your contact email address
-agent.email-capture.para                                    = Full details of how we use contact information are in the {0}
-agent.email-capture.hmrc-privacy-notice.link-text           = HMRC Privacy Notice
-agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you
-error.agent.email-capture.empty                             = Enter an email address
-error.agent.email-capture.max-length                        = Your email address must be 254 characters or less
-error.agent.email-capture.invalid                           = Enter an email address in the correct format, like name@example.com
-
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                            = What penalties apply in Making Tax Digital for Income Tax
 agent.what-you-need-to-do.heading                          = What penalties apply in Making Tax Digital for Income Tax
@@ -910,19 +837,6 @@ agent.income-sources-incomplete.check-income-sources                = Check your
 agent.property.income.title                                     = How much was your income from property this year?
 agent.property.income.heading                                   = How much was your income from property this year?
 agent.property.income.line-1                                    = This is the amount you made before deducting any allowable expenses.
-
-# Accounting Year page
-agent.business.what-year-to-sign-up.heading                     = When do you want to start using Making Tax Digital for Income Tax?
-agent.business.what-year-to-sign-up.caption                     = {0} – {1}
-agent.business.what-year-to-sign-up.para                        = You can sign up your client during the current tax year (from 6 April {0}) or from next tax year (from 6 April {1}).
-agent.business.what-year-to-sign-up.para-two                    = Find out more about {0}.
-agent.business.what-year-to-sign-up.para-two.link-text          = how and when to send quarterly updates
-agent.business.what-year-to-sign-up.para-two.link-href          = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
-agent.business.what-year-to-sign-up.option-1                    = Current tax year
-agent.business.what-year-to-sign-up.option-2                    = Next tax year
-agent.business.what-year-to-sign-up.option-current-hint         = You or your client will need to use your software to send any missed quarterly updates for the year so far
-agent.error.business.what-year-to-sign-up.empty                 = Select the tax year you want to sign your client up for
-agent.error.business.what-year-to-sign-up.invalid               = Select the tax year you want to sign your client up for
 
 # Agent Tax Year Selection Mandatory Both
 agent.tax-year.mm.heading                                       = Your client must use Making Tax Digital for Income Tax now

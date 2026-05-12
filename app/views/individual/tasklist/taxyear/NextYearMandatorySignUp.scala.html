@@ -16,7 +16,7 @@
 
 @import forms.individual.business.AccountingYearForm
 @import play.api.data.Form
-@import views.html.helpers.{ContinueButton, RadioHelper, UnorderedList}
+@import views.html.helpers.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
@@ -25,8 +25,7 @@
     mainTemplate: PrincipalMainTemplate,
     form: FormWithCSRF,
     radioHelper: RadioHelper,
-    continueButton: ContinueButton,
-    ul:UnorderedList
+    continueButton: ContinueButton
 )
 
 @(accountingYearForm: Form[AccountingYear], postAction: Call, endYearOfCurrentTaxPeriod: Int, isEditMode: Boolean)(implicit request: Request[_], messages: Messages)

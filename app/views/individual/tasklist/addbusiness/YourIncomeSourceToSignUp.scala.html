@@ -24,8 +24,6 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
 @import java.time.LocalDate
-@import utilities.ImplicitDateFormatter
-@import uk.gov.hmrc.play.language.LanguageUtils
 
 @this(
     mainTemplate: PrincipalMainTemplate,
@@ -35,9 +33,7 @@
     govukSummaryList: GovukSummaryList,
     govukTag : GovukTag,
     ul: UnorderedList,
-    govukInsetText: GovukInsetText,
-    implicitDateFormatter: ImplicitDateFormatter,
-    languageUtils: LanguageUtils
+    govukInsetText: GovukInsetText
 )
 
 @(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)

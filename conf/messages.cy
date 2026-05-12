@@ -184,16 +184,6 @@ individual.what-you-need-to-do.p6                               = Gallwch optio 
 individual.what-you-need-to-do.p7                               = Darllenwch ragor am y newidiadau i gosbau sy’n berthnasol os ydych yn gwirfoddoli
 individual.what-you-need-to-do.p7.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
-# What tax year to sign up
-business.what-year-to-sign-up.heading                           = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
-business.what-year-to-sign-up.para                              = Gallwch gofrestru yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0}), neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
-business.what-year-to-sign-up.para2                             = Dysgwch ragor am {0}.
-business.what-year-to-sign-up.para2.link-text                   = sut a phryd i anfon diweddariadau chwarterol
-business.what-year-to-sign-up.para2.link-href                   = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
-business.what-year-to-sign-up.option-1                          = Blwyddyn dreth bresennol
-business.what-year-to-sign-up.option-1.hint                     = Bydd angen i chi ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
-business.what-year-to-sign-up.option-2                          = Blwyddyn dreth nesaf
-
 # Tax Year Selection Mandatory Both
 individual.tax-year.mm.heading                                  = Mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr
 individual.tax-year.mm.paragraph                                = Gan fod cyfanswm eich incwm blynyddol o hunangyflogaeth neu eiddo dros £50,000, mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} i {1} ymlaen.
@@ -214,35 +204,6 @@ business.non-eligible-mandated.heading                          = Mae’n rhaid 
 business.non-eligible-mandated.paragraph                        = Bydd yn dal i fod yn rhaid i chi gyflwyno’ch {0} ar gyfer y flwyddyn dreth hon, sef {1} i {2}, yn ôl yr arfer.
 business.non-eligible-mandated.para.link-text                   = Ffurflen Dreth Hunanasesiad
 business.non-eligible-mandated.para.link-href                   = https://www.gov.uk/self-assessment-tax-returns/sending-return.cy
-
-## Accounting period
-accounting-period.heading                                       = Cyfnod cyfrifyddu eich busnes
-accounting-period.para-1                                        = Dyma’r cyfnod cyfrifyddu rydych chi’n ei ddefnyddio bob blwyddyn wrth roi gwybod i CThEF am eich incwm a threuliau busnes.
-accounting-period.para-2                                        = Mae eich cyfnod cyfrifyddu yn rhedeg o ddyddiad dechrau’ch cofnodion neu’ch cyfrifon. Mae’n dod i ben ar y dyddiad y caewyd eich llyfrau neu’ch cyfrifon.
-accounting-period.legend                                        = Pa gyfnod cyfrifyddu yr ydych yn ei ddefnyddio ar gyfer eich busnes?
-accounting-period.sixth-april-to-fifth-april                    = 6 Ebrill i 5 Ebrill
-accounting-period.sixth-april-to-fifth-april.hint               = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 6 Ebrill ac yn cau ar 5 Ebrill y flwyddyn ganlynol (er enghraifft, 6 Ebrill 2026 i 5 Ebrill 2027)
-accounting-period.first-april-to-thirty-first-march             = 1 Ebrill i 31 Mawrth
-accounting-period.first-april-to-thirty-first-march.hint        = Mae eich llyfrau neu’ch cyfrifon yn dechrau ar 1 Ebrill ac yn cau ar 31 Mawrth y flwyddyn ganlynol (er enghraifft, 1 Ebrill 2026 i 31 Mawrth 2027)
-accounting-period.other                                         = Dim un o’r rhain
-accounting-period.error                                         = Dewiswch pa gyfnod cyfrifyddu rydych yn ei ddefnyddio ar gyfer eich busnes
-
-## Accounting period non standard
-accounting-period-non-standard.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
-accounting-period-non-standard.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:
-accounting-period-non-standard.bullet-one                      = 6 Ebrill i 5 Ebrill
-accounting-period-non-standard.bullet-two                      = 1 Ebrill i 31 Mawrth
-accounting-period-non-standard.form-legend                     = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
-accounting-period-non-standard.form-error                      = Dewiswch a hoffech gofrestru ar gyfer y flwyddyn dreth nesaf, sef 2026 i 2027
-
-## Accounting period not supported
-accounting-period-not-supported.heading                         = Nid yw cyfnod cyfrifyddu’ch busnes wedi’i gefnogi eto
-accounting-period-not-supported.para-one                        = Dim ond i bobl sy’n defnyddio’r cyfnodau cyfrifyddu busnes hyn y mae Troi Treth yn Ddigidol ar gyfer Treth Incwm ar gael:
-accounting-period-not-supported.bullet-one                      = 6 Ebrill i 5 Ebrill
-accounting-period-not-supported.bullet-two                      = 1 Ebrill i 31 Mawrth
-accounting-period-not-supported.para-two                        = O 2026/27 ymlaen, bydd y gwasanaeth hwn yn cael ei ymestyn i bobl ag unrhyw gyfnod cyfrifyddu.
-accounting-period-not-supported.send-self-assessment            = Bydd angen i chi barhau i gyflwyno’ch {0} fel arfer.
-accounting-period-not-supported.send-self-assessment.link       = Ffurflen Dreth Hunanasesiad
 
 # Property Start Date Before Limit Page
 property.start-date-before-limit.heading                        = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
@@ -527,12 +488,6 @@ sign-up-confirmation.what-you-must-do.bullet1                        = gweddill 
 sign-up-confirmation.what-you-must-do.bullet2                        = y flwyddyn dreth sydd i ddod, sef {0} i {1}
 sign-up-confirmation.what-you-must-do.para2                          = Fodd bynnag, mae’n rhaid i chi gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebrill {0} yn ôl yr arfer.
 
-sign-up-confirmation.contact-support.heading                         = Cael help gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03003 200 1900
-sign-up-confirmation.contact-support.para                            = 08:30 i 17:00, o ddydd Llun i ddydd Gwener, (heblaw am wyliau banc)
-sign-up-confirmation.contact-support.link-text                       = Cael gwybodaeth am gostau galwadau
-sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
-
 sign-up-confirmation.survey.link-text                                = Rhoi adborth ar y gwasanaeth hwn
 sign-up-confirmation.survey.after                                    = (mae’n cymryd 30 eiliad)
 
@@ -573,6 +528,8 @@ individual.digitally-exempt.para2.link-href                          = https://w
 
 error.business.what-year-to-sign-up.empty                            = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
 error.business.what-year-to-sign-up.invalid                          = Dewiswch y flwyddyn dreth yr ydych am gofrestru ar ei chyfer
+agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 error.property.income.empty                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.property.income.invalid                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -779,35 +736,6 @@ agent.no-software.para3.href                                     = https://www.g
 agent.no-software.para4                                          = Pan gewch feddalwedd sy’n cydweddu, gallwch ddod yn ôl i gofrestru’ch cleient.
 agent.no-software.para5                                          = Yn y cyfamser, bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad yn ôl yr arfer.
 
-## Agent Capture Consent Page ##
-agent.capture-consent.heading                               = Helpu CThEF i wella Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.para-one                              = Hoffwn ofyn am eich help i wella’r gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm.
-agent.capture-consent.contact-about.heading                 = Beth fyddwn yn cysylltu â chi amdano
-agent.capture-consent.contact-about.ask.para                = Byddwn yn gofyn y canlynol:
-agent.capture-consent.contact-about.ask.bullet-one          = am eich adborth ar eich profiad o ddefnyddio Troi Treth Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.contact-about.ask.bullet-two          = pa feddalwedd rydych chi’n defnyddio â Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.contact-about.ask.bullet-three        = i drefnu cyswllt un-i-un gyda chi ar gyfer sesiynau ymchwil defnyddwyr dewisol
-agent.capture-consent.contact-about.update.para             = Byddwn yn eich diweddaru ar y canlynol:
-agent.capture-consent.contact-about.update.bullet-one       = materion sy’n effeithio ar eich defnydd o Droi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.contact-about.update.bullet-two       = sut mae eich adborth yn helpu i wella gwasanaeth Troi Treth Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.contact-about.update.bullet-three     = nodweddion newydd sydd wedi’u hychwanegu at Droi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.contact-about.update.bullet-four      = pryd i gyflwyno diweddariadau chwarterol eich cleient
-agent.capture-consent.contact-about.never.para              = Ni fyddwn byth yn:
-agent.capture-consent.contact-about.never.bullet-one        = cysylltu â chi neu â’ch cleient er mwyn gofyn am eich gwybodaeth bersonol
-agent.capture-consent.contact-about.never.bullet-two        = anfon cysylltiad uniongyrchol atoch chi neu at eich cleient ar gyfer mewngofnodi i’r gwasanaeth Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.capture-consent.para-two                              = Os byddwch yn newid eich meddwl ynglŷn â ni yn cysylltu â chi, gallwch dynnu’ch caniatâd yn ôl ar unrhyw adeg. Manylion am sut i dynnu’ch caniatâd yn ôl yn cael eu cynnwys ar yr e-byst a anfonwn atoch.
-agent.capture-consent.contact-about.heading-two             = A all CThEF gysylltu â chi drwy e-bost ynglŷn â Troi Treth yn Ddigidol ar gyfer Treth Incwm?
-agent.capture-consent.form-error                            = Dewiswch ‘Iawn’ os gallwn gysylltu â chi drwy e-bost ynglŷn â Throi Treth yn Ddigidol ar gyfer Treth Incwm.
-
-## Agent email capture page ##
-agent.email-capture.heading                                 = Nodwch eich cyfeiriad e-bost cyswllt
-agent.email-capture.para                                    = Ceir manylion llawn ynghylch sut rydym yn defnyddio gwybodaeth gyswllt yn {0}.
-agent.email-capture.hmrc-privacy-notice.link-text           = Hysbysiad Preifatrwydd CThEF
-agent.email-capture.hmrc-privacy-notice.link-href           = https://www.gov.uk/government/publications/data-protection-act-dpa-information-hm-revenue-and-customs-hold-about-you/63cba3e4-c360-41e5-ab8d-c34e6ddfb256
-error.agent.email-capture.empty                             = Nodwch gyfeiriad e-bost
-error.agent.email-capture.max-length                        = Rhaid i’ch cyfeiriad e-bost fod yn 254 o gymeriadau neu lai
-error.agent.email-capture.invalid                           = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
-
 ## Agent what you need to do page ##
 agent.what-you-need-to-do.title                            = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.what-you-need-to-do.heading                          = Pa gosbau sy’n berthnasol i’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -891,19 +819,6 @@ agent.income-sources-incomplete.check-income-sources                = Gwirio’c
 agent.property.income.title                                     = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.heading                                   = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.line-1                                    = Dyma’r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
-
-# Accounting Year page
-agent.business.what-year-to-sign-up.heading                     = Pryd yr hoffech ddechrau defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm?
-agent.business.what-year-to-sign-up.caption                     = {0} – {1}
-agent.business.what-year-to-sign-up.para                        = Gallwch gofrestru eich cleient yn ystod y flwyddyn dreth bresennol (o 6 Ebrill {0}) neu o’r flwyddyn dreth nesaf ymlaen (o 6 Ebrill {1}).
-agent.business.what-year-to-sign-up.para-two                    = Dysgwch ragor am {0}.
-agent.business.what-year-to-sign-up.para-two.link-text          = sut a phryd i anfon diweddariadau chwarterol
-agent.business.what-year-to-sign-up.para-two.link-href          = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm/anfon-diweddariadau-chwarterol
-agent.business.what-year-to-sign-up.option-1                    = Blwyddyn dreth bresennol
-agent.business.what-year-to-sign-up.option-2                    = Blwyddyn dreth nesaf
-agent.business.what-year-to-sign-up.option-current-hint         = Bydd angen i chi neu’ch cleient ddefnyddio’ch meddalwedd i anfon unrhyw ddiweddariadau chwarterol a gollwyd ar gyfer y flwyddyn hyd yma
-agent.error.business.what-year-to-sign-up.empty                 = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
-agent.error.business.what-year-to-sign-up.invalid               = Dewiswch y flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 # Agent Tax Year Selection Mandatory Both
 agent.tax-year.mm.heading                                       = Eich cleient mae’n rhaid i chi ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr

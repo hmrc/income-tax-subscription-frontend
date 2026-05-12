@@ -20,7 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.individual.UsingSoftwareForm
-import models.{AccountingYear, Current, No, Yes, YesNo}
+import models.YesNo
 import play.api.data.Form
 import play.api.mvc.*
 import play.twirl.api.Html
@@ -63,22 +63,12 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     _ =>
       for {
         sessionData <- sessionDataService.getAllSessionData()
-        eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       } yield {
         val usingSoftwareStatus = sessionData.fetchSoftwareStatus
-        val consentStatus = sessionData.fetchConsentStatus
-        val taxYearSelection = selectedTaxYear.map(_.accountingYear)
         Ok(view(
           usingSoftwareForm = form.fill(usingSoftwareStatus),
           editMode = editMode,
-          backUrl = backUrl(
-            editMode = editMode,
-            eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-            taxYearSelection = taxYearSelection,
-            consentStatus = consentStatus
-          )
+          backUrl = backUrl(editMode)
         ))
       }
   }
@@ -87,34 +77,20 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     _ =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          for {
-            sessionData <- sessionDataService.getAllSessionData()
-            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
-            reference <- referenceRetrieval.getIndividualReference(sessionData)
-            selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-          } yield {
-            val consentStatus = sessionData.fetchConsentStatus
-            val taxYearSelection = selectedTaxYear.map(_.accountingYear)
+          Future.successful {
             BadRequest(view(
               usingSoftwareForm = formWithErrors,
               editMode = editMode,
-              backUrl = backUrl(
-                editMode = editMode,
-                eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-                taxYearSelection = taxYearSelection,
-                consentStatus = consentStatus
-              )
+              backUrl = backUrl(editMode)
             ))
           },
         yesNo =>
           for {
             sessionData <- sessionDataService.getAllSessionData()
             usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
             mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
           } yield {
             val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-            val isEligibleNextYearOnly: Boolean = eligibilityStatus.eligibleNextYearOnly
 
             usingSoftwareStatus match {
               case Left(_) =>
@@ -132,20 +108,11 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
       )
   }
 
-  private def backUrl(editMode: Boolean, eligibleNextYearOnly: Boolean, taxYearSelection: Option[AccountingYear], consentStatus: Option[YesNo]): String = {
+  private def backUrl(editMode: Boolean): String = {
     if (editMode) {
       controllers.individual.routes.GlobalCheckYourAnswersController.show.url
     } else {
-      if (eligibleNextYearOnly) {
-        controllers.individual.routes.WhatYouNeedToDoController.show.url
-      } else {
-        (taxYearSelection, consentStatus) match {
-          case (Some(Current), Some(Yes)) => controllers.individual.email.routes.EmailCaptureController.show().url
-          case (Some(Current), Some(No)) => controllers.individual.email.routes.CaptureConsentController.show().url
-          case (Some(Current), None) => controllers.individual.accountingperiod.routes.AccountingPeriodController.show.url
-          case _ => controllers.individual.routes.WhatYouNeedToDoController.show.url
-        }
-      }
+      controllers.individual.routes.WhatYouNeedToDoController.show.url
     }
   }
 }

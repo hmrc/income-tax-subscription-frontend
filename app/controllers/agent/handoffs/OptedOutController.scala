@@ -16,7 +16,6 @@
 
 package controllers.agent.handoffs
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -26,8 +25,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class OptedOutController @Inject()(view: OptedOut,
-                                   identity: IdentifierAction,
-                                   appConfig: AppConfig)
+                                   identity: IdentifierAction)
                                   (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identity { implicit request =>

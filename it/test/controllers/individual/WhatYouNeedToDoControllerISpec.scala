@@ -69,7 +69,7 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       Then("The result should be SEE_OTHER redirecting to the accounting period page")
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.accountingPeriodURI)
+        redirectURI(IndividualURI.usingSoftwareURI)
       )
     }
   }

@@ -30,12 +30,11 @@
     accountingPeriodHelper: AccountingPeriodHelper,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     ul: UnorderedList,
-    govukTabs: GovukTabs,
     govukTable: GovukTable,
     appConfig: AppConfig
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate, showHelp: Boolean)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
+@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading"), hasBackLink = false) {
 
@@ -104,10 +103,6 @@ classes = "govuk-!-margin-bottom-4"
   <p class="govuk-body">@messages("sign-up-confirmation.preference-set.postal.para-one")</p>
   }
 </div>
-
-@if(showHelp) {
-    @voluntary
-}
 
 <div>
     <p class="govuk-body">
@@ -181,13 +176,6 @@ classes = "govuk-!-margin-bottom-4"
     ))
 }
 
-@userDetails = @{
-  individualUserNameMaybe match {
-    case Some(name) => s"$name &vert; $individualUserNino"
-    case None => individualUserNino
-  }
-}
-
 @headingPanelContent = {
 <p class="govuk-panel__body--secondary">
   @{
@@ -212,22 +200,6 @@ classes = "govuk-!-margin-bottom-4"
 )
 
 <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2", AccountingPeriodUtil.getCurrentTaxStartYear.toString)</p>
-}
-
-@voluntary = {
-    @if(!taxYearSelectionIsNext) {
-        <h2 class="govuk-heading-m">@messages("sign-up-confirmation.contact-support.heading")</h2>
-        <p class="govuk-body">
-            @messages("sign-up-confirmation.contact-support.phone-number")
-            <br>
-            @messages("sign-up-confirmation.contact-support.para")
-        </p>
-        <p class="govuk-body">@hmrcNewTabLinkHelper(NewTabLinkHelper(
-            text = messages("sign-up-confirmation.contact-support.link-text"),
-            href = Some(messages("sign-up-confirmation.contact-support.link-href"))
-            ))
-        </p>
-    }
 }
 
 @yesSoftware = {

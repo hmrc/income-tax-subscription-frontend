@@ -79,8 +79,7 @@ class AgentWhatYouNeedToDoControllerSpec
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
-          ArgumentMatchers.eq(clientDetails.formattedNino),
-          any[String]
+          ArgumentMatchers.eq(clientDetails.formattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -99,8 +98,7 @@ class AgentWhatYouNeedToDoControllerSpec
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
-          ArgumentMatchers.eq(clientDetails.formattedNino),
-          any[String]
+          ArgumentMatchers.eq(clientDetails.formattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -121,8 +119,7 @@ class AgentWhatYouNeedToDoControllerSpec
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
-          ArgumentMatchers.eq(clientDetails.formattedNino),
-          any[String]
+          ArgumentMatchers.eq(clientDetails.formattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -143,8 +140,7 @@ class AgentWhatYouNeedToDoControllerSpec
         when(whatYouNeedToDo(
           ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
           ArgumentMatchers.eq(clientDetails.name),
-          ArgumentMatchers.eq(clientDetails.formattedNino),
-          any[String]
+          ArgumentMatchers.eq(clientDetails.formattedNino)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(
@@ -167,8 +163,7 @@ class AgentWhatYouNeedToDoControllerSpec
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
-            ArgumentMatchers.eq(clientDetails.formattedNino),
-            any[String]
+            ArgumentMatchers.eq(clientDetails.formattedNino)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -188,8 +183,7 @@ class AgentWhatYouNeedToDoControllerSpec
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
-            ArgumentMatchers.eq(clientDetails.formattedNino),
-            any[String]
+            ArgumentMatchers.eq(clientDetails.formattedNino)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -209,8 +203,7 @@ class AgentWhatYouNeedToDoControllerSpec
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
-            ArgumentMatchers.eq(clientDetails.formattedNino),
-            any[String]
+            ArgumentMatchers.eq(clientDetails.formattedNino)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -228,8 +221,7 @@ class AgentWhatYouNeedToDoControllerSpec
           when(whatYouNeedToDo(
             ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
             ArgumentMatchers.eq(clientDetails.name),
-            ArgumentMatchers.eq(clientDetails.formattedNino),
-            any[String]
+            ArgumentMatchers.eq(clientDetails.formattedNino)
           )(any(), any())).thenReturn(HtmlFormat.empty)
 
           val result: Future[Result] = controller.show(
@@ -249,45 +241,6 @@ class AgentWhatYouNeedToDoControllerSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
-    }
-  }
-
-  "backUrl" when {
-    "the user is eligible for next year only" should {
-      "return the Cannot sign up this year page" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = true, captureConsentStatus = Some(Yes), Some(Next))
-
-        backUrl mustBe controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
-      }
-    }
-    "the user is mandated or signing up for current year" should {
-      "return the Email Capture page when selected Yes for consent" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, captureConsentStatus = Some(Yes), Some(Current))
-
-        backUrl mustBe controllers.agent.email.routes.EmailCaptureController.show().url
-      }
-
-      "return the Capture Consent page when selected No for consent" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, captureConsentStatus = Some(No), Some(Current))
-
-        backUrl mustBe controllers.agent.email.routes.CaptureConsentController.show().url
-      }
-    }
-
-    "the user is voluntarily signing up for next year" should {
-      "return the What Year to Sign Up page" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, captureConsentStatus = None, Some(Next))
-
-        backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      }
-    }
-
-    "the user is voluntarily signing up for current year" should {
-      "return the What Year to Sign Up page" in new Setup {
-        val backUrl: String = controller.backUrl(eligibleNextYearOnly = false, captureConsentStatus = None, Some(Current))
-
-        backUrl mustBe controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      }
     }
   }
 }

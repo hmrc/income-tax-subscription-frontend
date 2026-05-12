@@ -17,7 +17,6 @@
 package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
-import config.AppConfig
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual

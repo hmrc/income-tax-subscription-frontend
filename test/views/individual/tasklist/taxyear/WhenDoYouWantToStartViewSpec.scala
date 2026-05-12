@@ -63,10 +63,6 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
       "has a first paragraph" in {
         document().mainContent.selectNth("p", 1).text mustBe WhenDoYouWantToStart.paragraph
       }
-
-      "has a second paragraph" in {
-        document().mainContent.selectNth("p", 2).text mustBe WhenDoYouWantToStart.paragraph2
-      }
     }
 
     "have a form" which {
@@ -110,8 +106,7 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
       if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
       postAction = testCall,
       endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = editMode,
-      hideContent = false
+      isEditMode = editMode
     )
 
   private def document(editMode: Boolean = false, hasError: Boolean = false): Document =
@@ -120,7 +115,6 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
   object WhenDoYouWantToStart {
     val heading = "When do you want to start using Making Tax Digital for Income Tax?"
     val paragraph = "If you start in the current tax year, you’ll need to use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far."
-    val paragraph2 = "Making Tax Digital for Income Tax is voluntary until 6 April 2026, so you will not get penalties for any missed quarterly updates before then."
     val currentYearOption: String = s"I want to start in the current tax year, ${taxYearEnd - 1} to $taxYearEnd"
     val nextYearOption: String = s"I want to start from the next tax year, $taxYearEnd to ${taxYearEnd + 1}"
   }

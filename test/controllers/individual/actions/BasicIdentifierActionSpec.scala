@@ -17,26 +17,17 @@
 package controllers.individual.actions
 
 import auth.MockAuth
-import common.Constants
-import common.Constants.ITSASessionKeys
 import config.MockConfig
-import models.SessionData
-import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.JsString
 import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockAuditingService, MockSessionDataService}
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.*
-import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
-import uk.gov.hmrc.auth.core.retrieve.{EmptyRetrieval, ~}
-import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global

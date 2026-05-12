@@ -32,8 +32,7 @@ class CheckClientIncomeSourcesControllerSpec extends AgentControllerBaseSpec wit
 
   class TestController extends CheckClientIncomeSourcesController(
     app.injector.instanceOf[CheckClientIncomeSources],
-    fakeIdentifierAction,
-    appConfig
+    fakeIdentifierAction
   )
 
   "show returns Ok" in {

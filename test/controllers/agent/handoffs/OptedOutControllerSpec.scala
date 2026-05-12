@@ -32,8 +32,7 @@ class OptedOutControllerSpec extends AgentControllerBaseSpec with MockIdentifier
 
   class TestController extends OptedOutController(
     app.injector.instanceOf[OptedOut],
-    fakeIdentifierAction,
-    appConfig
+    fakeIdentifierAction
   )
 
   "show returns Ok" in {

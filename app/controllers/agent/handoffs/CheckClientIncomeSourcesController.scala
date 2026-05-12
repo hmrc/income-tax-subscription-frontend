@@ -16,10 +16,8 @@
 
 package controllers.agent.handoffs
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.agent.handoffs.CheckClientIncomeSources
 
@@ -27,10 +25,9 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CheckClientIncomeSourcesController @Inject()(
-                                                 view: CheckClientIncomeSources,
-                                                 identity: IdentifierAction,
-                                                 appConfig: AppConfig
-                                               )(implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                    view: CheckClientIncomeSources,
+                                                    identity: IdentifierAction
+                                                  )(implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identity { implicit request =>
     Ok(view())

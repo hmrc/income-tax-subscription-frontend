@@ -16,9 +16,7 @@
 
 package services
 
-import connectors.MandationStatusConnector
 import models.SessionData
-import models.status.MandationStatusModel
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import java.time.LocalDate
@@ -40,7 +38,7 @@ class SignedUpDateService @Inject()(sessionDataService: SessionDataService)
           case Left(error) => throw new SaveToSessionException(error.toString)
         }
     }
-    
+
   }
 
   private class SaveToSessionException(error: String) extends InternalServerException(

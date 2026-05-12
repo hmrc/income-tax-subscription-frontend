@@ -54,10 +54,6 @@ GET         /register-for-SA                        controllers.agent.matching.N
 
 ######################### Business Routes
 
-#What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                      controllers.agent.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
-
 #When Do You Want To Start Routes
 GET         /tax-year/select-tax-year                           controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
 POST        /tax-year/select-tax-year                           controllers.agent.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
@@ -82,14 +78,6 @@ POST        /tax-year/sign-up-mandatory-both-year               controllers.agen
 # Using software
 GET         /using-software                                     controllers.agent.UsingSoftwareController.show()
 POST        /using-software                                     controllers.agent.UsingSoftwareController.submit()
-
-# Capture consent routes
-GET         /capture-consent                                    controllers.agent.email.CaptureConsentController.show()
-POST        /capture-consent                                    controllers.agent.email.CaptureConsentController.submit()
-
-# Email capture routes
-GET         /email-capture                                       controllers.agent.email.EmailCaptureController.show()
-POST        /email-capture                                       controllers.agent.email.EmailCaptureController.submit()
 
 # What you need to do
 GET         /what-you-need-to-do                                controllers.agent.WhatYouNeedToDoController.show()

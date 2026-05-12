@@ -19,9 +19,8 @@ package controllers.agent
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.*
 import play.api.mvc.*
-import services.*
+import services.{GetEligibilityStatusService, SubscriptionDetailsService}
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -37,39 +36,15 @@ class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController {
 
-  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    val sessionData = request.request.sessionData
-    for {
-      eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
-      taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      consentYesNo = sessionData.fetchConsentStatus
-    } yield {
-      Ok(view(
-        postAction = routes.WhatYouNeedToDoController.submit,
-        clientName = request.clientDetails.name,
-        clientNino = request.clientDetails.formattedNino,
-        backUrl = backUrl(
-          eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly,
-          captureConsentStatus = consentYesNo,
-          taxYearSelection = taxYearSelection.map(_.accountingYear)
-        )
-      ))
-    }
+  def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(view(
+      postAction = routes.WhatYouNeedToDoController.submit,
+      clientName = request.clientDetails.name,
+      clientNino = request.clientDetails.formattedNino
+    ))
   }
 
   val submit: Action[AnyContent] = (identify andThen journeyRefiner) { _ =>
     Redirect(controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-  }
-
-  def backUrl(eligibleNextYearOnly: Boolean, captureConsentStatus: Option[YesNo], taxYearSelection: Option[AccountingYear]): String = {
-    if (eligibleNextYearOnly) {
-      controllers.agent.eligibility.routes.CannotSignUpThisYearController.show.url
-    } else {
-      (taxYearSelection, captureConsentStatus) match {
-        case (Some(Current), Some(Yes)) => controllers.agent.email.routes.EmailCaptureController.show().url
-        case (Some(Current), Some(No)) => controllers.agent.email.routes.CaptureConsentController.show().url
-        case _ => controllers.agent.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-      }
-    }
   }
 }

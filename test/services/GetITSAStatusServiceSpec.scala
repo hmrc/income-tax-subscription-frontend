@@ -16,16 +16,11 @@
 
 package services
 
-import common.Constants.ITSASessionKeys
-import connectors.httpparser.SaveSessionDataHttpParser
-import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import models.SessionData
 import models.status.GetITSAStatus.NoStatus
 import models.status.GetITSAStatusModel
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import play.api.http.Status.INTERNAL_SERVER_ERROR
-import play.api.libs.json.Json
 import play.api.test.Helpers.*
 import services.mocks.{MockGetITSAStatusConnector, MockNinoService, MockSessionDataService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
