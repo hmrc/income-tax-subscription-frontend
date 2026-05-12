@@ -38,188 +38,195 @@
 
 @principalMainTemplate(title = messages("sign-up-confirmation.heading"), hasBackLink = false) {
 
-@govukPanel(Panel(
-title = Text(messages("sign-up-confirmation.heading")),
-content = HtmlContent(headingPanelContent),
-classes = "govuk-!-margin-bottom-4"
-))
+    @headingPanel
 
-<div class="govuk-!-margin-bottom-6 govuk-!-display-none-print">
-  <p class="govuk-body">
-    <a href="#" data-module="hmrc-print-link" class="govuk-link hmrc-!-js-visible govuk-!-display-none-print">@messages("base.print-page")</a>
-  </p>
+    @printLink
 
-    <p class="govuk-body">
-        <strong class="govuk-!-font-weight-bold">@messages("sign-up-confirmation.date")</strong>
-        @implicitDateFormatter.LongDate(signedUpDate).toLongDate
-    </p>
+    @signUpConfirmationDate
 
-  <h2 class="govuk-heading-m">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("sign-up-confirmation.what-you-must-do.heading")</h2>
 
-</div>
-
-  @if(usingSoftwareStatus) {
-    @yesSoftware
-    @if(!taxYearSelectionIsNext) {
-        @currentYear
-    }
+    @if(usingSoftwareStatus) {
+        @yesSoftware
+        @if(!taxYearSelectionIsNext) {
+            @currentYear
+        }
     } else {
         @noSoftware1
         @if(!taxYearSelectionIsNext) {
             @currentYear
         }
         @noSoftware2
+    }
+
+    <div>
+        <p class="govuk-body">@Html(messages(
+            key = "sign-up-confirmation-what-you-must-do.software-choices-para2",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation-what-you-must-do.no-para2.link-text"), Some(messages("sign-up-confirmation-what-you-must-do.no-para2.link-href"))))))
+        </p>
+
+        @ul(
+            leadIn = "",
+            Seq(
+                Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
+                Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
+                Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
+            )
+        )
+    </div>
+
+    <div>
+        <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
+        <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
+        @QuaterlyUpdatesHtml
+        <p class="govuk-body">@Html(messages(
+            key = "sign-up-confirmation.quarterly.updates.para2.start",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.quarterly.updates.para2"), Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))))))
+        </p>
+    </div>
+
+    <div>
+        @if(preference.contains(false)) {
+            <h2 class="govuk-heading-m">@messages("sign-up-confirmation.preference-set.postal.heading")</h2>
+            <p class="govuk-body">@messages("sign-up-confirmation.preference-set.postal.para-one")</p>
+        }
+    </div>
+
+    <div>
+        <p class="govuk-body">
+            @hmrcNewTabLinkHelper(NewTabLinkHelper(
+                text = messages("sign-up-confirmation.survey.link-text"),
+                href = Some(appConfig.feedbackFrontendRedirectUrl)
+            )) <span>@messages("sign-up-confirmation.survey.after")</span>
+        </p>
+    </div>
 }
 
-<div>
-    <p class="govuk-body">@Html(messages(
-        key = "sign-up-confirmation-what-you-must-do.software-choices-para2",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation-what-you-must-do.no-para2.link-text"), Some(messages("sign-up-confirmation-what-you-must-do.no-para2.link-href"))))))
+@headingPanel = @{
+    govukPanel(Panel(
+        title = Text(messages("sign-up-confirmation.heading")),
+        content = HtmlContent(headingPanelContent),
+        classes = "govuk-!-margin-bottom-4"
+    ))
+}
+
+@printLink = {
+    <p class="govuk-body hmrc-!-js-visible govuk-!-display-none-print">
+        <a href="#" data-module="hmrc-print-link" class="govuk-link hmrc-!-js-visible govuk-!-display-none-print">@messages("base.print-page")</a>
     </p>
+}
 
-    @ul(
-    leadIn = "",
-    Seq(
-    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet4")),
-    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet5")),
-    Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet6"))
-    )
-    )
-</div>
-
-<div>
-    <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
-    <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
-    @QuaterlyUpdatesHtml
-    <p class="govuk-body">@Html(messages(
-        key = "sign-up-confirmation.quarterly.updates.para2.start",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.quarterly.updates.para2"), Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))))))
-    </p>
-</div>
-
-<div>
-  @if(preference.contains(false)) {
-  <h2 class="govuk-heading-m">@messages("sign-up-confirmation.preference-set.postal.heading")</h2>
-  <p class="govuk-body">@messages("sign-up-confirmation.preference-set.postal.para-one")</p>
-  }
-</div>
-
-<div>
+@signUpConfirmationDate = {
     <p class="govuk-body">
-        @hmrcNewTabLinkHelper(NewTabLinkHelper(
-        text = messages("sign-up-confirmation.survey.link-text"),
-        href = Some(appConfig.feedbackFrontendRedirectUrl)
-        )) <span>@messages("sign-up-confirmation.survey.after")</span>
+        <strong class="govuk-!-font-weight-bold">@messages("sign-up-confirmation.date")</strong>
+        @implicitDateFormatter.LongDate(signedUpDate).toLongDate
     </p>
-</div>
 }
 
 @QuaterlyUpdatesHtml = {
     @govukTable(Table(
-    rows = Seq(
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
-    )
-    )
-    ),
-    head = Some(Seq(
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
-    ),
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
-    ),
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
-    )
-    ))
+        rows = Seq(
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
+                )
+            )
+        ),
+        head = Some(Seq(
+            HeadCell(
+                content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
+            ),
+            HeadCell(
+                content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
+            ),
+            HeadCell(
+                content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
+            )
+        ))
     ))
 }
 
 @headingPanelContent = {
-<p class="govuk-panel__body--secondary">
-  @{
-  val signUpTaxYear = accountingPeriodHelper(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext))
-  if(taxYearSelectionIsNext) {
-    messages("sign-up-confirmation.heading.panel.next", signUpTaxYear)
-  } else {
-    messages("sign-up-confirmation.heading.panel.current", signUpTaxYear)
-  }
-}
-</p>
+    <p class="govuk-panel__body--secondary">
+        @{
+            val signUpTaxYear = accountingPeriodHelper(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext))
+            if(taxYearSelectionIsNext) {
+                messages("sign-up-confirmation.heading.panel.next", signUpTaxYear)
+            } else {
+                messages("sign-up-confirmation.heading.panel.current", signUpTaxYear)
+            }
+        }
+    </p>
 }
 
 @currentYear = {
+    @ul(
+      leadIn = messages("sign-up-confirmation.what-you-must-do.para1"),
+      bulletPoints = Seq(
+        Text(messages("sign-up-confirmation.what-you-must-do.bullet1", AccountingPeriodUtil.getCurrentTaxStartYear.toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)),
+        Text(messages("sign-up-confirmation.what-you-must-do.bullet2", AccountingPeriodUtil.getNextTaxStartYear.toString, AccountingPeriodUtil.getNextTaxEndYear.toString))
+      )
+    )
 
-@ul(
-  leadIn=messages("sign-up-confirmation.what-you-must-do.para1"),
-  Seq(
-    Text(messages("sign-up-confirmation.what-you-must-do.bullet1", AccountingPeriodUtil.getCurrentTaxStartYear.toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)),
-    Text(messages("sign-up-confirmation.what-you-must-do.bullet2", AccountingPeriodUtil.getNextTaxStartYear.toString, AccountingPeriodUtil.getNextTaxEndYear.toString))
-  )
-)
-
-<p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2", AccountingPeriodUtil.getCurrentTaxStartYear.toString)</p>
+    <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.para2", AccountingPeriodUtil.getCurrentTaxStartYear.toString)</p>
 }
 
 @yesSoftware = {
-  <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.yes.this.year")</p>
+    <p class="govuk-body">@messages("sign-up-confirmation.what-you-must-do.yes.this.year")</p>
 }
 
 @noSoftware1 = {
-
     <p class="govuk-body">@Html(messages(
         key = "sign-up-confirmation.what-you-must-do.no.this.year",
         args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.what-you-must-do.no.this.year.link.text"), Some(messages("sign-up-confirmation-what-you-must-do.link-href"))))))
     </p>
 
     @ul(
-    leadIn = messages("sign-up-confirmation-what-you-must-do.software-choices-para"),
-    Seq(
-      Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet1")),
-      Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet2")),
-      Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet3"))
-    )
+        leadIn = messages("sign-up-confirmation-what-you-must-do.software-choices-para"),
+        bulletPoints = Seq(
+          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet1")),
+          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet2")),
+          Text(messages("sign-up-confirmation-what-you-must-do.software-choices-bullet3"))
+        )
     )
 }
 
