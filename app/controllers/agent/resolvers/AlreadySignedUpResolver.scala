@@ -17,7 +17,6 @@
 package controllers.agent.resolvers
 
 import common.Constants.hmrcAsAgent
-import config.AppConfig
 import models.requests.agent.IdentifierRequest
 import models.status.GetITSAStatus
 import models.status.GetITSAStatus.Annual

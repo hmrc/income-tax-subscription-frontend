@@ -21,7 +21,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.AccountingYearForm
-import models.{AccountingYear, Current}
+import models.AccountingYear
 import models.common.AccountingYearModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.data.Form
@@ -35,14 +35,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NextYearMandatorySignUpController @Inject()(nextYearMandatorySignUp:NextYearMandatorySignUp,
-                                               identify: IdentifierAction,
-                                               journeyRefiner: ConfirmedClientJourneyRefiner,
-                                               subscriptionDetailsService: SubscriptionDetailsService,
-                                               accountingPeriodService: AccountingPeriodService)
-                                              (val appConfig: AppConfig)
-                                              (implicit mcc: MessagesControllerComponents,
-                                               ec: ExecutionContext) extends SignUpBaseController {
+class NextYearMandatorySignUpController @Inject()(nextYearMandatorySignUp: NextYearMandatorySignUp,
+                                                  identify: IdentifierAction,
+                                                  journeyRefiner: ConfirmedClientJourneyRefiner,
+                                                  subscriptionDetailsService: SubscriptionDetailsService,
+                                                  accountingPeriodService: AccountingPeriodService)
+                                                 (val appConfig: AppConfig)
+                                                 (implicit mcc: MessagesControllerComponents,
+                                                  ec: ExecutionContext) extends SignUpBaseController {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)
           (implicit request: ConfirmedClientRequest[_]): Html =

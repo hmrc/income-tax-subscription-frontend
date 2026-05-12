@@ -16,9 +16,10 @@
 
 package controllers.individual
 
+import _root_.common.Constants.ITSASessionKeys
+import models.*
 import models.Yes.YES
 import models.status.MandationStatus.{Mandated, Voluntary}
-import models.*
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,11 +29,9 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.*
-import utilities.agent.TestModels.{testSelectedTaxYearCurrent, testSelectedTaxYearNext}
 import views.html.individual.WhatYouNeedToDo
 
 import scala.concurrent.Future
-import _root_.common.Constants.ITSASessionKeys
 
 class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
   with MockAuditingService

@@ -26,7 +26,6 @@ import utilities.AccountingPeriodUtil
 import views.html.agent.confirmation.SignUpConfirmation
 
 import java.time.LocalDate
-import utilities.ImplicitDateFormatterImpl
 
 trait MockSignUpConfirmation extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>

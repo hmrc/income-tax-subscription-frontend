@@ -16,7 +16,6 @@
 
 package controllers.agent.eligibility
 
-import services.*
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

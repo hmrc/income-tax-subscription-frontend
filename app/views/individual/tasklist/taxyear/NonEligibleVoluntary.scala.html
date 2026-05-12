@@ -22,8 +22,7 @@
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
+    form: FormWithCSRF
 )
 
 @(postAction: Call, startYear: Int, endYear: Int)(implicit request: Request[_], messages: Messages)

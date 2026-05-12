@@ -15,7 +15,7 @@
  *@
 
 @import views.html.templates.AgentMainTemplate
-@import views.html.helpers.{ContinueButton, PageHeadingHelper, UnorderedList}
+@import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
 
@@ -24,8 +24,7 @@
     form: FormWithCSRF,
     continueButton: ContinueButton,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    pageHeadingHelper: PageHeadingHelper,
-    ul: UnorderedList
+    pageHeadingHelper: PageHeadingHelper
 )
 
 @(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)

@@ -23,7 +23,6 @@ import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
-import models.EligibilityStatus
 import models.requests.individual.IdentifierRequest
 import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -65,21 +64,21 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
   override protected def redirectToNext(implicit request: IdentifierRequest[_]): Future[Result] = {
 
     val next = eligibilityStatusService.getEligibilityStatus(request.sessionData) flatMap { eligibilityStatus =>
-        mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
-          (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
-            case (true, Voluntary, Voluntary) =>
-              controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
-            case (true, Voluntary, Mandated) =>
-              controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()
-            case (true, Mandated, _) =>
-              controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show
-            case (false, _, Voluntary) =>
-              controllers.individual.tasklist.taxyear.routes.NonEligibleVoluntaryController.show
-            case (false, _, Mandated) =>
-              controllers.individual.tasklist.taxyear.routes.NonEligibleMandatedController.show
-          }
+      mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
+        (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
+          case (true, Voluntary, Voluntary) =>
+            controllers.individual.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()
+          case (true, Voluntary, Mandated) =>
+            controllers.individual.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()
+          case (true, Mandated, _) =>
+            controllers.individual.tasklist.taxyear.routes.MandatoryBothSignUpController.show
+          case (false, _, Voluntary) =>
+            controllers.individual.tasklist.taxyear.routes.NonEligibleVoluntaryController.show
+          case (false, _, Mandated) =>
+            controllers.individual.tasklist.taxyear.routes.NonEligibleMandatedController.show
         }
       }
+    }
 
     next.map(Redirect(_).withJourneyState(SignUp))
   }

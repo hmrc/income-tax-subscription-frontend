@@ -20,7 +20,7 @@ import forms.individual.business.AccountingYearForm
 import messagelookup.agent.MessageLookup
 import models.{Current, Next}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html

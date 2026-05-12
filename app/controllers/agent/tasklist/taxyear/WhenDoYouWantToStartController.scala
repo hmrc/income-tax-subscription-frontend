@@ -21,7 +21,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionD
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.AccountingYearForm
-import models.{AccountingYear, Current}
+import models.AccountingYear
 import models.common.AccountingYearModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.data.Form

@@ -19,13 +19,12 @@ package controllers.individual
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
-import models.*
 import play.api.mvc.*
 import services.*
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,

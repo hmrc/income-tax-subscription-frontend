@@ -16,14 +16,13 @@
 
 package controllers.agent.matching
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import forms.agent.ClientDetailsForm.clientDetailsForm
 import models.audits.SignupStartedAuditing
 import models.requests.agent.IdentifierRequest
 import models.usermatching.NotLockedOut
-import play.api.mvc._
+import play.api.mvc.*
 import services.{AuditingService, SessionClearingService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -40,7 +39,7 @@ class ClientDetailsController @Inject()(view: ClientDetails,
                                         lockoutService: UserLockoutService,
                                         auditingService: AuditingService,
                                         sessionClearingService: SessionClearingService)
-                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext, appConfig: AppConfig) extends SignUpBaseController {
+                                       (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     handleLockOut {

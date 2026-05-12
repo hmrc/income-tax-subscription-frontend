@@ -21,7 +21,7 @@ import messagelookup.agent.MessageLookup.Base
 import messagelookup.individual.MessageLookup
 import models.DateModel
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest

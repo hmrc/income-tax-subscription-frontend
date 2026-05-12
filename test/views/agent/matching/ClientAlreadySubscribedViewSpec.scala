@@ -16,7 +16,7 @@
 
 package views.agent.matching
 
-import messagelookup.agent.MessageLookup.{Base => common, ClientAlreadySubscribed => messages}
+import messagelookup.agent.MessageLookup.ClientAlreadySubscribed as messages
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat

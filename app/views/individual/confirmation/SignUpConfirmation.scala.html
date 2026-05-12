@@ -30,7 +30,6 @@
     accountingPeriodHelper: AccountingPeriodHelper,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     ul: UnorderedList,
-    govukTabs: GovukTabs,
     govukTable: GovukTable,
     appConfig: AppConfig
 )
@@ -175,13 +174,6 @@ classes = "govuk-!-margin-bottom-4"
     )
     ))
     ))
-}
-
-@userDetails = @{
-  individualUserNameMaybe match {
-    case Some(name) => s"$name &vert; $individualUserNino"
-    case None => individualUserNino
-  }
 }
 
 @headingPanelContent = {

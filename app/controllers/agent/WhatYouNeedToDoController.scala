@@ -19,9 +19,8 @@ package controllers.agent
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.*
 import play.api.mvc.*
-import services.*
+import services.{GetEligibilityStatusService, SubscriptionDetailsService}
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}

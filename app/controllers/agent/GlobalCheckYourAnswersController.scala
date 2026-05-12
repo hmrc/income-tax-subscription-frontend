@@ -27,7 +27,7 @@ import services.*
 import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}

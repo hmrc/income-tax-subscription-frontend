@@ -18,7 +18,6 @@ package views.agent.handoffs
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.handoffs.CheckClientIncomeSources

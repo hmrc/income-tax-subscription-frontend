@@ -16,10 +16,9 @@
 
 @import forms.agent.AccountingYearForm
 @import services.AccountingPeriodService
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.ReturnDeadlineTable
-@import views.html.helpers.{RadioHelper, PageHeadingHelper, ContinueButton, UnorderedList}
+@import views.html.helpers.{PageHeadingHelper, ContinueButton}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
@@ -27,9 +26,6 @@
     form : FormWithCSRF,
     pageHeadingHelper: PageHeadingHelper,
     continueButton: ContinueButton,
-    radioHelper: RadioHelper,
-    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-    ul:UnorderedList,
     govukInsetText: GovukInsetText
 )
 

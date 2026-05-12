@@ -17,7 +17,6 @@
 package controllers.individual.resolvers
 
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
-import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
 import models.common.subscription.EnrolmentKey
 import models.status.GetITSAStatus.*
@@ -29,7 +28,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import play.api.http.Status.SEE_OTHER
 import play.api.test.Helpers.{redirectLocation, status}
 import services.GetITSAStatusService
-import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated}
+import services.agent.CheckEnrolmentAllocationService.EnrolmentAlreadyAllocated
 import services.mocks.MockCheckEnrolmentAllocationService
 import uk.gov.hmrc.http.HeaderCarrier
 

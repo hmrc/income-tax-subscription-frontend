@@ -44,7 +44,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         mandationStatusService: MandationStatusService,
                                         throttlingService: ThrottlingService,
                                         referenceRetrieval: ReferenceRetrieval,
-                                        subscriptionDetailsService: SubscriptionDetailsService,
                                         prePopDataService: PrePopDataService,
                                         auditingService: AuditingService,
                                         ninoService: NinoService,
@@ -90,7 +89,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
       handlePrePop(reference, nino) {
-        goToSignUpClient(reference, eligibilityStatus).map(_.addingToSession(JourneyStateKey -> AgentSignUp.name))
+        goToSignUpClient(eligibilityStatus).map(_.addingToSession(JourneyStateKey -> AgentSignUp.name))
       }
     }
   }
@@ -136,21 +135,21 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
     ))
   }
 
-  private def goToSignUpClient(reference: String, eligibilityStatus: EligibilityStatus)
+  private def goToSignUpClient(eligibilityStatus: EligibilityStatus)
                               (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     mandationStatusService.getMandationStatus(request.sessionData) flatMap { mandationStatus =>
-        (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
-          case (true, Voluntary, Voluntary) =>
-            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()))
-          case (true, Voluntary, Mandated) =>
-            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()))
-          case (true, Mandated, _) =>
-            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show))
-          case (false, _, Voluntary) =>
-            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show))
-          case (false, _, Mandated) =>
-            Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show))
-        }
+      (eligibilityStatus.eligibleCurrentYear, mandationStatus.currentYearStatus, mandationStatus.nextYearStatus) match {
+        case (true, Voluntary, Voluntary) =>
+          Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show()))
+        case (true, Voluntary, Mandated) =>
+          Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show()))
+        case (true, Mandated, _) =>
+          Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show))
+        case (false, _, Voluntary) =>
+          Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show))
+        case (false, _, Mandated) =>
+          Future.successful(Redirect(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show))
+      }
     }
   }
 }

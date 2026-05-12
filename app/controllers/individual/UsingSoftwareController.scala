@@ -20,7 +20,7 @@ import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
 import forms.individual.UsingSoftwareForm
-import models.{AccountingYear, Current, No, Yes, YesNo}
+import models.YesNo
 import play.api.data.Form
 import play.api.mvc.*
 import play.twirl.api.Html
@@ -88,7 +88,6 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           for {
             sessionData <- sessionDataService.getAllSessionData()
             usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-            eligibilityStatus <- eligibilityStatusService.getEligibilityStatus(sessionData)
             mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
           } yield {
             val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
