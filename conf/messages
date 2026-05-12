@@ -546,12 +546,6 @@ sign-up-confirmation.what-you-must-do.bullet1                        = the remai
 sign-up-confirmation.what-you-must-do.bullet2                        = the upcoming {0} to {1} tax year
 sign-up-confirmation.what-you-must-do.para2                          = But you must submit your Self Assessment tax returns for the tax years up to 5 April {0} as normal.
 
-sign-up-confirmation.contact-support.heading                         = Get help with Making Tax Digital for Income Tax
-sign-up-confirmation.contact-support.phone-number                    = Telephone: 03003 229 619
-sign-up-confirmation.contact-support.para                            = Monday to Friday, 8am to 6pm (except public holidays)
-sign-up-confirmation.contact-support.link-text                       = Find out about call charges
-sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/call-charges
-
 sign-up-confirmation.survey.link-text                                = What did you think of this service
 sign-up-confirmation.survey.after                                    = (takes 30 seconds)
 

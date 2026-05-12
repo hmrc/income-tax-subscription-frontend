@@ -16,7 +16,6 @@
 
 package views.individual.tasklist.taxyear
 
-import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
 import forms.individual.business.AccountingYearForm
 import messagelookup.agent.MessageLookup
 import models.{Current, Next}

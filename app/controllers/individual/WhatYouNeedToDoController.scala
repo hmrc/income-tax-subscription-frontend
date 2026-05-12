@@ -16,8 +16,6 @@
 
 package controllers.individual
 
-import config.featureswitch.FeatureSwitch.TaxYear26To27Plus
-import config.featureswitch.FeatureSwitching
 import auth.individual.SignUpController
 import config.AppConfig
 import controllers.utils.ReferenceRetrieval
@@ -27,19 +25,18 @@ import services.*
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
                                           mandationStatusService: MandationStatusService,
                                           getEligibilityStatusService: GetEligibilityStatusService,
                                           referenceRetrieval: ReferenceRetrieval,
-                                          subscriptionDetailsService: SubscriptionDetailsService,
                                           sessionDataService: SessionDataService)
                                          (val auditingService: AuditingService,
                                           val appConfig: AppConfig,
                                           val authService: AuthService)
-                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController with FeatureSwitching {
+                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     _ =>
@@ -48,7 +45,6 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         reference <- referenceRetrieval.getIndividualReference(sessionData)
         mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
         eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
-        selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
       } yield {
         Ok(whatYouNeedToDo(
           postAction = routes.WhatYouNeedToDoController.submit,
@@ -59,19 +55,15 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
       }
   }
 
-    val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-      _ =>
-        for {
-          sessionData <- sessionDataService.getAllSessionData()
-          reference <- referenceRetrieval.getIndividualReference(sessionData)
-          selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(reference)
-        } yield {
-          selectedTaxYear.map(_.accountingYear) match {
-            case Some(Current) if isDisabled(TaxYear26To27Plus) => Redirect(controllers.individual.accountingperiod.routes.AccountingPeriodController.show)
-            case _ => Redirect(controllers.individual.routes.UsingSoftwareController.show())
-          }
-        }
-    }
+  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
+    _ =>
+      for {
+        sessionData <- sessionDataService.getAllSessionData()
+        reference <- referenceRetrieval.getIndividualReference(sessionData)
+      } yield {
+        Redirect(controllers.individual.routes.UsingSoftwareController.show())
+      }
+  }
 
   def backUrl(eligibleNextYearOnly: Boolean): String = {
     if (eligibleNextYearOnly) {

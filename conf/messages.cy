@@ -527,12 +527,6 @@ sign-up-confirmation.what-you-must-do.bullet1                        = gweddill 
 sign-up-confirmation.what-you-must-do.bullet2                        = y flwyddyn dreth sydd i ddod, sef {0} i {1}
 sign-up-confirmation.what-you-must-do.para2                          = Fodd bynnag, mae’n rhaid i chi gyflwyno’ch Ffurflenni Treth Hunanasesiad ar gyfer y blynyddoedd treth hyd at 5 Ebrill {0} yn ôl yr arfer.
 
-sign-up-confirmation.contact-support.heading                         = Cael help gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.contact-support.phone-number                    = Ffôn: 03003 200 1900
-sign-up-confirmation.contact-support.para                            = 08:30 i 17:00, o ddydd Llun i ddydd Gwener, (heblaw am wyliau banc)
-sign-up-confirmation.contact-support.link-text                       = Cael gwybodaeth am gostau galwadau
-sign-up-confirmation.contact-support.link-href                       = https://www.gov.uk/costau-galwadau
-
 sign-up-confirmation.survey.link-text                                = Rhoi adborth ar y gwasanaeth hwn
 sign-up-confirmation.survey.after                                    = (mae’n cymryd 30 eiliad)
 

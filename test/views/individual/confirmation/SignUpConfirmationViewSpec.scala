@@ -41,22 +41,21 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate, showHelp: Boolean): Html =
-    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference, usingSoftwareStatus, signedUpDate, showHelp)
+  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate): Html =
+    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference, usingSoftwareStatus, signedUpDate)
 
   def document(mandatedCurrentYear: Boolean,
                selectedTaxYearIsNext: Boolean,
                userNameMaybe: Option[String] = Some(testName),
                preference: Option[Boolean] = None,
                usingSoftwareStatus: Boolean,
-               signedUpDate: LocalDate,
-               showHelp: Boolean): Document = {
-    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus, signedUpDate, showHelp).body)
+               signedUpDate: LocalDate): Document = {
+    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus, signedUpDate).body)
   }
 
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
-      view = page(true, true, None, None, true, LocalDate.now, true),
+      view = page(true, true, None, None, true, LocalDate.now),
       title = SignUpConfirmationMessages.panelHeading,
       isAgent = false,
       hasBackLink = false
@@ -65,911 +64,666 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and eligible for current year" should {
-      def mainContent(preference: Option[Boolean] = None, showHelp: Boolean): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now(), showHelp).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "has a header panel" which {
         "contains the panel heading" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-          }
+            mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the description" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel")
+            mainContent().select(".govuk-panel")
               .select(".govuk-panel__body")
               .select("p")
               .get(0)
               .text() mustBe SignUpConfirmationMessages.panelDescription(false)
-          }
         }
       }
 
       "have a print link" in {
-        Seq(false, true).foreach { showHelp =>
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.text mustBe SignUpConfirmationMessages.printLink
           link.attr("data-module") mustBe "hmrc-print-link"
           link.attr("href") mustBe "#"
-        }
       }
 
       "contains date field" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-        }
+          mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
       }
 
       "contains what you must do heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-        }
+          mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains a first paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
-        }
+          mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
       }
 
       "contains a second paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
-        }
+          mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
       }
 
       "contains bullets for cannot use HMRC reminders" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 1)
+        def bulletList() = mainContent().selectNth("ul", 1)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
+
         }
       }
 
       "contains a third paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
-        }
+          mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
       }
 
       "contains a mtd paragraph with a link" in {
 
-        def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 7)
+        def usingMtdPara() = mainContent().selectNth("p", 7)
 
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-
-        Seq(false, true).foreach { showHelp =>
-          usingMtdPara(showHelp).text() mustBe expectedText
-          val link = usingMtdPara(showHelp).select("a")
+        
+          usingMtdPara().text() mustBe expectedText
+          val link = usingMtdPara().select("a")
           link.text() mustBe SignUpConfirmationMessages.usingMtdLink
           link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-        }
       }
 
       "contains a bullet list for mtd" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 2)
+        def bulletList() = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
         }
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("div", 7)
+        def quarterlyUpdatesSection() = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-          }
+            quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "have the correct intro paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-          }
+            quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
         }
 
         "have the correct table" which {
           "has the correct headers" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableHeaders = quarterlyUpdatesSection(showHelp).select("th")
+              val tableHeaders = quarterlyUpdatesSection().select("th")
               tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
               tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
               tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-            }
           }
 
           "has the correct first row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
               tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
               tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-            }
           }
 
           "has the correct second row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
               tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
               tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-            }
           }
 
           "has the correct third row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
               tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
               tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-            }
           }
 
           "has the correct fourth row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
               tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
               tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-            }
           }
         }
 
         "have the correct read more paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            val readMorePara = quarterlyUpdatesSection(showHelp).select("p").last()
+            val readMorePara = quarterlyUpdatesSection().select("p").last()
             readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
             readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-          }
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None, showHelp: Boolean): Element = mainContent(preference, showHelp).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(showHelp = showHelp).selectOptionalNth("p", 1) mustBe None
-          }
+            preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(preference = Some(false), showHelp).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-            preferenceSection(preference = Some(false), showHelp).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-          }
-        }
-      }
-
-      "contains a CST contact section if showing helpo" which {
-        "has a heading" in {
-          mainContent(showHelp = true).selectNth("h2", 2).text mustBe SignUpConfirmationMessages.cstContactHeading
-        }
-        "has the contact details" in {
-          mainContent(showHelp = true).selectNth("p.govuk-body", 10).text mustBe SignUpConfirmationMessages.cstContactPara
-        }
-        "has a link for call charges" in {
-          mainContent(showHelp = true).selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.cstContactLinkText
-          mainContent(showHelp = true).selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
+            preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
+            preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
         }
       }
 
       "contains survey link" which {
         "has a link for survey" in {
-          Seq(false, true).foreach { showHelp =>
-            val (l, p) = if (showHelp) (5, 12) else (4, 10)
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-            mainContent(showHelp = showHelp).selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-          }
+            val (l, p) = (4, 10)
+            mainContent().selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
+            mainContent().selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+            mainContent().selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
 
     "the user has software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None, showHelp: Boolean): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now(), showHelp).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-          }
+            mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the description" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel")
+            mainContent().select(".govuk-panel")
               .select(".govuk-panel__body")
               .select("p")
               .get(0)
               .text() mustBe SignUpConfirmationMessages.panelDescription(true)
-          }
         }
       }
 
       "have a print link" in {
-        Seq(false, true).foreach { showHelp =>
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.text mustBe SignUpConfirmationMessages.printLink
           link.attr("data-module") mustBe "hmrc-print-link"
           link.attr("href") mustBe "#"
-        }
       }
 
       "contains date field" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-        }
+          mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
       }
 
       "contains what you must do heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-        }
+          mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains a first paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
-        }
+          mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
       }
 
       "contains a mtd paragraph with a link" in {
 
-        def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 5)
+        def usingMtdPara() = mainContent().selectNth("p", 5)
 
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        Seq(false, true).foreach { showHelp =>
-          usingMtdPara(showHelp).text() mustBe expectedText
-          val link = usingMtdPara(showHelp).select("a")
+          usingMtdPara().text() mustBe expectedText
+          val link = usingMtdPara().select("a")
           link.text() mustBe SignUpConfirmationMessages.usingMtdLink
           link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-        }
       }
 
       "contains a bullet list for mtd" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 1)
+        def bulletList() = mainContent().selectNth("ul", 1)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
         }
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("div", 7)
+        def quarterlyUpdatesSection() = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-          }
+            quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "have the correct intro paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-          }
+            quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
         }
 
         "have the correct table" which {
           "has the correct headers" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableHeaders = quarterlyUpdatesSection(showHelp).select("th")
+              val tableHeaders = quarterlyUpdatesSection().select("th")
               tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
               tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
               tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-            }
           }
 
           "has the correct first row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
               tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
               tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-            }
           }
 
           "has the correct second row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
               tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
               tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-            }
           }
 
           "has the correct third row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
               tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
               tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-            }
           }
 
           "has the correct fourth row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
               tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
               tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-            }
           }
         }
 
         "have the correct read more paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            val readMorePara = quarterlyUpdatesSection(showHelp).select("p").last()
+            val readMorePara = quarterlyUpdatesSection().select("p").last()
             readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
             readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-          }
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None, showHelp: Boolean): Element = mainContent(preference, showHelp).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(showHelp = showHelp).selectOptionalNth("p", 1) mustBe None
-          }
+            preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(preference = Some(false), showHelp).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-            preferenceSection(preference = Some(false), showHelp).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-          }
-        }
-      }
-
-      "does not contain a CST contact section" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectOptionalNth("h2", 3) mustBe None
-          mainContent(showHelp = showHelp).selectOptionalNth("p.govuk-body", 9) mustBe None
+            preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
+            preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
         }
       }
 
       "contains survey link" which {
         "has a link for survey" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-            mainContent(showHelp = showHelp).selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-          }
+            mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
+            mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+            mainContent().selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
 
     "the user has no software and for this year" should {
-      def mainContent(preference: Option[Boolean] = None, showHelp: Boolean): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now(), showHelp).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-          }
+            mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the description" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel")
+            mainContent().select(".govuk-panel")
               .select(".govuk-panel__body")
               .select("p")
               .get(0)
               .text() mustBe SignUpConfirmationMessages.panelDescription(false)
-          }
         }
       }
 
       "have a print link" in {
-        Seq(false, true).foreach { showHelp =>
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.text mustBe SignUpConfirmationMessages.printLink
           link.attr("data-module") mustBe "hmrc-print-link"
           link.attr("href") mustBe "#"
-        }
       }
 
       "contains date field" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-        }
+          mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
       }
 
       "contains what you must do heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-        }
+          mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains a first paragraph with a link" in {
-        def firstPara(showHelp: Boolean) = mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(2)
+        def firstPara() = mainContent().select(".govuk-body").select("p").get(2)
 
         val expectedText = s"${SignUpConfirmationMessages.getSoftware} ${SignUpConfirmationMessages.getSoftwareLink}"
-        Seq(false, true).foreach { showHelp =>
-          firstPara(showHelp).text() mustBe expectedText
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 2)
+          firstPara().text() mustBe expectedText
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.text mustBe SignUpConfirmationMessages.getSoftwareLink
           link.attr("href") mustBe SignUpConfirmationMessages.getSoftwareLinkHref
-        }
       }
 
       "contains second paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
-        }
+          mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
       }
 
       "contains a bullet list of what software will tell you to do" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 1)
+        def bulletList() = mainContent().selectNth("ul", 1)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
         }
       }
 
       "contains a third paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
-        }
+          mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
       }
 
       "contains bullets for cannot use HMRC reminders" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 2)
+        def bulletList() = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
         }
       }
 
       "contains a fourth paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
-        }
+          mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
       }
 
       "contains mtd heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
-        }
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
 
-        def usingMtdPara(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("p", 8)
+        def usingMtdPara() = mainContent().selectNth("p", 8)
 
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        Seq(false, true).foreach { showHelp =>
-          usingMtdPara(showHelp).text() mustBe expectedText
-          val link = usingMtdPara(showHelp).select("a")
+          usingMtdPara().text() mustBe expectedText
+          val link = usingMtdPara().select("a")
           link.text() mustBe SignUpConfirmationMessages.usingMtdLink
           link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-        }
       }
 
       "contains a bullet list for mtd" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 3)
+        def bulletList() = mainContent().selectNth("ul", 3)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
         }
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("div", 7)
+        def quarterlyUpdatesSection() = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-          }
+            quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "have the correct intro paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-          }
+            quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
         }
 
         "have the correct table" which {
           "has the correct headers" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableHeaders = quarterlyUpdatesSection(showHelp).select("th")
+              val tableHeaders = quarterlyUpdatesSection().select("th")
               tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
               tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
               tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-            }
           }
 
           "has the correct first row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
               tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
               tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-            }
           }
 
           "has the correct second row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
               tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
               tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-            }
           }
 
           "has the correct third row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
               tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
               tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-            }
           }
 
           "has the correct fourth row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
               tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
               tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-            }
           }
         }
 
         "have the correct read more paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            val readMorePara = quarterlyUpdatesSection(showHelp).select("p").last()
+            val readMorePara = quarterlyUpdatesSection().select("p").last()
             readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
             readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-          }
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None, showHelp: Boolean): Element = mainContent(preference, showHelp).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(showHelp = showHelp).selectOptionalNth("p", 1) mustBe None
-          }
+            preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(preference = Some(false), showHelp).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-            preferenceSection(preference = Some(false), showHelp).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-          }
-        }
-      }
-
-      "contains a CST contact section if showing help" which {
-        "has a heading" in {
-          mainContent(showHelp = true).selectNth("h2", 3).text mustBe SignUpConfirmationMessages.cstContactHeading
-        }
-
-        "has the contact details" in {
-          mainContent(showHelp = true).selectNth("p.govuk-body", 11).text mustBe SignUpConfirmationMessages.cstContactPara
-        }
-
-        "has a link for call charges" in {
-          mainContent(showHelp = true).selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.cstContactLinkText
-          mainContent(showHelp = true).selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.cstContactLinkHref
+            preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
+            preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
         }
       }
 
       "contains survey link" which {
         "has a link for survey" in {
-          Seq(false, true).foreach { showHelp =>
-            val (l, p) = if (showHelp) (6, 13) else (5, 11)
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-            mainContent(showHelp = showHelp).selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-          }
+            val (l, p) = (5, 11)
+            mainContent().selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
+            mainContent().selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+            mainContent().selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
 
     "the user has no software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None, showHelp: Boolean): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now(), showHelp).mainContent
+      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-          }
+            mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
 
         "contains the description" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).select(".govuk-panel")
+            mainContent().select(".govuk-panel")
               .select(".govuk-panel__body")
               .select("p")
               .get(0)
               .text() mustBe SignUpConfirmationMessages.panelDescription(true)
-          }
         }
       }
 
       "have a print link" in {
-        Seq(false, true).foreach { showHelp =>
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 1)
+          val link = mainContent().selectNth(".govuk-link", 1)
           link.text mustBe SignUpConfirmationMessages.printLink
           link.attr("data-module") mustBe "hmrc-print-link"
           link.attr("href") mustBe "#"
-        }
       }
 
       "contains date field" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-        }
+          mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
       }
 
       "contains what you must do heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-        }
+          mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
       }
 
       "contains a first paragraph with a link" in {
-        Seq(false, true).foreach { showHelp =>
-          val firstPara = mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(2)
+          val firstPara = mainContent().select(".govuk-body").select("p").get(2)
           val expectedText = s"${SignUpConfirmationMessages.getSoftware} ${SignUpConfirmationMessages.getSoftwareLink}"
           firstPara.text() mustBe expectedText
-          val link = mainContent(showHelp = showHelp).selectNth(".govuk-link", 2)
+          val link = mainContent().selectNth(".govuk-link", 2)
           link.text mustBe SignUpConfirmationMessages.getSoftwareLink
           link.attr("href") mustBe SignUpConfirmationMessages.getSoftwareLinkHref
-        }
       }
 
       "contains second paragraph" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
-        }
+          mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
       }
 
       "contains a bullet list of what software will tell you to do" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 1)
+        def bulletList() = mainContent().selectNth("ul", 1)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
         }
       }
 
       "contains mtd heading" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
-        }
+          mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
       }
 
       "contains a mtd paragraph with a link" in {
-        Seq(false, true).foreach { showHelp =>
-          val usingMtdPara = mainContent(showHelp = showHelp).selectNth("p", 6)
+          val usingMtdPara = mainContent().selectNth("p", 6)
           val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
           usingMtdPara.text() mustBe expectedText
           val link = usingMtdPara.select("a")
           link.text() mustBe SignUpConfirmationMessages.usingMtdLink
           link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-        }
       }
 
       "contains a bullet list for mtd" which {
-        def bulletList(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("ul", 2)
+        def bulletList() = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-          }
+            bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
         }
 
         "has a second item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-          }
+            bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
         }
 
         "has a third item" in {
-          Seq(false, true).foreach { showHelp =>
-            bulletList(showHelp).selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-          }
+            bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
         }
       }
 
       "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection(showHelp: Boolean) = mainContent(showHelp = showHelp).selectNth("div", 7)
+        def quarterlyUpdatesSection() = mainContent().selectNth("div", 7)
 
         "have the correct heading" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-          }
+            quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
         }
 
         "have the correct intro paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            quarterlyUpdatesSection(showHelp).select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-          }
+            quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
         }
 
         "have the correct table" which {
           "has the correct headers" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableHeaders = quarterlyUpdatesSection(showHelp).select("th")
+              val tableHeaders = quarterlyUpdatesSection().select("th")
               tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
               tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
               tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-            }
           }
 
           "has the correct first row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
               tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
               tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-            }
           }
 
           "has the correct second row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
               tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
               tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-            }
           }
 
           "has the correct third row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
               tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
               tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-            }
           }
 
           "has the correct fourth row" in {
-            Seq(false, true).foreach { showHelp =>
-              val tableRows = quarterlyUpdatesSection(showHelp).select("tbody tr")
+              val tableRows = quarterlyUpdatesSection().select("tbody tr")
               tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
               tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
               tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-            }
           }
         }
 
         "have the correct read more paragraph" in {
-          Seq(false, true).foreach { showHelp =>
-            val readMorePara = quarterlyUpdatesSection(showHelp).select("p").last()
+            val readMorePara = quarterlyUpdatesSection().select("p").last()
             readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
             readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-          }
         }
       }
 
       "contains a preference section" which {
 
-        def preferenceSection(preference: Option[Boolean] = None, showHelp: Boolean): Element = mainContent(preference, showHelp).selectNth("div", 8)
+        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 8)
 
         "has no retrieved preference content when no preference was provided to the view" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(showHelp = showHelp).selectOptionalNth("p", 1) mustBe None
-          }
+            preferenceSection().selectOptionalNth("p", 1) mustBe None
         }
 
         "has an online preference when their opt in preference was true" in {
-          Seq(false, true).foreach { showHelp =>
-            preferenceSection(preference = Some(false), showHelp).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-            preferenceSection(preference = Some(false), showHelp).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-          }
-        }
-      }
-
-      "does not contain a CST contact section" in {
-        Seq(false, true).foreach { showHelp =>
-          mainContent(showHelp = showHelp).selectOptionalNth("h2", 3) mustBe None
-          mainContent(showHelp = showHelp).selectOptionalNth("p.govuk-body", 10) mustBe None
+            preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
+            preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
         }
       }
 
       "contains survey link" which {
         "has a link for survey" in {
-          Seq(false, true).foreach { showHelp =>
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
-            mainContent(showHelp = showHelp).selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-            mainContent(showHelp = showHelp).selectNth("p.govuk-body", 9).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-          }
+            mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
+            mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+            mainContent().selectNth("p.govuk-body", 9).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -1024,11 +778,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val bullet4NoThisYear = "if you need to send any missed or backdated updates for the current tax year - and how to send them"
     val bullet5 = "when and how to make your tax return after the end of the tax year"
     val paraThree = "And you will need to pay the tax you owe."
-
-    val cstContactHeading = "Get help with Making Tax Digital for Income Tax"
-    val cstContactPara = "Telephone: 03003 229 619 Monday to Friday, 8am to 6pm (except public holidays)"
-    val cstContactLinkText = "Find out about call charges (opens in new tab)"
-    val cstContactLinkHref = "https://www.gov.uk/call-charges"
 
     val getSoftware = "You must get"
     val getSoftwareLink = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
