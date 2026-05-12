@@ -105,8 +105,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     whatYouNeedToDo(
       postAction = testCall,
       clientName = clientName,
-      clientNino = clientNino,
-      backUrl = testBackUrl
+      clientNino = clientNino
     )
   }
 

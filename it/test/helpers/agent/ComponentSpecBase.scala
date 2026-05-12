@@ -401,8 +401,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/your-income-source", sessionData)(Map.empty)
     }
 
-    def accountingYear(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/what-year-to-sign-up", sessionData)
-
     def whenDoYouWantToStart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/tax-year/select-tax-year", sessionData)
 
     def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/property-commencement-date", sessionData)
@@ -499,15 +497,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def getAddAnotherClient: WSResponse = get("/add-another")
 
     def confirmation(): WSResponse = get("/confirmation")
-
-    def submitAccountingYear(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear], withJourneyState: Boolean = true): WSResponse = {
-      val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
-      post(uri, sessionData, withJourneyStateSignUp = withJourneyState)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitWhenDoYouWantToStart(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear], withJourneyState: Boolean = true): WSResponse = {
       val uri = s"/tax-year/select-tax-year?editMode=$inEditMode"

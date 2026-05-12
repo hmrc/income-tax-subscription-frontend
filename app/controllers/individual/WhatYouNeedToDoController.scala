@@ -44,13 +44,9 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
         sessionData <- sessionDataService.getAllSessionData()
         reference <- referenceRetrieval.getIndividualReference(sessionData)
         mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
       } yield {
         Ok(whatYouNeedToDo(
-          postAction = routes.WhatYouNeedToDoController.submit,
-          backUrl = backUrl(
-            eligibleNextYearOnly = eligibilityStatus.eligibleNextYearOnly
-          )
+          postAction = routes.WhatYouNeedToDoController.submit
         ))
       }
   }
@@ -63,13 +59,5 @@ class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
       } yield {
         Redirect(controllers.individual.routes.UsingSoftwareController.show())
       }
-  }
-
-  def backUrl(eligibleNextYearOnly: Boolean): String = {
-    if (eligibleNextYearOnly) {
-      controllers.individual.matching.routes.CannotUseServiceController.show().url
-    } else {
-      controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
-    }
   }
 }

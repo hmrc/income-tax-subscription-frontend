@@ -28,9 +28,9 @@
     ul: UnorderedList
 )
 
-@(postAction: Call, clientName: String, clientNino: String, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientName: String, clientNino: String)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.what-you-need-to-do.title"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.what-you-need-to-do.title")) {
 
     @pageHeadingHelper(
         heading = messages("agent.what-you-need-to-do.heading"),

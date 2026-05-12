@@ -53,10 +53,6 @@ POST        /using-software                                      controllers.ind
 
 ################## Business Routes
 
-#What Tax Year To Sign Up Routes
-GET         /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.show(editMode: Boolean ?= false)
-POST        /business/what-year-to-sign-up                       controllers.individual.tasklist.taxyear.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
-
 #When Do You Want To Start Routes
 GET         /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.show(editMode: Boolean ?= false)
 POST        /tax-year/select-tax-year                            controllers.individual.tasklist.taxyear.WhenDoYouWantToStartController.submit(editMode: Boolean ?= false)
@@ -77,25 +73,6 @@ POST        /tax-year/sign-up-next-year-voluntary                controllers.ind
 #Non eligible / Mandated Next Year user
 GET         /tax-year/sign-up-next-year-mandatory                controllers.individual.tasklist.taxyear.NonEligibleMandatedController.show
 POST        /tax-year/sign-up-next-year-mandatory                controllers.individual.tasklist.taxyear.NonEligibleMandatedController.submit
-
-# Accounting Period
-GET         /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.show
-POST        /accounting-period-check                            controllers.individual.accountingperiod.AccountingPeriodController.submit
-
-# Accounting period Non Standard
-GET         /accounting-period-non-standard                      controllers.individual.accountingperiod.AccountingPeriodNonStandardController.show
-POST        /accounting-period-non-standard                      controllers.individual.accountingperiod.AccountingPeriodNonStandardController.submit
-
-# Accounting Period Not Supported
-GET         /accounting-period-not-supported                    controllers.individual.accountingperiod.AccountingPeriodNotSupportedController.show
-
-# Capture consent routes
-GET         /capture-consent                                    controllers.individual.email.CaptureConsentController.show()
-POST        /capture-consent                                    controllers.individual.email.CaptureConsentController.submit()
-
-# Email capture routes
-GET         /email-capture                                       controllers.individual.email.EmailCaptureController.show()
-POST        /email-capture                                       controllers.individual.email.EmailCaptureController.submit()
 
 # Property start date before limit
 GET         /business/property-start-date-before-limit           controllers.individual.tasklist.ukproperty.PropertyStartDateBeforeLimitController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)

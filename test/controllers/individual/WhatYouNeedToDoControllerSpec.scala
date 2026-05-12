@@ -82,8 +82,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
 
         when(whatYouNeedToDo(
-          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(controllers.individual.matching.routes.CannotUseServiceController.show().url)
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -98,8 +97,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
 
         when(whatYouNeedToDo(
-          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -113,8 +111,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
 
         when(whatYouNeedToDo(
-          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(controllers.individual.matching.routes.CannotUseServiceController.show().url)
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -130,8 +127,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
 
         when(whatYouNeedToDo(
-          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -147,8 +143,7 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
 
         when(whatYouNeedToDo(
-          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit),
-          ArgumentMatchers.eq(controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url)
+          ArgumentMatchers.eq(routes.WhatYouNeedToDoController.submit)
         )(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.show(subscriptionRequest)
@@ -167,17 +162,6 @@ class WhatYouNeedToDoControllerSpec extends ControllerBaseSpec
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.individual.routes.UsingSoftwareController.show().url)
-    }
-  }
-
-  "backUrl" when {
-    "return cannot use the service page when eligible for next year only" in new Setup {
-      controller.backUrl(eligibleNextYearOnly = true) mustBe
-        controllers.individual.matching.routes.CannotUseServiceController.show().url
-    }
-    "return what year to sign up page when current tax year" in new Setup {
-      controller.backUrl(eligibleNextYearOnly = false) mustBe
-        controllers.individual.tasklist.taxyear.routes.WhatYearToSignUpController.show().url
     }
   }
 }

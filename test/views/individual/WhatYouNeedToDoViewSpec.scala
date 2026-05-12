@@ -26,7 +26,7 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
 
   def whatYouNeedToDo: WhatYouNeedToDo = app.injector.instanceOf[WhatYouNeedToDo]
 
-  def page(): HtmlFormat.Appendable = whatYouNeedToDo(testCall, backUrl = "backUrl")
+  def page(): HtmlFormat.Appendable = whatYouNeedToDo(testCall)
 
   def document(): Document = Jsoup.parse(page().body)
 
