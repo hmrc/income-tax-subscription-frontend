@@ -148,7 +148,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     val continue = "Continue"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
-    val backLink = "Back"
     val update = "Update"
     val maxDate = "The date must be before 18 April 2021"
     val minDate = "The date must be on or after 11 April 2021"

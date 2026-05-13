@@ -616,10 +616,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def getFieldset: Element = element.selectHead("fieldset")
 
-    def getBackLink: Element = element.selectHead(s"a[class=link-back]")
-
-    def getGovukBackLink: Element = element.selectHead("a[class=govuk-back-link]")
-
     def getParagraphNth(index: Int = 0): String = {
       element.select("p").get(index).text()
     }

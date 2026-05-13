@@ -47,7 +47,6 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
     val title = "Are you sure you want to delete your UK property business?"
     val heading: String = title
     val hint = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val backLink = "Back"
     val agreeAndContinue = "Agree and continue"
   }
 
