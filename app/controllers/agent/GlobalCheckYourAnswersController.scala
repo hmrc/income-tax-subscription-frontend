@@ -51,7 +51,6 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         Ok(
           globalCheckYourAnswers(
             postAction = routes.GlobalCheckYourAnswersController.submit,
-            backUrl = backUrl,
             completeDetails = completeDetails,
             clientDetails = request.clientDetails,
             softwareStatus = request.sessionData.fetchSoftwareStatus,
@@ -82,10 +81,6 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       case _ =>
         sessionDataService.saveSubmissionStatus(otherError)
     }
-  }
-
-  def backUrl: String = {
-    tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
   }
 
   private def signUp(completeDetails: CompleteDetails)

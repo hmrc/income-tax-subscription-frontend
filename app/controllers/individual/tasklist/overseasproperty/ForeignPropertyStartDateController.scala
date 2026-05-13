@@ -53,8 +53,7 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
       } yield {
         Ok(view(
           startDateForm = form.fill(startDate),
-          postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
         ))
       }
   }
@@ -67,8 +66,7 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
             formWithErrors => {
               Future.successful(BadRequest(view(
                 startDateForm = formWithErrors,
-                postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-                backUrl = backUrl(isEditMode, isGlobalEdit)
+                postAction = routes.ForeignPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
               )))
             },
             startDate =>
@@ -79,10 +77,6 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
           )
         }
       }
-  }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {

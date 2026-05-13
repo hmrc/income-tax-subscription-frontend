@@ -43,7 +43,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
         viewModel = overseasProperty,
         postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit),
         isGlobalEdit = isGlobalEdit,
-        backUrl = backUrl(isEditMode, isGlobalEdit, overseasProperty.confirmed),
         clientDetails = request.clientDetails
       )))
     }

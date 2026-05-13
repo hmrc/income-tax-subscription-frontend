@@ -25,9 +25,9 @@
     ul: UnorderedList
 )
 
-@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.income-sources-incomplete.title"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.income-sources-incomplete.title")) {
 
     <h1 class="govuk-heading-l">@messages("individual.income-sources-incomplete.heading")</h1>
 

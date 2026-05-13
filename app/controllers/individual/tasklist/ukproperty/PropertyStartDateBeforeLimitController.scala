@@ -49,8 +49,7 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
       } yield {
         Ok(view(
           startDateBeforeLimitForm = PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybePropertyStartDateBeforeLimit),
-          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
         ))
       }
   }
@@ -60,8 +59,7 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
       PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(
           startDateBeforeLimitForm = formWithErrors,
-          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
         ))), { answer =>
           for {
             sessionData <- sessionDataService.getAllSessionData()
@@ -83,13 +81,4 @@ class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsServic
         }
       )
   }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEditMode || isGlobalEdit) {
-      routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-    } else {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
-  }
-
 }

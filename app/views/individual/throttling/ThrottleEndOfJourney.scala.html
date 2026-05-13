@@ -25,7 +25,7 @@ continueButton: ContinueButton
 
 @(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("throttle-end.title"), backLink = Some(backLink), showSignOutLink = true) {
+@mainTemplate(title = messages("throttle-end.title"), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("throttle-end.heading")</h1>
 
    <p class="govuk-body">@messages("throttle-end.line-1")</p>

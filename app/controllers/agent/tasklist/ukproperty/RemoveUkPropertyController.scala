@@ -43,8 +43,7 @@ class RemoveUkPropertyController @Inject()(removeUkProperty: RemoveUkPropertyBus
       case Some(_) =>
         Ok(removeUkProperty(
           yesNoForm = removeUkPropertyForm,
-          postAction = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.submit,
-          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+          postAction = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.submit
         ))
       case None =>
         Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
@@ -56,8 +55,7 @@ class RemoveUkPropertyController @Inject()(removeUkProperty: RemoveUkPropertyBus
       hasErrors => Future.successful(
         BadRequest(removeUkProperty(
           yesNoForm = hasErrors,
-          postAction = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.submit,
-          backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+          postAction = controllers.agent.tasklist.ukproperty.routes.RemoveUkPropertyController.submit
         ))
       ), {
         case Yes => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(request.reference, SubscriptionDataKeys.Property) flatMap {

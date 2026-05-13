@@ -30,9 +30,9 @@
 )
 
 
-@(startDateBeforeLimitForm: Form[_], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(startDateBeforeLimitForm: Form[_], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.foreign-property.start-date-before-limit.heading", AccountingPeriodUtil.getStartDateLimit.getYear.toString), optForm = Some(startDateBeforeLimitForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.foreign-property.start-date-before-limit.heading", AccountingPeriodUtil.getStartDateLimit.getYear.toString), optForm = Some(startDateBeforeLimitForm)) {
 
     @captionHelper(caption = messages("individual.foreign-property.start-date-before-limit.caption"), isSection = true)
 

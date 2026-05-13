@@ -57,7 +57,6 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
                          title: String,
                          isAgent: Boolean = false,
                          hasBackLink: Boolean = true,
-                         backLink: Option[String] = None,
                          backLinkText: Option[String] = None,
                          hasSignOutLink: Boolean = true,
                          error: Option[FormError] = None) {

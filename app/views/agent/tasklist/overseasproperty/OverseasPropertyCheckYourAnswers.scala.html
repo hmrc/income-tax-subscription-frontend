@@ -32,7 +32,6 @@
         viewModel: OverseasPropertyModel,
         postAction: Call,
         isGlobalEdit: Boolean,
-        backUrl: String,
         clientDetails: ClientDetails
 )(implicit request: Request[_], messages: Messages)
 
@@ -71,7 +70,7 @@
     )
 }
 
-@mainTemplate(title = messages("agent.overseas-property.check-your-answers.title"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.overseas-property.check-your-answers.title")) {
 
     @pageHeadingHelper(
         heading = messages("agent.overseas-property.check-your-answers.heading"),

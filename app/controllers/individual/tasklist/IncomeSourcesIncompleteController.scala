@@ -32,8 +32,7 @@ class IncomeSourcesIncompleteController @Inject()(identify: IdentifierAction,
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     Ok(view(
-      postAction = controllers.individual.tasklist.routes.IncomeSourcesIncompleteController.submit,
-      backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      postAction = controllers.individual.tasklist.routes.IncomeSourcesIncompleteController.submit
     ))
   }
 

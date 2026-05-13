@@ -81,8 +81,7 @@ class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: Incom
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeUkProperty(
     yesNoForm = form,
-    postAction = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.submit,
-    backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    postAction = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.submit
   )
 
   private val form: Form[YesNo] = RemoveUkPropertyForm.removeUkPropertyForm

@@ -49,7 +49,6 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
       Ok(view(
         propertyStartDateForm = form.fill(startDate),
         postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
       ))
     }
@@ -61,7 +60,6 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
         Future.successful(BadRequest(view(
           propertyStartDateForm = formWithErrors,
           postAction = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit),
           clientDetails = request.clientDetails
         ))),
       startDate =>
@@ -70,10 +68,6 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
           case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
         }
     )
-  }
-
-  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.PropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {

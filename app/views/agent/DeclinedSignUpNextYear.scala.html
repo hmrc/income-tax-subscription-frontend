@@ -27,9 +27,9 @@
         govukInsetText: GovukInsetText
 )
 
-@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.declined-sign-up-next-year.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.declined-sign-up-next-year.heading")) {
 
   <h1 class="govuk-heading-xl">@messages("agent.declined-sign-up-next-year.heading")</h1>
 

@@ -38,11 +38,11 @@
     implicitDateFormatter: ImplicitDateFormatter
 )
 
-@(postAction: Call, backUrl: String, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean, taxYearSelectionIsNext : Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean, taxYearSelectionIsNext : Boolean)(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
 
-@agentMainTemplate(title = messages("agent.your-income-source.heading"), backLink = Some(backUrl)) {
+@agentMainTemplate(title = messages("agent.your-income-source.heading")) {
 
     @pageHeadingHelper(
         heading = messages("agent.your-income-source.heading"),

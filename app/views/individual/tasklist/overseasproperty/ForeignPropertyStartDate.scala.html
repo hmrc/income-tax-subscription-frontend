@@ -27,9 +27,9 @@
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
-@(startDateForm: Form[DateModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(startDateForm: Form[DateModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("individual.foreign-property.start-date.title"), optForm = Some(startDateForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("individual.foreign-property.start-date.title"), optForm = Some(startDateForm)) {
 
     @pageHeadingHelper(
         heading = messages("individual.foreign-property.start-date.heading"),

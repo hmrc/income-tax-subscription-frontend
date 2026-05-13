@@ -30,13 +30,11 @@
 @(
     viewModel: OverseasPropertyModel,
     postAction: Call,
-    backUrl: String,
     isGlobalEdit: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("business.check-your-answers.content.overseas-property.title"),
-    backLink = Some(backUrl)
+    title = messages("business.check-your-answers.content.overseas-property.title")
 ) {
 
     @pageHeadingHelper(

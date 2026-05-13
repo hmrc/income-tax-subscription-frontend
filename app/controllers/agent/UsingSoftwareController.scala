@@ -34,16 +34,11 @@ class UsingSoftwareController @Inject()(view: UsingSoftware,
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(view(
-      postAction = controllers.agent.routes.UsingSoftwareController.submit(),
-      backUrl = backUrl
+      postAction = controllers.agent.routes.UsingSoftwareController.submit()
     ))
   }
 
   def submit: Action[AnyContent] = identify { _ =>
     Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
-  }
-
-  def backUrl: String = {
-    appConfig.govukGuidanceITSASignUpAgentLink
   }
 }

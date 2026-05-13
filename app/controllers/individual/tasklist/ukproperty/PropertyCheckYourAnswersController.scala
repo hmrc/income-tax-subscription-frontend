@@ -42,7 +42,6 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
       Future.successful(Ok(view(
         viewModel = property,
         postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed, property.startDateBeforeLimit.contains(true)),
         isGlobalEdit = isGlobalEdit
       )))
     }
@@ -63,20 +62,6 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
         }
       } else {
         Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-      }
-    }
-  }
-
-  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, propertyStartDateBeforeLimit: Boolean): String = {
-    if (isGlobalEdit && isConfirmed) {
-      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEditMode || isGlobalEdit) {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      if (propertyStartDateBeforeLimit) {
-        controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
-      } else {
-        controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
       }
     }
   }

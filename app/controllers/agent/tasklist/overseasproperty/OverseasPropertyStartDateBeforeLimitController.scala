@@ -43,7 +43,6 @@ class OverseasPropertyStartDateBeforeLimitController @Inject()(identify: Identif
       Ok(view(
         overseasPropertyStartDateBeforeLimitForm = overseasPropertyStartDateBeforeLimitForm.fill(maybeStartDateBeforeLimit),
         postAction = routes.OverseasPropertyStartDateBeforeLimitController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
       ))
     }
@@ -55,7 +54,6 @@ class OverseasPropertyStartDateBeforeLimitController @Inject()(identify: Identif
         Future.successful(BadRequest(view(
           overseasPropertyStartDateBeforeLimitForm = formWithErrors,
           postAction = routes.OverseasPropertyStartDateBeforeLimitController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit),
           clientDetails = request.clientDetails
         ))),
       { startDateBeforeLimit =>
@@ -74,13 +72,4 @@ class OverseasPropertyStartDateBeforeLimitController @Inject()(identify: Identif
       }
     )
   }
-
-  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEditMode || isGlobalEdit) {
-      routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit).url
-    } else {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
-  }
-
 }

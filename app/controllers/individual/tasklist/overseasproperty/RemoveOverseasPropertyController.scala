@@ -84,8 +84,7 @@ class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveO
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeOverseasProperty(
     yesNoForm = form,
-    postAction = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.submit,
-    backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    postAction = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.submit
   )
 
   private val form: Form[YesNo] = RemoveOverseasPropertyForm.removeOverseasPropertyForm

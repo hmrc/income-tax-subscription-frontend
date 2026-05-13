@@ -43,7 +43,6 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
         viewModel = property,
         postAction = routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
         isGlobalEdit = isGlobalEdit,
-        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
         clientDetails = request.clientDetails
       )))
     }

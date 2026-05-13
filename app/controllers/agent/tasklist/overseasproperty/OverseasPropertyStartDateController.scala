@@ -49,7 +49,6 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
       Ok(view(
         overseasPropertyStartDateForm = form.fill(startDate),
         postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
       ))
     }
@@ -61,7 +60,6 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
         Future.successful(BadRequest(view(
           overseasPropertyStartDateForm = formWithErrors,
           postAction = routes.OverseasPropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit),
           clientDetails = request.clientDetails
         ))),
       startDate =>
@@ -70,10 +68,6 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
           case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
         }
     )
-  }
-
-  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.OverseasPropertyStartDateBeforeLimitController.show(isEditMode, isGlobalEdit).url
   }
 
   private def form(implicit request: Request[_]): Form[DateModel] = {
