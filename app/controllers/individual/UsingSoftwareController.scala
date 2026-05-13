@@ -104,12 +104,4 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           }
       )
   }
-
-  private def backUrl(editMode: Boolean): String = {
-    if (editMode) {
-      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else {
-      controllers.individual.routes.WhatYouNeedToDoController.show.url
-    }
-  }
 }

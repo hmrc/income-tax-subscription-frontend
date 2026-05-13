@@ -72,14 +72,4 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
       ))
     }
   }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
-    if (isGlobalEdit && confirmed) {
-      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEditMode || isGlobalEdit) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      routes.PropertyStartDateBeforeLimitController.show().url
-    }
-  }
 }

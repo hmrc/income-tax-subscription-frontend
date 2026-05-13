@@ -18,12 +18,12 @@
 @import views.html.templates.PrincipalMainTemplate
 
 @this(
-mainTemplate: PrincipalMainTemplate,
-form: FormWithCSRF,
-continueButton: ContinueButton
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRF,
+    continueButton: ContinueButton
 )
 
-@(backLink: String, postAction: Call)(implicit request: Request[_], messages: Messages)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("throttle-end.title"), showSignOutLink = true) {
    <h1 class="govuk-heading-l">@messages("throttle-end.heading")</h1>

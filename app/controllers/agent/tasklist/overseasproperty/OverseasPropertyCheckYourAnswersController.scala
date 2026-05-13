@@ -73,14 +73,4 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
       ))
     }
   }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
-    if (isGlobalEdit && confirmed) {
-      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEditMode || isGlobalEdit) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
-    }
-  }
 }

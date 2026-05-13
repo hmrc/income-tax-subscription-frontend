@@ -55,14 +55,12 @@ class ThrottlingControllerSpec extends ControllerBaseSpec with MockAuditingServi
     val startOfJourneyView = mock[ThrottleStartOfJourney]
 
     when(startOfJourneyView(
-      ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index.url),
       ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index)
     )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val endOfJourneyView = mock[ThrottleEndOfJourney]
 
     when(endOfJourneyView(
-      ArgumentMatchers.eq(controllers.individual.matching.routes.HomeController.index.url),
       ArgumentMatchers.eq(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
     )(any(), any())).thenReturn(HtmlFormat.empty)
 
