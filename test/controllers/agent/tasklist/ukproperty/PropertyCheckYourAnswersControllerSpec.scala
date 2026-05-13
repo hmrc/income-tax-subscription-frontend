@@ -56,7 +56,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
             viewModel = fullProperty,
             postAction = routes.PropertyCheckYourAnswersController.submit(),
             isGlobalEdit = false,
-            backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
             clientDetails = clientDetails
           )
 
@@ -71,7 +70,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
             viewModel = fullProperty,
             postAction = routes.PropertyCheckYourAnswersController.submit(),
             isGlobalEdit = false,
-            backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
             clientDetails = clientDetails
           )
 
@@ -87,7 +85,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
               viewModel = fullProperty.copy(confirmed = true),
               postAction = routes.PropertyCheckYourAnswersController.submit(true),
               isGlobalEdit = true,
-              backUrl = controllers.agent.routes.GlobalCheckYourAnswersController.show.url,
               clientDetails = clientDetails
             )
 
@@ -102,7 +99,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
               viewModel = fullProperty,
               postAction = routes.PropertyCheckYourAnswersController.submit(true),
               isGlobalEdit = true,
-              backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
               clientDetails = clientDetails
             )
 
@@ -175,7 +171,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
         }
       }
       "throw and exception" when {
-        "a failure ocurred when saving the confirmed property" in {
+        "a failure occurred when saving the confirmed property" in {
           val testProperty = PropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("1", "1", "2025")))
           mockFetchProperty(Some(testProperty))
           mockSaveProperty(testProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))

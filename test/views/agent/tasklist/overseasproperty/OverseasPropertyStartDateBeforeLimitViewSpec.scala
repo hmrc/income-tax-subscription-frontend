@@ -41,24 +41,20 @@ class OverseasPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
         view = view.apply(
           overseasPropertyStartDateBeforeLimitForm,
           testCall,
-          testBackUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateBeforeLimitMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl)
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = view.apply(
           ukPropertyStartDateBeforeLimitForm.withError(testError),
           testCall,
-          testBackUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateBeforeLimitMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }
@@ -128,7 +124,6 @@ class OverseasPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
     def page: Html = view(
       ukPropertyStartDateBeforeLimitForm,
       testCall,
-      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 

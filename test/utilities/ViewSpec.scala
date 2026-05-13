@@ -48,7 +48,6 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
 
   implicit lazy val wrappedMessages: Messages = MessagesWrapper(Lang("en"), messagesApi)
 
-  val testBackUrl = "/test-back-url"
   val testCall: Call = Call("POST", "/test-url")
 
   implicit val request: Request[_] = FakeRequest()

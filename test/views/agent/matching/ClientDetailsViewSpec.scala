@@ -41,7 +41,6 @@ class ClientDetailsViewSpec extends ViewSpec {
   private def page(isEditMode: Boolean): HtmlFormat.Appendable = clientDetails(
     clientDetailsForm = ClientDetailsForm.clientDetailsForm,
     postAction = action,
-    backUrl = testBackUrl,
     isEditMode = isEditMode
   )(FakeRequest(), wrappedMessages)
 
@@ -66,24 +65,20 @@ class ClientDetailsViewSpec extends ViewSpec {
         view = clientDetails(
           ClientDetailsForm.clientDetailsForm,
           testCall,
-          testBackUrl,
           isEditMode = false
         ),
         title = ClientDetails.title,
-        isAgent = true,
-        backLink = None,
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = clientDetails(
           ClientDetailsForm.clientDetailsForm.withError(testError),
           testCall,
-          testBackUrl,
           isEditMode = false,
         ),
         title = ClientDetails.title,
         isAgent = true,
-        backLink = None,
         error = Some(testError)
       )
     }

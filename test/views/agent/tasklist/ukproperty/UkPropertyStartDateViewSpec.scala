@@ -45,7 +45,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     propertyStartDateView(
       propertyStartDateForm,
       testCall,
-      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 
@@ -70,24 +69,20 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         view = propertyStartDateView(
           propertyStartDateForm = defaultForm,
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl),
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = propertyStartDateView(
           propertyStartDateForm = defaultForm.withError(testError),
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }

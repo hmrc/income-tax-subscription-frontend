@@ -62,8 +62,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
     "display the foreign property start date view and return OK (200)" when {
       "a start date is returned" in {
         mockForeignPropertyStartDateView(
-          postAction = routes.ForeignPropertyStartDateController.submit(),
-          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+          postAction = routes.ForeignPropertyStartDateController.submit()
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
@@ -74,8 +73,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
 
       "no start date is returned" in withController { controller =>
         mockForeignPropertyStartDateView(
-          postAction = routes.ForeignPropertyStartDateController.submit(),
-          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show().url
+          postAction = routes.ForeignPropertyStartDateController.submit()
         )
         mockFetchOverseasPropertyStartDate(None)
 
@@ -86,8 +84,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
 
       "in edit mode" in withController { controller =>
         mockForeignPropertyStartDateView(
-          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true),
-          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true).url
+          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true)
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
@@ -99,8 +96,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
 
       "in global edit mode" in withController { controller =>
         mockForeignPropertyStartDateView(
-          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
-          backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
+          postAction = routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true)
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
@@ -166,8 +162,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
       "return bad request status (400)" when {
         "in edit mode" in withController { controller =>
           mockForeignPropertyStartDateView(
-            postAction = routes.ForeignPropertyStartDateController.submit(editMode = true),
-            backUrl = routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true).url
+            postAction = routes.ForeignPropertyStartDateController.submit(editMode = true)
           )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = false)
@@ -177,8 +172,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
 
         "in global mode" in withController { controller =>
           mockForeignPropertyStartDateView(
-            routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true),
-            routes.ForeignPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
+            routes.ForeignPropertyStartDateController.submit(editMode = true, isGlobalEdit = true)
           )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = true, isGlobalEdit = true)
@@ -188,8 +182,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
 
         "not in edit mode" in withController { controller =>
           mockForeignPropertyStartDateView(
-            routes.ForeignPropertyStartDateController.submit(),
-            routes.ForeignPropertyStartDateBeforeLimitController.show().url
+            routes.ForeignPropertyStartDateController.submit()
           )
 
           val badRequest = callPostWithErrorForm(controller, isEditMode = false, isGlobalEdit = false)

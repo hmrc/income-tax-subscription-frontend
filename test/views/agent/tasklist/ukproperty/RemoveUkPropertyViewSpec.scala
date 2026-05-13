@@ -46,8 +46,7 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       } else {
         ClientRemoveUkPropertyForm.removeUkPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -66,7 +65,6 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
         view = view(hasError = true),
         title = ClientRemoveUkPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(testFormError)
       )
@@ -74,7 +72,6 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
         view = view(),
         title = ClientRemoveUkPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

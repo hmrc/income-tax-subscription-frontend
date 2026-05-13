@@ -50,7 +50,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockOverseasPropertyCheckYourAnswersView(
           viewModel = property,
           postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
-          backUrl = controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateBeforeLimitController.show().url,
           isGlobalEdit = false
         )
 
@@ -65,7 +64,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockOverseasPropertyCheckYourAnswersView(
           viewModel = property,
           postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
-          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
           isGlobalEdit = false
         )
 
@@ -80,7 +78,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockOverseasPropertyCheckYourAnswersView(
           viewModel = property,
           postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true),
-          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
           isGlobalEdit = true
         )
 
@@ -95,7 +92,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         mockOverseasPropertyCheckYourAnswersView(
           viewModel = property,
           postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = true),
-          backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
           isGlobalEdit = true
         )
 
@@ -111,7 +107,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       mockOverseasPropertyCheckYourAnswersView(
         viewModel = property,
         postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
-        backUrl = controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateController.show().url,
         isGlobalEdit = false
       )
 

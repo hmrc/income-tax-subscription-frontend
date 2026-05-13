@@ -37,8 +37,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
           propertyStartDateForm = baseForm
         ),
         title = PropertyStartDateMessages.title,
-        isAgent = false,
-        backLink = Some(testBackUrl)
+        isAgent = false
       )
       "there is an error" in new TemplateViewTest(
         view = page(
@@ -46,7 +45,6 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         ),
         title = PropertyStartDateMessages.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }
@@ -162,8 +160,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
   private def page(propertyStartDateForm: Form[DateModel]): Html = {
     propertyStartDate(
       propertyStartDateForm,
-      testCall,
-      testBackUrl
+      testCall
     )(FakeRequest(), implicitly)
   }
 

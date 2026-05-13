@@ -50,7 +50,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
         mockPropertyCheckYourAnswersView(
           viewModel = propertyModel,
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url,
           isGlobalEdit = false
         )
         val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
@@ -63,7 +62,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
         mockPropertyCheckYourAnswersView(
           viewModel = propertyModel,
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
-          backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
           isGlobalEdit = false
         )
         val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = true, isGlobalEdit = false)(request)
@@ -77,7 +75,6 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
         mockPropertyCheckYourAnswersView(
           viewModel = propertyModel,
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
-          backUrl = controllers.individual.routes.GlobalCheckYourAnswersController.show.url,
           isGlobalEdit = true
         )
         val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)

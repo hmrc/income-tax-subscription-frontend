@@ -126,7 +126,7 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
   private def withController(testCode: RemoveSelfEmploymentBusinessController => Any): Unit = {
     val view = mock[RemoveSelfEmploymentBusiness]
 
-    when(view(any(), any(), any(), any(), any())(any(), any()))
+    when(view(any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveSelfEmploymentBusinessController(

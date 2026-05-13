@@ -26,9 +26,7 @@ class DeclinedSignUpNextYearViewSpec extends ViewSpec {
 
   val declinedSignUpNextYear: DeclinedSignUpNextYear = app.injector.instanceOf[DeclinedSignUpNextYear]
 
-  val page: HtmlFormat.Appendable = declinedSignUpNextYear(
-    backUrl = testBackUrl
-  )
+  val page: HtmlFormat.Appendable = declinedSignUpNextYear()
 
   val document: Document = Jsoup.parse(page.body)
 
@@ -36,7 +34,6 @@ class DeclinedSignUpNextYearViewSpec extends ViewSpec {
     "be using the correct template details" in new TemplateViewTest(
       view = page,
       title = DeclinedSignUpNextYearMessages.heading,
-      backLink = Some(testBackUrl),
       hasSignOutLink = true
     )
 

@@ -42,7 +42,6 @@ class CannotSignUpThisYearViewSpec extends ViewSpec {
       view = page(clientDetails),
       title = CannotSignUpMessages.title,
       isAgent = true,
-      backLink = None,
       hasSignOutLink = true
     )
 

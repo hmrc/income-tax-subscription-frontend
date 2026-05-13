@@ -35,11 +35,10 @@ trait MockPropertyCheckYourAnswers extends PlaySpec with MockitoSugar with Befor
 
   val mockView: PropertyCheckYourAnswers = mock[PropertyCheckYourAnswers]
 
-  def mockPropertyCheckYourAnswersView(viewModel: PropertyModel, postAction: Call, backUrl: String, isGlobalEdit: Boolean): Unit = {
+  def mockPropertyCheckYourAnswersView(viewModel: PropertyModel, postAction: Call, isGlobalEdit: Boolean): Unit = {
     when(mockView(
       viewModel = ArgumentMatchers.eq(viewModel),
       postAction = ArgumentMatchers.eq(postAction),
-      backUrl = ArgumentMatchers.eq(backUrl),
       isGlobalEdit = ArgumentMatchers.eq(isGlobalEdit)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }

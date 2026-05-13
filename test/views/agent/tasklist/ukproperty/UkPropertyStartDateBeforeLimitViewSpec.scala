@@ -40,24 +40,20 @@ class UkPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
         view = view.apply(
           ukPropertyStartDateBeforeLimitForm,
           testCall,
-          testBackUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateBeforeLimitMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl)
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = view.apply(
           ukPropertyStartDateBeforeLimitForm.withError(testError),
           testCall,
-          testBackUrl,
           ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = PropertyStartDateBeforeLimitMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }
@@ -123,11 +119,10 @@ class UkPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
 
   lazy val view: PropertyStartDateBeforeLimit = app.injector.instanceOf[PropertyStartDateBeforeLimit]
 
-  class Setup() {
+  class Setup {
     def page: Html = view(
       ukPropertyStartDateBeforeLimitForm,
       testCall,
-      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 

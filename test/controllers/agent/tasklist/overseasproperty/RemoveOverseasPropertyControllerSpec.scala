@@ -137,7 +137,7 @@ class RemoveOverseasPropertyControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: RemoveOverseasPropertyController => Any): Unit = {
     val view = mock[RemoveOverseasPropertyBusiness]
 
-    when(view(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(view(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveOverseasPropertyController(
       mockIncomeTaxSubscriptionConnector,

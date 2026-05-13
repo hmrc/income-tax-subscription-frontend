@@ -37,28 +37,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         view = view(),
         title = AgentIncomeSource.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = AgentIncomeSource.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }
@@ -911,7 +907,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false, taxYearSelectionIsNext: Boolean = false): Html = {
     incomeSourceView(
       postAction = testCall,
-      backUrl = testBackUrl,
       clientDetails = clientDetails,
       incomeSources = incomeSources,
       prepopulated = prepopulated,

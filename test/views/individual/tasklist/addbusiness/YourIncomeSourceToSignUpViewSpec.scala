@@ -98,8 +98,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val saveAndComeBackLater: String = "Save and come back later"
   }
 
-  val backUrl: String = ViewSpecTrait.testBackUrl
-
   val action: Call = ViewSpecTrait.testCall
 
   val incomeSource: YourIncomeSourceToSignUp = app.injector.instanceOf[YourIncomeSourceToSignUp]
@@ -152,7 +150,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
-      backUrl = testBackUrl,
       incomeSources = incomeSources,
       isPrePopulated = isPrePopulated,
       taxYearSelection = taxYearSelection
@@ -169,28 +166,24 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         view = view(),
         title = IndividualIncomeSource.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are incomplete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(incompleteSelfEmployments, incompleteUKProperty, incompleteForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeSelfEmployments, completeUKProperty, completeForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
       "there are complete and confirmed income sources added" in new TemplateViewTest(
         view = view(IncomeSources(completeAndConfirmedSelfEmployments, completeAndConfirmedUKProperty, completeAndConfirmedForeignProperty)),
         title = IndividualIncomeSource.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

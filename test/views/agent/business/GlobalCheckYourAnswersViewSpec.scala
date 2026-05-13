@@ -44,7 +44,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       ),
       title = GlobalCheckYourAnswersMessages.heading,
       isAgent = true,
-      backLink = Some(testBackUrl),
       hasSignOutLink = true,
       error = None
     )
@@ -394,7 +393,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   def page(completeDetails: CompleteDetails, clientDetails: ClientDetails, isMandatedNextYear: Boolean = false): Html = globalCheckYourAnswers(
     postAction = testCall,
-    backUrl = testBackUrl,
     completeDetails = completeDetails,
     clientDetails = clientDetails,
     softwareStatus = None,

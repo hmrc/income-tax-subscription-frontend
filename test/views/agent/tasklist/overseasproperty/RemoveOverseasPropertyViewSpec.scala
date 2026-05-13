@@ -46,8 +46,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       } else {
         RemoveClientOverseasPropertyForm.removeClientOverseasPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -66,7 +65,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         view = view(hasError = true),
         title = RemoveClientOverseasPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(testFormError)
       )
@@ -74,7 +72,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         view = view(),
         title = RemoveClientOverseasPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

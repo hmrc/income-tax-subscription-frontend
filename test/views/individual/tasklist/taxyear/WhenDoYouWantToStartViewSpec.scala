@@ -50,7 +50,6 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
       "the page has a back link + error" in new TemplateViewTest(
         view = page(editMode = false, hasError = true),
         title = WhenDoYouWantToStart.heading,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
     }

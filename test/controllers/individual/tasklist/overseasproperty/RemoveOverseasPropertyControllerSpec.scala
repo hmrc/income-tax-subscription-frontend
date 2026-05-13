@@ -127,7 +127,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   private def withController(testCode: RemoveOverseasPropertyController => Any): Unit = {
     val view = mock[RemoveOverseasPropertyBusiness]
 
-    when(view(any(), any(), any())(any(), any()))
+    when(view(any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveOverseasPropertyController(

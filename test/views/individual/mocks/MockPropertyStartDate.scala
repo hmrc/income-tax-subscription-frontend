@@ -35,11 +35,10 @@ trait MockPropertyStartDate extends PlaySpec with MockitoSugar with BeforeAndAft
     reset(propertyStartDate)
   }
 
-  def mockPropertyStartDate(postAction: Call, backUrl: String): Unit = {
+  def mockPropertyStartDate(postAction: Call): Unit = {
     when(propertyStartDate(
       propertyStartDateForm = ArgumentMatchers.any(),
-      postAction = ArgumentMatchers.eq(postAction),
-      backUrl = ArgumentMatchers.eq(backUrl)
+      postAction = ArgumentMatchers.eq(postAction)
     )(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }

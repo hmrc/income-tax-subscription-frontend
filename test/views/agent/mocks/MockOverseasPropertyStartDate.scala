@@ -35,11 +35,10 @@ trait MockOverseasPropertyStartDate extends MockitoSugar with BeforeAndAfterEach
 
   val mockView: OverseasPropertyStartDate = mock[OverseasPropertyStartDate]
 
-  def mockOverseasPropertyStartDate(postAction: Call, backUrl: String, clientDetails: ClientDetails): Unit = {
+  def mockOverseasPropertyStartDate(postAction: Call, clientDetails: ClientDetails): Unit = {
     when(mockView(
       overseasPropertyStartDateForm = ArgumentMatchers.any(),
       postAction = ArgumentMatchers.eq(postAction),
-      backUrl = ArgumentMatchers.eq(backUrl),
       clientDetails = ArgumentMatchers.eq(clientDetails)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }

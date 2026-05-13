@@ -62,8 +62,7 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       } else {
         RemoveUkPropertyForm.removeUkPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -81,14 +80,12 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       "there is an error" in new TemplateViewTest(
         view = view(hasError = true),
         title = RemoveUkPropertyMessages.title,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
         view = view(),
         title = RemoveUkPropertyMessages.title,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

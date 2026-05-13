@@ -38,8 +38,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       } else {
         RemoveOverseasPropertyForm.removeOverseasPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -67,14 +66,12 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         view = view(hasError = true),
         title = RemoveOverseasPropertyMessages.heading,
         isAgent = false,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
         view = view(),
         title = RemoveOverseasPropertyMessages.heading,
-        isAgent = false,
-        backLink = Some(testBackUrl),
+        isAgent = false
       )
     }
 

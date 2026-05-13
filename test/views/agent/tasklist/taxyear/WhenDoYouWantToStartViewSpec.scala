@@ -51,7 +51,6 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
         view = page(editMode = false, hasError = true),
         isAgent = true,
         title = WhenDoYouWantToStart.heading,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
     }

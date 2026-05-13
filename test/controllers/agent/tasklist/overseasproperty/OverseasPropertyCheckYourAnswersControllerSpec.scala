@@ -56,7 +56,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             viewModel = fullOverseasProperty,
             postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
             isGlobalEdit = false,
-            backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
             clientDetails = clientDetails
           )
 
@@ -71,7 +70,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             viewModel = fullOverseasProperty,
             postAction = routes.OverseasPropertyCheckYourAnswersController.submit(),
             isGlobalEdit = false,
-            backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
             clientDetails = clientDetails
           )
 
@@ -87,7 +85,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
               viewModel = fullOverseasProperty.copy(confirmed = true),
               postAction = routes.OverseasPropertyCheckYourAnswersController.submit(true),
               isGlobalEdit = true,
-              backUrl = controllers.agent.routes.GlobalCheckYourAnswersController.show.url,
               clientDetails = clientDetails
             )
 
@@ -102,7 +99,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
               viewModel = fullOverseasProperty,
               postAction = routes.OverseasPropertyCheckYourAnswersController.submit(true),
               isGlobalEdit = true,
-              backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url,
               clientDetails = clientDetails
             )
 
@@ -175,7 +171,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
         }
       }
       "throw and exception" when {
-        "a failure ocurred when saving the confirmed overseas property" in {
+        "a failure occurred when saving the confirmed overseas property" in {
           val testOverseasProperty = OverseasPropertyModel(startDateBeforeLimit = Some(false), startDate = Some(DateModel("1", "1", "2025")))
           mockFetchOverseasProperty(Some(testOverseasProperty))
           mockSaveOverseasProperty(testOverseasProperty.copy(confirmed = true))(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))

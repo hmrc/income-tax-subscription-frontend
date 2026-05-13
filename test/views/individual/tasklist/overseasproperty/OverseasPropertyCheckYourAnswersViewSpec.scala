@@ -32,12 +32,10 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = view(
         viewModel = completeProperty,
         postAction = testCall,
-        isGlobalEdit = false,
-        backUrl = testBackUrl
+        isGlobalEdit = false
       ),
       title = OverseasPropertyCheckYourAnswers.title,
-      isAgent = false,
-      backLink = Some(testBackUrl)
+      isAgent = false
     )
 
     "have a heading and caption" in {
@@ -134,7 +132,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
   private def page(viewModel: OverseasPropertyModel, isGlobalEdit: Boolean) = view(
     viewModel,
     postAction = testCall,
-    backUrl = testBackUrl,
     isGlobalEdit = isGlobalEdit
   )
 

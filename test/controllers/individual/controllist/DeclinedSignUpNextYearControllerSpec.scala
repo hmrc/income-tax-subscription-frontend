@@ -50,9 +50,7 @@ class DeclinedSignUpNextYearControllerSpec extends ControllerBaseSpec with MockA
   "show" must {
     "return OK (200) with the page html" in new Setup {
       when(
-        view(
-          ArgumentMatchers.eq[String](controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url)
-        )(ArgumentMatchers.any(), ArgumentMatchers.any())
+        view()(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = controller.show()(subscriptionRequest)

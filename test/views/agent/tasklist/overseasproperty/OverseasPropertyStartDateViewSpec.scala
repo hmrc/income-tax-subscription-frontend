@@ -47,7 +47,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
   val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)
 
-  val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
 
@@ -62,7 +61,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     overseasPropertyStartDate(
       overseasPropertyStartDateForm,
       testCall,
-      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 
@@ -72,24 +70,20 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = defaultForm,
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl),
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = defaultForm.withError(testError),
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }

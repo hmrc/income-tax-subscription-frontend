@@ -38,8 +38,7 @@ class UsingSoftwareControllerSpec extends ControllerSpec
   "show" must {
     "return OK with the page content" in {
       mockView(
-        postAction = routes.UsingSoftwareController.submit(),
-        backUrl = appConfig.govukGuidanceITSASignUpAgentLink
+        postAction = routes.UsingSoftwareController.submit()
       )
 
       val result: Future[Result] = testUsingSoftwareController().show()(request)
