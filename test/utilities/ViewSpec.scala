@@ -774,7 +774,7 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
       }
     }
 
-    def mustHaveDateInput(id: String, legend: String, exampleDate: String, isHeading: Boolean, isLegendHidden: Boolean, errorMessage: Option[String] = None, dateInputsValues: Seq[DateInputFieldValues]): Assertion = {
+    def mustHaveDateInput(id: String, legend: String, exampleDate: String, isHeading: Boolean, isLegendHidden: Boolean, legendClass: Option[String] = None, errorMessage: Option[String] = None, dateInputsValues: Seq[DateInputFieldValues]): Assertion = {
       val checkpoint: Checkpoint = new Checkpoint()
 
       val dateInputField: Element = element.selectHead(s"#$id")
@@ -791,6 +791,10 @@ trait ViewSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with B
         if (isLegendHidden) {
           checkpoint {
             dateLegend.attr("class") must include("govuk-visually-hidden")
+          }
+        } else {
+          checkpoint {
+            dateLegend.attr("class") must include(legendClass.getOrElse(""))
           }
         }
       }

@@ -235,32 +235,30 @@ error.property.day-month-year.min-date                          = The date must 
 error.property.year.length                                      = Year must include 4 numbers
 error.property.invalid                                          = The date must be a real date
 
-# Agent Property Start Date Date
-agent.property.start-date.heading.caption                       = {0} – {1}
-agent.property.start-date.heading                               = Start date for income from UK property
-agent.property.start-date.para-one                              = We need to know the exact start date.
-agent.property.start-date.hint                                  = For example, 27 9 {0}
-
 # Agent uk property start date before limit
-agent.uk-property.start-date-before-limit.heading                   = Your client’s UK property
-agent.uk-property.start-date-before-limit.caption                   = {0} – {1}
-agent.uk-property.start-date-before-limit.legend                    = Did this income start before 6 April {0}?
+agent.uk-property.start-date-before-limit.heading               = Your client’s UK property
+agent.uk-property.start-date-before-limit.caption               = {0} – {1}
+agent.uk-property.start-date-before-limit.legend                = Did this income start before 6 April {0}?
 
-agent.error.property.income-source.start-date-before-limit.invalid  = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
-
-# Agent Property Start Date Before Limit
-agent.property.start-date-before-limit.heading                  = Your client’s UK property
-agent.property.start-date-before-limit.heading.caption          = {0} – {1}
-agent.property.start-date-before-limit.heading.legend           = Did this income start before 6 April {0}?
+# Agent uk property start date before limit errors
 agent.error.property.start-date-before-limit.invalid            = Select ‘Yes’ if your client started getting income from UK property before 6 April {0}
 
+# Agent Property Start Date Date
+agent.property.start-date.title                                 = Start date - UK property
+agent.property.start-date.heading.caption                       = {0} – {1}
+agent.property.start-date.heading                               = Business start date
+agent.property.start-date.para-one                              = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
+agent.property.start-date.para-two                              = This is the date your client first received rental income from this property business, such as letting or renting out a property or land.
+agent.property.start-date.legend                                = When did your client’s UK property business start?
+agent.property.start-date.hint                                  = For example, 27 9 {0}
+
 # Agent Property Start Date errors
-agent.error.property.empty                                      = Enter the date your client started getting income from UK property
-agent.error.property.required                                   = The date must include a {0}
-agent.error.property.required.two                               = The date must include a {0} and {1}
+agent.error.property.empty                                      = Enter business start date
+agent.error.property.required                                   = Enter {0} of business start date
+agent.error.property.required.two                               = Enter {0} and {1} of business start date
 agent.error.property.day-month-year.max-date                    = The date must be before {0}
 agent.error.property.day-month-year.min-date                    = The date must be on or after {0}
-agent.error.property.invalid                                    = The date must be a real date
+agent.error.property.invalid                                    = Business start date must be a real date
 agent.error.property.year.length                                = Year must include 4 numbers
 
 ## Foreign Property Start Date
@@ -284,20 +282,31 @@ individual.foreign-property.start-date-before-limit.heading             = Did yo
 individual.foreign-property.start-date-before-limit.caption             = Your foreign property
 error.individual.foreign-property.start-date-before-limit.invalid       = Select ‘Yes’ if you started getting income from foreign property before 6 April {0}
 
+# Agent Overseas Property Start Date Before Limit
+agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
+agent.overseas.property.start-date-before-limit.caption         = {0} – {1}
+agent.overseas.property.start-date-before-limit.heading         = Your client’s foreign property
+agent.overseas.property.start-date-before-limit.legend          = Did this income start before 6 April {0}?
+
+# Agent foreign property start date before limit errors
+agent.error.overseas.property.start-date-before-limit.invalid   = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
+
 # Agent Overseas Property Start Date
-agent.overseas-property.start-date.title                        = Start date for income from foreign property
-agent.overseas-property.start-date.heading                      = Start date for income from foreign property
+agent.overseas-property.start-date.title                        = Start date - Foreign property
+agent.overseas-property.start-date.heading                      = Business start date
 agent.overseas-property.start-date.heading.caption              = {0} – {1}
-agent.overseas-property.start-date.para1                        = We need to know the exact start date.
+agent.overseas-property.start-date.para-one                     = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
+agent.overseas-property.start-date.para-two                     = This is the date your client first received rental income from this property business, such as letting or renting out a property or land.
+agent.overseas-property.start-date.legend                       = When did your foreign property business start?
 agent.overseas-property.start-date.hint                         = For example, 27 9 {0}
 
 # Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.empty                             = Enter the date your client started getting income from foreign property
-agent.error.overseas.property.required                          = The date must include a {0}
-agent.error.overseas.property.required.two                      = The date must include a {0} and {1}
+agent.error.overseas.property.empty                             = Enter business start date
+agent.error.overseas.property.required                          = Enter {0} of business start date
+agent.error.overseas.property.required.two                      = Enter {0} and {1} of business start date
 agent.error.overseas.property.day-month-year.max-date           = The date must be before {0}
 agent.error.overseas.property.day-month-year.min-date           = The date must be on or after {0}
-agent.error.overseas.property.invalid                           = The date must be a real date
+agent.error.overseas.property.invalid                           = Business start date must be a real date
 agent.error.overseas.property.year.length                       = Year must include 4 numbers
 
 ## Timeout page ##
@@ -790,25 +799,24 @@ agent.client-details.summary.nino                               = National Insur
 agent.client-details.summary.dob                                = Date of birth
 
 ## agent your income sources to sign up page
+agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.heading                                    = Confirm your client’s income sources
-agent.your-income-source.heading-2                                  = If any of your client’s businesses ceased trading during the tax year
-agent.your-income-source.paragraph-1                                = If your client’s business was active in the tax year {0} to {1} you still need to add it here, even if it has stopped trading.
-agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
-agent.your-income-source.para-2                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.lead                                       = You must:
 agent.your-income-source.bullet1                                    = check that the information we have for your client is correct
 agent.your-income-source.bullet2                                    = change any incorrect details
 agent.your-income-source.bullet3                                    = add any missing income source
 agent.your-income-source.bullet4                                    = remove any businesses that ceased before 6 April {0}
-agent.your-income-source.caption                                    = {0} – {1}
+agent.your-income-source.heading-2                                  = If any of your client’s businesses ceased trading during the tax year
+agent.your-income-source.paragraph-1                                = If your client’s business was active in the tax year {0} to {1} you still need to add it here, even if it has stopped trading.
 agent.your-income-source.self-employed                              = Sole trader businesses
-agent.your-income-source.self-employed.label-full                   = {0} – {1}
-agent.your-income-source.self-employed.name                         = {0}
-agent.your-income-source.self-employed.startdate                    = {0}
+agent.your-income-source.para-1                                     = Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed.
+agent.your-income-source.para-2                                     = Do not add limited companies or partnerships here.
 agent.your-income-source.self-employed.trade                        = {0}
-agent.your-income-source.self-employed.business-name-para           = Business name
-agent.your-income-source.self-employed.business-start-date-para     = Business start date
 agent.your-income-source.self-employed.label-none                   = Business {0}
+agent.your-income-source.self-employed.business-name-para           = Business name
+agent.your-income-source.self-employed.name                         = {0}
+agent.your-income-source.self-employed.business-start-date-para     = Business start date
+agent.your-income-source.self-employed.start-date                   = {0}
 agent.your-income-source.self-employed.add-link                     = Add a sole trader business
 agent.your-income-source.income-from-property                       = Income from property
 agent.your-income-source.income-from-property.para-1                = Tell us about income your client gets from any UK or foreign properties. For example, on a short-term basis such as holiday homes, or on a long-term basis such as letting houses or flats.
@@ -817,11 +825,11 @@ agent.your-income-source.income-from-property.para-3                = If your cl
 agent.your-income-source.uk-property                                = UK property
 agent.your-income-source.property.start-date-para                   = Start date
 agent.your-income-source.property.before-start-date-limit           = Before 6 April {0}
-agent.your-income-source.foreign-property                           = Foreign property
 agent.your-income-source.uk-property.add-link                       = Add UK property
-agent.your-income-source.foreign-property.add-link                  = Add foreign property
+agent.your-income-source.foreign-property                           = Foreign property
 agent.your-income-source.foreign-property.before-start-date-limit   = Before 6 April {0}
-agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for you, and that you have not added limited companies or partnerships here.
+agent.your-income-source.foreign-property.add-link                  = Add foreign property
+agent.your-income-source.before-you-continue                        = Before you continue, make sure you have checked any income sources we added for your client, and that you have not added limited companies or partnerships here.
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = There is a problem with your client’s income sources
@@ -874,13 +882,6 @@ agent.business.non-eligible-mandated.heading                                 = Y
 agent.business.non-eligible-mandated.caption                                 = {0} – {1}
 agent.business.non-eligible-mandated.paragraph                               = You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up for next tax year (6 April {0} to 5 April {1}).
 agent.business.non-eligible-mandated.indent                                  = You’ll need to make sure your client submits their Self Assessment tax return for the current tax year (6 April {0} to 5 April {1}) as normal.
-
-# Agent Overseas Property Start Date Before Limit
-agent.overseas.property.start-date-before-limit.title           = Your client’s foreign property
-agent.overseas.property.start-date-before-limit.caption         = {0} – {1}
-agent.overseas.property.start-date-before-limit.heading         = Your client’s foreign property
-agent.overseas.property.start-date-before-limit.legend          = Did this income start before 6 April {0}?
-agent.error.overseas.property.start-date-before-limit.invalid   = Select ‘Yes’ if your client started getting income from foreign property before 6 April {0}
 
 ## Business Name
 agent.business.name.title                                       = Business name
@@ -1180,8 +1181,7 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.tax-year.current                                                = Current tax year
 agent.global-check-your-answers.tax-year.next                                                   = Next tax year
 agent.global-check-your-answers.para2                                                           = The information you have given must be correct to the best of your knowledge.
-agent.global-check-your-answers.para3                                                           = By confirming, you will be signed up to Making Tax Digital for Income Tax.
-agent.global-check-your-answers.print-link                                                      = You can print this page for your records
+agent.global-check-your-answers.para3                                                           = By confirming, your client will be signed up to Making Tax Digital for Income Tax.
 
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = You may be able to sign up

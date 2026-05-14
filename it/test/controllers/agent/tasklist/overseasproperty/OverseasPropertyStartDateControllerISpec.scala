@@ -49,7 +49,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the overseas property commencement page with populated commencement date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas-property.start-date.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.overseas-property.start-date.title") + serviceNameGovUk),
           govukDateField("startDate", testValidStartDate)
         )
       }
@@ -71,7 +71,7 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the overseas property commencement date page with no commencement date")
         res must have(
           httpStatus(OK),
-          pageTitle(messages("agent.overseas-property.start-date.heading") + serviceNameGovUk),
+          pageTitle(messages("agent.overseas-property.start-date.title") + serviceNameGovUk),
           govukDateField("startDate", DateModel("", "", ""))
         )
       }
