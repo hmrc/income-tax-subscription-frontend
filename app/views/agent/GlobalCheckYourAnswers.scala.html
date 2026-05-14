@@ -35,7 +35,6 @@
 )
 
 @(postAction: Call,
-    backUrl: String,
     completeDetails: CompleteDetails,
     clientDetails: ClientDetails,
     softwareStatus: Option[YesNo],
@@ -44,7 +43,7 @@
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("agent.global-check-your-answers.subheading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.global-check-your-answers.subheading")) {
 
     @pageHeadingHelper(
         heading = messages("agent.global-check-your-answers.subheading"),

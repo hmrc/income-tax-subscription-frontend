@@ -505,13 +505,6 @@ trait ViewSpecTrait extends UnitTestTrait {
       h1.text() mustBe heading
     }
 
-    def mustHaveBackLinkTo(backUrl: String): Unit =
-      s"$name must have a back link pointed to '$backUrl'" in {
-        val backLink = element.select("#back")
-        backLink.isEmpty mustBe false
-        backLink.attr("href") mustBe backUrl
-      }
-
     // this method returns either the first form in the document or one specified by id
     // @param formName the name used to reference the form by the unit tests in its print statements.
     // n.b. the param actionCall must be call-by-name otherwise it could be evaluated with the wrong
@@ -558,7 +551,6 @@ trait ViewSpecTrait extends UnitTestTrait {
 
 object ViewSpecTrait {
   // these two constants are used for testing the views
-  val testBackUrl = "/test-back-url"
   val testCall = Call("POST", "/test-url")
   val viewTestRequest = FakeRequest("POST", "/test-url")
 }

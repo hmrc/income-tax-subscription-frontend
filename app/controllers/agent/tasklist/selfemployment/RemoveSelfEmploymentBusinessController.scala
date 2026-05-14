@@ -95,8 +95,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
       removeBusinessForm = removeBusinessForm,
       businessName = maybeBusinessNameModel.map(_.businessName),
       businessTradeName = maybeBusinessTradeNameModel.map(_.businessTradeName),
-      postAction = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.submit(businessId),
-      backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      postAction = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.submit(businessId)
     )
 
   private def form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm()

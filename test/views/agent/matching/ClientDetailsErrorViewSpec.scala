@@ -34,7 +34,6 @@ class ClientDetailsErrorViewSpec extends ViewSpec {
       page,
       title = ClientDetailsErrorMessages.heading,
       isAgent = true,
-      backLink = None,
       hasSignOutLink = true
     )
 

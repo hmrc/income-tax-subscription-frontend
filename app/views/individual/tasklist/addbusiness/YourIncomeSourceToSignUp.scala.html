@@ -36,15 +36,14 @@
     govukInsetText: GovukInsetText
 )
 
-@(postAction: Call, backUrl: String, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
 
 @heading = @{
     messages("your-income-source.heading")
 }
 
 @mainTemplate(
-    title = heading,
-    backLink = Some(backUrl)
+    title = heading
 ) {
     <h1 class="govuk-heading-xl">@heading</h1>
 

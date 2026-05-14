@@ -35,10 +35,9 @@ trait MockUsingSoftware extends MockitoSugar with BeforeAndAfterEach {
     reset(mockUsingSoftware)
   }
 
-  def mockView(postAction: Call, backUrl: String): Unit = {
+  def mockView(postAction: Call): Unit = {
     when(mockUsingSoftware(
-      ArgumentMatchers.eq(postAction),
-      ArgumentMatchers.eq(backUrl)
+      ArgumentMatchers.eq(postAction)
     )(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }

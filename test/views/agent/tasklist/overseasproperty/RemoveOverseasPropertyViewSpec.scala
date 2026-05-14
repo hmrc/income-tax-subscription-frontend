@@ -31,7 +31,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
     val title = "Are you sure you want to delete your client’s foreign property business?"
     val heading: String = title
     val hint = "All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val backLink = "Back"
     val agreeAndContinue = "Agree and continue"
   }
 
@@ -46,8 +45,7 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       } else {
         RemoveClientOverseasPropertyForm.removeClientOverseasPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -66,7 +64,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         view = view(hasError = true),
         title = RemoveClientOverseasPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(testFormError)
       )
@@ -74,7 +71,6 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
         view = view(),
         title = RemoveClientOverseasPropertyMessages.title,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

@@ -140,7 +140,7 @@ class RemoveUkPropertyControllerSpec extends AgentControllerBaseSpec
   private def withController(testCode: RemoveUkPropertyController => Any): Unit = {
     val view = mock[RemoveUkPropertyBusiness]
 
-    when(view(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(view(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new RemoveUkPropertyController(
       view,

@@ -47,7 +47,6 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
       val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       Ok(view(
         postAction = routes.YourIncomeSourceToSignUpController.submit,
-        backUrl = backUrl,
         clientDetails = request.clientDetails,
         incomeSources = incomeSources,
         prepopulated = prePopFlag.contains(true),
@@ -67,9 +66,5 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
         Future.successful(Redirect(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show))
       }
     }
-  }
-
-  def backUrl: String = {
-    controllers.agent.routes.WhatYouNeedToDoController.show().url
   }
 }

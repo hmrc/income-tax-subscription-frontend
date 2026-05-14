@@ -49,8 +49,7 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
       } yield {
         Ok(view(
           startDateBeforeLimitForm = ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybeForeignPropertyStartDateBeforeLimit),
-          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
         ))
       }
   }
@@ -60,8 +59,7 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
       ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(
           startDateBeforeLimitForm = formWithErrors,
-          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
         ))), { answer =>
           for {
             sessionData <- sessionDataService.getAllSessionData()
@@ -83,13 +81,4 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
         }
       )
   }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEditMode || isGlobalEdit) {
-      routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
-    } else {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
-  }
-
 }

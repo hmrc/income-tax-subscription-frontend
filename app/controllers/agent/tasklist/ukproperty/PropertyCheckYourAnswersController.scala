@@ -43,7 +43,6 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
         viewModel = property,
         postAction = routes.PropertyCheckYourAnswersController.submit(isGlobalEdit),
         isGlobalEdit = isGlobalEdit,
-        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed),
         clientDetails = request.clientDetails
       )))
     }
@@ -71,16 +70,6 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
       f(maybeProperty.getOrElse(
         throw new InternalServerException("[PropertyCheckYourAnswersController] - Could not retrieve property details")
       ))
-    }
-  }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
-    if (isGlobalEdit && confirmed) {
-      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEditMode || isGlobalEdit) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      routes.PropertyStartDateBeforeLimitController.show().url
     }
   }
 }

@@ -47,7 +47,6 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
         view = page(),
         title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
 
@@ -57,7 +56,6 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
         ),
         title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
         isAgent = true,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(formError)
       )
@@ -123,7 +121,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
                     businessName: Option[String] = maybeBusinessName,
                     businessTradeName: Option[String] = maybeBusinessTradeName
                   ) =
-    removeBusinessView(form, businessName, businessTradeName, testCall, testBackUrl)
+    removeBusinessView(form, businessName, businessTradeName, testCall)
 
   private def document() =
     Jsoup.parse(page().body)

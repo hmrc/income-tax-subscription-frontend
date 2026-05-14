@@ -25,9 +25,9 @@
         hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 
-@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
 
-    @mainTemplate(title = messages("agent.using-software.heading"), backLink = Some(backUrl)) {
+    @mainTemplate(title = messages("agent.using-software.heading")) {
 
         <h1 class="govuk-heading-l">@messages("agent.using-software.heading")</h1>
         <p class="govuk-body">@messages("agent.using-software.para1")</p>

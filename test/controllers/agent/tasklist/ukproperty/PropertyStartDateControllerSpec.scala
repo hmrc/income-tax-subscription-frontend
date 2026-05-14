@@ -50,7 +50,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -63,7 +62,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(Some(date))
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(),
-          backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -76,7 +74,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(editMode = true),
-          backUrl = routes.PropertyStartDateBeforeLimitController.show(editMode = true).url,
           clientDetails = clientDetails
         )
 
@@ -89,7 +86,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         mockFetchPropertyStartDate(None)
         mockPropertyStartDate(
           postAction = routes.PropertyStartDateController.submit(isGlobalEdit = true),
-          backUrl = routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
           clientDetails = clientDetails
         )
 
@@ -107,7 +103,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "not in edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(),
-            backUrl = routes.PropertyStartDateBeforeLimitController.show().url,
             clientDetails = clientDetails
           )
 
@@ -121,7 +116,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "in edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(editMode = true),
-            backUrl = routes.PropertyStartDateBeforeLimitController.show(editMode = true).url,
             clientDetails = clientDetails
           )
 
@@ -135,7 +129,6 @@ class PropertyStartDateControllerSpec extends ControllerSpec
         "in global edit mode" in {
           mockPropertyStartDate(
             postAction = routes.PropertyStartDateController.submit(isGlobalEdit = true),
-            backUrl = routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
             clientDetails = clientDetails
           )
 

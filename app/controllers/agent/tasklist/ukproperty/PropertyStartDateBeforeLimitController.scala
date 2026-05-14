@@ -43,7 +43,6 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
       Ok(view(
         ukPropertyStartDateBeforeLimitForm = ukPropertyStartDateBeforeLimitForm.fill(maybeStartDateBeforeLimit),
         postAction = routes.PropertyStartDateBeforeLimitController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit),
         clientDetails = request.clientDetails
       ))
     }
@@ -55,7 +54,6 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
         Future.successful(BadRequest(view(
           ukPropertyStartDateBeforeLimitForm = formWithErrors,
           postAction = routes.PropertyStartDateBeforeLimitController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit),
           clientDetails = request.clientDetails
         ))),
       { startDateBeforeLimit =>
@@ -74,13 +72,4 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
       }
     )
   }
-
-  def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    if (isEditMode || isGlobalEdit) {
-      routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit).url
-    } else {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
-  }
-
 }

@@ -47,7 +47,6 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
     val title = "Are you sure you want to delete your UK property business?"
     val heading: String = title
     val hint = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val backLink = "Back"
     val agreeAndContinue = "Agree and continue"
   }
 
@@ -62,8 +61,7 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       } else {
         RemoveUkPropertyForm.removeUkPropertyForm
       },
-      postAction = testCall,
-      backUrl = testBackUrl
+      postAction = testCall
     )
   }
 
@@ -81,14 +79,12 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
       "there is an error" in new TemplateViewTest(
         view = view(hasError = true),
         title = RemoveUkPropertyMessages.title,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true,
         error = Some(testFormError)
       )
       "there is no error" in new TemplateViewTest(
         view = view(),
         title = RemoveUkPropertyMessages.title,
-        backLink = Some(testBackUrl),
         hasSignOutLink = true
       )
     }

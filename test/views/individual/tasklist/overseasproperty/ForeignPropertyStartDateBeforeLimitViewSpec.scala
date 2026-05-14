@@ -30,13 +30,11 @@ class ForeignPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
     "use the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = view(),
-        title = Messages.heading,
-        backLink = Some(testBackUrl)
+        title = Messages.heading
       )
       "there is an error" in new TemplateViewTest(
         view = view(hasError = true),
         title = Messages.heading,
-        backLink = Some(testBackUrl),
         error = Some(FormError(
           key = ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimit,
           message = "error.individual.foreign-property.start-date-before-limit.invalid",
@@ -108,8 +106,7 @@ class ForeignPropertyStartDateBeforeLimitViewSpec extends ViewSpec {
     } else {
       ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm
     },
-    postAction = testCall,
-    backUrl = testBackUrl
+    postAction = testCall
   )
 
   def document(hasError: Boolean = false): Element = Jsoup.parse(view(hasError).body)

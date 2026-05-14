@@ -46,8 +46,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
       "there is no error" when {
         "name and business name are present" in new TemplateViewTest(
           view = page(),
-          title = RemoveBusiness.titleWithoutNameOrTradeName,
-          backLink = Some(testBackUrl),
+          title = RemoveBusiness.titleWithoutNameOrTradeName
         )
 
       }
@@ -57,7 +56,6 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
           form = RemoveBusinessForm.removeBusinessForm().withError(formError)
         ),
         title = RemoveBusiness.titleWithoutNameOrTradeName,
-        backLink = Some(testBackUrl),
         error = Some(formError)
       )
     }
@@ -118,7 +116,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
                     maybeBusinessName: Option[String] = businessName,
                     maybeBusinessTradeName: Option[String] = businessTradeName
                   ) =
-    removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall, testBackUrl)
+    removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall)
 
   private def document() = Jsoup.parse(page().body)
 }

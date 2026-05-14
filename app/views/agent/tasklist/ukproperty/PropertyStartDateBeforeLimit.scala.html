@@ -29,9 +29,9 @@
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(ukPropertyStartDateBeforeLimitForm: Form[_], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(ukPropertyStartDateBeforeLimitForm: Form[_], postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.uk-property.start-date-before-limit.heading"), optForm = Some(ukPropertyStartDateBeforeLimitForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.uk-property.start-date-before-limit.heading"), optForm = Some(ukPropertyStartDateBeforeLimitForm)) {
 
     @pageHeadingHelper(
         heading = messages("agent.uk-property.start-date-before-limit.heading"),

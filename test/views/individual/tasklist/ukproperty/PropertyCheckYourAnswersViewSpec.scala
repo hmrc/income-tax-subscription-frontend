@@ -34,12 +34,10 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
       view = propertyCheckYourAnswersView(
         viewModel = completeProperty,
         postAction = testCall,
-        isGlobalEdit = false,
-        backUrl = testBackUrl
+        isGlobalEdit = false
       ),
       title = PropertyCheckYourAnswers.title,
-      isAgent = false,
-      backLink = Some(testBackUrl)
+      isAgent = false
     )
 
     "have a heading and caption" in {
@@ -139,7 +137,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     propertyCheckYourAnswersView(
       viewModel,
       postAction = testCall,
-      backUrl = testBackUrl,
       isGlobalEdit = isGlobalEdit
     )
   }

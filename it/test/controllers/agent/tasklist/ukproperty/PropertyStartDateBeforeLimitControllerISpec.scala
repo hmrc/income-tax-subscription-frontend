@@ -272,21 +272,5 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
-  "backUrl" must {
-    "redirect to Income Sources page when not in edit mode" in {
-      controller.backUrl(isEditMode = false, isGlobalEdit = false) mustBe
-        controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    }
-    "redirect to UK Property CYA when in edit mode" in {
-      controller.backUrl(isEditMode = true, isGlobalEdit = false) mustBe
-        routes.PropertyCheckYourAnswersController.show(editMode = true).url
-    }
-    "redirect to UK Property CYA when in global edit mode" in {
-      controller.backUrl(isEditMode = true, isGlobalEdit = true) mustBe
-        routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
-    }
-
-  }
 }
 

@@ -29,11 +29,8 @@ class ThrottleStartOfJourneyIndividualViewSpec extends ViewSpec {
   val throttleStartOfJourneyView: ThrottleStartOfJourney = app.injector.instanceOf[ThrottleStartOfJourney]
   lazy val postAction: Call = controllers.individual.matching.routes.HomeController.index
 
-  private val backLinkTarget = Math.random().toString
-
   def page(): Html = {
     throttleStartOfJourneyView(
-      backLink = backLinkTarget,
       postAction = postAction
     )(request, implicitly)
   }

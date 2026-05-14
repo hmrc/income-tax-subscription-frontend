@@ -62,8 +62,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
 
   private def page(): Html = {
     usingSoftware(
-      testCall,
-      backUrl = testBackUrl
+      testCall
     )
   }
 

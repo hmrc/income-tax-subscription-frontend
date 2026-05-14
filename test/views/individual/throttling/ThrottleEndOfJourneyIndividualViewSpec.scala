@@ -28,11 +28,9 @@ class ThrottleEndOfJourneyIndividualViewSpec extends ViewSpec {
 
   val throttleEndOfJourneyView: ThrottleEndOfJourney = app.injector.instanceOf[ThrottleEndOfJourney]
   lazy val postAction: Call = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show
-  private val backLinkTarget = Math.random().toString
 
   def page(): Html = {
     throttleEndOfJourneyView(
-      backLink = backLinkTarget,
       postAction = postAction
     )(request, implicitly)
   }

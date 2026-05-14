@@ -44,7 +44,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
       Future.successful(Ok(view(
         viewModel = property,
         postAction = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
-        backUrl = backUrl(isEditMode, isGlobalEdit, property.confirmed, property.startDateBeforeLimit),
         isGlobalEdit = isGlobalEdit
       )))
     }
@@ -64,19 +63,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
         }
       } else {
         Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-      }
-    }
-  }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, isConfirmed: Boolean, startDateBeforeLimit: Option[Boolean]): String = {
-    if (isGlobalEdit && isConfirmed) {
-      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isGlobalEdit || isEditMode) {
-      controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      startDateBeforeLimit match {
-        case Some(false) => routes.ForeignPropertyStartDateController.show().url
-        case _ => routes.ForeignPropertyStartDateBeforeLimitController.show().url
       }
     }
   }

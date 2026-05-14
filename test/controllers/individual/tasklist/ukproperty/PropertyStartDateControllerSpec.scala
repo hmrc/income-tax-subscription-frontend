@@ -74,8 +74,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     "display the property start date view and return OK (200)" when {
       "no start date is returned" in new Test {
         mockPropertyStartDate(
-          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit()
         )
         mockFetchPropertyStartDate(None)
 
@@ -85,8 +84,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
       "a start date is returned" in new Test {
         mockPropertyStartDate(
-          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit()
         )
         mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
@@ -96,8 +94,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
       "in edit mode" in new Test {
         mockPropertyStartDate(
-          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true).url
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(editMode = true)
         )
         mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
@@ -107,8 +104,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
       }
       "in global edit mode" in new Test {
         mockPropertyStartDate(
-          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(isGlobalEdit = true),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(isGlobalEdit = true)
         )
         mockFetchPropertyStartDate(Some(testPropertyStartDate))
 
@@ -172,8 +168,8 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
     "return BAD_REQUEST" when {
       "there is an invalid submission with an error form" in {
         mockPropertyStartDate(
-          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit(),
-          backUrl = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url)
+          postAction = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.submit()
+        )
 
         val badRequest = callSubmitWithErrorForm(isEditMode = false)
 

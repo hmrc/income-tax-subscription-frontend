@@ -78,8 +78,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html = {
     checkYourClientDetails(
       userDetailsModel,
-      routes.ConfirmClientController.submit(),
-      backUrl = backUrl
+      routes.ConfirmClientController.submit()
     )
   }
 
@@ -230,9 +229,4 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
     }
   }
-
-  def backUrl: String = {
-    controllers.agent.matching.routes.ClientDetailsController.show().url
-  }
-
 }

@@ -29,7 +29,6 @@ import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, red
 import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
-import views.ViewSpecTrait.testBackUrl
 import views.agent.matching.mocks.MockClientDetails
 
 import scala.concurrent.Future
@@ -56,7 +55,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
         setupMockNotLockedOut(testARN)
         mockView(
           postAction = routes.ClientDetailsController.submit(),
-          backUrl = testBackUrl,
           isEditMode = false
         )
 
@@ -69,7 +67,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
         setupMockNotLockedOut(testARN)
         mockView(
           postAction = routes.ClientDetailsController.submit(editMode = true),
-          backUrl = testBackUrl,
           isEditMode = true
         )
 
@@ -148,7 +145,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
           setupMockNotLockedOut(testARN)
           mockView(
             postAction = routes.ClientDetailsController.submit(),
-            backUrl = testBackUrl,
             isEditMode = false
           )
 
@@ -165,7 +161,6 @@ class ClientDetailsControllerSpec extends ControllerSpec
           setupMockNotLockedOut(testARN)
           mockView(
             postAction = routes.ClientDetailsController.submit(editMode = true),
-            backUrl = testBackUrl,
             isEditMode = true
           )
 

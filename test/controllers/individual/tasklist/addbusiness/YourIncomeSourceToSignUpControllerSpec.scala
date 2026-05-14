@@ -209,12 +209,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "backUrl" when {
-    "go to the ORM page" in new Setup {
-      controller.backUrl mustBe controllers.individual.routes.UsingSoftwareController.show().url
-    }
-  }
-
   trait Setup {
     val yourIncomeSourceToSignUpView: YourIncomeSourceToSignUp = mock[YourIncomeSourceToSignUp]
 
@@ -227,7 +221,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
     def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean, taxYearSelection: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
-        ArgumentMatchers.eq(controllers.individual.routes.UsingSoftwareController.show().url),
         ArgumentMatchers.eq(incomeSources),
         ArgumentMatchers.eq(isPrePopped),
         ArgumentMatchers.eq(taxYearSelection)

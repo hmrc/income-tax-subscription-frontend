@@ -35,12 +35,10 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
         viewModel = completeProperty,
         postAction = testCall,
         isGlobalEdit = false,
-        backUrl = testBackUrl,
         clientDetails = ClientDetails("", "")
       ),
       title = PropertyCheckYourAnswers.title,
-      isAgent = true,
-      backLink = Some(testBackUrl)
+      isAgent = true
     )
 
     "have a heading and caption" in {
@@ -166,7 +164,6 @@ class PropertyCheckYourAnswersViewSpec extends ViewSpec {
     viewModel = viewModel,
     postAction = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
     isGlobalEdit = isGlobalEdit,
-    backUrl = "test-back-url",
     clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 

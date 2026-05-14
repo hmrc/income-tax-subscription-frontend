@@ -34,11 +34,10 @@ trait MockOverseasPropertyStartDate extends PlaySpec with MockitoSugar with Befo
     reset(foreignPropertyStartDate)
   }
 
-  def mockForeignPropertyStartDateView(postAction: Call, backUrl: String): Unit = {
+  def mockForeignPropertyStartDateView(postAction: Call): Unit = {
     when(foreignPropertyStartDate(
       startDateForm = ArgumentMatchers.any(),
-      postAction = ArgumentMatchers.eq(postAction),
-      backUrl = ArgumentMatchers.eq(backUrl)
+      postAction = ArgumentMatchers.eq(postAction)
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)
   }

@@ -32,24 +32,22 @@ trait MockClientDetails extends MockitoSugar with BeforeAndAfterEach {
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockClientDetails)
-    when(mockClientDetails(any(), any(), any(), any())(any(), any()))
+    when(mockClientDetails(any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
-    when(mockClientDetails.render(any(), any(), any(), any(), any(), any()))
+    when(mockClientDetails.render(any(), any(), any(), any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 
-  def mockView(postAction: Call, backUrl: String, isEditMode: Boolean): Unit = {
+  def mockView(postAction: Call, isEditMode: Boolean): Unit = {
     when(mockClientDetails(
       ArgumentMatchers.any(),
       ArgumentMatchers.eq(postAction),
-      ArgumentMatchers.eq(backUrl),
       ArgumentMatchers.eq(isEditMode)
     )(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)
     when(mockClientDetails.render(
       ArgumentMatchers.any(),
       ArgumentMatchers.eq(postAction),
-      ArgumentMatchers.eq(backUrl),
       ArgumentMatchers.eq(isEditMode),
       ArgumentMatchers.any(),
       ArgumentMatchers.any())

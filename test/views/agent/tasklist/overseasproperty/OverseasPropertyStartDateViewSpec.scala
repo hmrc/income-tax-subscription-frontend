@@ -37,7 +37,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
-    val backLink = "Back"
     val maxDate = "The date must be before 18 April 2021"
     val minDate = "The date must be on or after 11 April 2021"
   }
@@ -47,7 +46,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
   val overseasPropertyStartDate: OverseasPropertyStartDate = app.injector.instanceOf[OverseasPropertyStartDate]
   val defaultForm: Form[DateModel] = OverseasPropertyStartDateForm.overseasPropertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)
 
-  val backUrl: String = testBackUrl
   val action: Call = testCall
   val taxYearEnd: Int = 2020
 
@@ -62,7 +60,6 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     overseasPropertyStartDate(
       overseasPropertyStartDateForm,
       testCall,
-      testBackUrl,
       ClientDetails("FirstName LastName", "ZZ111111Z")
     )(FakeRequest(), implicitly)
 
@@ -72,24 +69,20 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = defaultForm,
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
-        isAgent = true,
-        backLink = Some(testBackUrl),
+        isAgent = true
       )
 
       "there is an error" in new TemplateViewTest(
         view = overseasPropertyStartDate(
           overseasPropertyStartDateForm = defaultForm.withError(testError),
           postAction = testCall,
-          backUrl = testBackUrl,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
         title = OverseasPropertyStartDateMessages.heading,
         isAgent = true,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }

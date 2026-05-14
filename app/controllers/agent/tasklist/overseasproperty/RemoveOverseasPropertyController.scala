@@ -71,7 +71,6 @@ class RemoveOverseasPropertyController @Inject()(incomeTaxSubscriptionConnector:
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeOverseasProperty(
     yesNoForm = form,
-    postAction = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.submit,
-    backUrl = controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+    postAction = controllers.agent.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.submit
   )
 }

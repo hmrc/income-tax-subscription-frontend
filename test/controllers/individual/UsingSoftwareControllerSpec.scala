@@ -45,7 +45,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
 
   val mockUsingSoftware: UsingSoftware = mock[UsingSoftware]
 
-  when(mockUsingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+  when(mockUsingSoftware(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
   object TestUsingSoftwareController extends UsingSoftwareController(
     mockUsingSoftware,
@@ -89,8 +89,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
       mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
       when(usingSoftware(
         ArgumentMatchers.eq(UsingSoftwareForm.usingSoftwareForm),
-        ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false)),
-        ArgumentMatchers.eq(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+        ArgumentMatchers.eq(routes.UsingSoftwareController.submit(false))
       )(any(), any())).thenReturn(HtmlFormat.empty)
 
       val result: Future[Result] = TestUsingSoftwareController.show(false)(
@@ -108,7 +107,7 @@ class UsingSoftwareControllerSpec extends ControllerBaseSpec
         mockFetchSelectedTaxYear(Some(testSelectedTaxYearCurrent))
         mockGetMandationService(Voluntary, Mandated)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        when(usingSoftware(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+        when(usingSoftware(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result: Future[Result] = controller.submit(false)(subscriptionRequest)
 

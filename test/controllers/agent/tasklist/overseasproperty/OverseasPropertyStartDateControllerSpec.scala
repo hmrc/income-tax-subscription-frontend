@@ -47,7 +47,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         mockFetchOverseasPropertyStartDate(None)
         mockOverseasPropertyStartDate(
           postAction = routes.OverseasPropertyStartDateController.submit(),
-          backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -60,7 +59,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         mockFetchOverseasPropertyStartDate(Some(date))
         mockOverseasPropertyStartDate(
           postAction = routes.OverseasPropertyStartDateController.submit(),
-          backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
           clientDetails = clientDetails
         )
 
@@ -73,7 +71,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         mockFetchOverseasPropertyStartDate(None)
         mockOverseasPropertyStartDate(
           postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
-          backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true).url,
           clientDetails = clientDetails
         )
 
@@ -86,7 +83,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         mockFetchOverseasPropertyStartDate(None)
         mockOverseasPropertyStartDate(
           postAction = routes.OverseasPropertyStartDateController.submit(isGlobalEdit = true),
-          backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
           clientDetails = clientDetails
         )
 
@@ -104,7 +100,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         "not in edit mode" in {
           mockOverseasPropertyStartDate(
             postAction = routes.OverseasPropertyStartDateController.submit(),
-            backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show().url,
             clientDetails = clientDetails
           )
 
@@ -118,7 +113,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         "in edit mode" in {
           mockOverseasPropertyStartDate(
             postAction = routes.OverseasPropertyStartDateController.submit(editMode = true),
-            backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true).url,
             clientDetails = clientDetails
           )
 
@@ -132,7 +126,6 @@ class OverseasPropertyStartDateControllerSpec extends ControllerSpec
         "in global edit mode" in {
           mockOverseasPropertyStartDate(
             postAction = routes.OverseasPropertyStartDateController.submit(isGlobalEdit = true),
-            backUrl = routes.OverseasPropertyStartDateBeforeLimitController.show(isGlobalEdit = true).url,
             clientDetails = clientDetails
           )
 

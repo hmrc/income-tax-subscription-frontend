@@ -36,12 +36,11 @@ trait MockPropertyCheckYourAnswers extends MockitoSugar with BeforeAndAfterEach 
 
   val mockView: PropertyCheckYourAnswers = mock[PropertyCheckYourAnswers]
 
-  def mockPropertyCheckYourAnswers(viewModel: PropertyModel, postAction: Call, isGlobalEdit: Boolean, backUrl: String, clientDetails: ClientDetails): Unit = {
+  def mockPropertyCheckYourAnswers(viewModel: PropertyModel, postAction: Call, isGlobalEdit: Boolean, clientDetails: ClientDetails): Unit = {
     when(mockView(
       viewModel = ArgumentMatchers.eq(viewModel),
       postAction = ArgumentMatchers.eq(postAction),
       isGlobalEdit = ArgumentMatchers.eq(isGlobalEdit),
-      backUrl = ArgumentMatchers.eq(backUrl),
       clientDetails = ArgumentMatchers.eq(clientDetails)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }

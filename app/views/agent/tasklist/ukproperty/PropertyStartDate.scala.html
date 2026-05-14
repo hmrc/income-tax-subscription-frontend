@@ -28,9 +28,9 @@
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(propertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(propertyStartDateForm: Form[DateModel], postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm), backLink = Some(backUrl)) {
+@agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm)) {
 
     @pageHeadingHelper(
         heading = messages("agent.property.start-date.heading"),

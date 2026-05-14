@@ -103,18 +103,16 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
     }
   }
 
-  private def view(
-                    businessId: String,
-                    removeBusinessForm: Form[YesNo],
-                    maybeBusinessNameModel: Option[BusinessNameModel],
-                    maybeBusinessTradeNameModel: Option[BusinessTradeNameModel]
+  private def view(businessId: String,
+                   removeBusinessForm: Form[YesNo],
+                   maybeBusinessNameModel: Option[BusinessNameModel],
+                   maybeBusinessTradeNameModel: Option[BusinessTradeNameModel]
                   )(implicit request: Request[_]) =
     removeBusinessView(
       removeBusinessForm = removeBusinessForm,
       businessName = maybeBusinessNameModel.map(_.businessName),
       businessTradeName = maybeBusinessTradeNameModel.map(_.businessTradeName),
-      postAction = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.submit(businessId),
-      backUrl = controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      postAction = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.submit(businessId)
     )
 
   private def form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm()

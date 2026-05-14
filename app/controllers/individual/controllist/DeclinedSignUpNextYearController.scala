@@ -34,9 +34,7 @@ class DeclinedSignUpNextYearController @Inject()(declinedSignUpNextYear: Decline
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     _ =>
-      Ok(declinedSignUpNextYear(
-        backUrl = controllers.individual.controllist.routes.CannotSignUpThisYearController.show.url
-      ))
+      Ok(declinedSignUpNextYear())
   }
 
 }

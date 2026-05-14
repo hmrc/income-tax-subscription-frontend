@@ -43,7 +43,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
         viewModel = overseasProperty,
         postAction = routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit),
         isGlobalEdit = isGlobalEdit,
-        backUrl = backUrl(isEditMode, isGlobalEdit, overseasProperty.confirmed),
         clientDetails = request.clientDetails
       )))
     }
@@ -72,16 +71,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
       f(maybeProperty.getOrElse(
         throw new InternalServerException("[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details")
       ))
-    }
-  }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean, confirmed: Boolean): String = {
-    if (isGlobalEdit && confirmed) {
-      controllers.agent.routes.GlobalCheckYourAnswersController.show.url
-    } else if (isEditMode || isGlobalEdit) {
-      controllers.agent.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
-    } else {
-      controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show().url
     }
   }
 }

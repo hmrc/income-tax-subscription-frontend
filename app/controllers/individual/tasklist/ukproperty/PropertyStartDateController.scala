@@ -54,8 +54,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
       } yield {
         Ok(view(
           propertyStartDateForm = form.fill(startDate),
-          postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-          backUrl = backUrl(isEditMode, isGlobalEdit)
+          postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
         ))
       }
   }
@@ -68,8 +67,8 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
             formWithErrors => {
               Future.successful(BadRequest(view(
                 propertyStartDateForm = formWithErrors,
-                postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit),
-                backUrl = backUrl(isEditMode, isGlobalEdit))))
+                postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
+              )))
             },
             startDate =>
               subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
@@ -79,10 +78,6 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
           )
         }
       }
-  }
-
-  private def backUrl(isEditMode: Boolean, isGlobalEdit: Boolean): String = {
-    routes.PropertyStartDateBeforeLimitController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit).url
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {

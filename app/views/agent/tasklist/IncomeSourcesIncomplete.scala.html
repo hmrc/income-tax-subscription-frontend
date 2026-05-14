@@ -27,9 +27,9 @@
     ul: UnorderedList
 )
 
-@(postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.income-sources-incomplete.heading"), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.income-sources-incomplete.heading")) {
 
     @pageHeadingHelper(
         heading = messages("agent.income-sources-incomplete.heading"),

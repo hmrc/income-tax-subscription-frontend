@@ -23,7 +23,7 @@
         implicit appConfig: AppConfig
 )
 
-@(title: String, optForm: Option[Form[_]] = None, backLink: Option[String]= None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, useJSBack: Boolean = false, hasWelsh: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@(title: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @prefixedTitle = @{
     optForm match {
@@ -41,7 +41,6 @@
     showSignOutLink = showSignOutLink,
     fullWidth = fullWidth,
     additionalScripts = additionalScripts,
-    useJSBack = useJSBack,
     hasWelsh = hasWelsh,
     timeoutUrl = Some(controllers.individual.routes.SessionTimeoutController.show.url)
 )(contentBlock)

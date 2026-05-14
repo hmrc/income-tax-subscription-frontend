@@ -28,9 +28,9 @@
     pageHeadingHelper: PageHeadingHelper
 )
 
-@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, backUrl: String, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
+@(overseasPropertyStartDateForm: Form[DateModel], postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("agent.overseas-property.start-date.heading"), optForm = Some(overseasPropertyStartDateForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("agent.overseas-property.start-date.heading"), optForm = Some(overseasPropertyStartDateForm)) {
 
     @pageHeadingHelper(
         heading = messages("agent.overseas-property.start-date.heading"),

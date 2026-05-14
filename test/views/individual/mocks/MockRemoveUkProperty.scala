@@ -35,7 +35,6 @@ trait MockRemoveUkProperty extends PlaySpec with MockitoSugar with BeforeAndAfte
 
   def mockRemoveUkProperty(): Unit = when(removeUkProperty(
     ArgumentMatchers.any(),
-    ArgumentMatchers.any(),
     ArgumentMatchers.any()
   )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
 

@@ -35,8 +35,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
           startDateForm = baseForm
         ),
         title = OverseasPropertyStartDateMessages.title,
-        isAgent = false,
-        backLink = Some(testBackUrl)
+        isAgent = false
       )
       "there is an error" in new TemplateViewTest(
         view = page(
@@ -44,7 +43,6 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
         ),
         title = OverseasPropertyStartDateMessages.title,
         isAgent = false,
-        backLink = Some(testBackUrl),
         error = Some(testError)
       )
     }
@@ -145,8 +143,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
   private def page(startDateForm: Form[DateModel]): Html = {
     foreignPropertyStartDate(
       startDateForm,
-      testCall,
-      testBackUrl
+      testCall
     )(FakeRequest(), implicitly)
   }
 

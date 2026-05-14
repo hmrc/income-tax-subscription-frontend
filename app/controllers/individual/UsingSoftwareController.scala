@@ -50,12 +50,11 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
 
-  def view(usingSoftwareForm: Form[YesNo], editMode: Boolean, backUrl: String)
+  def view(usingSoftwareForm: Form[YesNo], editMode: Boolean)
           (implicit request: Request[_]): Html = {
     usingSoftware(
       usingSoftwareForm = usingSoftwareForm,
-      postAction = controllers.individual.routes.UsingSoftwareController.submit(editMode),
-      backUrl = backUrl
+      postAction = controllers.individual.routes.UsingSoftwareController.submit(editMode)
     )
   }
 
@@ -67,8 +66,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
         val usingSoftwareStatus = sessionData.fetchSoftwareStatus
         Ok(view(
           usingSoftwareForm = form.fill(usingSoftwareStatus),
-          editMode = editMode,
-          backUrl = backUrl(editMode)
+          editMode = editMode
         ))
       }
   }
@@ -80,8 +78,7 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
           Future.successful {
             BadRequest(view(
               usingSoftwareForm = formWithErrors,
-              editMode = editMode,
-              backUrl = backUrl(editMode)
+              editMode = editMode
             ))
           },
         yesNo =>
@@ -106,13 +103,5 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
             }
           }
       )
-  }
-
-  private def backUrl(editMode: Boolean): String = {
-    if (editMode) {
-      controllers.individual.routes.GlobalCheckYourAnswersController.show.url
-    } else {
-      controllers.individual.routes.WhatYouNeedToDoController.show.url
-    }
   }
 }

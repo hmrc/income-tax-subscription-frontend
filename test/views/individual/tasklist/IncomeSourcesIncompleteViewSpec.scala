@@ -85,7 +85,6 @@ class IncomeSourcesIncompleteViewSpec extends ViewSpec {
 
   private def page(): Html = {
     incomeSourcesIncomplete(
-      backUrl = testBackUrl,
       postAction = testCall,
     )
   }

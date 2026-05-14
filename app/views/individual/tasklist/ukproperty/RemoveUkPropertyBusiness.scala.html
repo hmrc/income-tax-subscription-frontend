@@ -25,9 +25,9 @@
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton
 )
-@(yesNoForm: Form[YesNo], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(yesNoForm: Form[YesNo], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("remove-uk-property-business.heading"), optForm = Some(yesNoForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("remove-uk-property-business.heading"), optForm = Some(yesNoForm)) {
 
     @form(action = postAction) {
 

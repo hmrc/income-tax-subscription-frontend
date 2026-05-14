@@ -51,7 +51,6 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
         view = page(editMode = false, hasError = true),
         isAgent = true,
         title = NextYearMandatorySignUp.heading,
-        backLink = Some(testBackUrl),
         error = Some(testFormError)
       )
     }

@@ -30,8 +30,8 @@
     removeBusinessForm: Form[YesNo],
     businessName: Option[String],
     businessTradeName: Option[String],
-    postAction: Call,
-    backUrl: String)(implicit request: Request[_], messages: Messages)
+    postAction: Call
+)(implicit request: Request[_], messages: Messages)
 
 
 @heading = @{
@@ -44,7 +44,7 @@
   }
 }
 
-@mainTemplate(title = messages("business.remove-sole-trader-business.title"), optForm = Some(removeBusinessForm), backLink = Some(backUrl)) {
+@mainTemplate(title = messages("business.remove-sole-trader-business.title"), optForm = Some(removeBusinessForm)) {
   <h1 class="govuk-heading-l">@heading</h1>
 
   @form(action = postAction) {

@@ -80,7 +80,6 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
     viewModel = viewModel,
     postAction = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit = isGlobalEdit),
     isGlobalEdit = isGlobalEdit,
-    backUrl = testBackUrl,
     clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
   )
 
@@ -94,12 +93,10 @@ class OverseasPropertyCheckYourAnswersViewSpec extends ViewSpec {
         viewModel = completeForeignProperty,
         postAction = testCall,
         isGlobalEdit = false,
-        backUrl = testBackUrl,
         clientDetails = ClientDetails("", "")
       ),
       title = OverseasPropertyCheckYourAnswers.title,
-      isAgent = true,
-      backLink = Some(testBackUrl)
+      isAgent = true
     )
 
     "have a heading and caption" in {

@@ -46,7 +46,6 @@ class ClientDetailsController @Inject()(view: ClientDetails,
       Future.successful(Ok(view(
         clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
         postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
-        backUrl = backUrl,
         isEditMode = isEditMode
       )))
     }
@@ -60,7 +59,6 @@ class ClientDetailsController @Inject()(view: ClientDetails,
           Future.successful(BadRequest(view(
             clientDetailsForm = formWithErrors,
             postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
-            backUrl = backUrl,
             isEditMode = isEditMode
           ))),
         clientDetails => {
@@ -87,9 +85,4 @@ class ClientDetailsController @Inject()(view: ClientDetails,
     )
     auditingService.audit(auditModel)
   }
-
-  def backUrl: String = {
-    controllers.agent.routes.UsingSoftwareController.show().url
-  }
-
 }

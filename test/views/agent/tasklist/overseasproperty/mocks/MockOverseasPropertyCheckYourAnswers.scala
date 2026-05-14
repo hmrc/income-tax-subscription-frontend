@@ -39,13 +39,11 @@ trait MockOverseasPropertyCheckYourAnswers extends MockitoSugar with BeforeAndAf
   def mockOverseasPropertyCheckYourAnswers(viewModel: OverseasPropertyModel,
                                            postAction: Call,
                                            isGlobalEdit: Boolean,
-                                           backUrl: String,
                                            clientDetails: ClientDetails): Unit = {
     when(mockView(
       viewModel = ArgumentMatchers.eq(viewModel),
       postAction = ArgumentMatchers.eq(postAction),
       isGlobalEdit = ArgumentMatchers.eq(isGlobalEdit),
-      backUrl = ArgumentMatchers.eq(backUrl),
       clientDetails = ArgumentMatchers.eq(clientDetails)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }
