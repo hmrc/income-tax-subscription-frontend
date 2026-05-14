@@ -3,7 +3,7 @@ base.service-name                                               = Cofrestru ar g
 base.title-pattern                                              = {0} - Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 base.title-pattern.error                                        = Gwall: {0} - Cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 base.back                                                       = Yn ôl
-base.continue                                                   = Yn eich blaen
+base.continue                                                   = Parhau
 base.continue-sign-up                                           = Parhau i gofrestru
 base.sign-up-my-client                                          = Cofrestrwch fy cleient
 base.ready-to-sign-up                                           = Iawn, rwy’n barod i gofrestru
@@ -30,11 +30,11 @@ base.confirm-details                                            = Cadarnhau’r 
 base.yes                                                        = Iawn
 base.no                                                         = Na
 base.go-back                                                    = Ewch yn ôl
-base.confirm-and-send                                           = Cadw a pharhau
-base.save-and-continue                                          = Cadw ac yn eich blaen
+base.confirm-and-send                                           = Cadw a parhau
+base.save-and-continue                                          = Cadw a parhau
 base.save-and-come-back-later                                   = Cadw a dod yn ôl yn nes ymlaen
-base.confirm-and-continue                                       = Cadarnhau ac yn eich blaen
-base.agree-and-continue                                         = Cytuno ac yn eich blaen
+base.confirm-and-continue                                       = Cadarnhau a parhau
+base.agree-and-continue                                         = Cytuno a parhau
 base.remove                                                     = Dileu
 base.add                                                        = Ychwanegu
 base.update-heading                                             = Diweddariadau chwarterol
@@ -49,7 +49,7 @@ base.minutes                                                    = munudau
 base.second                                                     = eiliad
 base.seconds                                                    = eiliadau
 base.warning                                                    = Rhybudd
-base.accept-and-continue                                        = Derbyn ac yn eich blaen
+base.accept-and-continue                                        = Derbyn a parhau
 base.tax-year.current                                           = Blwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1})
 base.tax-year.next                                              = Blwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1})
 base.print-page                                                 = Argraffu neu gadw’r dudalen hon
@@ -300,7 +300,7 @@ already-enrolled.line2.2                                        = Bydd angen i c
 ## Claim enrolment origin
 claim-enrolment.origin.bta                                      = cyfrif treth busnes
 claim-enrolment.origin.pta                                      = cyfrif treth personol
-claim-enrolment.origin.sign-up                                  = cyfrif gwasanaethau ar-lein
+claim-enrolment.origin.sign-up                                  = cyfrif gwasanaethau ar-lein CThEF
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
@@ -314,7 +314,7 @@ claim-enrolment.confirmation.content.para2                      = Gwiriwch eich 
 claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/troi-treth-yn-ddigidol-ar-gyfer-treth-incwm-i-unigolion-cam-wrth-gam.cy
 claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant penodedig, os oes gennych un.
-claim-enrolment.confirmation.continue-button                    = Parhau i {0}
+claim-enrolment.confirmation.continue-button                    = Parhau i’ch {0}
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -637,7 +637,7 @@ agent.base.service-name                                         = Cofrestrwch ei
 agent.base.title-pattern                                        = {0} - Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 agent.base.title-pattern.error                                  = Gwall: {0} - Cofrestrwch eich cleientiaid ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm - GOV.UK
 agent.base.back                                                 = Yn ôl
-agent.base.continue                                             = Yn eich blaen
+agent.base.continue                                             = Parhau
 agent.base.sign-up-another-client                               = Cofrestru cleient arall
 agent.base.update                                               = Diweddaru
 agent.base.sign-out                                             = Allgofnodi
@@ -1063,7 +1063,7 @@ business.progress-saved.content.summary                         = Byddwn yn cadw
 business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich Hunanasesiad.
 business.progress-saved.content.paragraph2                      = Fel arall, gallwch
-business.progress-saved.content.sign-up-link                    = fynd yn eich blaen i gofrestru
+business.progress-saved.content.sign-up-link                    = parhau i gofrestru
 
 ## Remove UK property business
 remove-uk-property-business.heading                            = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo yn y DU?
