@@ -300,7 +300,7 @@ already-enrolled.line2.2                                        = Bydd angen i c
 ## Claim enrolment origin
 claim-enrolment.origin.bta                                      = cyfrif treth busnes
 claim-enrolment.origin.pta                                      = cyfrif treth personol
-claim-enrolment.origin.sign-up                                  = cyfrif gwasanaethau ar-lein
+claim-enrolment.origin.sign-up                                  = cyfrif gwasanaethau ar-lein CThEF
 
 ## Claim Enrolment Confirmation
 claim-enrolment.confirmation.title                              = Rydych wedi ychwanegu’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm at eich {0}
@@ -314,7 +314,7 @@ claim-enrolment.confirmation.content.para2                      = Gwiriwch eich 
 claim-enrolment.confirmation.content.para2.link                 = defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 claim-enrolment.confirmation.content.para2.link.href            = https://www.gov.uk/government/collections/troi-treth-yn-ddigidol-ar-gyfer-treth-incwm-i-unigolion-cam-wrth-gam.cy
 claim-enrolment.confirmation.content.para3                      = Rydym yn eich annog i gysylltu â’ch asiant penodedig, os oes gennych un.
-claim-enrolment.confirmation.continue-button                    = Parhau i {0}
+claim-enrolment.confirmation.continue-button                    = Parhau i’ch {0}
 
 ## Claim Enrolment Already Signed Up
 claim-enrolment.claim-already-signed-up.title                   = Rydych eisoes wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
