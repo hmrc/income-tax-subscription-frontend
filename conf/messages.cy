@@ -181,7 +181,7 @@ individual.what-you-need-to-do.h2.2                             = Os ydych yn co
 individual.what-you-need-to-do.p4                               = Rydych yn cytuno y bydd ein cosbau newydd yn berthnasol os byddwch yn hwyr yn cyflwyno’ch Ffurflen Dreth neu’n talu’ch bil treth.
 individual.what-you-need-to-do.p5                               = Tra byddwch yn wirfoddolwr, ni fydd cosbau’n berthnasol am anfon diweddariadau chwarterol yn hwyr.
 individual.what-you-need-to-do.p6                               = Gallwch optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Os gwnewch hyn, bydd y cosbau newydd yn dal i fod yn berthnasol i chi.
-individual.what-you-need-to-do.p7                               = Darllenwch ragor am y newidiadau i gosbau sy’n berthnasol os ydych yn gwirfoddoli
+individual.what-you-need-to-do.p7                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddol
 individual.what-you-need-to-do.p7.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 # Tax Year Selection Mandatory Both
@@ -762,12 +762,12 @@ agent.what-you-need-to-do.h2.1                             = Os oes angen i’ch
 agent.what-you-need-to-do.p1                               = Os oes gofyn i’ch cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm o 6 Ebrill 2026 ymlaen, ni fydd CThEF yn rhoi pwyntiau cosb am ddiweddariadau chwarterol hwyr ar gyfer y flwyddyn gyntaf (2026 i 2027).
 agent.what-you-need-to-do.p2                               = Bydd cosbau yn dal i fod yn berthnasol am gyflwyno Ffurflenni Treth yn hwyr neu os telir bil treth ar ôl y dyddiad cau.
 agent.what-you-need-to-do.h2.2                             = Os yw’ch cleient yn cofrestru’n wirfoddol
-agent.what-you-need-to-do.p3                               = {0} yn berthnasol os cyflwynir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
-agent.what-you-need-to-do.p3.link-text                     = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd
+agent.what-you-need-to-do.p3                               = Rydych chi a’ch cleient yn cytuno y bydd ein cosbau newydd yn berthnasol os cyflwynir Ffurflen Dreth eich cleient yn hwyr, neu os telir eu bil treth yn hwyr.
+agent.what-you-need-to-do.p3.link-text                     = Darllenwch ragor am gosbau
 agent.what-you-need-to-do.p3.link-href                     = https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax.cy
 agent.what-you-need-to-do.p4                               = Er bod eich cleient yn wirfoddolwr, ni fydd cosbau’n berthnasol am anfon diweddariadau chwarterol yn hwyr.
 agent.what-you-need-to-do.p5                               = Gall eich cleient optio allan o’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar unrhyw adeg. Os ydy’ch cleient yn gwneud hyn, bydd y cosbau newydd yn dal i fod yn berthnasol.
-agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddoli
+agent.what-you-need-to-do.p6                               = Darllenwch ragor am y cosbau sy’n berthnasol os ydych yn gwirfoddol
 agent.what-you-need-to-do.p6.link                          = https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers.cy
 
 # Client details page
