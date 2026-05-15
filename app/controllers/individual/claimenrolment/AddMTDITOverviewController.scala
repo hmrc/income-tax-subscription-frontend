@@ -16,7 +16,7 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import auth.individual.JourneyState.ResultFunctions
 import config.AppConfig
 import controllers.SignUpBaseController
