@@ -746,7 +746,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     else
       SignUpConfirmationMessages.panelDescriptionThis
 
-    val printLink = "Print or save this page"
+    val printLink = "Print this page"
 
     val paraOne = s"You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax."
 
@@ -783,7 +783,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val softwareUsageBullet1 = "create, store and correct digital records of your self-employment and property income and expenses"
     val softwareUsageBullet2 = "send your quarterly updates to HMRC"
     val softwareUsageBullet3 = "submit your tax return and pay tax due by 31 January the following year"
-
 
     val usingMtdHeading = "Using Making Tax Digital for Income Tax"
     val usingMtdPara = "Read"
