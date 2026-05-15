@@ -53,10 +53,11 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
   }
 
   object RemoveOverseasPropertyMessages {
-    val heading: String = "Are you sure you want to delete your foreign property business?"
-    val hint: String = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val agreeAndContinue = "Agree and continue"
-    val errorMessage = "Select yes if you want to remove business"
+    val heading: String = "Delete foreign property"
+    val subheading: String = "Are you sure you want to delete your foreign property business?"
+    val paragraph: String = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
+    val continue = "Continue"
+    val errorMessage = "Select if you want to delete this property business"
   }
 
   "RemoveOverseasProperty view" must {
@@ -79,27 +80,31 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       "there is no error" in new ViewTest(hasError = false) {
         document.mustHaveYesNoRadioInputs(selector = "fieldset")(
           name = "yes-no",
-          legend = RemoveOverseasPropertyMessages.heading,
+          legend = RemoveOverseasPropertyMessages.subheading,
           isHeading = false,
           isLegendHidden = false,
-          hint = Some(RemoveOverseasPropertyMessages.hint),
+          hint = None,
           errorMessage = None
         )
       }
       "there is an error" in new ViewTest(hasError = true) {
         document.mustHaveYesNoRadioInputs(selector = "fieldset")(
           name = "yes-no",
-          legend = RemoveOverseasPropertyMessages.heading,
+          legend = RemoveOverseasPropertyMessages.subheading,
           isHeading = false,
           isLegendHidden = false,
-          hint = Some(RemoveOverseasPropertyMessages.hint),
+          hint = None,
           errorMessage = Some(RemoveOverseasPropertyMessages.errorMessage)
         )
       }
     }
 
-    "have a Accept and Continue button" in new ViewTest {
-      mainContent.getForm.getGovukSubmitButton.text mustBe RemoveOverseasPropertyMessages.agreeAndContinue
+    "have a paragraph" in new ViewTest {
+      mainContent.selectNth("p", 1).text mustBe RemoveOverseasPropertyMessages.paragraph
+    }
+
+    "have a Continue button" in new ViewTest {
+      mainContent.getForm.getGovukSubmitButton.text mustBe RemoveOverseasPropertyMessages.continue
     }
 
   }

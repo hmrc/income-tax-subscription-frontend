@@ -28,10 +28,12 @@ import views.html.agent.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 class RemoveOverseasPropertyViewSpec extends ViewSpec {
 
   object RemoveClientOverseasPropertyMessages {
-    val title = "Are you sure you want to delete your client’s foreign property business?"
+    val title = "Delete foreign property"
     val heading: String = title
-    val hint = "All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val agreeAndContinue = "Agree and continue"
+    val subheading: String = "Are you sure you want to delete this foreign property business?"
+    val paragraph = "All of your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
+    val continue = "Continue"
+    val errorMessage = "Select if you want to delete this property business"
   }
 
   val removeOverseasProperty: RemoveOverseasPropertyBusiness = app.injector.instanceOf[RemoveOverseasPropertyBusiness]
@@ -75,27 +77,35 @@ class RemoveOverseasPropertyViewSpec extends ViewSpec {
       )
     }
 
-    "have a fieldset" when {
-      "there is an error" should {
-        "have a legend with the page heading" in new ViewTest(true) {
-          document.getElementsByClass("govuk-fieldset__legend").text mustBe RemoveClientOverseasPropertyMessages.heading
-        }
+    "have the correct yes-no radio inputs" when {
+      "there is no error" in new ViewTest(hasError = false) {
+        document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+          name = "yes-no",
+          legend = RemoveClientOverseasPropertyMessages.subheading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = None,
+          errorMessage = None
+        )
+      }
+      "there is an error" in new ViewTest(hasError = true) {
+        document.mustHaveYesNoRadioInputs(selector = "fieldset")(
+          name = "yes-no",
+          legend = RemoveClientOverseasPropertyMessages.subheading,
+          isHeading = false,
+          isLegendHidden = false,
+          hint = None,
+          errorMessage = Some(RemoveClientOverseasPropertyMessages.errorMessage)
+        )
       }
     }
 
-    "have the correct yes-no radio inputs" in new ViewTest {
-      document.mustHaveYesNoRadioInputs(selector = "fieldset")(
-        name = "yes-no",
-        legend = RemoveClientOverseasPropertyMessages.heading,
-        isHeading = false,
-        isLegendHidden = false,
-        hint = Some(RemoveClientOverseasPropertyMessages.hint),
-        errorMessage = None
-      )
+    "have a paragraph" in new ViewTest {
+      document.mainContent.selectNth("p", 1).text mustBe RemoveClientOverseasPropertyMessages.paragraph
     }
 
-    "have a agree and continue button" in new ViewTest {
-      document.mainContent.selectHead(".govuk-button").text mustBe RemoveClientOverseasPropertyMessages.agreeAndContinue
+    "have a continue button" in new ViewTest {
+      document.mainContent.selectHead(".govuk-button").text mustBe RemoveClientOverseasPropertyMessages.continue
     }
 
   }

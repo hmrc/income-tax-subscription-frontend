@@ -27,17 +27,17 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
   private val removeBusinessView = app.injector.instanceOf[RemoveSelfEmploymentBusiness]
 
   private object RemoveSelfEmploymentBusiness {
-    val title = "Are you sure you want to delete BusyBusiness - Consulting?"
-    val titleWithoutBusinessName = "Are you sure you want to delete this business - Consulting?"
-    val titleWithoutBusinessTradeName = "Are you sure you want to delete BusyBusiness?"
-    val titleWithoutNameOrTradeName = "Are you sure you want to delete this business?"
-    val paragraph: String = "All your client’s current sole trader and property businesses need to be added to Making Tax Digital " +
-      "for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val button = "Agree and continue"
+    val title = "Delete sole trader business"
+    val fullBusinessAndTrade = "Are you sure you want to delete BusyBusiness - Consulting?"
+    val withoutBusinessName = "Are you sure you want to delete this business - Consulting?"
+    val withoutTradeName = "Are you sure you want to delete BusyBusiness?"
+    val withoutNameOrTradeName = "Are you sure you want to delete this business?"
+    val paragraph: String = "All of your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
+    val button = "Continue"
   }
 
-  private val maybeBusinessName = Some("BusyBusiness")
-  private val maybeBusinessTradeName = Some("Consulting")
+  private val businessName = Some("BusyBusiness")
+  private val businessTradeName = Some("Consulting")
 
   private val formError = FormError("startDate", "agent.error.remove-sole-trader-business.invalid")
 
@@ -45,7 +45,7 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
     "have the correct template" when {
       "there is no error" in new TemplateViewTest(
         view = page(),
-        title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
+        title = RemoveSelfEmploymentBusiness.title,
         isAgent = true,
         hasSignOutLink = true
       )
@@ -54,74 +54,69 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
         view = page(
           form = RemoveBusinessForm.removeBusinessForm().withError(formError)
         ),
-        title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
+        title = RemoveSelfEmploymentBusiness.title,
         isAgent = true,
         hasSignOutLink = true,
         error = Some(formError)
       )
     }
 
-    "have the correct title and heading" when {
+    "have the correct title and subheading" when {
       "there is a business name" when {
         "there is a trade name" in {
-          val view = page()
-          new TemplateViewTest(
-            view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
-            isAgent = true
-          ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
+          val doc = Jsoup.parse(page().body)
+
+          doc.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
+          doc.selectHead("legend").text() mustBe RemoveSelfEmploymentBusiness.fullBusinessAndTrade
         }
         "there is no trade name" in {
-          val view = page(businessTradeName = None)
-          new TemplateViewTest(
-            view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
-            isAgent = true
-          ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.titleWithoutBusinessTradeName
+          val doc = Jsoup.parse(page(maybeBusinessTradeName = None).body)
+
+          doc.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
+          doc.selectHead("legend").text() mustBe RemoveSelfEmploymentBusiness.withoutTradeName
         }
       }
       "there is no business name" when {
         "there is a trade name" in {
-          val view = page(businessName = None)
-          new TemplateViewTest(
-            view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
-            isAgent = true
-          ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.titleWithoutBusinessName
+          val doc = Jsoup.parse(page(maybeBusinessName = None).body)
+
+          doc.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
+          doc.selectHead("legend").text() mustBe RemoveSelfEmploymentBusiness.withoutBusinessName
         }
         "there is no trade name" in {
-          val view = page(businessName = None, businessTradeName = None)
-          new TemplateViewTest(
-            view = view,
-            title = RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName,
-            isAgent = true
-          ).document.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.titleWithoutNameOrTradeName
+          val doc = Jsoup.parse(page(maybeBusinessName = None, maybeBusinessTradeName = None).body)
+
+          doc.getH1Element.text() mustBe RemoveSelfEmploymentBusiness.title
+          doc.selectHead("legend").text() mustBe RemoveSelfEmploymentBusiness.withoutNameOrTradeName
         }
       }
     }
 
     "have the correct yes-no radio inputs" in {
       document().mustHaveYesNoRadioInputs(selector = "fieldset")(
-        name = "yes-no",
-        legend = RemoveSelfEmploymentBusiness.title,
+        name = RemoveBusinessForm.fieldName,
+        legend = RemoveSelfEmploymentBusiness.fullBusinessAndTrade,
         isHeading = false,
-        isLegendHidden = true,
-        hint = Some(RemoveSelfEmploymentBusiness.paragraph),
+        isLegendHidden = false,
+        hint = None,
         errorMessage = None,
       )
     }
 
+    "have a paragraph button" in {
+      document().mainContent.selectNth("p", 1).text mustBe RemoveSelfEmploymentBusiness.paragraph
+    }
+
     "have a submit button" in {
-      document().selectHead("#continue-button").text mustBe RemoveSelfEmploymentBusiness.button
+      document().mainContent.selectHead(".govuk-button").text mustBe RemoveSelfEmploymentBusiness.button
     }
   }
 
   private def page(
                     form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm(),
-                    businessName: Option[String] = maybeBusinessName,
-                    businessTradeName: Option[String] = maybeBusinessTradeName
-                  ) =
-    removeBusinessView(form, businessName, businessTradeName, testCall)
+                    maybeBusinessName: Option[String] = businessName,
+                    maybeBusinessTradeName: Option[String] = businessTradeName
+                  ) = removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall, testBackUrl)
 
   private def document() =
     Jsoup.parse(page().body)

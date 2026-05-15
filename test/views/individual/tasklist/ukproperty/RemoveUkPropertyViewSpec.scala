@@ -44,10 +44,11 @@ import views.html.individual.tasklist.ukproperty.RemoveUkPropertyBusiness
 class RemoveUkPropertyViewSpec extends ViewSpec {
 
   object RemoveUkPropertyMessages {
-    val title = "Are you sure you want to delete your UK property business?"
+    val title = "Delete UK property"
     val heading: String = title
-    val hint = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val agreeAndContinue = "Agree and continue"
+    val subheading: String = "Are you sure you want to delete your UK property business?"
+    val paragraph = "All your current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
+    val continue = "Continue"
   }
 
   val removeUkProperty: RemoveUkPropertyBusiness = app.injector.instanceOf[RemoveUkPropertyBusiness]
@@ -92,17 +93,20 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
     "have the correct yes-no radio inputs" in new ViewTest {
       document.mustHaveYesNoRadioInputs(selector = "fieldset")(
         name = "yes-no",
-        legend = RemoveUkPropertyMessages.heading,
+        legend = RemoveUkPropertyMessages.subheading,
         isHeading = false,
         isLegendHidden = false,
-        hint = Some(RemoveUkPropertyMessages.hint),
+        hint = None,
         errorMessage = None
       )
     }
 
+    "have a paragraph" in new ViewTest {
+      document.mainContent.selectNth("p", 1).text mustBe RemoveUkPropertyMessages.paragraph
+    }
 
     "have a agree and continue button" in new ViewTest {
-      document.mainContent.selectHead(".govuk-button").text mustBe RemoveUkPropertyMessages.agreeAndContinue
+      document.mainContent.selectHead(".govuk-button").text mustBe RemoveUkPropertyMessages.continue
     }
 
   }
