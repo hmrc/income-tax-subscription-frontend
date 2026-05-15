@@ -56,8 +56,20 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       )
     }
 
+    "have a print link with a paragraph wrapper" in {
+      val wrapper = document().mainContent.selectNth("p", 1)
+      val link = wrapper.selectHead("a")
+
+      wrapper.hasClass("govuk-!-display-none-print") mustBe true
+      wrapper.hasClass("hmrc-!-js-visible") mustBe true
+
+      link.text mustBe GlobalCheckYourAnswersMessages.printLink
+      link.attr("href") mustBe "#"
+      link.attr("data-module") mustBe "hmrc-print-link"
+    }
+
     "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.para1
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.para1
     }
 
     "have a subheading" in {
@@ -361,11 +373,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.para2
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para2
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para3
+      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.para3
     }
 
     "have a form" which {
@@ -465,7 +477,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     val declarationHeading: String = "Declaration"
     val para2: String = "The information you have given must be correct to the best of your knowledge."
-    val para3: String = "By confirming, you will be signed up to Making Tax Digital for Income Tax."
+    val para3: String = "By confirming, your client will be signed up to Making Tax Digital for Income Tax."
     val confirmAndSend: String = "Confirm and send"
     val saveAndComeback: String = "Save and come back later"
 

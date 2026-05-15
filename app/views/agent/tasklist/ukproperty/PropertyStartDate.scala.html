@@ -30,7 +30,7 @@
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call, clientDetails: ClientDetails)(implicit request: Request[_], messages: Messages)
 
-@agentMainTemplate(title = messages("agent.property.start-date.heading"), optForm = Some(propertyStartDateForm)) {
+@agentMainTemplate(title = messages("agent.property.start-date.title"), optForm = Some(propertyStartDateForm)) {
 
     @pageHeadingHelper(
         heading = messages("agent.property.start-date.heading"),
@@ -43,9 +43,10 @@
     @form(action = postAction) {
         @dateHelper(
             field = propertyStartDateForm(startDate),
-            legendContent = messages("agent.property.start-date.heading"),
+            legendContent = messages("agent.property.start-date.legend"),
             isPageHeading = false,
-            isLegendVisible = false,
+            isLegendVisible = true,
+            legendClass = Some("govuk-fieldset__legend--m"),
             parentForm = propertyStartDateForm,
             hintText = Some(messages("agent.property.start-date.hint", AccountingPeriodUtil.getStartDateLimit.getYear.toString))
         )

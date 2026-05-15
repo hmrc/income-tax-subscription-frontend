@@ -31,9 +31,11 @@ import java.time.LocalDate
 
 class OverseasPropertyStartDateViewSpec extends ViewSpec {
   object OverseasPropertyStartDateMessages {
-    val heading = "Start date for income from foreign property"
+    val title = "Start date - Foreign property"
+    val heading = "Business start date"
     val caption: String = "FirstName LastName – ZZ 11 11 11 Z"
-    val para1 = "We need to know the exact start date."
+    val para1 = "The date your client’s business started trading can be today, in the past or up to 7 days in the future."
+    val legend = "When did your foreign property business start?"
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
@@ -71,7 +73,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
           postAction = testCall,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
-        title = OverseasPropertyStartDateMessages.heading,
+        title = OverseasPropertyStartDateMessages.title,
         isAgent = true
       )
 
@@ -81,7 +83,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
           postAction = testCall,
           clientDetails = ClientDetails("FirstName LastName", "ZZ111111Z")
         ),
-        title = OverseasPropertyStartDateMessages.heading,
+        title = OverseasPropertyStartDateMessages.title,
         isAgent = true,
         error = Some(testError)
       )
@@ -110,10 +112,11 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
       "has a date input" in {
         form.mustHaveDateInput(
           id = OverseasPropertyStartDateForm.startDate,
-          legend = OverseasPropertyStartDateMessages.heading,
+          legend = OverseasPropertyStartDateMessages.legend,
           exampleDate = OverseasPropertyStartDateMessages.hint,
           isHeading = false,
-          isLegendHidden = true,
+          isLegendHidden = false,
+          legendClass = Some("govuk-fieldset__legend--m"),
           dateInputsValues = Seq(
             DateInputFieldValues("Day", None),
             DateInputFieldValues("Month", None),
@@ -146,11 +149,12 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
       doc.mustHaveDateInput(
         id = "startDate",
-        legend = OverseasPropertyStartDateMessages.heading,
+        legend = OverseasPropertyStartDateMessages.legend,
         exampleDate = OverseasPropertyStartDateMessages.hint,
         errorMessage = Some(OverseasPropertyStartDateMessages.maxDate),
         isHeading = false,
-        isLegendHidden = true,
+        isLegendHidden = false,
+        legendClass = Some("govuk-fieldset__legend--m"),
         dateInputsValues = Seq(
           DateInputFieldValues("Day", None),
           DateInputFieldValues("Month", None),
@@ -169,11 +173,12 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
 
       doc.mustHaveDateInput(
         id = "startDate",
-        legend = OverseasPropertyStartDateMessages.heading,
+        legend = OverseasPropertyStartDateMessages.legend,
         exampleDate = OverseasPropertyStartDateMessages.hint,
         errorMessage = Some(OverseasPropertyStartDateMessages.minDate),
         isHeading = false,
-        isLegendHidden = true,
+        isLegendHidden = false,
+        legendClass = Some("govuk-fieldset__legend--m"),
         dateInputsValues = Seq(
           DateInputFieldValues("Day", None),
           DateInputFieldValues("Month", None),

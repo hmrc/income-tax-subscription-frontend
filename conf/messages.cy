@@ -226,33 +226,58 @@ error.property.day-month-year.min-date                          = Mae’n rhaid 
 error.property.year.length                                      = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 error.property.invalid                                          = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
 
-# Agent Property Start Date Date
-agent.property.start-date.heading                               = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
-agent.property.start-date.heading.caption                       = {0} – {1}
-agent.property.start-date.para-one                              = Mae angen i ni wybod yr union ddyddiad dechrau.
-agent.property.start-date.hint                                  = Er enghraifft, 27 9 {0}
-
 # Agent uk property start date before limit
 agent.uk-property.start-date-before-limit.heading                   = Eiddo eich cleient yn y DU
 agent.uk-property.start-date-before-limit.caption                   = {0} – {1}
 agent.uk-property.start-date-before-limit.legend                    = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
 
-agent.error.property.income-source.start-date-before-limit.invalid  = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
-
-# Agent Property Start Date Before Limit
-agent.property.start-date-before-limit.heading                  = Eiddo eich cleient yn y DU
-agent.property.start-date-before-limit.heading.caption          = {0} – {1}
-agent.property.start-date-before-limit.heading.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+# Agent uk property start date before limit errors
 agent.error.property.start-date-before-limit.invalid            = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
+# Agent Property Start Date Date
+agent.property.start-date.title                                 = Dyddiad dechrau - eiddo yn y DU
+agent.property.start-date.heading.caption                       = {0} – {1}
+agent.property.start-date.heading                               = Dyddiad dechrau
+agent.property.start-date.para-one                              = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+agent.property.start-date.para-two                              = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo tramor hwn, megis rhoi unrhyw eiddo neu dir ar osod.
+agent.property.start-date.legend                                = Pryd y dechreuodd eich cleient busnes eiddo yn y DU?
+agent.property.start-date.hint                                  = Er enghraifft, 27 9 {0}
+
 # Agent Property Start Date errors
-agent.error.property.empty                                      = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo yn y DU
-agent.error.property.required                                   = Mae’n rhaid i’r dyddiad gynnwys {0}
-agent.error.property.required.two                               = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
+agent.error.property.empty                                      = Nodwch ddyddiad dechrau’r busnes
+agent.error.property.required                                   = Llenwch y maes {0} ar gyfer dyddiad dechrau’r busnes
+agent.error.property.required.two                               = Llenwch y maes {0} a {1} ar gyfer dyddiad dechrau’r busnes
 agent.error.property.day-month-year.max-date                    = Dyddiad: mae’n rhaid i hwn fod cyn {0}
 agent.error.property.day-month-year.min-date                    = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-agent.error.property.invalid                                    = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
+agent.error.property.invalid                                    = Dyddiad dechrau’r busnes: mae’n rhaid i hwn fod yn ddyddiad go iawn
 agent.error.property.year.length                                = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
+
+# Agent Overseas Property Start Date Before Limit
+agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.caption          = {0} – {1}
+agent.overseas.property.start-date-before-limit.heading          = Eiddo tramor eich cleient
+agent.overseas.property.start-date-before-limit.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
+
+# Agent foreign property start date before limit errors
+agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
+
+# Agent Overseas Property Start Date
+agent.overseas-property.start-date.title                         = Dyddiad dechrau - eiddo yn y DU
+agent.overseas-property.start-date.heading                       = Dyddiad dechrau
+agent.overseas-property.start-date.heading.caption               = {0} – {1}
+agent.overseas-property.start-date.para-one                      = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+agent.overseas-property.start-date.para-two                      = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo tramor hwn, megis rhoi unrhyw eiddo neu dir ar osod.
+agent.overseas-property.start-date.legend                        = Pryd y dechreuodd eich busnes eiddo tramor?
+agent.overseas-property.start-date.hint                          = Er enghraifft, 27 9 {0}
+
+# Agent Overseas Property Start Date Page errors
+agent.error.overseas.property.empty                             = Nodwch ddyddiad dechrau’r busnes
+agent.error.overseas.property.required                          = Llenwch y maes {0} ar gyfer dyddiad dechrau’r busnes
+agent.error.overseas.property.required.two                      = Llenwch y maes {0} a {1} ar gyfer dyddiad dechrau’r busnes
+agent.error.overseas.property.day-month-year.max-date           = Dyddiad: mae’n rhaid i hwn fod cyn {0}
+agent.error.overseas.property.day-month-year.min-date           = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
+agent.error.overseas.property.invalid                           = Dyddiad dechrau’r busnes: mae’n rhaid i hwn fod yn ddyddiad go iawn
+agent.error.overseas.property.year.length                       = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## Foreign Property Start Date
 individual.foreign-property.start-date.title                     = Dyddiad dechrau ar gyfer incwm o eiddo tramor
@@ -274,13 +299,6 @@ error.individual.foreign-property.year.length                    = Mae’n rhaid
 individual.foreign-property.start-date-before-limit.heading             = A oeddech wedi dechrau cael yr incwm hwn cyn 6 Ebrill {0}?
 individual.foreign-property.start-date-before-limit.caption             = Eich eiddo tramor
 error.individual.foreign-property.start-date-before-limit.invalid       = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
-
-# Agent Overseas Property Start Date
-agent.overseas-property.start-date.title                         = Dyddiad dechrau ar gyfer incwm o eiddo tramor
-agent.overseas-property.start-date.heading                       = Dyddiad dechrau ar gyfer incwm o eiddo tramor
-agent.overseas-property.start-date.heading.caption               = {0} – {1}
-agent.overseas-property.start-date.para1                         = Mae angen i ni wybod yr union ddyddiad dechrau.
-agent.overseas-property.start-date.hint                          = Er enghraifft, 27 9 {0}
 
 ## Timeout page ##
 timeout.title                                                   = Er eich diogelwch, gwnaethom eich allgofnodi
@@ -772,38 +790,37 @@ agent.client-details.summary.nino                               = Rhif Yswiriant
 agent.client-details.summary.dob                                = Dyddiad geni
 
 ## agent your income sources to sign up page
+agent.your-income-source.caption                                    = {0} – {1}
 agent.your-income-source.heading                                    = Cadarnhau ffynonellau incwm eich cleient
-agent.your-income-source.heading-2                                  = Os daeth unrhyw un o fusnesau eich cleient i ben yn ystod y flwyddyn dreth
-agent.your-income-source.paragraph-1                                = Os oedd busnes eich cleient yn weithredol yn y flwyddyn dreth {0} i {1}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
-agent.your-income-source.para-1                                     = Mae’ch cleient yn unig fasnachwr os yw’n rhedeg ei fusnes ei hun fel unigolyn ac yn gweithio iddo ef ei hunan. Enw arall ar hyn yw bod yn hunangyflogedig.
-agent.your-income-source.para-2                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 agent.your-income-source.lead                                       = Mae’n rhaid i chi wneud y canlynol:
 agent.your-income-source.bullet1                                    = gwirio bod yr wybodaeth sydd gennym ar gyfer eich cleient yn gywir
 agent.your-income-source.bullet2                                    = newid unrhyw fanylion anghywir
 agent.your-income-source.bullet3                                    = ychwanegu unrhyw ffynonellau incwm sydd ar goll
 agent.your-income-source.bullet4                                    = dileu unrhyw fusnesau sydd wedi dod i ben cyn 6 Ebrill {0}
-agent.your-income-source.caption                                    = {0} – {1}
+agent.your-income-source.heading-2                                  = Os daeth unrhyw un o fusnesau eich cleient i ben yn ystod y flwyddyn dreth
+agent.your-income-source.paragraph-1                                = Os oedd busnes eich cleient yn weithredol yn y flwyddyn dreth {0} i {1}, mae’n rhaid i chi ei ychwanegu yma o hyd, hyd yn oed os nad yw’n masnachu mwyach.
 agent.your-income-source.self-employed                              = Busnesau unig fasnachwr
-agent.your-income-source.self-employed.label-full                   = {0} – {1}
-agent.your-income-source.self-employed.name                         = {0}
-agent.your-income-source.self-employed.startdate                    = {0}
+agent.your-income-source.para-1                                     = Mae’ch cleient yn unig fasnachwr os yw’n rhedeg ei fusnes ei hun fel unigolyn ac yn gweithio iddo ef ei hunan. Enw arall ar hyn yw bod yn hunangyflogedig.
+agent.your-income-source.para-2                                     = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 agent.your-income-source.self-employed.trade                        = {0}
-agent.your-income-source.self-employed.business-name-para           = Enw’r busnes
-agent.your-income-source.self-employed.business-start-date-para     = Business start date
 agent.your-income-source.self-employed.label-none                   = Busnes {0}
+agent.your-income-source.self-employed.business-name-para           = Enw’r busnes
+agent.your-income-source.self-employed.name                         = {0}
+agent.your-income-source.self-employed.business-start-date-para     = Business start date
+agent.your-income-source.self-employed.start-date                   = {0}
 agent.your-income-source.self-employed.add-link                     = Ychwanegu busnes unig fasnachwr
 agent.your-income-source.income-from-property                       = Incwm o eiddo
-agent.your-income-source.uk-property                                = Eiddo yn y DU
 agent.your-income-source.income-from-property.para-1                = Rhowch wybod i ni am incwm y mae’ch cleient yn ei gael o unrhyw eiddo yn y DU neu dramor. Er enghraifft, ar sail tymor byr fel cartrefi gwyliau, neu ar sail tymor hir fel rhoi tai neu fflatiau ar osod.
 agent.your-income-source.income-from-property.para-2                = Os yw eiddo eich cleient dramor, mae ganddo fusnes eiddo tramor.
 agent.your-income-source.income-from-property.para-3                = Os oes gan eich cleient fwy nag un eiddo, dylech eu trin fel un ffynhonnell incwm.
+agent.your-income-source.uk-property                                = Eiddo yn y DU
 agent.your-income-source.property.start-date-para                   = Dyddiad dechrau
 agent.your-income-source.property.before-start-date-limit           = Cyn 6 Ebrill {0}
-agent.your-income-source.foreign-property                           = Busnes eiddo tramor
 agent.your-income-source.uk-property.add-link                       = Ychwanegu eiddo yn y DU
-agent.your-income-source.foreign-property.add-link                  = Ychwanegu eiddo tramor
+agent.your-income-source.foreign-property                           = Busnes eiddo tramor
 agent.your-income-source.foreign-property.before-start-date-limit   = Cyn 6 Ebrill {0}
-agent.your-income-source.before-you-continue                        = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich rhan, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
+agent.your-income-source.foreign-property.add-link                  = Ychwanegu eiddo tramor
+agent.your-income-source.before-you-continue                        = Cyn i chi barhau, gwnewch yn siŵr eich bod wedi gwirio unrhyw ffynonellau incwm rydym wedi’u hychwanegu ar eich cleient, a sicrhewch nad ydych wedi ychwanegu unrhyw gwmnïau cyfyngedig na phartneriaethau yma.
 
 # Agent income sources incomplete page
 agent.income-sources-incomplete.heading                             = Mae problem gyda ffynonellau incwm eich cleient
@@ -842,13 +859,6 @@ agent.business.non-eligible-mandated.heading                             = Mae�
 agent.business.non-eligible-mandated.caption                             = {0} - {1}
 agent.business.non-eligible-mandated.paragraph                           = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru ar gyfer y flwyddyn dreth nesaf (6 Ebrill {0} i 5 Ebrill {1}).
 agent.business.non-eligible-mandated.indent                              = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol (6 Ebrill {0} i 5 Ebrill {1}) yn ôl yr arfer.
-
-# Agent Overseas Property Start Date Before Limit
-agent.overseas.property.start-date-before-limit.title            = Eiddo tramor eich cleient
-agent.overseas.property.start-date-before-limit.caption          = {0} – {1}
-agent.overseas.property.start-date-before-limit.heading          = Eiddo tramor eich cleient
-agent.overseas.property.start-date-before-limit.legend           = A oedd yr incwm hwn wedi dechrau cyn 6 Ebrill {0}?
-agent.error.overseas.property.start-date-before-limit.invalid    = Dewiswch ‘Iawn’ os oedd eich cleient wedi dechrau cael incwm o eiddo tramor cyn 6 Ebrill {0}
 
 ## Business Name
 agent.business.name.title                                       = Enw’r busnes
@@ -970,15 +980,6 @@ agent.client-details.form-hint2                                 = Er enghraifft,
 agent.no-sa.title                                               = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                             = Nid yw’ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.line-1                                              = I ddefnyddio’r gwasanaeth hwn, rhaid i’ch cleient <a class="govuk-link" id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
-
-# Agent Overseas Property Start Date Page errors
-agent.error.overseas.property.empty                             = Nodwch y dyddiad y gwnaeth eich cleient ddechrau cael incwm o eiddo tramor
-agent.error.overseas.property.required                          = Mae’n rhaid i’r dyddiad gynnwys {0}
-agent.error.overseas.property.required.two                      = Mae’n rhaid i’r dyddiad gynnwys {0} a {1}
-agent.error.overseas.property.day-month-year.max-date           = Dyddiad: mae’n rhaid i hwn fod cyn {0}
-agent.error.overseas.property.day-month-year.min-date           = Mae’n rhaid i’r dyddiad fod ar neu ar ôl {0}
-agent.error.overseas.property.invalid                           = Mae’n rhaid i’r dyddiad fod yn ddyddiad go iawn
-agent.error.overseas.property.year.length                       = Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 
 ## agent Tax Year Check Your Answers
 agent.business.check-your-answers.heading                             = Gwiriwch eich atebion
@@ -1158,8 +1159,7 @@ agent.global-check-your-answers.tax-year.label                                  
 agent.global-check-your-answers.tax-year.current                                                = Blwyddyn dreth bresennol
 agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
 agent.global-check-your-answers.para2                                                           = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
-agent.global-check-your-answers.para3                                                           = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-agent.global-check-your-answers.print-link                                                      = Argraffwch y dudalen hon
+agent.global-check-your-answers.para3                                                           = Wrth gadarnhau, bydd eich cleient wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = Mae’n bosibl y byddwch yn gallu cofrestru
