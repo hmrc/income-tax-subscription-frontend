@@ -63,8 +63,6 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
         }
         "has a link within the text which opens in a new tab" in {
           def link: Element = paragraph.selectHead("a")
-
-          link.text mustBe WhatYouNeedToDoMessages.p3LinkText
           link.attr("href") mustBe WhatYouNeedToDoMessages.p3LinkHref
           link.attr("target") mustBe "_blank"
           link.attr("rel") mustBe "noopener noreferrer"
@@ -73,15 +71,15 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
       }
 
       "have the fourth paragraph" in {
-        document().mainContent.selectNth("p", 4).text mustBe WhatYouNeedToDoMessages.p4
+        document().mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.p4
       }
 
       "have the fifth paragraph" in {
-        document().mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.p5
+        document().mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.p5
       }
 
       "have the sixth paragraph" in {
-        val paragraph: Element = document().mainContent.selectNth("p", 6)
+        val paragraph: Element = document().mainContent.selectNth("p", 7)
         paragraph.text mustBe WhatYouNeedToDoMessages.p6
 
         val link: Element = paragraph.selectHead("a")
@@ -120,12 +118,11 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     val p1 = "If your client is required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027)."
     val p2 = "Penalties will still apply for late tax returns or if a tax bill is paid after the due date."
     val h2_2 = "If your client is signing up voluntarily"
-    val p3LinkText = "You and your client are agreeing that our new penalties (opens in new tab)"
     val p3LinkHref = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
-    val p3 = s"$p3LinkText will apply if your client’s tax return is submitted late, or their tax bill is paid late."
+    val p3 = "Read more about changes to penalties (opens in new tab)"
     val p4 = "Whilst your client is a volunteer, penalties will not apply for sending quarterly updates late."
     val p5 = "Your client can opt out of Making Tax Digital for Income Tax at any time. If they do this, the new penalties will still apply."
-    val p6 = "Read more about penalties that apply if you are volunteering (opens in new tab)"
+    val p6 = "Read more about changes to penalties that apply if you are volunteering (opens in new tab)"
     val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
     val agreeAndContinue: String = "Agree and continue"
   }
