@@ -116,7 +116,8 @@ class RemoveSelfEmploymentBusinessViewSpec extends ViewSpec {
                     form: Form[YesNo] = RemoveBusinessForm.removeBusinessForm(),
                     maybeBusinessName: Option[String] = businessName,
                     maybeBusinessTradeName: Option[String] = businessTradeName
-                  ) = removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall, testBackUrl)
+                  )
+  = removeBusinessView(form, maybeBusinessName, maybeBusinessTradeName, testCall)
 
   private def document() =
     Jsoup.parse(page().body)
