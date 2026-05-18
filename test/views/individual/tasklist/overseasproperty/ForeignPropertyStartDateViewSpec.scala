@@ -55,8 +55,9 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a paragraph" in {
+    "have a pair of paragraphs" in {
       document().mainContent.selectNth("p", 1).text mustBe OverseasPropertyStartDateMessages.paraOne
+      document().mainContent.selectNth("p", 2).text mustBe OverseasPropertyStartDateMessages.paraTwo
     }
 
     "have a form" which {
@@ -155,9 +156,10 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
 
   object OverseasPropertyStartDateMessages {
     val title = "Start date for income from foreign property"
-    val heading: String = "Start date"
-    val captionVisible = "Your foreign property"
-    val paraOne = "We need to know the exact start date."
+    val heading: String = "Business start date"
+    val captionVisible = "Foreign property"
+    val paraOne = "The date your business started trading can be today, in the past or up to 7 days in the future."
+    val paraTwo = "This is the date you first received rental income from this property business, such as letting or renting out a property or land."
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}."
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
