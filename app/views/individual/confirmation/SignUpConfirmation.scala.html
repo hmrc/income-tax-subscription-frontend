@@ -36,7 +36,7 @@
 
 @(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
-@principalMainTemplate(title = messages("sign-up-confirmation.heading"), hasBackLink = false) {
+@principalMainTemplate(title = messages("sign-up-confirmation.heading"), hasBackLink = false, userResearchUrl = Some(messages("individual.sign-up-confirmation.feedback.link"))) {
 
     @headingPanel
 

@@ -415,6 +415,8 @@ agent.sign-up-confirmation.manage-client-account.heading                        
 agent.sign-up-confirmation.manage-client-account.para1                              = Go to your {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = agent services account
 
+agent.sign-up-confirmation.feedback.link                                            = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation_Clients
+
 ## Agent Handoff Page Opted out ##
 agent.opted-out.heading                                                             = Manage your client’s reporting obligations
 agent.opted-out.paragraph                                                           = If you want to use Making Tax Digital for Income Tax, you need to change their reporting obligations.
@@ -544,6 +546,8 @@ sign-up-confirmation.quarterly.updates.standard.4                    = 6 April t
 
 sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
 sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
+
+individual.sign-up-confirmation.feedback.link                        = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation
 
 individual.digitally-exempt.heading                                  = You’re exempt from Making Tax Digital for Income Tax
 individual.digitally-exempt.para                                     = You do not need to use Making Tax Digital for Income Tax. This is because you, or someone on your behalf, told us that you’re digitally excluded and HMRC accepted your application.

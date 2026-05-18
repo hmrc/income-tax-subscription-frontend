@@ -29,7 +29,7 @@
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, timeoutUrl: Option[String])(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, timeoutUrl: Option[String], userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @hmrcStandardPage(HmrcStandardPageParams(
     serviceURLs = ServiceURLs(
@@ -38,7 +38,7 @@
     ),
     banners = Banners(
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
-        userResearchBanner = Some(UserResearchBanner(url = appConfig.urBannerUrl))
+        userResearchBanner = userResearchUrl.map(url => UserResearchBanner(url = url))
     ),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(additionalHeadBlock)
