@@ -19,8 +19,6 @@ package controllers.individual.claimenrolment
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import auth.individual.JourneyState.ResultFunctions
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.ClaimEnrolmentOrigins
-import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.individual.actions.{BasicIdentifierAction, IdentifierAction}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
@@ -39,7 +37,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
                                            basicIdentify: BasicIdentifierAction)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
   def show(origin: Option[String] = None): Action[AnyContent] = basicIdentify.async { implicit request =>
@@ -60,8 +58,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
     val origin: ClaimEnrolmentOrigin = maybeOrigin.map(_.toLowerCase) match {
       case Some(ClaimEnrolmentOrigin.ClaimEnrolmentBTA.key) => ClaimEnrolmentOrigin.ClaimEnrolmentBTA
       case Some(ClaimEnrolmentOrigin.ClaimEnrolmentPTA.key) => ClaimEnrolmentOrigin.ClaimEnrolmentPTA
-      case _ if isEnabled(ClaimEnrolmentOrigins) => ClaimEnrolmentOrigin.ClaimEnrolmentSignUp
-      case _ => ClaimEnrolmentOrigin.ClaimEnrolmentBTA
+      case _ => ClaimEnrolmentOrigin.ClaimEnrolmentSignUp
     }
     sessionDataService.saveClaimEnrolmentOrigin(origin) map {
       case Right(_) => origin
