@@ -297,7 +297,7 @@ agent.overseas-property.start-date.heading                      = Business start
 agent.overseas-property.start-date.heading.caption              = {0} – {1}
 agent.overseas-property.start-date.para-one                     = The date your client’s business started trading can be today, in the past or up to 7 days in the future.
 agent.overseas-property.start-date.para-two                     = This is the date your client first received rental income from this property business, such as letting or renting out a property or land.
-agent.overseas-property.start-date.legend                       = When did your foreign property business start?
+agent.overseas-property.start-date.legend                       = When did the foreign property business start?
 agent.overseas-property.start-date.hint                         = For example, 27 9 {0}
 
 # Agent Overseas Property Start Date Page errors

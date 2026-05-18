@@ -35,7 +35,7 @@ class OverseasPropertyStartDateViewSpec extends ViewSpec {
     val heading = "Business start date"
     val caption: String = "FirstName LastName – ZZ 11 11 11 Z"
     val para1 = "The date your client’s business started trading can be today, in the past or up to 7 days in the future."
-    val legend = "When did your foreign property business start?"
+    val legend = "When did the foreign property business start?"
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
