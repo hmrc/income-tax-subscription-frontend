@@ -406,6 +406,8 @@ agent.sign-up-confirmation.manage-client-account.heading                        
 agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}
 agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
 
+agent.sign-up-confirmation.feedback.link                                            = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation_Clients
+
 ## Agent Handoff Page Opted out ##
 agent.opted-out.heading                                                             = Rheoli ymrwymiadau eich cleient o ran adrodd
 agent.opted-out.paragraph                                                           = Mae’n rhaid i chi newid ymrwymiadau eich cleient o ran adrodd os ydych am ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
@@ -535,6 +537,8 @@ sign-up-confirmation.quarterly.updates.standard.4                    = 6 Ebrill 
 
 sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
 sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.
+
+individual.sign-up-confirmation.feedback.link                        = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation
 
 individual.digitally-exempt.heading                                  = Rydych yn esempt rhag defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.digitally-exempt.para                                     = Does dim angen i chi ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Mae hyn oherwydd eich bod chi, neu oherwydd bod rhywun ar eich rhan, wedi rhoi gwybod i ni eich bod chi wedi’ch cau allan o’r byd digidol ac mae CThEF wedi derbyn eich cais.

@@ -23,7 +23,7 @@
     implicit appConfig: AppConfig
 )
 
-@(title: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@(title: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @prefixedTitle = @{
     optForm match {
@@ -41,5 +41,6 @@
     showSignOutLink = showSignOutLink,
     fullWidth = fullWidth,
     additionalScripts = additionalScripts,
+    userResearchUrl = userResearchUrl,
     timeoutUrl = Some(controllers.agent.routes.SessionTimeoutController.show.url)
 )(contentBlock)
