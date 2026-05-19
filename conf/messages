@@ -1039,7 +1039,7 @@ agent.business.remove-sole-trader-business.paragraph                = All your c
 agent.error.remove-sole-trader-business.invalid                     = Select yes if you want to remove business
 
 ## Agent progress saved
-agent.business.progress-saved.title                                   = Save and come back later
+agent.business.progress-saved.title                                   = Progress saved
 agent.business.progress-saved.banner-title                            = Progress saved
 agent.business.progress-saved.content.summary                         = We’ll save your client’s data until {0}
 agent.business.progress-saved.content.subheading                      = What you can do next
@@ -1085,7 +1085,7 @@ business.remove-sole-trader-business.paragraph    = All your current sole trader
 error.remove-sole-trader-business.invalid         = Select yes if you want to remove business
 
 ## Progress saved
-business.progress-saved.title                                   = Save and come back later
+business.progress-saved.title                                   = Progress saved
 business.progress-saved.banner-title                            = Progress saved
 business.progress-saved.content.summary                         = We’ll save your data until {0}
 business.progress-saved.content.subheading                      = What you can do next

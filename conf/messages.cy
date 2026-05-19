@@ -1016,7 +1016,7 @@ agent.business.remove-sole-trader-business.paragraph                = Mae angen 
 agent.error.remove-sole-trader-business.invalid                     = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Agent progress saved
-agent.business.progress-saved.title                                   = Cadw a dychwelyd yn nes ymlaen
+agent.business.progress-saved.title                                   = Cynnydd wedi’i gadw
 agent.business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
 agent.business.progress-saved.content.summary                         = Byddwn yn cadw data’ch cleient hyd at {0}
 agent.business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
@@ -1062,7 +1062,7 @@ business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o
 error.remove-sole-trader-business.invalid         = Dewiswch ‘Iawn’ os ydych am ddileu’r busnes
 
 ## Progress saved
-business.progress-saved.title                                   = Cadw a dod yn ôl yn nes ymlaen
+business.progress-saved.title                                   = Cynnydd wedi’i gadw
 business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
 business.progress-saved.content.summary                         = Byddwn yn cadw’ch data tan {0}
 business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
