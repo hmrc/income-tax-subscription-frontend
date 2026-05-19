@@ -59,6 +59,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
 
     "have a paragraph" in {
       document().mainContent.selectNth("p", 1).text mustBe PropertyStartDateMessages.para1
+      document().mainContent.selectNth("p", 2).text mustBe PropertyStartDateMessages.para2
     }
 
     "have a form" which {
@@ -75,10 +76,10 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
         "there is no error" in {
           form().mustHaveDateInput(
             id = "startDate",
-            legend = PropertyStartDateMessages.heading,
+            legend = PropertyStartDateMessages.legend,
             exampleDate = PropertyStartDateMessages.hint,
             isHeading = false,
-            isLegendHidden = true,
+            isLegendHidden = false,
             dateInputsValues = Seq(
               DateInputFieldValues("Day", None),
               DateInputFieldValues("Month", None),
@@ -91,10 +92,10 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
             val dateValidationError = FormError("startDate", "error.property.day-month-year.min-date", List("11 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
-              legend = PropertyStartDateMessages.heading,
+              legend = PropertyStartDateMessages.legend,
               exampleDate = PropertyStartDateMessages.hint,
               isHeading = false,
-              isLegendHidden = true,
+              isLegendHidden = false,
               errorMessage = Some(PropertyStartDateMessages.minDate),
               dateInputsValues = Seq(
                 DateInputFieldValues("Day", None),
@@ -107,10 +108,10 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
             val dateValidationError = FormError("startDate", "error.property.day-month-year.max-date", List("18 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
-              legend = PropertyStartDateMessages.heading,
+              legend = PropertyStartDateMessages.legend,
               exampleDate = PropertyStartDateMessages.hint,
               isHeading = false,
-              isLegendHidden = true,
+              isLegendHidden = false,
               errorMessage = Some(PropertyStartDateMessages.maxDate),
               dateInputsValues = Seq(
                 DateInputFieldValues("Day", None),
@@ -140,10 +141,12 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
   }
 
   object PropertyStartDateMessages {
-    val captionVisible = "Your UK property"
-    val title: String = "Start date for income from UK property"
-    val heading: String = "Start date"
-    val para1 = "We need to know the exact start date."
+    val captionVisible = "UK property"
+    val title: String = "Start date - UK property"
+    val heading: String = "Business start date"
+    val para1 = "The date your business started trading can be today, in the past or up to 7 days in the future."
+    val para2 = "This is the date you first received rental income from this property business, such as letting or renting out a property or land."
+    val legend = "When did your UK property business start?"
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}"
     val continue = "Continue"
     val saveAndContinue = "Save and continue"

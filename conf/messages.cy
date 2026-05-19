@@ -211,10 +211,12 @@ property.start-date-before-limit.caption                        = Eich eiddo yn 
 error.property.start-date-before-limit.invalid                  = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 ## Property Start Date Date
-business.property.name.title                                    = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
+business.property.name.title                                    = Dyddiad dechrau - eiddo yn y DU
 business.property.name.heading                                  = Dyddiad dechrau
-business.property.name.caption                                  = Eich eiddo yn y DU
-business.property.para1                                         = Mae angen i ni wybod yr union ddyddiad dechrau.
+business.property.name.caption                                  = Eiddo yn y DU
+business.property.para1                                         = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+business.property.para2                                         = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo yn y DU hwn, megis rhoi unrhyw eiddo neu dir ar osod.
+business.property.legend                                        = Pryd y dechreuodd eich busnes eiddo yn y DU?
 business.property.start-date.hint                               = Er enghraifft, 27 9 {0}
 
 # Property Start Date errors
