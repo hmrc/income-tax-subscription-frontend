@@ -267,7 +267,7 @@ individual.foreign-property.start-date.heading                  = Business start
 individual.foreign-property.start-date.caption                  = Foreign property
 individual.foreign-property.start-date.para-one                 = The date your business started trading can be today, in the past or up to 7 days in the future.
 individual.foreign-property.start-date.para-two                 = This is the date you first received rental income from this property business, such as letting or renting out a property or land.
-individual.foreign-property.start-date.heading-two              = When did your foreign property business start?
+individual.foreign-property.start-date.legend                   = When did your foreign property business start?
 individual.foreign-property.start-date.hint                     = For example, 27 9 {0}.
 
 # Foreign Property Start Date Errors

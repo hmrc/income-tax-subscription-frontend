@@ -285,7 +285,7 @@ individual.foreign-property.start-date.heading                   = Dyddiad dechr
 individual.foreign-property.start-date.caption                   = Eiddo tramor
 individual.foreign-property.start-date.para-one                  = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
 individual.foreign-property.start-date.para-two                  = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo tramor hwn, megis rhoi unrhyw eiddo neu dir ar osod.
-individual.foreign-property.start-date.heading-two               = Pryd y dechreuodd eich busnes eiddo tramor?
+individual.foreign-property.start-date.legend                    = Pryd y dechreuodd eich busnes eiddo tramor?
 individual.foreign-property.start-date.hint                      = Er enghraifft, 27 9 {0}
 
 # Foreign Property Start Date Errors
