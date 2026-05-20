@@ -1041,7 +1041,7 @@ agent.error.remove-sole-trader-business.invalid                     = Select yes
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Progress saved
 agent.business.progress-saved.banner-title                            = Progress saved
-agent.business.progress-saved.content.summary                         = We’ll save your client’s data until {0}
+agent.business.progress-saved.content.summary                         = We’ll save your client’s data until {0}.
 agent.business.progress-saved.content.subheading                      = What you can do next
 agent.business.progress-saved.content.paragraph1                      = You can:
 agent.business.progress-saved.content.sign-up-link                    = continue signing up this client
@@ -1087,7 +1087,7 @@ error.remove-sole-trader-business.invalid         = Select yes if you want to re
 ## Progress saved
 business.progress-saved.title                                   = Progress saved
 business.progress-saved.banner-title                            = Progress saved
-business.progress-saved.content.summary                         = We’ll save your data until {0}
+business.progress-saved.content.summary                         = We’ll save your data until {0}.
 business.progress-saved.content.subheading                      = What you can do next
 business.progress-saved.content.paragraph1                      = If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment.
 business.progress-saved.content.paragraph2                      = Or you can
