@@ -29,7 +29,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     val title = "Progress saved - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
     val bannerTitle = "Progress saved"
 
-    def contentSummary(expirationDate: String) = s"We’ll save your client’s data until $expirationDate"
+    def contentSummary(expirationDate: String) = s"We’ll save your client’s data until $expirationDate."
 
     val subheading = "What you can do next"
     val paragraph1 = "You can:"
