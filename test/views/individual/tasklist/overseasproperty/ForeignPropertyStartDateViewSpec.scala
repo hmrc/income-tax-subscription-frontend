@@ -55,8 +55,9 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
       )
     }
 
-    "have a paragraph" in {
+    "have a pair of paragraphs" in {
       document().mainContent.selectNth("p", 1).text mustBe OverseasPropertyStartDateMessages.paraOne
+      document().mainContent.selectNth("p", 2).text mustBe OverseasPropertyStartDateMessages.paraTwo
     }
 
     "have a form" which {
@@ -73,10 +74,10 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
         "there is no error" in {
           form().mustHaveDateInput(
             id = "startDate",
-            legend = OverseasPropertyStartDateMessages.heading,
+            legend = OverseasPropertyStartDateMessages.legend,
             exampleDate = OverseasPropertyStartDateMessages.hint,
             isHeading = false,
-            isLegendHidden = true,
+            isLegendHidden = false,
             dateInputsValues = Seq(
               DateInputFieldValues("Day", None),
               DateInputFieldValues("Month", None),
@@ -89,10 +90,10 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
             val dateValidationError = FormError("startDate", "error.individual.foreign-property.day-month-year.min-date", List("11 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
-              legend = OverseasPropertyStartDateMessages.heading,
+              legend = OverseasPropertyStartDateMessages.legend,
               exampleDate = OverseasPropertyStartDateMessages.hint,
               isHeading = false,
-              isLegendHidden = true,
+              isLegendHidden = false,
               errorMessage = Some(OverseasPropertyStartDateMessages.minDate),
               dateInputsValues = Seq(
                 DateInputFieldValues("Day", None),
@@ -105,10 +106,10 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
             val dateValidationError = FormError("startDate", "error.individual.foreign-property.day-month-year.max-date", List("18 April 2021"))
             form(maybeError = Some(dateValidationError)).mustHaveDateInput(
               id = "startDate",
-              legend = OverseasPropertyStartDateMessages.heading,
+              legend = OverseasPropertyStartDateMessages.legend,
               exampleDate = OverseasPropertyStartDateMessages.hint,
               isHeading = false,
-              isLegendHidden = true,
+              isLegendHidden = false,
               errorMessage = Some(OverseasPropertyStartDateMessages.maxDate),
               dateInputsValues = Seq(
                 DateInputFieldValues("Day", None),
@@ -155,10 +156,12 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
 
   object OverseasPropertyStartDateMessages {
     val title = "Start date for income from foreign property"
-    val heading: String = "Start date"
-    val captionVisible = "Your foreign property"
-    val paraOne = "We need to know the exact start date."
+    val heading: String = "Business start date"
+    val captionVisible = "Foreign property"
+    val paraOne = "The date your business started trading can be today, in the past or up to 7 days in the future."
+    val paraTwo = "This is the date you first received rental income from this property business, such as letting or renting out a property or land."
     val hint = s"For example, 27 9 ${AccountingPeriodUtil.getStartDateLimit.getYear}."
+    val legend = "When did your foreign property business start?"
     val saveAndContinue = "Save and continue"
     val saveAndComeBackLater = "Save and come back later"
     val maxDate = "The date must be before 18 April 2021"

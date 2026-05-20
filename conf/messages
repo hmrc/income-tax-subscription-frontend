@@ -220,10 +220,12 @@ property.start-date-before-limit.caption                        = Your UK proper
 error.property.start-date-before-limit.invalid                  = Select ‘Yes’ if you started getting income from UK property before 6 April {0}
 
 ## Property Start Date Date
-business.property.name.title                                    = Start date for income from UK property
-business.property.name.heading                                  = Start date
-business.property.name.caption                                  = Your UK property
-business.property.para1                                         = We need to know the exact start date.
+business.property.name.title                                    = Start date - UK property
+business.property.name.heading                                  = Business start date
+business.property.name.caption                                  = UK property
+business.property.para1                                         = The date your business started trading can be today, in the past or up to 7 days in the future.
+business.property.para2                                         = This is the date you first received rental income from this property business, such as letting or renting out a property or land.
+business.property.legend                                        = When did your UK property business start?
 business.property.start-date.hint                               = For example, 27 9 {0}
 
 # Property Start Date errors
@@ -263,9 +265,11 @@ agent.error.property.year.length                                = Year must incl
 
 ## Foreign Property Start Date
 individual.foreign-property.start-date.title                    = Start date for income from foreign property
-individual.foreign-property.start-date.heading                  = Start date
-individual.foreign-property.start-date.caption                  = Your foreign property
-individual.foreign-property.start-date.para-one                 = We need to know the exact start date.
+individual.foreign-property.start-date.heading                  = Business start date
+individual.foreign-property.start-date.caption                  = Foreign property
+individual.foreign-property.start-date.para-one                 = The date your business started trading can be today, in the past or up to 7 days in the future.
+individual.foreign-property.start-date.para-two                 = This is the date you first received rental income from this property business, such as letting or renting out a property or land.
+individual.foreign-property.start-date.legend                   = When did your foreign property business start?
 individual.foreign-property.start-date.hint                     = For example, 27 9 {0}.
 
 # Foreign Property Start Date Errors

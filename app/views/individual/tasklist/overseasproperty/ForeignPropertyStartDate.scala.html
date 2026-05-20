@@ -39,12 +39,15 @@
 
     <p class="govuk-body">@messages("individual.foreign-property.start-date.para-one")</p>
 
+    <p class="govuk-body">@messages("individual.foreign-property.start-date.para-two")</p>
+
     @form(action = postAction) {
         @dateHelper(
             field = startDateForm(startDate),
-            legendContent = messages("individual.foreign-property.start-date.heading"),
+            legendContent = messages("individual.foreign-property.start-date.legend"),
             isPageHeading = false,
-            isLegendVisible = false,
+            isLegendVisible = true,
+            legendClass = Some("govuk-fieldset__legend--m"),
             parentForm = startDateForm,
             hintText = Some(messages("individual.foreign-property.start-date.hint", AccountingPeriodUtil.getStartDateLimit.getYear.toString))
         )

@@ -211,10 +211,12 @@ property.start-date-before-limit.caption                        = Eich eiddo yn 
 error.property.start-date-before-limit.invalid                  = Dewiswch ‘Iawn’ os oeddech wedi dechrau cael incwm o eiddo yn y DU cyn 6 Ebrill {0}
 
 ## Property Start Date Date
-business.property.name.title                                    = Dyddiad dechrau ar gyfer incwm o eiddo yn y DU
+business.property.name.title                                    = Dyddiad dechrau - eiddo yn y DU
 business.property.name.heading                                  = Dyddiad dechrau
-business.property.name.caption                                  = Eich eiddo yn y DU
-business.property.para1                                         = Mae angen i ni wybod yr union ddyddiad dechrau.
+business.property.name.caption                                  = Eiddo yn y DU
+business.property.para1                                         = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+business.property.para2                                         = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo yn y DU hwn, megis rhoi unrhyw eiddo neu dir ar osod.
+business.property.legend                                        = Pryd y dechreuodd eich busnes eiddo yn y DU?
 business.property.start-date.hint                               = Er enghraifft, 27 9 {0}
 
 # Property Start Date errors
@@ -281,9 +283,11 @@ agent.error.overseas.property.year.length                       = Mae’n rhaid 
 
 ## Foreign Property Start Date
 individual.foreign-property.start-date.title                     = Dyddiad dechrau ar gyfer incwm o eiddo tramor
-individual.foreign-property.start-date.heading                   = Dyddiad dechrau
-individual.foreign-property.start-date.caption                   = Eich eiddo tramor
-individual.foreign-property.start-date.para-one                  = Mae angen i ni wybod yr union ddyddiad dechrau.
+individual.foreign-property.start-date.heading                   = Dyddiad dechrau incwm o eiddo tramor
+individual.foreign-property.start-date.caption                   = Eiddo tramor
+individual.foreign-property.start-date.para-one                  = Gall y dyddiad y dechreuodd eich busnes fasnachu fod heddiw, yn y gorffennol neu hyd at 7 diwrnod yn y dyfodol.
+individual.foreign-property.start-date.para-two                  = Dyma’r dyddiad cyntaf y cawsoch incwm rhent o’r busnes eiddo tramor hwn, megis rhoi unrhyw eiddo neu dir ar osod.
+individual.foreign-property.start-date.legend                    = Pryd y dechreuodd eich busnes eiddo tramor?
 individual.foreign-property.start-date.hint                      = Er enghraifft, 27 9 {0}
 
 # Foreign Property Start Date Errors
