@@ -16,14 +16,11 @@
 
 package testonly.controllers.individual
 
-import auth.individual.StatelessController
-import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
 import play.api.data.Form
 import play.api.mvc.*
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, NinoService, SessionDataService}
+import services.{NinoService, SessionDataService}
 import testonly.connectors.individual.ClearPreferencesConnector
 import testonly.form.individual.ClearPreferencesForm.clearPreferenceForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
