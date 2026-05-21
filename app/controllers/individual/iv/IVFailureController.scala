@@ -16,43 +16,41 @@
 
 package controllers.individual.iv
 
-import auth.individual.StatelessController
 import common.Constants.ITSASessionKeys
-import config.AppConfig
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService}
+import controllers.SignUpBaseController
+import controllers.individual.actions.BasicIdentifierAction
+import services.AuditingService
 import views.html.individual.iv.IVFailure
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IVFailureController @Inject()(val authService: AuthService,
-                                    val auditingService: AuditingService,
+class IVFailureController @Inject()(auditingService: AuditingService,
+                                    identify: BasicIdentifierAction,
                                     ivFailure: IVFailure)
                                    (implicit val ec: ExecutionContext,
-                                    val appConfig: AppConfig,
-                                    mcc: MessagesControllerComponents) extends StatelessController {
+                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(implicit request: Request[_]): Html = ivFailure()
 
-  def failure: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ =>
-      if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-        request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))
-        auditingService.audit(EligibilityAuditModel(
-          agentReferenceNumber = None,
-          utr = None,
-          nino = None,
-          eligibility = "ineligible",
-          failureReason = Some("iv-failure")
-        ))
-        Future.successful(Ok(view).removingFromSession(ITSASessionKeys.IdentityVerificationFlag))
-      } else {
-        Future.successful(Ok(view))
-      }
+  def failure: Action[AnyContent] = identify.async { implicit request =>
+    if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
+      request.getQueryString("journeyId").foreach(id => auditingService.audit(IVOutcomeFailureAuditModel(id)))
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = None,
+        utr = None,
+        nino = None,
+        eligibility = "ineligible",
+        failureReason = Some("iv-failure")
+      ))
+      Future.successful(Ok(view).removingFromSession(ITSASessionKeys.IdentityVerificationFlag))
+    } else {
+      Future.successful(Ok(view))
+    }
   }
 
 }

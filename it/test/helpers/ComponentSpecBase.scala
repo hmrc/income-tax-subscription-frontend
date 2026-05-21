@@ -190,7 +190,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     }
 
-    def ivFailure(): WSResponse = get("/iv-failure")
+    def ivFailure(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/iv-failure", sessionKeys)
 
     def ivSuccess(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/iv-success", sessionKeys)
 

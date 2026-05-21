@@ -17,8 +17,10 @@
 package controllers.individual.iv
 
 import helpers.ComponentSpecBase
+import common.Constants.ITSASessionKeys
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
+import helpers.IntegrationTestConstants.basGatewaySignIn
 
 class IVFailureControllerISpec extends ComponentSpecBase {
 
@@ -32,13 +34,28 @@ class IVFailureControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI("http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-failure&origin=income-tax-subscription-frontend")
+          redirectURI(basGatewaySignIn())
         )
       }
     }
 
-    "the user is authorised but their identity fails verification" should {
-      "Show the iv-failure heading message" in {
+    "the user is authorised and has an iv flag in session" should {
+      "show the iv-failure page" in {
+        AuthStub.stubAuthSuccess()
+
+        val res = IncomeTaxSubscriptionFrontend.ivFailure(
+          sessionKeys = Map(ITSASessionKeys.IdentityVerificationFlag -> "true")
+        )
+
+        res must have(
+          httpStatus(OK),
+          pageTitle(messages("base.title-pattern", messages("iv-failure.heading")))
+        )
+      }
+    }
+
+    "the user is authorised but does not have an iv flag in session" should {
+      "show the iv-failure page" in {
         AuthStub.stubAuthSuccess()
 
         val res = IncomeTaxSubscriptionFrontend.ivFailure()
