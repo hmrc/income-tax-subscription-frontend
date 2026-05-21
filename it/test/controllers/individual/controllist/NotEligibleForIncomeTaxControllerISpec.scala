@@ -19,16 +19,28 @@ package controllers.individual.controllist
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.testNino
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.servicemocks.AuthStub
 import models.EligibilityStatus
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 
 class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
 
-
   "GET /report-quarterly/income-and-expenses/sign-up/cannot-use-service-yet" should {
+    "the user is not authorised" should {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
+
+        val res = IncomeTaxSubscriptionFrontend.notEligibleForIncomeTax()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
     "show the cannot use service yet page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
@@ -47,6 +59,4 @@ class NotEligibleForIncomeTaxControllerISpec extends ComponentSpecBase {
       )
     }
   }
-
-
 }
