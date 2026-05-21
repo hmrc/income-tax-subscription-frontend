@@ -17,25 +17,22 @@
 package controllers.individual.iv
 
 import common.Constants.ITSASessionKeys
-import config.AppConfig
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.IVOutcomeFailureAuditing.IVOutcomeFailureAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
-import services.{AuditingService, AuthService}
+import controllers.individual.actions.BasicIdentifierAction
+import services.AuditingService
 import views.html.individual.iv.IVFailure
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IVFailureController @Inject()(val authService: AuthService,
-                                    val auditingService: AuditingService,
-                                    identify: IdentifierAction,
+class IVFailureController @Inject()(auditingService: AuditingService,
+                                    identify: BasicIdentifierAction,
                                     ivFailure: IVFailure)
                                    (implicit val ec: ExecutionContext,
-                                    val appConfig: AppConfig,
                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(implicit request: Request[_]): Html = ivFailure()
