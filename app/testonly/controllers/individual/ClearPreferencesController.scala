@@ -18,8 +18,10 @@ package testonly.controllers.individual
 
 import auth.individual.StatelessController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
 import play.api.data.Form
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.Html
 import services.{AuditingService, AuthService, NinoService, SessionDataService}
 import testonly.connectors.individual.ClearPreferencesConnector
@@ -32,15 +34,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClearPreferencesController @Inject()(val auditingService: AuditingService,
-                                           clearPreferences: ClearPreferences,
+class ClearPreferencesController @Inject()(clearPreferences: ClearPreferences,
                                            ninoService: NinoService,
-                                           val authService: AuthService,
-                                           clearPreferencesConnector: ClearPreferencesConnector,
-                                           sessionDataService: SessionDataService)
+                                           sessionDataService: SessionDataService,
+                                           clearPreferencesConnector: ClearPreferencesConnector)
                                           (implicit val ec: ExecutionContext,
-                                           val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends StatelessController {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   private def clearUser(nino: String)(implicit hc: HeaderCarrier): Future[ClearPreferencesResult] = clearPreferencesConnector.clear(nino).map { response =>
     response.status match {
@@ -50,18 +49,16 @@ class ClearPreferencesController @Inject()(val auditingService: AuditingService,
     }
   }
 
-  val clear: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        ninoService.getNino(sessionData) flatMap { nino =>
-          clearUser(nino) map {
-            case Cleared(_) => Ok("Preferences cleared")
-            case NoPreferences(_) => Ok("No preferences found")
-          }
+  val clear: Action[AnyContent] = Action.async { implicit request =>
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      ninoService.getNino(sessionData) flatMap { nino =>
+        clearUser(nino) map {
+          case Cleared(_) => Ok("Preferences cleared")
+          case NoPreferences(_) => Ok("No preferences found")
         }
       }
+    }
   }
-
 
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
     clearPreferences(
