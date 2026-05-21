@@ -16,24 +16,21 @@
 
 package controllers.individual.tasklist.addbusiness
 
-import auth.individual.StatelessController
-import config.AppConfig
-import play.api.mvc._
-import services.{AuditingService, AuthService}
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
+import play.api.mvc.*
 import views.html.individual.tasklist.addbusiness.BusinessAlreadyRemoved
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class BusinessAlreadyRemovedController @Inject()(businessAlreadyRemoved: BusinessAlreadyRemoved)
-                                                (val auditingService: AuditingService,
-                                                 val appConfig: AppConfig,
-                                                 val authService: AuthService)
-                                                (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends StatelessController {
+class BusinessAlreadyRemovedController @Inject()(businessAlreadyRemoved: BusinessAlreadyRemoved,
+                                                 identify: IdentifierAction)
+                                                (implicit mcc: MessagesControllerComponents,
+                                                 val ec: ExecutionContext) extends SignUpBaseController {
 
-  def show(): Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Ok(businessAlreadyRemoved())
+  def show(): Action[AnyContent] = identify { implicit request =>
+    Ok(businessAlreadyRemoved())
   }
 }
