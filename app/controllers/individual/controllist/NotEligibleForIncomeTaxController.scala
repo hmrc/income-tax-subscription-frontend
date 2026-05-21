@@ -16,33 +16,27 @@
 
 package controllers.individual.controllist
 
-import auth.individual.StatelessController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, GetEligibilityStatusService, SessionDataService}
+import services.GetEligibilityStatusService
 import views.html.individual.matching.NotEligibleForIncomeTax
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NotEligibleForIncomeTaxController @Inject()(val notEligibleForIncomeTax: NotEligibleForIncomeTax,
-                                                  val auditingService: AuditingService,
-                                                  val authService: AuthService,
-                                                  val sessionDataService: SessionDataService,
-                                                  val getEligibilityStatusService: GetEligibilityStatusService)
+class NotEligibleForIncomeTaxController @Inject()(notEligibleForIncomeTax: NotEligibleForIncomeTax,
+                                                  identify: IdentifierAction,
+                                                  getEligibilityStatusService: GetEligibilityStatusService)
                                                  (implicit val ec: ExecutionContext,
-                                                  val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends StatelessController {
+                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        eligibilityStatus <- getEligibilityStatusService.getEligibilityStatus(sessionData)
-      } yield {
-        val maybeReason = eligibilityStatus.exemptionReason
-        Ok(notEligibleForIncomeTax(maybeReason))
-      }
+  val show: Action[AnyContent] = identify.async { implicit request =>
+    getEligibilityStatusService.getEligibilityStatus(request.sessionData).map { eligibilityStatus =>
+      val maybeReason = eligibilityStatus.exemptionReason
+      Ok(notEligibleForIncomeTax(maybeReason))
+    }
   }
 }
