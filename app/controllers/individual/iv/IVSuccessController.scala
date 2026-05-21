@@ -16,49 +16,40 @@
 
 package controllers.individual.iv
 
-import auth.individual.JourneyState.{RequestFunctions, SessionFunctions}
-import auth.individual.{JourneyState, StatelessController, ClaimEnrolment => ClaimEnrolmentJourney}
+import auth.individual.ClaimEnrolment
+import auth.individual.JourneyState.SessionFunctions
 import common.Constants.ITSASessionKeys
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
-import play.api.mvc._
-import services.{AuditingService, AuthService, NinoService, SessionDataService}
+import play.api.mvc.*
+import services.{AuditingService, NinoService}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IVSuccessController @Inject()(val appConfig: AppConfig,
-                                    val authService: AuthService,
-                                    val ninoService: NinoService,
-                                    val auditingService: AuditingService,
-                                    sessionDataService: SessionDataService)
+class IVSuccessController @Inject()(identify: IdentifierAction,
+                                    ninoService: NinoService,
+                                    auditingService: AuditingService)
                                    (implicit val ec: ExecutionContext,
-                                    mcc: MessagesControllerComponents) extends StatelessController {
+                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def success: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ =>
-      if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
-        sessionDataService.getAllSessionData().flatMap { sessionData =>
-          ninoService.getNino(sessionData) map { nino =>
-            auditingService.audit(IVOutcomeSuccessAuditModel(nino))
-          }
-        }
+  def success: Action[AnyContent] = identify.async { implicit request =>
+    if (request.session.get(ITSASessionKeys.IdentityVerificationFlag).nonEmpty) {
+      ninoService.getNino(request.sessionData) map { nino =>
+        auditingService.audit(IVOutcomeSuccessAuditModel(nino))
       }
-      if (request.session.isInState(ClaimEnrolmentJourney)) {
-        Future.successful(
-          Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
-            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-        )
-      } else {
-        Future.successful(
-          Redirect(controllers.individual.matching.routes.HomeController.index)
-            .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
-        )
-      }
+    }
+    if (request.session.isInState(ClaimEnrolment)) {
+      Future.successful(
+        Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
+          .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+      )
+    } else {
+      Future.successful(
+        Redirect(controllers.individual.matching.routes.HomeController.index)
+          .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)
+      )
+    }
   }
-
-  implicit val cacheSessionFunctions: Session => SessionFunctions = JourneyState.SessionFunctions
-  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = JourneyState.RequestFunctions
-
-
 }
