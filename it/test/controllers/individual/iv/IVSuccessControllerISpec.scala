@@ -17,11 +17,11 @@
 package controllers.individual.iv
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import play.api.http.Status.*
 
 class IVSuccessControllerISpec extends ComponentSpecBase {
 
@@ -35,7 +35,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI("http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Fiv-success&origin=income-tax-subscription-frontend")
+          redirectURI(basGatewaySignIn())
         )
       }
     }
