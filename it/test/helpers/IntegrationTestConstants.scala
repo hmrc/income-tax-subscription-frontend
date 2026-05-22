@@ -110,7 +110,6 @@ object IntegrationTestConstants {
     val confirmationURI = s"$baseURI/confirmation"
     val globalCheckYourAnswersURI = s"$baseURI/final-check-your-answers"
     val cannotSignUpURI = s"$baseURI/error/cannot-sign-up"
-    val cannotSignUpForCurrentYearURI = s"$baseURI/error/cannot-sign-up-for-current-year"
     val whatYouNeedToDoURI = s"$baseURI/what-you-need-to-do"
     val usingSoftwareURI = s"$baseURI/using-software"
     val spsHandoffRouteURI = s"$baseURI/sps-handoff"

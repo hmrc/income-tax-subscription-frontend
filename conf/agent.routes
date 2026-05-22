@@ -5,10 +5,6 @@ GET         /index                                  controllers.agent.matching.H
 # Cannot sign up page
 GET         /error/cannot-sign-up                   controllers.agent.eligibility.CannotTakePartController.show
 
-# Cannot sign up for current year
-GET         /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.show
-POST        /error/cannot-sign-up-for-current-year  controllers.agent.eligibility.CannotSignUpThisYearController.submit
-
 GET         /error/business-already-removed         controllers.agent.tasklist.addbusiness.BusinessAlreadyRemovedController.show()
 
 # Confirmation Routes

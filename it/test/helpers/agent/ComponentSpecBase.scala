@@ -267,10 +267,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def submitCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
 
-    def showCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/error/cannot-sign-up-for-current-year", sessionData, withJourneyStateSignUp = hasJourneyState)
-
-    def submitCannotSignUpThisYear(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/error/cannot-sign-up-for-current-year", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
-
     def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
 
     def handOffVAndC(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/hand-offs/view-and-change", sessionData)

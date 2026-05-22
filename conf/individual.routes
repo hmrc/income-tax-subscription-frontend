@@ -37,13 +37,6 @@ GET         /error/cannot-use-service                            controllers.ind
 # Cannot use service because not eligible
 GET         /cannot-use-service-yet                              controllers.individual.controllist.NotEligibleForIncomeTaxController.show()
 
-# Can only use service next year
-GET         /error/cannot-sign-up-for-current-year               controllers.individual.controllist.CannotSignUpThisYearController.show
-POST        /error/cannot-sign-up-for-current-year               controllers.individual.controllist.CannotSignUpThisYearController.submit
-
-# Declined sign up next year
-GET         /declined-sign-up-next-year                          controllers.individual.controllist.DeclinedSignUpNextYearController.show
-
 # What you need to do
 GET         /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.show
 POST        /what-you-need-to-do                                 controllers.individual.WhatYouNeedToDoController.submit

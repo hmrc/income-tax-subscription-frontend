@@ -713,36 +713,6 @@ agent.cannot-take-part-no-data.para3                             = Os yw eich cl
 agent.cannot-take-part-no-data.link                              = cysylltwch â ni
 agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
-# Agent cannot sign up page
-agent.cannot-sign-up.title                                      = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
-agent.cannot-sign-up.heading                                    = Gallwch gofrestru’r cleient hwn o’r flwyddyn dreth nesaf ymlaen
-agent.cannot-sign-up.caption                                    = {0} – {1}
-agent.cannot-sign-up.para1                                      = Gallwch gofrestru’r cleient hwn ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm nawr. Byddwch yn ei gofrestru o’r flwyddyn dreth nesaf ymlaen ({0} i {1}).
-agent.cannot-sign-up.inset-text.para                            = Bydd angen i chi sicrhau bod eich cleient yn cyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth bresennol ({0} i {1}) yn ôl yr arfer.
-agent.cannot-sign-up.subheading1                                = Yr hyn sy’n digwydd nesaf
-agent.cannot-sign-up.para2                                      = Ar gyfer pob un o fusnesau eich cleient neu ei incwm o eiddo, bydd angen y dyddiad dechrau arnoch – os gwnaeth hyn ddechrau o fewn y 2 flynedd dreth ddiwethaf.
-agent.cannot-sign-up.para3                                      = Os yw’n unig fasnachwr, bydd hefyd angen y canlynol arnoch:
-agent.cannot-sign-up.bullet1                                    = enw masnachu a chyfeiriad busnes eich cleient
-agent.cannot-sign-up.bullet2                                    = masnach eich cleient (natur ei fusnes)
-agent.cannot-sign-up.subheading2                                = Os na fyddwch yn cofrestru’ch cleient nawr
-agent.cannot-sign-up.para4                                      = Os na fyddwch yn cofrestru’ch cleient nawr, bydd angen i chi wneud y canlynol:
-agent.cannot-sign-up.bullet3                                    = sicrhau ei fod yn parhau i gyflwyno ei Ffurflenni Treth Hunanasesiad yn ôl yr arfer
-agent.cannot-sign-up.bullet4                                    = ail-nodi ei fanylion os byddwch yn dychwelyd i’w gofrestru’n ddiweddarach
-agent.cannot-sign-up.button-text                                = Cofrestru’r cleient hwn
-agent.cannot-sign-up.check-another                              = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
-agent.cannot-sign-up.check-another.link                         = wirio a allwch gofrestru cleient arall
-
-# Individual cannot sign up page
-cannot-sign-up.heading                                          = Gallwch gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o’r flwyddyn dreth nesaf
-cannot-sign-up.paragraph1                                       = Mae rhywbeth wedi eich atal rhag cofrestru ar gyfer y flwyddyn dreth bresennol ({0} i {1}). Er enghraifft, mathau penodol eraill o incwm neu weithgareddau, neu’r cyfnod o amser rydych wedi bod yn hunangyflogedig, neu’n landlord.
-cannot-sign-up.yes-no-radio-helper.heading                      = A hoffech gofrestru ar gyfer y flwyddyn dreth nesaf?
-error.cannot-sign-up.invalid                                    = Mae’n rhaid i chi ddewis ‘iawn’ neu ‘na’
-
-# Individual declined sign up
-declined-sign-up-next-year.heading                              = Beth y mae angen i chi ei wneud
-declined-sign-up-next-year.para                                 = Rydych wedi dewis peidio â chofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm. Parhewch i gyflwyno’ch Ffurflen Dreth Hunanasesiad flynyddol yn ôl yr arfer.
-
-
 ## Agent Using Software Page ##
 agent.using-software.heading                                    = Gwirio bod gennych feddalwedd sy’n cydweddu
 agent.using-software.para1                                      = I ddefnyddio’r gwasanaeth hwn, mae’n rhaid i chi neu’ch cleient ddefnyddio meddalwedd sy’n cydweddu â’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.

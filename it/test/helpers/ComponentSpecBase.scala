@@ -226,14 +226,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
-    def showCannotSignUpThisYear: WSResponse = get("/error/cannot-sign-up-for-current-year")
-
-    def submitCannotSignUpThisYear(request: Option[YesNo]): WSResponse = post("/error/cannot-sign-up-for-current-year")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => CannotSignUpThisYearForm.cannotSignUpThisYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-      )
-    )
-
     def showUsingSoftware(): WSResponse = get("/using-software")
 
     def submitUsingSoftware(request: Option[YesNo]): WSResponse = {
@@ -275,8 +267,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def whatYouNeedToDo(session: Map[String, String] = Map.empty): WSResponse = get("/what-you-need-to-do", session)
 
     def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
-
-    def declinedSignUpNextYear(): WSResponse = get("/declined-sign-up-next-year")
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
