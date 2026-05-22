@@ -17,20 +17,20 @@
 package controllers.individual.matching
 
 import controllers.SignUpBaseController
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.matching.CannotUseService
+import controllers.individual.actions.BasicIdentifierAction
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class CannotUseServiceController @Inject()(cannotUseServiceView: CannotUseService)
+class CannotUseServiceController @Inject()(cannotUseServiceView: CannotUseService,
+                                           identify: BasicIdentifierAction)
                                           (implicit val ec: ExecutionContext,
-                                           val appConfig: AppConfig,
                                            mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Action { implicit request =>
+  val show: Action[AnyContent] = identify { implicit request =>
       Ok(cannotUseServiceView(
         postAction = controllers.individual.matching.routes.CannotUseServiceController.show()
       ))

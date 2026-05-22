@@ -18,7 +18,8 @@ package controllers.individual.matching
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
+import helpers.IntegrationTestConstants.basGatewaySignIn
 
 class CannotUseServiceControllerISpec extends ComponentSpecBase {
 
@@ -37,7 +38,18 @@ class CannotUseServiceControllerISpec extends ComponentSpecBase {
         pageTitle(messages("cannot-use-service.title") + serviceNameGovUk)
       )
     }
-  }
+    "the user is unauthorised" should {
+      "redirect the user to login" in {
+        AuthStub.stubUnauthorised()
 
+        val res = IncomeTaxSubscriptionFrontend.cannotUseService()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+  }
 
 }
