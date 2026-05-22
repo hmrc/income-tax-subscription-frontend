@@ -16,28 +16,23 @@
 
 package controllers.individual.matching
 
-import auth.individual.StatelessController
+import controllers.SignUpBaseController
 import config.AppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.individual.matching.CannotUseService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CannotUseServiceController @Inject()(val auditingService: AuditingService,
-                                           val authService: AuthService,
-                                           val cannotUseServiceView: CannotUseService)
+class CannotUseServiceController @Inject()(cannotUseServiceView: CannotUseService)
                                           (implicit val ec: ExecutionContext,
                                            val appConfig: AppConfig,
-                                           mcc: MessagesControllerComponents) extends StatelessController {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    _ =>
-      Future.successful(Ok(cannotUseServiceView(
+  val show: Action[AnyContent] = Action { implicit request =>
+      Ok(cannotUseServiceView(
         postAction = controllers.individual.matching.routes.CannotUseServiceController.show()
-      )))
+      ))
   }
-
 }
