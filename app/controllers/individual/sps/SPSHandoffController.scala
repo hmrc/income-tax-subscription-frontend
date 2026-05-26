@@ -17,9 +17,11 @@
 package controllers.individual.sps
 
 import auth.individual.AuthPredicate.AuthPredicate
-import auth.individual.{IncomeTaxSAUser, StatelessController}
+import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import play.api.mvc._
+import controllers.SignUpBaseController
+import controllers.individual.actions.IdentifierAction
+import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
@@ -28,26 +30,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SPSHandoffController @Inject()(
-                                      val auditingService: AuditingService,
-                                      val authService: AuthService,
-                                      val crypto: ApplicationCrypto)
+class SPSHandoffController @Inject()(identify: IdentifierAction,
+                                     val crypto: ApplicationCrypto)
                                     (implicit val ec: ExecutionContext,
                                      val appConfig: AppConfig,
-                                     mcc: MessagesControllerComponents) extends StatelessController {
-
-  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
-
-
-  def redirectToSPS: Action[AnyContent] = {
-    Authenticated {
-      _ =>
-        _ =>
-          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback(None).url,
-            returnLinkText = "I have verified",
-            regime = "itsa"
-          )
-    }
+                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
+  def redirectToSPS: Action[AnyContent] = identify { implicit request =>
+    goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback(None).url,
+      returnLinkText = "I have verified",
+      regime = "itsa"
+    )
   }
 
   private def encryptAndEncodeString(s: String): String = {
