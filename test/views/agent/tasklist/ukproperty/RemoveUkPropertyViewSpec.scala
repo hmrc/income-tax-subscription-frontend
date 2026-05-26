@@ -28,10 +28,11 @@ import views.html.agent.tasklist.ukproperty.RemoveUkPropertyBusiness
 class RemoveUkPropertyViewSpec extends ViewSpec {
 
   object ClientRemoveUkPropertyMessages {
-    val title = "Are you sure you want to delete your client’s UK property business?"
+    val title = "Delete UK property"
     val heading: String = title
-    val hint = "All your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
-    val agreeAndContinue = "Agree and continue"
+    val subheading: String = "Are you sure you want to delete this UK property business?"
+    val paragraph = "All of your client’s current sole trader and property businesses need to be added to Making Tax Digital for Income Tax at the same time. You will need to re-enter this information if you remove it by mistake."
+    val continue = "Continue"
   }
 
   val removeUkProperty: RemoveUkPropertyBusiness = app.injector.instanceOf[RemoveUkPropertyBusiness]
@@ -78,16 +79,20 @@ class RemoveUkPropertyViewSpec extends ViewSpec {
     "have the correct yes-no radio inputs" in new ViewTest{
       document.mustHaveYesNoRadioInputs(selector = "fieldset")(
         name = "yes-no",
-        legend = ClientRemoveUkPropertyMessages.heading,
+        legend = ClientRemoveUkPropertyMessages.subheading,
         isHeading = false,
         isLegendHidden = false,
-        hint = Some(ClientRemoveUkPropertyMessages.hint),
+        hint = None,
         errorMessage = None
       )
     }
 
-    "have a agree and continue button" in new ViewTest {
-      document.mainContent.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.agreeAndContinue
+    "have a paragraph" in new ViewTest {
+      document.mainContent.selectNth("p", 1).text mustBe ClientRemoveUkPropertyMessages.paragraph
+    }
+
+    "have a continue button" in new ViewTest {
+      document.mainContent.selectHead(".govuk-button").text mustBe ClientRemoveUkPropertyMessages.continue
     }
 
   }

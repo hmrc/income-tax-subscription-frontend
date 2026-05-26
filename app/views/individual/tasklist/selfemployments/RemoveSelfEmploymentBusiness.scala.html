@@ -34,25 +34,28 @@
 )(implicit request: Request[_], messages: Messages)
 
 
-@heading = @{
+@subheading = @{
   val tradeNameText = businessTradeName.fold("")(value => s" - $value")
   businessName match {
     case Some(name) =>
-      messages("business.remove-sole-trader-business.heading", name, tradeNameText)
+      messages("business.remove-sole-trader-business.subheading", name, tradeNameText)
     case None =>
       messages("business.remove-sole-trader-business.unnamed", tradeNameText)
   }
 }
 
 @mainTemplate(title = messages("business.remove-sole-trader-business.title"), optForm = Some(removeBusinessForm)) {
-  <h1 class="govuk-heading-l">@heading</h1>
+
+<h1 class="govuk-heading-l">@messages("business.remove-sole-trader-business.heading")</h1>
+
+<p class="govuk-body">@messages("business.remove-sole-trader-business.paragraph")</p>
 
   @form(action = postAction) {
     @radioHelper(
       field = removeBusinessForm(RemoveBusinessForm.fieldName),
-      legend = heading,
+      legend = subheading,
       isPageHeading = false,
-      hint = Some(Text(messages("business.remove-sole-trader-business.paragraph"))),
+      headingClasses = "govuk-fieldset__legend--m",
       radioItems = Seq(
         RadioItem(
           content = Text(messages("base.yes")),
@@ -65,6 +68,6 @@
       ),
       inline = true
     )
-    @continueButton(alternateText = Some(messages("base.agree-and-continue")))
+    @continueButton()
   }
 }

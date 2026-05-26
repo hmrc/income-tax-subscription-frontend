@@ -58,7 +58,7 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       res must have(
         httpStatus(OK),
         pageTitle(
-          "Are you sure you want to delete this business? - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
+          "Delete sole trader business - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
         )
       )
     }

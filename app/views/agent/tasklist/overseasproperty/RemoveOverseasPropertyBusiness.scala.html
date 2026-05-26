@@ -34,14 +34,18 @@
 
     @form(action = postAction) {
 
+    <h1 class="govuk-heading-l">@messages("agent.remove-overseas-property-business.heading")</h1>
+
+    <p class="govuk-body">@messages("agent.remove-overseas-property-business.paragraph")</p>
+
         @yesNoRadioHelper(
             field = yesNoForm(yesNo),
-            legend = messages("agent.remove-overseas-property-business.heading"),
-            headingClasses = "govuk-fieldset__legend--l",
-            hint = Some(messages("agent.remove-overseas-property-business.hint"))
+            legend = messages("agent.remove-overseas-property-business.subheading"),
+            headingClasses = "govuk-fieldset__legend--m",
+            isPageHeading = false
         )
 
-        @continueButton(alternateText = Some(messages("base.agree-and-continue")))
+        @continueButton()
 
     }
 
