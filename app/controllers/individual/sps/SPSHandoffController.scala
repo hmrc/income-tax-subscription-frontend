@@ -20,7 +20,7 @@ import auth.individual.AuthPredicate.AuthPredicate
 import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.BasicIdentifierAction
+import controllers.individual.actions.IdentifierAction
 import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SPSHandoffController @Inject()(identify: BasicIdentifierAction,
+class SPSHandoffController @Inject()(identify: IdentifierAction,
                                      val crypto: ApplicationCrypto)
                                     (implicit val ec: ExecutionContext,
                                      val appConfig: AppConfig,

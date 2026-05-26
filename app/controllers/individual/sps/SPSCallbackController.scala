@@ -20,7 +20,7 @@ import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.BasicIdentifierAction
+import controllers.individual.actions.IdentifierAction
 import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SPSCallbackController @Inject()(identify: BasicIdentifierAction)
+class SPSCallbackController @Inject()(identify: IdentifierAction)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
                                       mcc: MessagesControllerComponents) extends SignUpBaseController {
