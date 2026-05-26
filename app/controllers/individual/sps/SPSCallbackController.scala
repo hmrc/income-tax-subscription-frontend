@@ -16,10 +16,10 @@
 
 package controllers.individual.sps
 
-import auth.individual.StatelessController
+import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
 
@@ -31,7 +31,7 @@ class SPSCallbackController @Inject()(val auditingService: AuditingService,
                                       val authService: AuthService)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
-                                      mcc: MessagesControllerComponents) extends StatelessController {
+                                      mcc: MessagesControllerComponents) extends SignUpController {
 
   def callback(entityId: Option[String]): Action[AnyContent] = Authenticated { implicit request =>
     _ =>

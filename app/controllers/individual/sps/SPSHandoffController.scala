@@ -17,9 +17,9 @@
 package controllers.individual.sps
 
 import auth.individual.AuthPredicate.AuthPredicate
-import auth.individual.{IncomeTaxSAUser, StatelessController}
+import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
-import play.api.mvc._
+import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
@@ -34,11 +34,7 @@ class SPSHandoffController @Inject()(
                                       val crypto: ApplicationCrypto)
                                     (implicit val ec: ExecutionContext,
                                      val appConfig: AppConfig,
-                                     mcc: MessagesControllerComponents) extends StatelessController {
-
-  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
-
-
+                                     mcc: MessagesControllerComponents) extends SignUpController {
   def redirectToSPS: Action[AnyContent] = {
     Authenticated {
       _ =>
