@@ -19,6 +19,8 @@ package controllers.individual.sps
 import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.BasicIdentifierAction
 import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
@@ -27,22 +29,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SPSCallbackController @Inject()(val auditingService: AuditingService,
-                                      val authService: AuthService)
+class SPSCallbackController @Inject()(identify: BasicIdentifierAction)
                                      (implicit val appConfig: AppConfig,
                                       val ec: ExecutionContext,
-                                      mcc: MessagesControllerComponents) extends SignUpController {
+                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def callback(entityId: Option[String]): Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      entityId match {
-        case Some(entityId) =>
-          val result = Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-          result.addingToSession(
-            ITSASessionKeys.SPSEntityId -> entityId
-          )
-        case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
-      }
+  def callback(entityId: Option[String]): Action[AnyContent] = identify { implicit request =>
+    entityId match {
+      case Some(entityId) =>
+        val result = Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+        result.addingToSession(
+          ITSASessionKeys.SPSEntityId -> entityId
+        )
+      case None => throw new InternalServerException("[SPSCallbackController][callback] - Entity Id was not found")
+    }
   }
 
 }
