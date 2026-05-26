@@ -985,10 +985,10 @@ agent.overseas-property.check-your-answers.start-date-before-limit.answer       
 ## Agent remove business
 agent.business.remove-sole-trader-business.title                    = Dileu busnes unig fasnachwr
 agent.business.remove-sole-trader-business.heading                  = Dileu busnes unig fasnachwr
-agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu'r busnes{0}?
+agent.business.remove-sole-trader-business.unnamed                  = A ydych yn siŵr eich bod am ddileu’r busnes{0}?
 agent.business.remove-sole-trader-business.subheading               = A ydych yn siŵr eich bod am ddileu {0}{1}?
-agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o'ch busnesau unig fasnachwr a'ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-agent.error.remove-sole-trader-business.invalid                     = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+agent.business.remove-sole-trader-business.paragraph                = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+agent.error.remove-sole-trader-business.invalid                     = Dewiswch os ydych am ddileu’r busnes hwn
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Cynnydd wedi’i gadw
@@ -1027,10 +1027,10 @@ business.check-your-answers.content.overseas-property-start-date-before-limit.be
 ## Remove business
 business.remove-sole-trader-business.title        = Dileu busnes unig fasnachwr
 business.remove-sole-trader-business.heading      = Dileu busnes unig fasnachwr
-business.remove-sole-trader-business.unnamed      = A ydych yn siŵr eich bod am ddileu'r busnes{0}?
+business.remove-sole-trader-business.unnamed      = A ydych yn siŵr eich bod am ddileu’r busnes{0}?
 business.remove-sole-trader-business.subheading   = A ydych yn siŵr eich bod am ddileu {0}{1}?
-business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-error.remove-sole-trader-business.invalid         = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+business.remove-sole-trader-business.paragraph    = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+error.remove-sole-trader-business.invalid         = Dewiswch os ydych am ddileu’r busnes hwn
 
 ## Progress saved
 business.progress-saved.title                                   = Cynnydd wedi’i gadw
@@ -1043,27 +1043,27 @@ business.progress-saved.content.sign-up-link                    = parhau i gofre
 
 ## Remove UK property business
 remove-uk-property-business.heading                            = Dileu eiddo yn y DU
-remove-uk-property-business.subheading                         = A ydych yn siŵr eich bod am ddileu'ch busnes eiddo yn y DU?
-remove-uk-property-business.paragraph                          = Mae angen ychwanegu pob un o'ch busnesau unig fasnachwr a'ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-error.remove-uk-property-business.invalid                      = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+remove-uk-property-business.subheading                         = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo yn y DU?
+remove-uk-property-business.paragraph                          = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+error.remove-uk-property-business.invalid                      = Dewiswch os ydych am ddileu’r busnes eiddo hwn
 
 ## Agent Remove UK property business
 agent.remove-uk-property-business.heading                      = Dileu eiddo yn y DU
-agent.remove-uk-property-business.subheading                   = A ydych yn siŵr eich bod am ddileu'ch busnes eiddo yn y DU?
-agent.remove-uk-property-business.paragraph                    = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-agent.error.remove-uk-property-business.invalid                = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+agent.remove-uk-property-business.subheading                   = A ydych yn siŵr eich bod am ddileu’ch busnes eiddo yn y DU?
+agent.remove-uk-property-business.paragraph                    = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+agent.error.remove-uk-property-business.invalid                = Dewiswch os ydych am ddileu’r busnes eiddo hwn
 
 # Remove overseas property business
 remove-overseas-property-business.heading                       = Dileu eiddo tramor
 remove-overseas-property-business.subheading                    = A ydych yn siŵr eich bod am ddileu eich busnes eiddo tramor?
-remove-overseas-property-business.paragraph                     = Mae angen ychwanegu pob un o'ch busnesau unig fasnachwr a'ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-error.remove-overseas-property-business.invalid                 = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+remove-overseas-property-business.paragraph                     = Mae angen ychwanegu pob un o’ch busnesau unig fasnachwr a’ch busnesau eiddo presennol at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+error.remove-overseas-property-business.invalid                 = Dewiswch os ydych am ddileu’r busnes eiddo hwn
 
 ## Remove Agent Overseas Property
 agent.remove-overseas-property-business.heading                = Dileu eiddo tramor
-agent.remove-overseas-property-business.subheading             = A ydych yn siŵr eich bod am ddileu'r busnes eiddo tramor hwn?
-agent.remove-overseas-property-business.paragraph              = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi'r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
-agent.error.remove-overseas-property-business.invalid          = Dewiswch 'Iawn' os ydych am ddileu'r busnes
+agent.remove-overseas-property-business.subheading             = A ydych yn siŵr eich bod am ddileu’r busnes eiddo tramor hwn?
+agent.remove-overseas-property-business.paragraph              = Mae angen ychwanegu pob un o fusnesau unig fasnachwr a busnesau eiddo presennol eich cleient at y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm ar yr un pryd. Bydd angen i chi ail-nodi’r wybodaeth hon os byddwch yn ei dileu drwy gamgymeriad.
+agent.error.remove-overseas-property-business.invalid          = Dewiswch os ydych am ddileu’r busnes eiddo hwn
 
 # Throttling
 throttle-start.title                                                 = Mae gormod o bobl yn ceisio cofrestru ar hyn o bryd
