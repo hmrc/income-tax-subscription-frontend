@@ -24,7 +24,6 @@ import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.errors.GenericError
-import views.html.templates.ErrorTemplate
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
