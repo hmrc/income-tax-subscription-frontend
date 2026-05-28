@@ -37,7 +37,6 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
   s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
 
     "the Session Details Connector returns some data for Has Software" should {
-
       "show the Using Software page with a radio option selected" in {
         val testOption: YesNo = Yes
         Given("I setup the Wiremock stubs")
@@ -57,6 +56,19 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
           pageTitle(messages("individual.using-software.heading") + serviceNameGovUk),
           radioButtonSet(id = "yes-no", selectedRadioButton = Some(testOption.toString))
         )
+      }
+
+      "general error occurred" should {
+        "show error page" in {
+          // n.b. failure is expected as methods are not mocked
+
+          val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
+
+          result must have(
+            httpStatus(INTERNAL_SERVER_ERROR),
+            pageTitle("Sorry, there is a problem with the service" + serviceNameGovUk)
+          )
+        }
       }
     }
   }

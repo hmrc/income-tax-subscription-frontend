@@ -47,6 +47,19 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         )
       }
     }
+
+    "general error occurred" should {
+      "show error page" in {
+        // n.b. failure is expected as methods are not mocked
+
+        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
+
+        result must have(
+          httpStatus(INTERNAL_SERVER_ERROR),
+          pageTitle("Sorry, there is a problem with the service" + agentTitleSuffix)
+        )
+      }
+    }
   }
 
   s"POST ${controllers.agent.routes.UsingSoftwareController.submit().url}" should {
