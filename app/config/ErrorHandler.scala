@@ -23,12 +23,12 @@ import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import views.html.templates.ErrorTemplate
+import views.html.errors.GenericError
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
+class ErrorHandler @Inject()(val errorTemplate: GenericError,
                              val appConfig: AppConfig,
                              val messagesApi: MessagesApi)
                             (implicit val ec: ExecutionContext) extends FrontendErrorHandler with Logging {
@@ -38,7 +38,8 @@ class ErrorHandler @Inject()(val errorTemplate: ErrorTemplate,
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: RequestHeader): Future[Html] = {
-    Future.successful(errorTemplate(pageTitle, heading, message))
+    val isAgent = request.path.contains("/client")
+    Future.successful(errorTemplate(pageTitle, heading, message, isAgent))
   }
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Future[Result] = {

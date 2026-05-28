@@ -95,7 +95,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
     "authenticated and in the client details state" when {
-      "general error occured" should {
+      "general error occurred" should {
         "show error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -109,7 +109,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           Then("The result must have a status of INTERNAL_SERVER_ERROR")
           res must have(
             httpStatus(INTERNAL_SERVER_ERROR),
-            pageTitle("Sorry, there is a problem with the service")
+            pageTitle("Sorry, there is a problem with the service" + agentTitleSuffix)
           )
         }
       }

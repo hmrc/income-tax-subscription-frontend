@@ -686,6 +686,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       element.getErrorSummary.select("ul > li").text mustBe errors.mkString(" ")
     }
   }
+  
+  val agentTitleSuffix = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
 }
 
 object ComponentSpecBase {

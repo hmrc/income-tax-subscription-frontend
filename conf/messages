@@ -1215,3 +1215,5 @@ error.contact-hmrc.contact-us                                           = Contac
 service-error.title                                                     = Sorry, there is a problem with the service
 service-error.agent.paragraph                                           = We could not confirm your client’s details. Please try again.
 service-error.individual.paragraph                                      = We could not confirm your details. Please try again.
+
+error.generic.p1                                                        = We saved your answers. They will be available for 30 days.
