@@ -1215,6 +1215,3 @@ service-error.agent.paragraph                                           = Nid oe
 service-error.individual.paragraph                                      = Nid oedd modd i ni gadarnhau manylion eich cleient. Rhowch gynnig arall arni.
 
 error.generic.p1                                                        = Gwnaethom gadw’ch atebion. Byddant ar gael am 30 diwrnod.
-error.generic.p2.link.text                                              = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
-error.generic.p2.link.href                                              = #
-error.generic.p2                                                        = os oes angen i chi wneud newidiadau i’ch cais neu siarad â rhywun am eich credydau treth.

@@ -1217,6 +1217,3 @@ service-error.agent.paragraph                                           = We cou
 service-error.individual.paragraph                                      = We could not confirm your details. Please try again.
 
 error.generic.p1                                                        = We saved your answers. They will be available for 30 days.
-error.generic.p2.link.text                                              = Contact the Tax Credits Helpline
-error.generic.p2.link.href                                              = #
-error.generic.p2                                                        = if you need to make changes to your claim or speak to someone about your tax credits.
