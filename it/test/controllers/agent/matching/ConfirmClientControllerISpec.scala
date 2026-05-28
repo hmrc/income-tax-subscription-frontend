@@ -95,7 +95,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
     "authenticated and in the client details state" when {
-      "general error occured" should {
+      "general error occurred" should {
         "show error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
