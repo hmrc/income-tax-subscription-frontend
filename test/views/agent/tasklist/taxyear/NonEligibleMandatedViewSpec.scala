@@ -65,13 +65,21 @@ class NonEligibleMandatedViewSpec extends ViewSpec {
       }
 
       "have a paragraph below the button" in {
-        document().mainContent.selectNth("p", 2).text mustBe NonEligibleMandatedMessages.continuePara
+        document().mainContent.selectNth("p", 3).text mustBe NonEligibleMandatedMessages.continuePara
       }
 
       "contain a link" in {
         val link = document().mainContent.selectNth("a.govuk-link", 1)
         link.text mustBe NonEligibleMandatedMessages.linkText
         link.attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
+      }
+
+      "have a 'sign up another' header" in {
+        document().mainContent.selectNth("h2", 2).text mustBe NonEligibleMandatedMessages.signUpAnotherH
+      }
+
+      "have a 'sign up another' paragraph" in {
+        document().mainContent.selectNth("p", 2).text mustBe NonEligibleMandatedMessages.signUpAnotherP
       }
     }
   }
@@ -82,8 +90,10 @@ class NonEligibleMandatedViewSpec extends ViewSpec {
     val caption = s"$clientName – $clientNino"
     val para = s"You can sign up this client for Making Tax Digital for Income Tax now. You’ll be signing them up for next tax year (6 April ${startYear + 1} to 5 April ${endYear + 1})."
     val insert = s"You’ll need to make sure your client submits their Self Assessment tax return for the current tax year (6 April $startYear to 5 April $endYear) as normal."
-    val continue: String = "Sign up this client"
+    val continue: String = "Continue to sign up this client"
     val linkText = "check if you can sign up another client"
-    val continuePara = s"Or you can $linkText. We will not save the details you entered about $clientName."
+    val continuePara = s"You can $linkText."
+    val signUpAnotherH = "If you do not want to sign up this client now"
+    val signUpAnotherP = s"You’ll have to enter $clientName’s details if you come back later."
   }
 }

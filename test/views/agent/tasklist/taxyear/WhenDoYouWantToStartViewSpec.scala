@@ -140,6 +140,14 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
       }
     }
 
+    "have a 'sign up another' header" in {
+      document().mainContent.selectNth("h2", 3).text mustBe WhenDoYouWantToStart.signUpAnotherH
+    }
+
+    "have a 'sign up another' paragraph" in {
+      document().mainContent.selectNth("p", 4).text mustBe WhenDoYouWantToStart.signUpAnotherP
+    }
+
     "have the fifth paragraph" in {
       val paragraph: Elements = document().mainContent.select(".govuk-form-group").select(".govuk-body")
       paragraph.text must include(WhenDoYouWantToStart.signUpAnotherClient)
@@ -175,7 +183,9 @@ class WhenDoYouWantToStartViewSpec extends ViewSpec {
     val currentYearOption: String = s"start in the current tax year, ${taxYearEnd - 1} to $taxYearEnd"
     val currentYearOptionHint = "You or your client will need to use your software to send any missed quarterly updates for the year so far"
     val nextYearOption: String = s"start from the next tax year, $taxYearEnd to ${taxYearEnd + 1}"
-    val continue: String = "Continue"
-    val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
+    val continue: String = "Continue to sign up this client"
+    val signUpAnotherClient = "You can check if you can sign up another client."
+    val signUpAnotherH = "If you do not want to sign up this client now"
+    val signUpAnotherP = s"You’ll have to enter $fullName’s details if you come back later."
   }
 }

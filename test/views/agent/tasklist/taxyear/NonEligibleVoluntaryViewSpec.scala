@@ -47,9 +47,11 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
     val heading = s"Your client can use Making Tax Digital for Income Tax next tax year, ${startYear + 1} to ${endYear + 1} if they choose"
     val caption = s"$clientName – $clientNino"
     val para = s"They must still submit their Self Assessment tax return for this tax year, $startYear to $endYear as normal."
-    val continue: String = "Sign up this client"
+    val continue: String = "Continue to sign up this client"
     val linkText = "check if you can sign up another client"
-    val continuePara = s"Or you can $linkText. We will not save the details you entered about $clientName."
+    val continuePara = s"You can $linkText."
+    val signUpAnotherH = "If you do not want to sign up this client now"
+    val signUpAnotherP = s"You’ll have to enter $clientName’s details if you come back later."
   }
 
   "NonEligibleVoluntary" when {
@@ -79,11 +81,19 @@ class NonEligibleVoluntaryViewSpec extends ViewSpec {
         }
 
         "have a paragraph" in {
-          form.selectNth("p", 1).text mustBe NonEligibleVoluntaryMessages.continuePara
+          form.selectNth("p", 2).text mustBe NonEligibleVoluntaryMessages.continuePara
         }
 
         "contains a link" in {
           form.selectNth("a.govuk-link", 1).text mustBe NonEligibleVoluntaryMessages.linkText
+        }
+
+        "have a 'sign up another' header" in {
+          document().mainContent.selectNth("h2", 2).text mustBe NonEligibleVoluntaryMessages.signUpAnotherH
+        }
+
+        "have a 'sign up another' paragraph" in {
+          document().mainContent.selectNth("p", 2).text mustBe NonEligibleVoluntaryMessages.signUpAnotherP
         }
       }
     }

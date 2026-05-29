@@ -1194,10 +1194,12 @@ agent.non-eligible-voluntary.title                                      = Gall e
 agent.non-eligible-voluntary.heading                                    = Gall eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm yn y flwyddyn dreth nesaf, {0} i {1}, os yw’n dymuno
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = Mae’n rhaid iddo barhau i gyflwyno ei Ffurflen Dreth Hunanasesiad ar gyfer y flwyddyn dreth hon, {0} i {1}, fel yr arfer.
-agent.non-eligible-voluntary.sign-up                                    = Cofrestru’r cleient hwn
+agent.non-eligible-voluntary.sign-up                                    = Parhau i gofrestru’r cleient hwn
 
-agent.client-can-sign-up.button-text                                    = Cofrestru’r cleient hwn
-agent.client-can-sign-up.check-another                                  = Neu, gallwch {0}. Ni fyddwn yn cadw’r manylion y gwnaethoch eu nodi am {1}.
+agent.client-can-sign-up.button-text                                    = Parhau i gofrestru’r cleient hwn
+agent.client-can-sign-up.check-another-h                                = Os nad ydych chi eisiau cofrestru’r cleient hwn naw
+agent.client-can-sign-up.check-another-p                                = Bydd yn rhaid i chi nodi manylion {0} os byddwch chi’n dod yn ôl yn hwyrach.
+agent.client-can-sign-up.check-another                                  = Neu gallwch {0}.
 agent.client-can-sign-up.check-another-link                             = wirio a allwch gofrestru cleient arall
 
 error.contact-hmrc.title                                                = Mae problem

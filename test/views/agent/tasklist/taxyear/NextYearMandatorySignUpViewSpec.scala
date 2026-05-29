@@ -126,6 +126,14 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       paragraph.text must include(NextYearMandatorySignUp.signUpAnotherClient)
       paragraph.select("a.govuk-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
+
+    "have a 'sign up another' header" in {
+      document().mainContent.selectNth("h2", 3).text mustBe NextYearMandatorySignUp.signUpAnotherH
+    }
+
+    "have a 'sign up another' paragraph" in {
+      document().mainContent.selectNth("p", 4).text mustBe NextYearMandatorySignUp.signUpAnotherP
+    }
   }
 
   private def page(editMode: Boolean, clientName: String = fullName, clientNino: String = nino, hasError: Boolean = false): Html =
@@ -155,7 +163,9 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
     val currentYearOption: String = s"start using it now for this tax year, ${taxYearEnd - 1} to $taxYearEnd"
     val nextYearOption: String = s"use it from next tax year, $taxYearEnd to ${taxYearEnd + 1}"
     val currentYearOptionHint = "You will need to make sure that you use software that works with Making Tax Digital for Income Tax to send any missed quarterly updates for the year so far"
-    val continue: String = "Sign up this client"
-    val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
+    val continue: String = "Continue to sign up this client"
+    val signUpAnotherClient = "You can check if you can sign up another client"
+    val signUpAnotherH = "If you do not want to sign up this client now"
+    val signUpAnotherP = s"You’ll have to enter $fullName’s details if you come back later."
   }
 }

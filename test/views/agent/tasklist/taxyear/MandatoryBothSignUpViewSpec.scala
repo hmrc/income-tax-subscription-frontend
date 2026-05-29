@@ -65,14 +65,24 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
       paragraph.text must include(MandatoryBothSignUpMessages.signUpAnotherClient)
       paragraph.select("a.govuk-link").attr("href") mustBe controllers.agent.routes.AddAnotherClientController.addAnother().url
     }
+
+    "have a 'sign up another' header" in {
+      document().mainContent.selectNth("h2", 2).text mustBe MandatoryBothSignUpMessages.signUpAnotherH
+    }
+
+    "have a 'sign up another' paragraph" in {
+      document().mainContent.selectNth("p", 2).text mustBe MandatoryBothSignUpMessages.signUpAnotherP
+    }
   }
 
   private object MandatoryBothSignUpMessages {
     val heading = "Your client must use Making Tax Digital for Income Tax now"
     val caption: String = fullName + " - " + nino
     val paragraph: String = s"As your client’s total annual income from self-employment or property is over £50,000, they must use Making Tax Digital for Income Tax for the tax year ${taxYearPrevious} to $taxYearEnd and beyond."
-    val signUpAnotherClient = "Or you can check if you can sign up another client. We will not save the details you entered about FirstName LastName."
-    val continue: String = "Sign up this client"
+    val signUpAnotherClient = "You can check if you can sign up another client."
+    val continue: String = "Continue to sign up this client"
+    val signUpAnotherH = "If you do not want to sign up this client now"
+    val signUpAnotherP = s"You’ll have to enter $fullName’s details if you come back later."
   }
 
   private def page(clientName: String = fullName, clientNino: String = nino): Html = {

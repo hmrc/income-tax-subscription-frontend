@@ -42,6 +42,10 @@
 
         <div class="govuk-form-group">
             <div>
+                <h2 class="govuk-heading-m">@messages("agent.client-can-sign-up.check-another-h")</h2>
+
+                <p class="govuk-body">@messages("agent.client-can-sign-up.check-another-p", clientName)</p>
+
                 <p class="govuk-body">
                     @Html(messages(
                         key = "agent.client-can-sign-up.check-another",

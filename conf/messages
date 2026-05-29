@@ -1196,10 +1196,12 @@ agent.non-eligible-voluntary.title                                      = Your c
 agent.non-eligible-voluntary.heading                                    = Your client can use Making Tax Digital for Income Tax next tax year, {0} to {1} if they choose
 agent.non-eligible-voluntary.caption                                    = {0} – {1}
 agent.non-eligible-voluntary.para                                       = They must still submit their Self Assessment tax return for this tax year, {0} to {1} as normal.
-agent.non-eligible-voluntary.sign-up                                    = Sign up this client
+agent.non-eligible-voluntary.sign-up                                    = Continue to sign up this client
 
-agent.client-can-sign-up.button-text                                    = Sign up this client
-agent.client-can-sign-up.check-another                                  = Or you can {0}. We will not save the details you entered about {1}.
+agent.client-can-sign-up.button-text                                    = Continue to sign up this client
+agent.client-can-sign-up.check-another-h                                = If you do not want to sign up this client now
+agent.client-can-sign-up.check-another-p                                = You’ll have to enter {0}’s details if you come back later.
+agent.client-can-sign-up.check-another                                  = You can {0}.
 agent.client-can-sign-up.check-another-link                             = check if you can sign up another client
 
 error.contact-hmrc.title                                                = There is a problem
