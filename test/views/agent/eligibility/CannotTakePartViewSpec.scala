@@ -224,11 +224,6 @@ class CannotTakePartViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.paragraph1
     }
 
-    "have a second paragraph" in {
-      val paragraph: Element = document.mainContent.selectNth("p", 2)
-      paragraph.text mustBe NoDataFound.paragraph2
-    }
-
     "have a first list" in {
       val list: Element = document.mainContent.selectNth("li", 1)
       list.text mustBe NoDataFound.list1
@@ -242,15 +237,6 @@ class CannotTakePartViewSpec extends ViewSpec {
     "have a third list" in {
       val list: Element = document.mainContent.selectNth("li", 3)
       list.text mustBe NoDataFound.list3
-    }
-
-    "have a third paragraph" in {
-      val paragraph: Element = document.mainContent.selectNth("p", 3)
-      paragraph.text mustBe NoDataFound.paragraph3
-
-      val link: Element = paragraph.selectHead("a")
-      link.text mustBe NoDataFound.paragraph3LinkText
-      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals"
     }
 
     "have a form" which {
@@ -342,12 +328,10 @@ class CannotTakePartViewSpec extends ViewSpec {
 
   object NoDataFound {
     val heading = "Your client cannot use Making Tax Digital for Income Tax"
-    val paragraph1 = "Our records show your client cannot use Making Tax Digital for Income Tax."
-    val paragraph2 = "This could be because they:"
-    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted their first tax return"
+    val paragraph1 = "They cannot sign up and you do not need to contact us if they:"
+    val list1 = "have not submitted a tax return within the last 2 years. They can sign up after they have submitted their first tax return."
     val list2 = "have never submitted a tax return"
     val list3 = "are insolvent"
-    val paragraph3 = "If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
     val paragraph3LinkText = "contact us (opens in new tab)"
   }
 

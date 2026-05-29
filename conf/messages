@@ -162,12 +162,11 @@ individual.cannot-take-part-exempt-26-27.link-href                   = https://w
 
 # Cannot cannot sign up No Data
 individual.cannot-take-part-no-data.heading                           = You cannot use Making Tax Digital for Income Tax
-individual.cannot-take-part-no-data.para1                             = Our records show you cannot use Making Tax Digital for Income Tax.
-individual.cannot-take-part-no-data.para2                             = This could be because you:
-individual.cannot-take-part-no-data.list1                             = haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return
+individual.cannot-take-part-no-data.inset-text                        = If you received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, you must {0}
+individual.cannot-take-part-no-data.para1                             = You cannot sign up and you do not need to contact us if you:
+individual.cannot-take-part-no-data.list1                             = have not submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return.
 individual.cannot-take-part-no-data.list2                             = have never submitted a tax return
 individual.cannot-take-part-no-data.list3                             = are insolvent
-individual.cannot-take-part-no-data.para3                             = If you have received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, please {0}
 individual.cannot-take-part-no-data.link                              = contact us
 individual.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries
 
@@ -707,12 +706,11 @@ agent.cannot-take-part-enduring.link-href                         = https://www.
 
 # Agent cannot sign up No Data
 agent.cannot-take-part-no-data.heading                           = Your client cannot use Making Tax Digital for Income Tax
-agent.cannot-take-part-no-data.para1                             = Our records show your client cannot use Making Tax Digital for Income Tax.
-agent.cannot-take-part-no-data.para2                             = This could be because they:
-agent.cannot-take-part-no-data.list1                             = haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted their first tax return
+agent.cannot-take-part-no-data.inset-text                        = If your client received a letter from HMRC asking them to sign up to Making Tax Digital for Income Tax, you must {0}
+agent.cannot-take-part-no-data.para1                             = They cannot sign up and you do not need to contact us if they:
+agent.cannot-take-part-no-data.list1                             = have not submitted a tax return within the last 2 years. They can sign up after they have submitted their first tax return.
 agent.cannot-take-part-no-data.list2                             = have never submitted a tax return
 agent.cannot-take-part-no-data.list3                             = are insolvent
-agent.cannot-take-part-no-data.para3                             = If your client has received a letter from HMRC asking them to sign up to Making Tax Digital For Income Tax, please {0}
 agent.cannot-take-part-no-data.link                              = contact us
 agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
