@@ -49,14 +49,10 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      for {
-        maybeAccountingPeriod <- subscriptionDetailsService.fetchAccountingPeriod(request.reference)
-        mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
-      } yield {
+      mandationStatusService.getMandationStatus(request.sessionData).map { mandationStatus =>
         Ok(globalCheckYourAnswers(
           postAction = routes.GlobalCheckYourAnswersController.submit,
           completeDetails = completeDetails,
-          maybeAccountingPeriod = maybeAccountingPeriod,
           softwareStatus = request.sessionData.fetchSoftwareStatus,
           isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
         ))

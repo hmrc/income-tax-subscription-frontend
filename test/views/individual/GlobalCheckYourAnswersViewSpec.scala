@@ -51,7 +51,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a first paragraph" in {
-      document().mainContent.selectNth("p", 1).text mustBe GlobalCheckYourAnswersMessages.paraOne
+      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraOne
+    }
+
+    "have a first paragraph note" in {
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.note
     }
 
     "have a print information link" in {
@@ -374,11 +378,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraThree
+      document().mainContent.selectNth("p", 5).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {
@@ -406,7 +410,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
   def page(completeDetails: CompleteDetails, isMandatedNextYear: Boolean = false): Html = globalCheckYourAnswers(
     postAction = testCall,
     completeDetails = completeDetails,
-    maybeAccountingPeriod = None,
     softwareStatus = None,
     isMandatedNextYear = isMandatedNextYear
   )
@@ -422,7 +425,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
     val paraOne: String = "Before you are signed up to Making Tax Digital for Income Tax, you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
 
-    val printLink = "You can print this page for your records"
+    val printLink = "Print this page"
+
+    val note = "Make sure that you have not added limited companies or business partnerships here."
 
     val beforeSigningUpHeading: String = "Information we hold for you"
 

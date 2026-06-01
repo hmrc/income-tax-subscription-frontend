@@ -1086,7 +1086,8 @@ agent.throttle-end.line-2                                          = Byddwn yn c
 
 # Global Check Your Answers
 individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
-individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaethddata sy’n anghywir.
+individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
+individual.global-check-your-answers.para-note                                                  = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
@@ -1112,7 +1113,6 @@ individual.global-check-your-answers.income-sources.foreign-property.before-star
 individual.global-check-your-answers.bottom.heading                                             = Datganiad
 individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
 individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
-individual.global-check-your-answers.print-link                                                 = Argraffwch y dudalen hon
 
 # Agent Global Check Your Answers
 agent.global-check-your-answers.caption                                                         = {0} – {1}
