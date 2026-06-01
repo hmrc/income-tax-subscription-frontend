@@ -229,10 +229,12 @@ class CannotTakePartViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.indentText
     }
 
-    "have a working link" in {
+    "have a working link that opens a new tab" in {
       val link: Element = document.mainContent.selectNth("#main-content > div > div > div.govuk-inset-text > a", 1)
       link.text() mustBe NoDataFound.indentLinkText
       link.attr("href") mustBe NoDataFound.indentLinkHref
+      link.attr("target") mustBe "_blank"
+      link.attr("rel") mustBe "noopener noreferrer"
     }
 
     "have a first list" in {
