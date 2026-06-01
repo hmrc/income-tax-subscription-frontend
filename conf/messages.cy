@@ -1085,7 +1085,7 @@ agent.throttle-end.line-1                                          = Rydym yn pr
 agent.throttle-end.line-2                                          = Byddwn yn cadw’ch data tan {0}.
 
 # Global Check Your Answers
-individual.global-check-your-answers.heading                                                    = Gwiriwch eich atebion
+individual.global-check-your-answers.heading                                                    = Gwirio’ch atebion cyn cofrestru
 individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
 individual.global-check-your-answers.para-note                                                  = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
