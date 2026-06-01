@@ -37,14 +37,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import play.twirl.api.Html
-import views.ViewSpecTrait
+import utilities.UnitTestTrait
 import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
-class ClaimEnrolmentAlreadySignedUpViewSpec extends ViewSpecTrait {
+class ClaimEnrolmentAlreadySignedUpViewSpec extends UnitTestTrait {
 
   val claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp = app.injector.instanceOf[ClaimEnrolmentAlreadySignedUp]
 
-  val request = ViewSpecTrait.viewTestRequest
+  val request = UnitTestTrait.viewTestRequest
 
   val page: Html = claimEnrolmentAlreadySignedUp()(request, implicitly, appConfig)
   val document: Document = Jsoup.parse(page.body)

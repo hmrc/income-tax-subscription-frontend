@@ -23,8 +23,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
-import utilities.{AccountingPeriodUtil, ViewSpec}
-import views.ViewSpecTrait
+import utilities.{AccountingPeriodUtil, UnitTestTrait, ViewSpec}
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import java.time.format.DateTimeFormatter
@@ -98,7 +97,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val saveAndComeBackLater: String = "Save and come back later"
   }
 
-  val action: Call = ViewSpecTrait.testCall
+  val action: Call = UnitTestTrait.testCall
 
   val incomeSource: YourIncomeSourceToSignUp = app.injector.instanceOf[YourIncomeSourceToSignUp]
 

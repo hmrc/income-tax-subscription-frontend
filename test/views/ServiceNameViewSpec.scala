@@ -20,9 +20,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
+import utilities.UnitTestTrait
 import views.html.templates.{AgentMainTemplate, PrincipalMainTemplate}
 
-class ServiceNameViewSpec extends ViewSpecTrait {
+class ServiceNameViewSpec extends UnitTestTrait {
   private val individualLayout: PrincipalMainTemplate = app.injector.instanceOf[PrincipalMainTemplate]
   private val agentLayout: AgentMainTemplate = app.injector.instanceOf[AgentMainTemplate]
 

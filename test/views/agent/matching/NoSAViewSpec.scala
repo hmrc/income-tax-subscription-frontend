@@ -16,18 +16,17 @@
 
 package views.agent.matching
 
-import messagelookup.individual.MessageLookup.NoSA.{Agent => messages}
-import messagelookup.individual.MessageLookup.{Base => common}
+import messagelookup.individual.MessageLookup.NoSA.Agent as messages
+import messagelookup.individual.MessageLookup.Base as common
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.UnitTestTrait
 import views.html.agent.matching.ClientNoSa
 
-
-class NoSAViewSpec extends ViewSpecTrait {
-  val action: Call = ViewSpecTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+class NoSAViewSpec extends UnitTestTrait {
+  val action: Call = UnitTestTrait.testCall
+  val request: FakeRequest[AnyContentAsEmpty.type] = UnitTestTrait.viewTestRequest
   val clientNoSa: ClientNoSa = app.injector.instanceOf[ClientNoSa]
   lazy val page: HtmlFormat.Appendable = clientNoSa()(request, implicitly, appConfig)
 

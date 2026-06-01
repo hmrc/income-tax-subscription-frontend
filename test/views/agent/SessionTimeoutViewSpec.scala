@@ -19,10 +19,10 @@ package views.agent
 import messagelookup.agent.MessageLookup
 import messagelookup.agent.MessageLookup.Timeout as messages
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
+import utilities.UnitTestTrait
 import views.html.agent.Timeout
 
-class SessionTimeoutViewSpec extends ViewSpecTrait {
+class SessionTimeoutViewSpec extends UnitTestTrait {
 
   lazy val page: Timeout = app.injector.instanceOf[Timeout]
 

@@ -26,13 +26,13 @@ import org.jsoup.select.Elements
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
 import views.html.individual.matching.AlreadyEnrolled
+import utilities.UnitTestTrait
 
-class AlreadyEnrolledViewSpec extends ViewSpecTrait {
+class AlreadyEnrolledViewSpec extends UnitTestTrait {
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val request: FakeRequest[AnyContentAsEmpty.type] = UnitTestTrait.viewTestRequest
 
   val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
 

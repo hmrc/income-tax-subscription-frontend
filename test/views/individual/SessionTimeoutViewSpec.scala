@@ -20,10 +20,10 @@ import messagelookup.individual.MessageLookup
 import messagelookup.individual.MessageLookup.Timeout as messages
 import play.api.mvc.Request
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
+import utilities.UnitTestTrait
 import views.html.individual.Timeout
 
-class SessionTimeoutViewSpec extends ViewSpecTrait {
+class SessionTimeoutViewSpec extends UnitTestTrait {
 
   private val timeoutView = app.injector.instanceOf[Timeout]
 

@@ -20,10 +20,10 @@ import messagelookup.individual.MessageLookup.{AffinityGroup => messages}
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
 import views.html.agent.matching.AgentAffinityGroupError
+import utilities.UnitTestTrait
 
-class AgentAffinityGroupErrorViewSpec extends ViewSpecTrait {
+class AgentAffinityGroupErrorViewSpec extends UnitTestTrait {
 
   implicit val request: Request[_] = FakeRequest()
 

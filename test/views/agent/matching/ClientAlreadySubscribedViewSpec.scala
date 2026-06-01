@@ -20,13 +20,13 @@ import messagelookup.agent.MessageLookup.ClientAlreadySubscribed as messages
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.UnitTestTrait
 import views.html.agent.matching.ClientAlreadySubscribed
 
-class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
+class ClientAlreadySubscribedViewSpec extends UnitTestTrait {
 
-  val action: Call = ViewSpecTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val action: Call = UnitTestTrait.testCall
+  val request: FakeRequest[AnyContentAsEmpty.type] = UnitTestTrait.viewTestRequest
   val clientAlreadySubscribed: ClientAlreadySubscribed = app.injector.instanceOf[ClientAlreadySubscribed]
 
   lazy val page: HtmlFormat.Appendable = clientAlreadySubscribed(action)(request, implicitly)
@@ -44,7 +44,7 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
       messages.para1
     )
 
-    testPage.mustHaveBulletSeq(
+    testPage.mustHaveBullets(
       messages.bullet1,
       messages.bullet2
     )
