@@ -55,7 +55,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a first paragraph note" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.note
+      document().mainContent.selectHead(".govuk-inset-text").text mustBe GlobalCheckYourAnswersMessages.note
     }
 
     "have a print information link" in {
@@ -378,11 +378,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second paragraph" in {
-      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraTwo
+      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
     "have a third paragraph" in {
-      document().mainContent.selectNth("p", 5).text mustBe GlobalCheckYourAnswersMessages.paraThree
+      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.paraThree
     }
 
     "have a form" which {

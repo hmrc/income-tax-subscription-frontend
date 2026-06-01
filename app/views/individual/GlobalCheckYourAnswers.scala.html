@@ -28,12 +28,13 @@
 @import models.common.BusinessAccountingPeriod._
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        govukSummaryList : GovukSummaryList,
-        implicitDateFormatter: ImplicitDateFormatterImpl,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        form: FormWithCSRF,
-        appConfig: AppConfig
+    mainTemplate: PrincipalMainTemplate,
+    govukSummaryList : GovukSummaryList,
+    implicitDateFormatter: ImplicitDateFormatterImpl,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    form: FormWithCSRF,
+    govukInsetText: GovukInsetText,
+    appConfig: AppConfig
 )
 
 @(
@@ -57,7 +58,9 @@
 
     <p class="govuk-body">@messages("individual.global-check-your-answers.para")</p>
 
-    <p class="govuk-body">@messages("individual.global-check-your-answers.para-note")</p>
+    @govukInsetText(InsetText(
+        content = Text(messages("individual.global-check-your-answers.para-note"))
+    ))
 
     @compatibleSoftwareSection(softwareStatus)
 
