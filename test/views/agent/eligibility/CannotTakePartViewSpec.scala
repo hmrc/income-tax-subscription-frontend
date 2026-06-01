@@ -229,6 +229,12 @@ class CannotTakePartViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.indentText
     }
 
+    "have a working link" in {
+      val link: Element = document.mainContent.selectNth("#main-content > div > div > div.govuk-inset-text > a", 1)
+      link.text() mustBe NoDataFound.indentLinkText
+      link.attr("href") mustBe NoDataFound.indentLinkHref
+    }
+
     "have a first list" in {
       val list: Element = document.mainContent.selectNth("li", 1)
       list.text mustBe NoDataFound.list1
@@ -337,7 +343,9 @@ class CannotTakePartViewSpec extends ViewSpec {
     val list1 = "have not submitted a tax return within the last 2 years. They can sign up after they have submitted their first tax return."
     val list2 = "have never submitted a tax return"
     val list3 = "are insolvent"
-    val paragraph3LinkText = "contact us (opens in new tab)"
+    val indentText = "If your client received a letter from HMRC asking them to sign up to Making Tax Digital for Income Tax, you must contact us (opens in new tab)"
+    val indentLinkText = "contact us (opens in new tab)"
+    val indentLinkHref = "https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals"
   }
 
   object DigitallyExempt {
