@@ -47,12 +47,11 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
 
     def result: Future[Result] = TestSPSHandoffForClaimEnrolController.redirectToSPS(request)
 
-    "claim enrolment feature switch is set to true" should {
-
+    "claim enrolment" should {
       "Redirect to SPS" in {
         mockEncrypt()
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue")
+        redirectLocation(result).get must be(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=encryptedValue&returnLinkText=encryptedValue&regime=encryptedValue&serviceUrl=encryptedValue")
       }
     }
   }
