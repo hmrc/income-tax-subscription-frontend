@@ -103,7 +103,7 @@
       case "No Data" => {
 
         @govukInsetText(InsetText(
-            content = Text(messages(
+            content = HtmlContent(messages(
             key = "agent.cannot-take-part-no-data.inset-text",
             args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-no-data.link"), Some(messages("individual.cannot-take-part-no-data.link-href"))))
             ))

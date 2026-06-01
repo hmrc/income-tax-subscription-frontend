@@ -184,6 +184,11 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.paragraph1
     }
 
+    "have an inset paragraph with a link" in {
+      val paragraph: Element = document.mainContent.selectNth("#main-content > div > div > div.govuk-inset-text", 1)
+      paragraph.text mustBe NoDataFound.indentText
+    }
+
     "have a first list" in {
       val list: Element = document.mainContent.selectNth("li", 1)
       list.text mustBe NoDataFound.list1
