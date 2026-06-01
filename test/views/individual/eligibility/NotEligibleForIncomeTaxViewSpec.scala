@@ -184,11 +184,6 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.paragraph1
     }
 
-    "have a second paragraph" in {
-      val paragraph: Element = document.mainContent.selectNth("p", 2)
-      paragraph.text mustBe NoDataFound.paragraph2
-    }
-
     "have a first list" in {
       val list: Element = document.mainContent.selectNth("li", 1)
       list.text mustBe NoDataFound.list1
@@ -204,14 +199,6 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       list.text mustBe NoDataFound.list3
     }
 
-    "have a third paragraph" in {
-      val paragraph: Element = document.mainContent.selectNth("p", 3)
-      paragraph.text mustBe NoDataFound.paragraph3
-
-      val link: Element = paragraph.selectHead("a")
-      link.text mustBe NoDataFound.paragraph3LinkText
-      link.attr("href") mustBe "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
-    }
 
     "has a sign out button" in {
       document.mainContent.selectHead(".govuk-button").text mustBe MTDExempt2627.signoutButton
@@ -244,13 +231,12 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
 
   object NoDataFound {
     val heading = "You cannot use Making Tax Digital for Income Tax"
-    val paragraph1 = "Our records show you cannot use Making Tax Digital for Income Tax."
-    val paragraph2 = "This could be because you:"
-    val list1 = "haven’t submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return"
+    val paragraph1 = "You cannot sign up and you do not need to contact us if you:"
+    val list1 = "have not submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return."
     val list2 = "have never submitted a tax return"
     val list3 = "are insolvent"
-    val paragraph3 = "If you have received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, please contact us (opens in new tab)."
-    val paragraph3LinkText = "contact us (opens in new tab)"
+    val indentText = "If you received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, you must "
+    val indentLinkText = "contact us (opens in new tab)"
   }
 
   object DigitallyExempt {

@@ -21,13 +21,15 @@
 @import config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     appConfig: AppConfig,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     signOutButton: SignOutButton,
-    ul: UnorderedList
+    ul: UnorderedList,
+    govukInsetText: GovukInsetText
 )
 
 @(exemptionReason: Option[String])(implicit request: Request[_], messages: Messages)
@@ -93,10 +95,15 @@
 
     <h1 class="govuk-heading-l">@messages("individual.cannot-take-part-no-data.heading")</h1>
 
-    <p class="govuk-body">@messages("individual.cannot-take-part-no-data.para1")</p>
+    @govukInsetText(InsetText(
+        content = Text(messages(
+        key = "individual.cannot-take-part-no-data.inset-text",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-no-data.link"), Some(messages("individual.cannot-take-part-no-data.link-href"))))
+        ))
+    ))
 
     @ul(
-        leadIn=messages("individual.cannot-take-part-no-data.para2"),
+        leadIn=messages("individual.cannot-take-part-no-data.para1"),
         Seq(
             Text(messages("individual.cannot-take-part-no-data.list1")),
             Text(messages("individual.cannot-take-part-no-data.list2")),
@@ -104,12 +111,6 @@
         )
     )
 
-    <p class="govuk-body">
-        @Html(messages(
-        key = "individual.cannot-take-part-no-data.para3",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-no-data.link"), Some(messages("individual.cannot-take-part-no-data.link-href"))))
-        )).
-    </p>
     }
 
 
