@@ -43,7 +43,7 @@ class SPSHandoffForClaimEnrolController @Inject()(
           goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
             returnLinkText = "I have verified",
             regime = "itsa",
-            serviceUrl = appConfig.govukGuidanceITSASignUpAgentLink
+            serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
           )
     }
   }
