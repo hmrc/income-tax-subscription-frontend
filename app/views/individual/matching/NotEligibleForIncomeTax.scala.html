@@ -96,7 +96,7 @@
     <h1 class="govuk-heading-l">@messages("individual.cannot-take-part-no-data.heading")</h1>
 
     @govukInsetText(InsetText(
-        content = Text(messages(
+        content = HtmlContent(messages(
         key = "individual.cannot-take-part-no-data.inset-text",
         args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("individual.cannot-take-part-no-data.link"), Some(messages("individual.cannot-take-part-no-data.link-href"))))
         ))
