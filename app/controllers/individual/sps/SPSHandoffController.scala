@@ -38,7 +38,8 @@ class SPSHandoffController @Inject()(identify: IdentifierAction,
   def redirectToSPS: Action[AnyContent] = identify { implicit request =>
     goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback(None).url,
       returnLinkText = "I have verified",
-      regime = "itsa"
+      regime = "itsa",
+      serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
     )
   }
 
@@ -46,13 +47,14 @@ class SPSHandoffController @Inject()(identify: IdentifierAction,
     URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(s)).value, "UTF-8")
   }
 
-  def goToSPS(returnUrl: String, returnLinkText: String, regime: String): Result = {
+  def goToSPS(returnUrl: String, returnLinkText: String, regime: String, serviceUrl: String): Result = {
 
     val encryptedReturnUrl = encryptAndEncodeString(returnUrl)
     val encryptedReturnLinkText = encryptAndEncodeString(returnLinkText)
     val encryptedRegime = encryptAndEncodeString(regime)
+    val encryptedServiceUrl = encryptAndEncodeString(serviceUrl)
 
-    Redirect(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=$encryptedReturnUrl&returnLinkText=$encryptedReturnLinkText&regime=$encryptedRegime")
+    Redirect(s"${appConfig.preferencesFrontendRedirect}/paperless/choose/capture?returnUrl=$encryptedReturnUrl&returnLinkText=$encryptedReturnLinkText&regime=$encryptedRegime&serviceUrl=$encryptedServiceUrl")
 
   }
 
