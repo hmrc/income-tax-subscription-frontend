@@ -43,7 +43,7 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       eligibleNextYear = true,
       exemptionReason = None
     )
-    stubEligibilityResponseBoth(testUtr)(
+    stubEligibilityResponseBoth(testNino, testUtr)(
       currentYearResponse = status.eligibleCurrentYear,
       nextYearResponse = status.eligibleNextYear,
       exemptionReason = status.exemptionReason

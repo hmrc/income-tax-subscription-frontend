@@ -16,15 +16,12 @@
 
 package connectors.individual.eligibility.mocks
 
-import auth.MockHttp
-import config.AppConfig
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.EligibilityStatus
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.JsValue
 import utilities.HttpResult.HttpResult
 
 import scala.concurrent.Future
@@ -39,25 +36,9 @@ trait MockGetEligibilityStatusConnector extends MockitoSugar with BeforeAndAfter
 
   val mockGetEligibilityStatusConnector: GetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
 
-  def mockGetEligibilityStatus(sautr: String)(result: HttpResult[EligibilityStatus]): Unit = {
-    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(result))
-  }
-
   def mockGetEligibilityStatus(nino: String, sautr: String)(result: HttpResult[EligibilityStatus]): Unit = {
     when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(sautr))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 
-}
-
-trait TestGetEligibilityStatusConnector extends MockHttp {
-
-  object TestGetEligibilityStatusConnector extends GetEligibilityStatusConnector(
-    app.injector.instanceOf[AppConfig],
-    mockHttp
-  )
-
-  def setupMockGetEligibilityStatus(sautr: String)(status: Int, response: JsValue): Unit =
-    setupMockHttpGet(url = Some(TestGetEligibilityStatusConnector.eligibilityUrl(sautr)))(status, response)
 }
