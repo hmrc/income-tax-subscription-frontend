@@ -163,8 +163,8 @@ individual.cannot-take-part-no-data.heading                           = Ni allwc
 individual.cannot-take-part-no-data.inset-text                         = Os ydych wedi cael llythyr gan CThEF yn gofyn i chi gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i {0}
 individual.cannot-take-part-no-data.para1                             = Ni allwch gofrestru, ac nid oes angen i chi gysylltu â ni os:
 individual.cannot-take-part-no-data.list1                             = nad ydych wedi cyflwyno Ffurflen Dreth Hunanasesiad yn ystod y 2 flynedd diwethaf. Gallwch gofrestru ar ôl i chi gyflwyno’ch Ffurflen Dreth.
-individual.cannot-take-part-no-data.list2                             = nid ydych erioed wedi cyflwyno Ffurflen Dreth
-individual.cannot-take-part-no-data.list3                             = rydych yn ansolfent
+individual.cannot-take-part-no-data.list2                             = nad ydych erioed wedi cyflwyno Ffurflen Dreth
+individual.cannot-take-part-no-data.list3                             = ydych yn ansolfent
 individual.cannot-take-part-no-data.link                              = chi gysylltu â ni
 individual.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/treth-incwm-hunanasesiad-a-mwy
 
@@ -703,11 +703,11 @@ agent.cannot-take-part-exempt-26-27.link-href                   = https://www.go
 
 # Agent cannot sign up No Data
 agent.cannot-take-part-no-data.heading                           = Ni all eich cleient ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.cannot-take-part-no-data.inset-text                        = Os yw’ch cleient wedi cael llythyr gan CThEF yn gofyn iddo gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi {0}
+agent.cannot-take-part-no-data.inset-text                        = Os yw’ch cleient wedi cael llythyr gan CThEF yn gofyn iddo gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i {0}
 agent.cannot-take-part-no-data.para1                             = Ni all eich cleient gofrestru, ac nid oes angen i chi gysylltu â ni os:
 agent.cannot-take-part-no-data.list1                             = nad yw wedi cyflwyno Ffurflen Dreth Hunanasesiad yn ystod y 2 flynedd diwethaf. Gall gofrestru ar ôl i chi gyflwyno’i Ffurflen Dreth.
 agent.cannot-take-part-no-data.list2                             = nid yw erioed wedi cyflwyno Ffurflen Dreth
-agent.cannot-take-part-no-data.list3                             = mae’n ansolfent
+agent.cannot-take-part-no-data.list3                             = yw’n ansolfent
 agent.cannot-take-part-no-data.link                              = gysylltu â ni
 agent.cannot-take-part-no-data.link-href                         = https://www.gov.uk/find-hmrc-contacts/agent-dedicated-line-self-assessment-or-paye-for-individuals
 
