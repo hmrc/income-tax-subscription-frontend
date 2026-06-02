@@ -34,42 +34,14 @@ class GetEligibilityStatusConnectorISpec extends ComponentSpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  "getEligibilityStatus(sautr)" must {
-    "return an eligibility status" when {
-      "receiving an OK status with valid json" in {
-        stubEligibilityResponseBoth(utr)(currentYearResponse = true, nextYearResponse = true, exemptionReason= None)
-
-        val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(utr)
-
-        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
-      }
-    }
-    "return a http connector error response" when {
-      "receiving an OK status with invalid json" in {
-        stubEligibilityResponseInvalid(utr)
-
-        val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(utr)
-
-        await(result).isLeft mustBe true
-      }
-      "receiving a non OK status" in {
-        stubEligibilityResponseError(utr)
-
-        val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(utr)
-
-        await(result).isLeft mustBe true
-      }
-    }
-  }
-
   "getEligibilityStatus(nino, utr)" must {
     "return an eligibility status" when {
       "receiving an OK status with valid json" in {
-        stubEligibilityResponseBoth(nino, utr)(currentYearResponse = true, nextYearResponse = true)
+        stubEligibilityResponseBoth(nino, utr)(currentYearResponse = true, nextYearResponse = true, exemptionReason = None)
 
         val result: Future[HttpResult[EligibilityStatus]] = connector.getEligibilityStatus(nino, utr)
 
-        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+        await(result) mustBe Right(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
       }
     }
     "return a http connector error response" when {

@@ -28,7 +28,6 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch] = Set(
     ThrottlingFeature,
-    SignalControlGatewayEligibility,
     AgentRelationshipSingleCall,
     TaxYear27To28Plus
   )
@@ -44,11 +43,6 @@ object FeatureSwitch {
   case object ThrottlingFeature extends FeatureSwitch {
     override val name = s"$prefix.throttle"
     override val displayText = "Throttle"
-  }
-
-  case object SignalControlGatewayEligibility extends FeatureSwitch {
-    override val name: String = s"$prefix.signal-control-gateway-eligibility"
-    override val displayText: String = "Use the signal control gateway eligibility result"
   }
 
   case object AgentRelationshipSingleCall extends FeatureSwitch {

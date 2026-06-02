@@ -17,9 +17,6 @@
 package services
 
 import common.Constants.ITSASessionKeys
-import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
-import config.featureswitch.FeatureSwitching
-import config.{AppConfig, MockConfig}
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import models.{EligibilityStatus, SessionData}
@@ -31,86 +28,55 @@ import services.mocks.TestGetEligibilityStatusService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import utilities.HttpResult.HttpConnectorError
 
-class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilityStatusService with FeatureSwitching {
+class GetEligibilityStatusServiceSpec extends PlaySpec with TestGetEligibilityStatusService {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  val appConfig: AppConfig = MockConfig
 
   val eligibilityStatus: EligibilityStatus = EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
 
   val testNino: String = "test-nino"
   val testUtr: String = "test-utr"
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(SignalControlGatewayEligibility)
-  }
-
   val emptySessionData: SessionData = SessionData()
 
   "getEligibilityStatus" when {
-    "the signal control gateway eligibility feature switch is enabled" must {
-      "return the eligibility status from session" when {
-        "available in session" in {
-          enable(SignalControlGatewayEligibility)
+    "return the eligibility status from session" when {
+      "available in session" in {
+        val sessionData = SessionData(Map(
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus)
+        ))
 
-          val sessionData = SessionData(Map(
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus)
-          ))
-
-          await(TestGetEligibilityStatusService.getEligibilityStatus(sessionData)) mustBe eligibilityStatus
-        }
-      }
-      "return the eligibility status from the API and save to session" when {
-        "not available in session" in {
-          enable(SignalControlGatewayEligibility)
-          mockGetNino(testNino)
-          mockGetUTR(testUtr)
-          mockGetEligibilityStatus(testNino, testUtr)(Right(eligibilityStatus))
-          mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
-
-          await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)) mustBe eligibilityStatus
-        }
+        await(TestGetEligibilityStatusService.getEligibilityStatus(sessionData)) mustBe eligibilityStatus
       }
     }
+    "return the eligibility status from the API and save to session" when {
+      "not available in session" in {
+        mockGetNino(testNino)
+        mockGetUTR(testUtr)
+        mockGetEligibilityStatus(testNino, testUtr)(Right(eligibilityStatus))
+        mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
 
-    "the signal control gateway eligibility feature switch is disabled" must {
-      "return the eligibility status from session" when {
-        "available in session" in {
-          val sessionData = SessionData(Map(
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus)
-          ))
-
-          await(TestGetEligibilityStatusService.getEligibilityStatus(sessionData)) mustBe eligibilityStatus
-        }
+        await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)) mustBe eligibilityStatus
       }
-      "return the eligibility status from the API and save to session" when {
-        "not available in session" in {
-          mockGetUTR(testUtr)
-          mockGetEligibilityStatus(testUtr)(Right(eligibilityStatus))
-          mockSaveEligibilityStatus(eligibilityStatus)(Right(SaveSessionDataSuccessResponse))
+    }
+    "throw an exception" when {
+      "there was a problem retrieving the eligibility status from the API" in {
+        val httpResponse = HttpResponse(BAD_REQUEST, "")
+        mockGetNino(testNino)
+        mockGetUTR(testUtr)
+        mockGetEligibilityStatus(testNino, testUtr)(Left(HttpConnectorError(httpResponse)))
 
-          await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)) mustBe eligibilityStatus
-        }
+        intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
+          .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: status = 400, body = "
       }
-      "throw an exception" when {
-        "there was a problem retrieving the eligibility status from the API" in {
-          val httpResponse = HttpResponse(BAD_REQUEST, "")
-          mockGetUTR(testUtr)
-          mockGetEligibilityStatus(testUtr)(Left(HttpConnectorError(httpResponse)))
+      "there was a problem saving the eligibility status to session" in {
+        mockGetNino(testNino)
+        mockGetUTR(testUtr)
+        mockGetEligibilityStatus(testNino, testUtr)(Right(eligibilityStatus))
+        mockSaveEligibilityStatus(eligibilityStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
-            .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure fetching eligibility status from API: status = 400, body = "
-        }
-        "there was a problem saving the eligibility status to session" in {
-          mockGetEligibilityStatus(testUtr)(Right(eligibilityStatus))
-          mockGetUTR(testUtr)
-          mockSaveEligibilityStatus(eligibilityStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
-
-          intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
-            .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: UnexpectedStatusFailure(500)"
-        }
+        intercept[InternalServerException](await(TestGetEligibilityStatusService.getEligibilityStatus(emptySessionData)))
+          .message mustBe "[GetEligibilityStatusService][getEligibilityStatus] - failure saving eligibility status to session: UnexpectedStatusFailure(500)"
       }
     }
   }
