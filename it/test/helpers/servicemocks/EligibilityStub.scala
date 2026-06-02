@@ -16,53 +16,12 @@
 
 package helpers.servicemocks
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 
 object EligibilityStub extends WireMockMethods {
 
-  def stubEligibilityResponse(sautr: String)(response: Boolean): Unit =
-    when(
-      method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
-    ).thenReturn(
-      status = OK,
-      body = Json.obj("eligibleCurrentYear" -> response, "eligibleNextYear" -> false)
-    )
-
-  def stubEligibilityResponseBoth(sautr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean, exemptionReason: Option[String]): Unit =
-    when(
-      method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
-    ).thenReturn(
-      status = OK,
-      body = Json.obj(
-        "eligibleCurrentYear" -> currentYearResponse,
-        "eligibleNextYear" -> nextYearResponse,
-        "exemptionReason" -> exemptionReason
-      )
-    )
-
-  def stubEligibilityResponseInvalid(sautr: String): Unit = {
-    when(
-      method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
-    ).thenReturn(
-      status = OK,
-      body = Json.obj()
-    )
-  }
-
-  def stubEligibilityResponseError(sautr: String): Unit = {
-    when(
-      method = GET,
-      uri = s"/income-tax-subscription-eligibility/eligibility/utr/$sautr"
-    ).thenReturn(
-      status = INTERNAL_SERVER_ERROR
-    )
-  }
-
-  def stubEligibilityResponseBoth(nino: String, utr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean): Unit = {
+  def stubEligibilityResponseBoth(nino: String, utr: String)(currentYearResponse: Boolean, nextYearResponse: Boolean, exemptionReason: Option[String]): Unit = {
     when(
       method = GET,
       uri = s"/income-tax-subscription-eligibility/eligibility/nino/$nino/utr/$utr"
@@ -70,7 +29,8 @@ object EligibilityStub extends WireMockMethods {
       status = OK,
       body = Json.obj(
         "eligibleCurrentYear" -> currentYearResponse,
-        "eligibleNextYear" -> nextYearResponse
+        "eligibleNextYear" -> nextYearResponse,
+        "exemptionReason" -> exemptionReason
       )
     )
   }
