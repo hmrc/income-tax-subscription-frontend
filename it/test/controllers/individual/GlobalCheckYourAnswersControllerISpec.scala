@@ -18,26 +18,22 @@ package controllers.individual
 
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
-import config.featureswitch.FeatureSwitch.ThrottlingFeature
-import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubGetAllSessionData, stubSaveSessionData, stubSaveSubmissionStatus}
+import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubGetAllSessionData, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
 import helpers.*
 import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.*
 import helpers.WiremockHelper.verifyPost
-import helpers.servicemocks.EligibilityStub.stubEligibilityResponse
-import helpers.servicemocks.MandationStatusStub.stubGetMandationStatus
-import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub, ThrottlingStub}
+import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
 import models.common.BusinessAccountingPeriod
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
-import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import services.EndOfJourneyThrottleId
 import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
 import utilities.SubscriptionDataKeys.*
 
@@ -48,12 +44,10 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
     stubSaveSubmissionStatus()(OK)
     stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.UTR -> JsString(testUtr)
+      ITSASessionKeys.UTR -> JsString(testUtr),
+      ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(true, false, None)),
+      ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
     ))
-    stubGetMandationStatus(testNino, testUtr)(Voluntary, Voluntary)
-    stubSaveSessionData(ITSASessionKeys.MANDATION_STATUS, MandationStatusModel(Voluntary, Voluntary))(OK)
-    stubEligibilityResponse(testUtr)(true)
-    stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, EligibilityStatus(true, false, None))(OK)
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(

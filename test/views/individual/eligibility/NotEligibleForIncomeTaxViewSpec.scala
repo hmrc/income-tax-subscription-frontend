@@ -184,6 +184,19 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
       paragraph.text mustBe NoDataFound.paragraph1
     }
 
+    "have an inset paragraph with a link" in {
+      val paragraph: Element = document.mainContent.selectNth("#main-content > div > div > div.govuk-inset-text", 1)
+      paragraph.text mustBe NoDataFound.indentText
+    }
+
+    "have a working link that opens a new tab" in {
+      val link: Element = document.mainContent.selectNth("#main-content > div > div > div.govuk-inset-text > a", 1)
+      link.text() mustBe NoDataFound.indentLinkText
+      link.attr("href") mustBe NoDataFound.indentLinkHref
+      link.attr("target") mustBe "_blank"
+      link.attr("rel") mustBe "noopener noreferrer"
+    }
+
     "have a first list" in {
       val list: Element = document.mainContent.selectNth("li", 1)
       list.text mustBe NoDataFound.list1
@@ -235,8 +248,9 @@ class NotEligibleForIncomeTaxViewSpec extends ViewSpec {
     val list1 = "have not submitted a tax return within the last 2 years. You can sign up after you have submitted your first tax return."
     val list2 = "have never submitted a tax return"
     val list3 = "are insolvent"
-    val indentText = "If you received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, you must "
+    val indentText = "If you received a letter from HMRC asking you to sign up to Making Tax Digital For Income Tax, you must contact us (opens in new tab)"
     val indentLinkText = "contact us (opens in new tab)"
+    val indentLinkHref = "https://www.gov.uk/find-hmrc-contacts/self-assessment-general-enquiries"
   }
 
   object DigitallyExempt {

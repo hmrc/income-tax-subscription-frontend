@@ -17,7 +17,6 @@
 package services
 
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.SignalControlGatewayEligibility
 import config.featureswitch.FeatureSwitching
 import connectors.individual.eligibility.GetEligibilityStatusConnector
 import models.{EligibilityStatus, SessionData}
@@ -38,39 +37,18 @@ class GetEligibilityStatusService @Inject()(getEligibilityStatusConnector: GetEl
     sessionData.fetchEligibilityStatus match {
       case Some(value) => Future.successful(value)
       case None =>
-        if (isEnabled(SignalControlGatewayEligibility)) {
-          getAndSaveSignalControlGatewayEligibilityResults(sessionData)
-        } else {
-          getAndSaveControlListEligibilityResults(sessionData)
-        }
-    }
-  }
-
-  private def getAndSaveSignalControlGatewayEligibilityResults(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    ninoService.getNino(sessionData) flatMap { nino =>
-      utrService.getUTR(sessionData) flatMap { utr =>
-        getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
-          case Right(value) =>
-            sessionDataService.saveEligibilityStatus(value) map {
-              case Right(_) => value
-              case Left(error) => throw new SaveToSessionException(error.toString)
+        ninoService.getNino(sessionData) flatMap { nino =>
+          utrService.getUTR(sessionData) flatMap { utr =>
+            getEligibilityStatusConnector.getEligibilityStatus(nino, utr) flatMap {
+              case Right(value) =>
+                sessionDataService.saveEligibilityStatus(value) map {
+                  case Right(_) => value
+                  case Left(error) => throw new SaveToSessionException(error.toString)
+                }
+              case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
             }
-          case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
-        }
-      }
-    }
-  }
-
-  private def getAndSaveControlListEligibilityResults(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[EligibilityStatus] = {
-    utrService.getUTR(sessionData) flatMap { utr =>
-      getEligibilityStatusConnector.getEligibilityStatus(utr) flatMap {
-        case Right(value) =>
-          sessionDataService.saveEligibilityStatus(value) map {
-            case Right(_) => value
-            case Left(error) => throw new SaveToSessionException(error.toString)
           }
-        case Left(error) => throw new FetchFromAPIException(s"status = ${error.httpResponse.status}, body = ${error.httpResponse.body}")
-      }
+        }
     }
   }
 
