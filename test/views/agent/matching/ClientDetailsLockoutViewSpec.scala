@@ -16,17 +16,14 @@
 
 package views.agent.matching
 
-import messagelookup.agent.MessageLookup.{Base => common, ClientDetailsLockout => messages}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
+import messagelookup.agent.MessageLookup.{Base as common, ClientDetailsLockout as messages}
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.agent.matching.ClientDetailsLockout
 
-class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
+class ClientDetailsLockoutViewSpec extends ViewSpec {
 
   val testTime = "test time"
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   val clientDetailsLockout: ClientDetailsLockout = app.injector.instanceOf[ClientDetailsLockout]
   lazy val page: HtmlFormat.Appendable = clientDetailsLockout(testTime)(request, implicitly)

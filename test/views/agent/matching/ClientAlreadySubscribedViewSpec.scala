@@ -17,16 +17,14 @@
 package views.agent.matching
 
 import messagelookup.agent.MessageLookup.ClientAlreadySubscribed as messages
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.agent.matching.ClientAlreadySubscribed
 
-class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
+class ClientAlreadySubscribedViewSpec extends ViewSpec {
 
-  val action: Call = ViewSpecTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val action: Call = ViewSpec.testCall
   val clientAlreadySubscribed: ClientAlreadySubscribed = app.injector.instanceOf[ClientAlreadySubscribed]
 
   lazy val page: HtmlFormat.Appendable = clientAlreadySubscribed(action)(request, implicitly)

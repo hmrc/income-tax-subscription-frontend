@@ -23,16 +23,14 @@ import models.DateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.individual.matching.AlreadyEnrolled
 
-class AlreadyEnrolledViewSpec extends ViewSpecTrait {
+class AlreadyEnrolledViewSpec extends ViewSpec {
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
 

@@ -20,17 +20,14 @@ import controllers.SignOutController
 import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.mvc.{Call, Request}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.individual.matching.CannotUseService
 
-class CannotUseServiceViewSpec extends ViewSpecTrait {
+class CannotUseServiceViewSpec extends ViewSpec {
 
-  implicit val request: Request[_] = FakeRequest()
-
-  val action: Call = ViewSpecTrait.testCall
+  val action: Call = ViewSpec.testCall
 
   val cannotUseServiceView: CannotUseService = app.injector.instanceOf[CannotUseService]
 
