@@ -23,10 +23,10 @@ import org.scalatest.EitherValues
 import play.api.http.Status.*
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.*
 
-class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
+class GetSubscriptionResponseHttpParserSpec extends ViewSpec with EitherValues {
   val testHttpVerb = "GET"
   val testUri = "/"
 

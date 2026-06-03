@@ -19,11 +19,11 @@ package forms.formatters
 import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import java.time.LocalDate
 
-class LocalDateFormatterSpec extends UnitTestTrait with Matchers {
+class LocalDateFormatterSpec extends ViewSpec with Matchers {
 
   def localDateFormatter(): Formatter[LocalDate] = new LocalDateFormatter(
     invalidKey = "error.invalid",

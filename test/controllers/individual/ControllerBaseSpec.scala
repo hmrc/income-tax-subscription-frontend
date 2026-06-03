@@ -27,11 +27,11 @@ import play.api.test.Helpers.{POST, await, defaultAwaitTimeout}
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.individual.TestConstants
-import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+import utilities.{UserMatchingSessionUtil, ViewSpec}
 
 import scala.language.implicitConversions
 
-trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
+trait ControllerBaseSpec extends ViewSpec with MockAuthService {
 
   implicit val system: ActorSystem = ActorSystem()
 

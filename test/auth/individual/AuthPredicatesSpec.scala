@@ -32,10 +32,10 @@ import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.http.SessionKeys.*
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.testCredId
 
-class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
+class AuthPredicatesSpec extends ViewSpec with MockAuthService with ScalaFutures with EitherValues {
 
   val mockAuditingService: AuditingService = mock[AuditingService]
 

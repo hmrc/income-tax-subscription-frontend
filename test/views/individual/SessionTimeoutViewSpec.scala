@@ -18,18 +18,15 @@ package views.individual
 
 import messagelookup.individual.MessageLookup
 import messagelookup.individual.MessageLookup.Timeout as messages
-import play.api.mvc.Request
 import play.api.test.FakeRequest
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import views.html.individual.Timeout
 
-class SessionTimeoutViewSpec extends UnitTestTrait {
+class SessionTimeoutViewSpec extends ViewSpec {
 
   private val timeoutView = app.injector.instanceOf[Timeout]
 
   private lazy val page = timeoutView()(FakeRequest(), implicitly)
-
-  implicit val request: Request[_] = FakeRequest()
 
   "The Session timeout view" should {
 

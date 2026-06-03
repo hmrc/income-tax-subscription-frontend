@@ -26,12 +26,12 @@ import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionConnector extends UnitTestTrait with MockitoSugar {
+trait MockSubscriptionConnector extends ViewSpec with MockitoSugar {
   val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
 
   def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =

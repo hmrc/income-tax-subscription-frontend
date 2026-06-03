@@ -26,13 +26,13 @@ import play.api.test.FakeRequest
 import services.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.agent.TestConstants._
 import utilities.agent.TestModels._
 
 import scala.concurrent.ExecutionContext
 
-class AuditingServiceSpec extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+class AuditingServiceSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuditConnector: AuditConnector = mock[AuditConnector]
 

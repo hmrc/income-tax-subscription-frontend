@@ -16,9 +16,9 @@
 
 package forms.validation.utils
 
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class PatternsSpec extends UnitTestTrait {
+class PatternsSpec extends ViewSpec {
 
   "ISO 8859-1" should {
     "valid for" in {

@@ -23,14 +23,14 @@ import org.jsoup.nodes.Document
 import play.api.mvc.{Call, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import views.html.individual.matching.CannotUseService
 
-class CannotUseServiceViewSpec extends UnitTestTrait {
+class CannotUseServiceViewSpec extends ViewSpec {
 
-  implicit val request: Request[_] = FakeRequest()
+  override implicit val request: Request[_] = FakeRequest()
 
-  val action: Call = UnitTestTrait.testCall
+  val action: Call = ViewSpec.testCall
 
   val cannotUseServiceView: CannotUseService = app.injector.instanceOf[CannotUseService]
 

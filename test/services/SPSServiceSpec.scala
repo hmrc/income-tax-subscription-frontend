@@ -25,11 +25,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import scala.concurrent.Future
 
-class SPSServiceSpec extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+class SPSServiceSpec extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   "Augment the mtditid with prefix" in {
     val mockConnector = mock[SPSConnector]

@@ -16,16 +16,10 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
-import common.Constants.ITSASessionKeys
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{testNino, testUtr}
+import auth.agent.AgentUserMatching
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import models.EligibilityStatus
-import play.api.http.Status._
-import play.api.libs.json.{JsBoolean, JsString, Json}
-import utilities.SubscriptionDataKeys
+import play.api.http.Status.*
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 

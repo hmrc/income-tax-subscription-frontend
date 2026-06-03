@@ -22,12 +22,12 @@ import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import java.time.OffsetDateTime
 
-class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
+class LockoutStatusHttpParserSpec extends ViewSpec with EitherValues {
   val testUri = "/"
 
   val testTime: OffsetDateTime = OffsetDateTime.now()

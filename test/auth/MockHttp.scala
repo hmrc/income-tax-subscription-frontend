@@ -23,12 +23,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.testErrorMessage
 
 import scala.concurrent.Future
 
-trait MockHttp extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockHttp extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockHttp: HttpClientV2 = mock[HttpClientV2]
 

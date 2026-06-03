@@ -22,9 +22,9 @@ import play.api.http.Status.CREATED
 import play.api.libs.json.Json
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class RetrieveReferenceHttpParserSpec extends UnitTestTrait with EitherValues {
+class RetrieveReferenceHttpParserSpec extends ViewSpec with EitherValues {
 
   val testHttpVerb = "POST"
   val testUri = "/"

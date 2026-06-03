@@ -20,9 +20,9 @@ import connectors.httpparser.GetSubscriptionDetailsHttpParser._
 import play.api.libs.json.{Json, OFormat}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class GetSubscriptionDetailsHttpParserSpec extends UnitTestTrait {
+class GetSubscriptionDetailsHttpParserSpec extends ViewSpec {
 
 
   val testHttpVerb = "GET"

@@ -25,7 +25,7 @@ import services.UserMatchingService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.TestModels._
 import utilities.individual.TestConstants._
-import utilities.{UnitTestTrait, UserMatchingTestSupport}
+import utilities.{ViewSpec, UserMatchingTestSupport}
 
 import scala.concurrent.Future
 
@@ -35,7 +35,7 @@ trait TestUserMatchingService extends MockAuthenticatiorConnector {
 
 }
 
-trait MockUserMatchingService extends UnitTestTrait with MockitoSugar with UserMatchingTestSupport {
+trait MockUserMatchingService extends ViewSpec with MockitoSugar with UserMatchingTestSupport {
   val mockUserMatchingService = mock[UserMatchingService]
 
   private def mockUserMatch(userDetails: UserDetailsModel)

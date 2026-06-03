@@ -22,9 +22,9 @@ import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear

@@ -33,7 +33,6 @@ import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import models.{DateModel, EligibilityStatus}
 import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString, Json}
-import play.api.test.Helpers.NO_CONTENT
 import services.StartOfJourneyThrottleId
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.PrePopFlag

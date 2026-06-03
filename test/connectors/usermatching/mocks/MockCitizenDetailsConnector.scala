@@ -25,13 +25,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.testException
 
 import scala.concurrent.Future
 
 
-trait MockCitizenDetailsConnector extends UnitTestTrait with MockitoSugar {
+trait MockCitizenDetailsConnector extends ViewSpec with MockitoSugar {
 
   val mockCitizenDetailsConnector: CitizenDetailsConnector = mock[CitizenDetailsConnector]
 
@@ -61,7 +61,7 @@ trait MockCitizenDetailsConnector extends UnitTestTrait with MockitoSugar {
 
 }
 
-trait TestCitizenDetailsConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait TestCitizenDetailsConnector extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   object TestCitizenDetailsConnector extends CitizenDetailsConnector(
     appConfig,

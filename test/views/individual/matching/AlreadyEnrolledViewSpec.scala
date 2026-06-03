@@ -27,12 +27,12 @@ import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.html.individual.matching.AlreadyEnrolled
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class AlreadyEnrolledViewSpec extends UnitTestTrait {
+class AlreadyEnrolledViewSpec extends ViewSpec {
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
-  val request: FakeRequest[AnyContentAsEmpty.type] = UnitTestTrait.viewTestRequest
+  override val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpec.viewTestRequest
 
   val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
 

@@ -35,7 +35,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
   when(agentAffinityGroupError()(any(), any(), any()))
     .thenReturn(HtmlFormat.empty)
 
-  object TestAffinityGroupErrorController extends AffinityGroupErrorController(agentAffinityGroupError, mockMessagesControllerComponents)
+  object TestAffinityGroupErrorController extends AffinityGroupErrorController(agentAffinityGroupError, wrappedMessagesControllerComponents)
 
   "Calling the show action of the AffinityGroupErrorController" should {
 

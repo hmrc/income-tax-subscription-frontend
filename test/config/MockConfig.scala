@@ -22,9 +22,9 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-trait MockConfig extends UnitTestTrait with AppConfig {
+trait MockConfig extends ViewSpec with AppConfig {
 
   override val appName: String = "app"
   override val wrongCredentials: String = ""
@@ -66,7 +66,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val identityVerificationRequiredConfidenceLevel: ConfidenceLevel = ConfidenceLevel.L250
   override val identityVerificationURL: String = ""
 
-  override val citizenDetailsURL: String = ""
+  override val citizenDetailsURL: String = "http://localhost:9337"
 
   override val hasEnabledTestOnlyRoutes: Boolean = false
 
@@ -96,7 +96,7 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 
-  override lazy val ggLoginUrl: String = "/gg/sign-in"
+  override lazy val ggLoginUrl: String = "http://localhost:9553/gg/sign-in"
 
   override def redirectToLogin(continueUrl: String): play.api.mvc.Result =
     play.api.mvc.Results.Redirect(
@@ -137,8 +137,6 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val confirmingSubmissionMaxWaitTimeSeconds: Int = 20
   override val confirmingSubmissionQueryTimeSeconds: Int = 1
   override val confirmingSubmissionAutoRefreshTimeSeconds: Int = 5
-
-
 }
 
 object MockConfig extends MockConfig {

@@ -21,12 +21,11 @@ import forms.validation.testutils.DataMap.DataMap
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
-import utilities.{AccountingPeriodUtil, UnitTestTrait}
+import utilities.{AccountingPeriodUtil, ViewSpec}
 
 import java.time.LocalDate
 
-
-class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
+class PropertyStartDateFormSpec extends ViewSpec {
 
   def form: Form[DateModel] = {
     propertyStartDateForm(PropertyStartDateForm.minStartDate, PropertyStartDateForm.maxStartDate, d => d.toString

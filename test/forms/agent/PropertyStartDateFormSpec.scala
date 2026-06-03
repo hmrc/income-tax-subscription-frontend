@@ -20,11 +20,11 @@ import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import java.time.LocalDate
 
-class PropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
+class PropertyStartDateFormSpec extends ViewSpec {
 
   val minStartDate: LocalDate = PropertyStartDateForm.minStartDate
   val maxStartDate: LocalDate = PropertyStartDateForm.maxStartDate

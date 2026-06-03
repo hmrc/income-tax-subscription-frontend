@@ -26,13 +26,13 @@ import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.TestModels._
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.testException
 
 import scala.concurrent.Future
 
-trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
+trait TestAuthenticatorConnector extends ViewSpec with MockHttp {
 
   object TestAuthenticatorConnector extends AuthenticatorConnector(appConfig, mockHttp)
 
@@ -58,7 +58,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   val matchUserUnexpectedStatus: (Int, JsValue) = (NOT_FOUND, Json.obj())
 }
 
-trait MockAuthenticatiorConnector extends UnitTestTrait with MockitoSugar {
+trait MockAuthenticatiorConnector extends ViewSpec with MockitoSugar {
 
   val mockAuthenticatiorConnector: AuthenticatorConnector = mock[AuthenticatorConnector]
 

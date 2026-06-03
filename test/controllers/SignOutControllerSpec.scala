@@ -24,7 +24,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup
 class SignOutControllerSpec extends ControllerBaseSpec {
 
   object TestSignOutController extends SignOutController(
-    mockMessagesControllerComponents, appConfig, mockAuthService)
+    wrappedMessagesControllerComponents, appConfig, mockAuthService)
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty

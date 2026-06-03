@@ -59,7 +59,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockReferenceRetrieval,
     mockResolver,
     mockPrePopDataService
-  )(mockMessagesControllerComponents, executionContext)
+  )(wrappedMessagesControllerComponents, executionContext)
 
   override val controllerName: String = "HomeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty

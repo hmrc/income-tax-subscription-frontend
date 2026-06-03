@@ -23,11 +23,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.RemoveBusinessService
 import services.RemoveBusinessService.RemoveBusinessFailure
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import scala.concurrent.Future
 
-trait MockRemoveBusinessService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockRemoveBusinessService extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockRemoveBusinessService: RemoveBusinessService = mock[RemoveBusinessService]
 

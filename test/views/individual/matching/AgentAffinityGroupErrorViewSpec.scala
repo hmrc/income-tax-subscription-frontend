@@ -21,11 +21,11 @@ import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.html.agent.matching.AgentAffinityGroupError
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class AgentAffinityGroupErrorViewSpec extends UnitTestTrait {
+class AgentAffinityGroupErrorViewSpec extends ViewSpec {
 
-  implicit val request: Request[_] = FakeRequest()
+  override implicit val request: Request[_] = FakeRequest()
 
   private val agentAffinityGroupErrorView = app.injector.instanceOf[AgentAffinityGroupError]
 

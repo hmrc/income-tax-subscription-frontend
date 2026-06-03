@@ -35,7 +35,7 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
     mockAuditingService,
     mockAuthService,
     mockApplicationCrypto
-  )(executionContext, appConfig, mockMessagesControllerComponents)
+  )(executionContext, appConfig, wrappedMessagesControllerComponents)
 
   override val controllerName: String = "SPSHandoffForClaimEnrolController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

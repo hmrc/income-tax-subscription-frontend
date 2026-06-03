@@ -23,12 +23,12 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.EnrolmentService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockEnrolmentService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockEnrolmentService extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockEnrolmentService: EnrolmentService = mock[EnrolmentService]
 

@@ -37,7 +37,7 @@ class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
 
   object TestNotEnrolledAgentServicesController extends NotEnrolledAgentServicesController(
     mockNotEnrolledAgentService,
-    mockMessagesControllerComponents)
+    wrappedMessagesControllerComponents)
 
   "Calling the 'show' action of the NotEnrolledAgentServicesController" should {
 

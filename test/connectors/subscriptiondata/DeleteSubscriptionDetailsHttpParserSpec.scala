@@ -21,10 +21,10 @@ import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 
-class DeleteSubscriptionDetailsHttpParserSpec extends UnitTestTrait with EitherValues {
+class DeleteSubscriptionDetailsHttpParserSpec extends ViewSpec with EitherValues {
 
   val testHttpVerb = "DELETE"
   val testUri = "/"

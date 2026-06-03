@@ -19,9 +19,9 @@ package models.usermatching
 import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.should.Matchers.shouldBe
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class CitizenDetailsTest extends UnitTestTrait {
+class CitizenDetailsTest extends ViewSpec {
 
   private val firstName = Some(Math.random().toString)
   private val lastName = Some(Math.random().toString)

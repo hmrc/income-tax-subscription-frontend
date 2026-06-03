@@ -22,9 +22,9 @@ import play.api.http.Status._
 import play.api.libs.json.{JsError, Json}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.HttpResult.HttpConnectorError
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class GetEligibilityStatusHttpParserSpec extends UnitTestTrait with EitherValues {
+class GetEligibilityStatusHttpParserSpec extends ViewSpec with EitherValues {
   val testHttpVerb = "GET"
   val testUri = "/"
   val eligibleCurrentKey = "eligibleCurrentYear"

@@ -23,7 +23,7 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.CitizenDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
@@ -34,7 +34,7 @@ trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 
 }
 
-trait MockCitizenDetailsService extends UnitTestTrait with MockitoSugar {
+trait MockCitizenDetailsService extends ViewSpec with MockitoSugar {
   val mockCitizenDetailsService: CitizenDetailsService = mock[CitizenDetailsService]
 
   private def mockLookupUtr(nino: String)(response: Future[CitizenDetails]): Unit =

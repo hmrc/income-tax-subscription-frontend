@@ -43,23 +43,22 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.*
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{Format, JsArray, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.{UUIDProvider, UserMatchingSessionUtil}
-import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
-import uk.gov.hmrc.crypto.Sensitive.SensitiveString
-import uk.gov.hmrc.crypto.json.JsonEncryption
 
 import java.time.LocalDate
 import java.util.UUID

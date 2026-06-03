@@ -20,13 +20,13 @@ import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscript
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockIncomeTaxSubscriptionConnector, MockSubscriptionDetailsService}
-import utilities.{SubscriptionDataKeys, UnitTestTrait}
+import utilities.{SubscriptionDataKeys, ViewSpec}
 
-class RemoveBusinessServiceSpec extends UnitTestTrait
+class RemoveBusinessServiceSpec extends ViewSpec
   with MockIncomeTaxSubscriptionConnector with MockSubscriptionDetailsService {
 
   private val testReference = "reference"

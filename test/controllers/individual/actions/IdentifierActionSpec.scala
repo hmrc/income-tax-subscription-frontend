@@ -269,7 +269,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
 
         status(result) mustBe SEE_OTHER
         val url = controllers.individual.matching.routes.HomeController.index.url.replace("/", "%2F")
-        redirectLocation(result) mustBe Some(s"/gg/sign-in?continue=$url&origin=${MockConfig.appName}")
+        redirectLocation(result) mustBe Some(s"http://localhost:9553/gg/sign-in?continue=$url&origin=${MockConfig.appName}")
       }
     }
   }

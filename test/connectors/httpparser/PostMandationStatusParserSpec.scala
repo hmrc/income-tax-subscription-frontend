@@ -22,9 +22,9 @@ import models.status.MandationStatusModel
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class PostPostMandationStatusParserSpec extends UnitTestTrait {
+class PostPostMandationStatusParserSpec extends ViewSpec {
   "PostMandationStatusParser" should {
     "return MandationStatusModel" when {
       "supplied with an OK response and valid JSON" in {

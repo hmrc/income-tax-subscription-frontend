@@ -20,11 +20,11 @@ import forms.individual.business.ForeignPropertyStartDateForm.{errorContext, sta
 import models.DateModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
-import utilities.{AccountingPeriodUtil, UnitTestTrait}
+import utilities.{AccountingPeriodUtil, ViewSpec}
 
 import java.time.LocalDate
 
-class ForeignPropertyStartDateFormSpec extends PlaySpec with UnitTestTrait {
+class ForeignPropertyStartDateFormSpec extends ViewSpec {
 
   val dateDayKey: String = s"$startDate-dateDay"
   val dateMonthKey: String = s"$startDate-dateMonth"

@@ -19,12 +19,12 @@ package services
 import models.usermatching.CitizenDetails
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestCitizenDetailsService
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-class CitizenDetailsServiceSpec extends UnitTestTrait with TestCitizenDetailsService with ScalaFutures {
+class CitizenDetailsServiceSpec extends ViewSpec with TestCitizenDetailsService with ScalaFutures {
 
   "lookupUtr" should {
     def call: Future[CitizenDetails] = TestCitizenDetailsService.lookupCitizenDetails(testNino)

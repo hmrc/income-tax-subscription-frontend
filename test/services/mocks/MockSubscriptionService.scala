@@ -27,12 +27,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.*
 import services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.*
 
 import scala.concurrent.Future
 
-trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockSubscriptionService extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockSubscriptionService: SubscriptionService = mock[SubscriptionService]
 

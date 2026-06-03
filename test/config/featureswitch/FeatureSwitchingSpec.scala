@@ -23,11 +23,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import java.time.LocalDate
 
-class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
+class FeatureSwitchingSpec extends ViewSpec with BeforeAndAfterEach {
 
   val servicesConfig: ServicesConfig = app.injector.instanceOf[ServicesConfig]
   val mockConfig: Configuration = mock[Configuration]

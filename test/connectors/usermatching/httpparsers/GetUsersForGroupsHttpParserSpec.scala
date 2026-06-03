@@ -25,10 +25,10 @@ import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HttpResponse
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
-class GetUsersForGroupsHttpParserSpec extends UnitTestTrait with EitherValues{
+class GetUsersForGroupsHttpParserSpec extends ViewSpec with EitherValues{
   val testMethod = "GET"
   val testUrl = "/"
 

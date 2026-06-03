@@ -19,7 +19,7 @@ package controllers.individual.tasklist.addbusiness
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI.{apaHandOffControllerUrI, globalCheckYourAnswersURI, spsHandoffURI}
+import helpers.IntegrationTestConstants.IndividualURI.apaHandOffControllerUrI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.*
 import helpers.servicemocks.AuthStub

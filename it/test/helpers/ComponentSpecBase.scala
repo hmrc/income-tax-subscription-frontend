@@ -27,7 +27,6 @@ import forms.individual.business.*
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.*
-import models.common.BusinessAccountingPeriod
 import models.individual.JourneyStep.{Confirmation, PreSignUp}
 import org.jsoup.nodes.Element
 import org.scalatest.*

@@ -25,11 +25,11 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import scala.concurrent.Future
 
-trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockIncomeTaxSubscriptionConnector extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockIncomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector = mock[IncomeTaxSubscriptionConnector]
 

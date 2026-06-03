@@ -28,7 +28,7 @@ class CannotGoBackToPreviousClientViewSpec extends ViewSpec {
 
   private val cannotGoBackToPreviousClient: CannotGoBackToPreviousClient = app.injector.instanceOf[CannotGoBackToPreviousClient]
 
-  val messages = config.MockConfig.mockMessages
+  val messages = config.MockConfig.wrappedMessages
 
   "cannot go back to previous client" must {
     "have the correct template details" when {

@@ -25,13 +25,13 @@ import play.api.data.{Form, FormError}
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import utilities.{UnitTestTrait, ViewSpec}
+import utilities.ViewSpec
 import views.html.agent.matching.ClientDetails
 
 class ClientDetailsViewSpec extends ViewSpec {
 
   val clientDetails: ClientDetails = app.injector.instanceOf[ClientDetails]
-  val action: Call = UnitTestTrait.testCall
+  val action: Call = ViewSpec.testCall
 
   val clientDetailsForm: Form[UserDetailsModel] = ClientDetailsForm.clientDetailsForm
 

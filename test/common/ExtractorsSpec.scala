@@ -19,9 +19,9 @@ package common
 import common.Constants.hmrcAsAgent
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
-class ExtractorsSpec extends UnitTestTrait with MockitoSugar with Extractors {
+class ExtractorsSpec extends ViewSpec with MockitoSugar with Extractors {
 
   "getArnFromEnrolments" when {
     "called with no enrolments present" should {

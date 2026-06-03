@@ -20,13 +20,13 @@ import messagelookup.agent.MessageLookup.{Base as common, NotEnrolledAgentServic
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import views.html.agent.matching.NotEnrolledAgentServices
 
-class NotEnrolledAgentServicesViewSpec extends UnitTestTrait {
+class NotEnrolledAgentServicesViewSpec extends ViewSpec {
 
-  val action: Call = UnitTestTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = UnitTestTrait.viewTestRequest
+  val action: Call = ViewSpec.testCall
+  override val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpec.viewTestRequest
 
   val NotEnrolledAgentServicesView: NotEnrolledAgentServices = app.injector.instanceOf[NotEnrolledAgentServices]
 

@@ -24,11 +24,11 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.INTERNAL_SERVER_ERROR
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 
-trait MockMandationStatusConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockMandationStatusConnector extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockMandationStatusConnector: MandationStatusConnector = mock[MandationStatusConnector]
 

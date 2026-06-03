@@ -20,12 +20,12 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import play.api.data.FormError
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.agent.TestConstants
 
 import java.time.LocalDate
 
-class ClientDetailsFormSpec extends PlaySpec with UnitTestTrait {
+class ClientDetailsFormSpec extends ViewSpec {
 
   import forms.agent.ClientDetailsForm._
 

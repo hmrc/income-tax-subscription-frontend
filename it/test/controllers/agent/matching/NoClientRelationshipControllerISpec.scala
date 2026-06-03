@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse

@@ -16,10 +16,9 @@
 
 package models.usermatching
 
-import utilities.{TestModels, UnitTestTrait}
+import utilities.{TestModels, ViewSpec}
 
-
-class UserMatchRequestModelSpec extends UnitTestTrait {
+class UserMatchRequestModelSpec extends ViewSpec {
 
   "UserMatchRequestModel" should {
 

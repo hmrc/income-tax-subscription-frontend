@@ -116,7 +116,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
         }(FakeRequest(method = "GET", path = "/test-url"))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/gg/sign-in?continue=%2Ftest-url&origin=${MockConfig.appName}")
+        redirectLocation(result) mustBe Some(s"http://localhost:9553/gg/sign-in?continue=%2Ftest-url&origin=${MockConfig.appName}")
       }
     }
   }

@@ -23,12 +23,12 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.KnownFactsService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockKnownFactsService extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockKnownFactsService extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
   val mockKnownFactsService: KnownFactsService = mock[KnownFactsService]
 
   override def beforeEach(): Unit = {

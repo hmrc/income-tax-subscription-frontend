@@ -27,12 +27,12 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockUserLockoutConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockUserLockoutConnector extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
   val mockUserLockoutConnector: UserLockoutConnector = mock[UserLockoutConnector]
 
   private def setupLockoutUser(arn: String)(result: Future[LockoutStatusResponse]): Unit =

@@ -19,9 +19,8 @@ package connectors
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.stubs.SessionDataConnectorStub.{stubDeleteSessionData, stubGetAllSessionData, stubSaveSessionData}
 import helpers.ComponentSpecBase
-import models.SessionData
 import play.api.libs.json.{JsValue, Json, OFormat}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 class SessionDataConnectorISpec extends ComponentSpecBase {

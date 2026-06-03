@@ -25,11 +25,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Call
 import services.{Throttle, ThrottleId}
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import scala.concurrent.Future
 
-trait MockThrottlingConnector extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach {
+trait MockThrottlingConnector extends ViewSpec with MockitoSugar with BeforeAndAfterEach {
 
 
   val mockThrottlingConnector: ThrottlingConnector = mock[ThrottlingConnector]

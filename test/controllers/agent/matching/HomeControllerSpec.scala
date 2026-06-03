@@ -23,7 +23,7 @@ import config.featureswitch.FeatureSwitchingUtil
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
@@ -38,6 +38,8 @@ class HomeControllerSpec extends ControllerSpec
   with MockSubscriptionDetailsService
   with MockIdentifierAction {
 
+  implicit override val request: FakeRequest[AnyContent] = FakeRequest()
+
   val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
@@ -49,7 +51,7 @@ class HomeControllerSpec extends ControllerSpec
 
   private def testHomeController() = new HomeController(
     fakeIdentifierAction
-  )(executionContext, mockMessagesControllerComponents)
+  )(executionContext, wrappedMessagesControllerComponents)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

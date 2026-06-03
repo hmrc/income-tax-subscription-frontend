@@ -18,11 +18,11 @@ package forms.formatters
 
 import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 
 import java.time.LocalDate
 
-class LocalDateMappingSpec extends UnitTestTrait with Matchers with LocalDateMapping {
+class LocalDateMappingSpec extends ViewSpec with Matchers with LocalDateMapping {
 
   val testForm: Form[LocalDate] = Form("field" -> localDate(
     invalidKey = "invalidKey",

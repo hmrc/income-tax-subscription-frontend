@@ -22,9 +22,9 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
+import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.SelectedTaxYear

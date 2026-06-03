@@ -23,7 +23,7 @@ import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, No, Yes, YesNo}
+import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse

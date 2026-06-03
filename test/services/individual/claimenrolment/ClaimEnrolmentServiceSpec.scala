@@ -54,7 +54,8 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
     mockGetAllSessionData()
   }
 
-  implicit val request: Request[AnyContent] = FakeRequest()
+  implicit override val request: Request[AnyContent] = FakeRequest()
+  
   private val fullEnrolments: Enrolments = Enrolments(Set(
     Enrolment(
       Constants.ninoEnrolmentName,

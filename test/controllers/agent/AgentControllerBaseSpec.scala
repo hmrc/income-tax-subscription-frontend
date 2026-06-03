@@ -26,11 +26,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
-import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+import utilities.{ViewSpec, UserMatchingSessionUtil}
 
 import scala.language.implicitConversions
 
-trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
+trait AgentControllerBaseSpec extends ViewSpec with MockAgentAuthService {
 
   implicit val system: ActorSystem = ActorSystem()
 
@@ -47,7 +47,7 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
           "return an AuthorisationException" in {
             Mockito.reset(mockAuthService)
 
-            val exception = new InvalidBearerToken()
+            val exception = InvalidBearerToken()
             mockAuthUnauthorised(exception)
 
             intercept[AuthorisationException](await(result)) mustBe exception

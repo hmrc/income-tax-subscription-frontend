@@ -17,10 +17,10 @@
 package connectors.usermatching
 
 import connectors.usermatching.mocks.TestUserLockoutConnector
-import utilities.UnitTestTrait
+import utilities.ViewSpec
 import utilities.individual.TestConstants.testNino
 
-class UserLockOutConnectorSpec extends UnitTestTrait with TestUserLockoutConnector{
+class UserLockOutConnectorSpec extends ViewSpec with TestUserLockoutConnector{
 
   "UserLockOutConnector" should {
     "have the correct url" in {

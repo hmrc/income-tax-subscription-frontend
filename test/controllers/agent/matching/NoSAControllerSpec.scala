@@ -32,11 +32,11 @@ class NoSAControllerSpec extends ControllerBaseSpec {
   private def withController(testCode: NoSAController => Any): Unit = {
     val mockClientNoSaView: ClientNoSa = app.injector.instanceOf[ClientNoSa]
 
-    implicit lazy val mockMessagesControllerComponents: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+    implicit lazy val wrappedMessagesControllerComponents: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
 
     val controller = new NoSAController(
       mockClientNoSaView,
-      mockMessagesControllerComponents
+      wrappedMessagesControllerComponents
     )
 
     testCode(controller)
