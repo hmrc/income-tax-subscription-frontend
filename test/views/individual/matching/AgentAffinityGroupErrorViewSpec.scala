@@ -16,16 +16,13 @@
 
 package views.individual.matching
 
-import messagelookup.individual.MessageLookup.{AffinityGroup => messages}
-import play.api.mvc.Request
+import messagelookup.individual.MessageLookup.AffinityGroup as messages
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.agent.matching.AgentAffinityGroupError
 
-class AgentAffinityGroupErrorViewSpec extends ViewSpecTrait {
-
-  implicit val request: Request[_] = FakeRequest()
+class AgentAffinityGroupErrorViewSpec extends ViewSpec {
 
   private val agentAffinityGroupErrorView = app.injector.instanceOf[AgentAffinityGroupError]
 

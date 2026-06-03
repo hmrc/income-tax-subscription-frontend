@@ -16,17 +16,15 @@
 
 package views.agent.matching
 
-import messagelookup.agent.MessageLookup.{Base => common, NotEnrolledAgentServices => messages}
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import messagelookup.agent.MessageLookup.{Base as common, NotEnrolledAgentServices as messages}
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import views.ViewSpecTrait
+import utilities.ViewSpec
 import views.html.agent.matching.NotEnrolledAgentServices
 
-class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
+class NotEnrolledAgentServicesViewSpec extends ViewSpec {
 
-  val action: Call = ViewSpecTrait.testCall
-  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
+  val action: Call = ViewSpec.testCall
 
   val NotEnrolledAgentServicesView: NotEnrolledAgentServices = app.injector.instanceOf[NotEnrolledAgentServices]
 
