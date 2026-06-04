@@ -31,7 +31,8 @@
     pageHeadingHelper: PageHeadingHelper,
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
-    form: FormWithCSRF
+    form: FormWithCSRF,
+    govukInsetText: GovukInsetText
 )
 
 @(postAction: Call,
@@ -55,7 +56,9 @@
 
     <p class="govuk-body">@messages("agent.global-check-your-answers.para")</p>
 
-    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.subheading-two")</h2>
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.global-check-your-answers.para-note"))
+    ))
 
     @taxYearSection(completeDetails.taxYear)
 
@@ -67,11 +70,11 @@
     <p class="govuk-body">@messages("agent.global-check-your-answers.para3")</p>
 
     @form(action = postAction) {
-            @saveAndContinueButtonHelper(
-                isIndividual = false,
-                saveAndContinueText = Some(messages("base.confirm-and-send")),
-                saveAndReturnReference = Some("global-check-your-answers")
-            )
+        @saveAndContinueButtonHelper(
+            isIndividual = false,
+            saveAndContinueText = Some(messages("base.confirm-and-send")),
+            saveAndReturnReference = Some("global-check-your-answers")
+        )
     }
 
 }

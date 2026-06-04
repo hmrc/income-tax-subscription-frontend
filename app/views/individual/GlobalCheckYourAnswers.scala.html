@@ -28,18 +28,18 @@
 @import models.common.BusinessAccountingPeriod._
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        govukSummaryList : GovukSummaryList,
-        implicitDateFormatter: ImplicitDateFormatterImpl,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-        form: FormWithCSRF,
-        appConfig: AppConfig
+    mainTemplate: PrincipalMainTemplate,
+    govukSummaryList : GovukSummaryList,
+    implicitDateFormatter: ImplicitDateFormatterImpl,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    form: FormWithCSRF,
+    govukInsetText: GovukInsetText,
+    appConfig: AppConfig
 )
 
 @(
         postAction: Call,
         completeDetails: CompleteDetails,
-        maybeAccountingPeriod: Option[BusinessAccountingPeriod],
         softwareStatus: Option[YesNo],
         isMandatedNextYear: Boolean
 )(implicit request: Request[_], messages: Messages)
@@ -50,9 +50,17 @@
 
     <h1 class="govuk-heading-l">@messages("individual.global-check-your-answers.heading")</h1>
 
+    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
+        <a href="#" data-module="hmrc-print-link" class="govuk-link">
+            @messages("base.print-page")
+        </a>
+    </p>
+
     <p class="govuk-body">@messages("individual.global-check-your-answers.para")</p>
 
-    @accountingPeriod(maybeAccountingPeriod)
+    @govukInsetText(InsetText(
+        content = Text(messages("individual.global-check-your-answers.para-note"))
+    ))
 
     @compatibleSoftwareSection(softwareStatus)
 
@@ -73,12 +81,6 @@
             saveAndReturnReference = Some("global-check-your-answers")
         )
     }
-
-    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-        <a href="#" data-module="hmrc-print-link" class="govuk-link">
-            @messages("individual.global-check-your-answers.print-link")
-        </a>
-    </p>
 
 }
 
@@ -253,20 +255,4 @@
             )
         )
     ))
-}
-
-@accountingPeriod(accountingPeriod: Option[BusinessAccountingPeriod]) = @{
-    accountingPeriod match {
-        case Some(SixthAprilToFifthApril) =>
-            <p class="govuk-body">
-                <span class="govuk-!-font-weight-bold">{messages("individual.global-check-your-answers.accounting.period")}:</span>
-                {messages("accounting-period.sixth-april-to-fifth-april")}
-            </p>
-        case Some(FirstAprilToThirtyFirstMarch) =>
-            <p class="govuk-body">
-                <span class="govuk-!-font-weight-bold">{messages("individual.global-check-your-answers.accounting.period")}:</span>
-                 {messages("accounting-period.first-april-to-thirty-first-march")}
-            </p>
-        case _ => ""
-    }
 }

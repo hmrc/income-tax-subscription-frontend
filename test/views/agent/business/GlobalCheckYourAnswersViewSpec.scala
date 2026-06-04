@@ -72,8 +72,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.para1
     }
 
-    "have a subheading" in {
-      document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.subheading
+    "have a first paragraph note" in {
+      document().mainContent.selectHead(".govuk-inset-text").text mustBe GlobalCheckYourAnswersMessages.note
     }
 
     "have a summary of answers" when {
@@ -157,7 +157,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       "all income sources are present" should {
 
         "display the sole trader income sources heading" in {
-          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
         }
 
         "display the first sole trader business" when {
@@ -264,7 +264,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         }
 
         "display the property income sources heading" in {
-          document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
 
         }
 
@@ -369,7 +369,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second subheading" in {
-      document().mainContent.selectNth("h2", 5).text mustBe GlobalCheckYourAnswersMessages.declarationHeading
+      document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.declarationHeading
     }
 
     "have a second paragraph" in {
@@ -425,8 +425,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     val heading: String = "Check your answers before signing up your client"
     val caption = "FirstName LastName – ZZ 11 11 11 Z"
     val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
+    val note = "Make sure that you have not added limited companies or business partnerships here."
     val printLink = "Print this page"
-    val subheading = "Information you have given to us about your client"
 
     object SelectedTaxYear {
       val key: String = "Selected tax year"
