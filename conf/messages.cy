@@ -1195,7 +1195,7 @@ agent.non-eligible-voluntary.para                                       = Mae’
 agent.non-eligible-voluntary.sign-up                                    = Parhau i gofrestru’r cleient hwn
 
 agent.client-can-sign-up.button-text                                    = Parhau i gofrestru’r cleient hwn
-agent.client-can-sign-up.check-another-h                                = Os nad ydych chi eisiau cofrestru’r cleient hwn naw
+agent.client-can-sign-up.check-another-h                                = Os nad ydych chi eisiau cofrestru’r cleient hwn nawr
 agent.client-can-sign-up.check-another-p                                = Bydd yn rhaid i chi nodi manylion {0} os byddwch chi’n dod yn ôl yn hwyrach.
 agent.client-can-sign-up.check-another                                  = Neu gallwch {0}.
 agent.client-can-sign-up.check-another-link                             = wirio a allwch gofrestru cleient arall
