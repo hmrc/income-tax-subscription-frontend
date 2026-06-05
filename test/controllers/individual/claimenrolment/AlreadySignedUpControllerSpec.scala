@@ -17,8 +17,9 @@
 package controllers.individual.claimenrolment
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.MockIdentifierAction
 import play.api.mvc.{Action, AnyContent, Codec, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.MockAuditingService
 import views.individual.mocks.MockAlreadySignedUp
 
@@ -26,8 +27,8 @@ import scala.concurrent.Future
 
 class AlreadySignedUpControllerSpec extends ControllerBaseSpec
   with MockAuditingService
-  
-  with MockAlreadySignedUp {
+  with MockAlreadySignedUp
+  with MockIdentifierAction {
 
   override val controllerName: String = "ClaimEnrolmentAlreadySignedUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -35,8 +36,7 @@ class AlreadySignedUpControllerSpec extends ControllerBaseSpec
   )
 
   object TestAlreadySignedUpController extends ClaimEnrolmentAlreadySignedUpController(
-    mockAuthService,
-    mockAuditingService,
+    fakeIdentifierAction,
     alreadySignedUp
   )
 
