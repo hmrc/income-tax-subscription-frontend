@@ -17,9 +17,11 @@
 package controllers.individual.claimenrolment
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.MockIdentifierAction
+import models.SessionData
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess}
 import services.mocks.{MockAuditingService, MockClaimEnrolmentService}
 import uk.gov.hmrc.http.InternalServerException
@@ -28,9 +30,9 @@ import utilities.agent.TestConstants
 import scala.concurrent.Future
 
 class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
-
   with MockClaimEnrolmentService
-  with MockAuditingService {
+  with MockAuditingService
+  with MockIdentifierAction {
 
   override val controllerName: String = "ClaimEnrolmentResolverController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,9 +42,8 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
   object TestClaimEnrolmentResolverController extends ClaimEnrolmentResolverController(
     claimEnrolmentService,
     mockAuditingService,
-    mockAuthService
+    fakeIdentifierAction
   )
-
 
   "the claim enrolment service returned a claim enrolment success and an auditing has been sent" should {
     "redirect the user to the SPS preference capture journey" in {
