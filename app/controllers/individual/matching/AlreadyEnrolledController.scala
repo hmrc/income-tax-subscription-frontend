@@ -16,7 +16,7 @@
 
 package controllers.individual.matching
 
-import auth.individual.BaseFrontendController
+import controllers.SignUpBaseController
 import config.AppConfig
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,13 +27,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AlreadyEnrolledController @Inject()(val auditingService: AuditingService,
-                                          val authService: AuthService,
-                                          val identify: IdentifierAction,
+class AlreadyEnrolledController @Inject()(val identify: IdentifierAction,
                                           val alreadyEnrolledView: AlreadyEnrolled)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents) extends BaseFrontendController {
+                                          mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(alreadyEnrolledView(

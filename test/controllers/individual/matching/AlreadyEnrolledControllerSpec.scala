@@ -36,8 +36,6 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
     .thenReturn(HtmlFormat.empty)
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    mockAuditingService,
-    mockAuthService,
     fakeIdentifierAction,
     mockAlreadyEnrolledView
   )
