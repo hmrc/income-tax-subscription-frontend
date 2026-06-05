@@ -538,6 +538,8 @@ sign-up-confirmation.quarterly.updates.standard.2                    = 6 Ebrill 
 sign-up-confirmation.quarterly.updates.standard.3                    = 6 Ebrill i 5 Ionawr
 sign-up-confirmation.quarterly.updates.standard.4                    = 6 Ebrill i 5 Ebrill
 
+sign-up-confirmation.quarterly.updates.table-caption                 = Cyfnodau diweddaru chwarterol
+
 sign-up-confirmation.preference-set.postal.heading                   = Nodynnau i’ch atgoffa am ddyddiadau cau
 sign-up-confirmation.preference-set.postal.para-one                  = I gael nodynnau i’ch atgoffa am ddyddiadau cau, mae angen i chi optio i mewn ar gyfer cyfathrebiadau ar-lein. Gallwch ddiweddaru’ch dewisiadau o ran cyfathrebiadau unrhyw bryd gan newid y gosodiadau yn eich cyfrif treth ar-lein.
 

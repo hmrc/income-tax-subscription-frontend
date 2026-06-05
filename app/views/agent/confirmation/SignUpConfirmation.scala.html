@@ -122,64 +122,66 @@
 
 @QuaterlyUpdatesHtml = {
     @govukTable(Table(
-    rows = Seq(
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
-    )
-    ),
-    Seq(
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
-    ),
-    TableRow(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
-    )
-    )
-    ),
-    head = Some(Seq(
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
-    ),
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
-    ),
-    HeadCell(
-    content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
-    )
-    ))
-    ))
+        rows = Seq(
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
+                )
+            ),
+            Seq(
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
+                ),
+                TableRow(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
+                )
+                )
+            ),
+            head = Some(Seq(
+                HeadCell(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
+                ),
+                HeadCell(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
+                ),
+                HeadCell(
+                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
+                )
+            )),
+            caption = Some(messages("sign-up-confirmation.quarterly.updates.table-caption")),
+            captionClasses = " govuk-visually-hidden"
+        ))
 }
 
 @mtd = {
