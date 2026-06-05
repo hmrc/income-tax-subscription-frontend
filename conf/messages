@@ -547,6 +547,8 @@ sign-up-confirmation.quarterly.updates.standard.2                    = 6 April t
 sign-up-confirmation.quarterly.updates.standard.3                    = 6 April to 5 January
 sign-up-confirmation.quarterly.updates.standard.4                    = 6 April to 5 April
 
+sign-up-confirmation.quarterly.updates.table-caption                 = Quarterly update periods
+
 sign-up-confirmation.preference-set.postal.heading                   = Deadline reminders
 sign-up-confirmation.preference-set.postal.para-one                  = To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings.
 
