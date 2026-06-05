@@ -16,7 +16,7 @@
 
 package controllers.individual.matching
 
-import auth.individual.PostSubmissionController
+import auth.individual.BaseFrontendController
 import config.AppConfig
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ class AlreadyEnrolledController @Inject()(val auditingService: AuditingService,
                                           val alreadyEnrolledView: AlreadyEnrolled)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
-                                          mcc: MessagesControllerComponents) extends PostSubmissionController {
+                                          mcc: MessagesControllerComponents) extends BaseFrontendController {
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(alreadyEnrolledView(
