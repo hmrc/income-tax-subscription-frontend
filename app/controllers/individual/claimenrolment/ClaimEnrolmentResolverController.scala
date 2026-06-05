@@ -16,15 +16,13 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.BaseClaimEnrolmentController
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.*
+import services.AuditingService
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, NotSubscribed}
-import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}

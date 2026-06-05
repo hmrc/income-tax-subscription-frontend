@@ -18,7 +18,6 @@ package controllers.individual.claimenrolment
 
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.MockIdentifierAction
-import models.SessionData
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
