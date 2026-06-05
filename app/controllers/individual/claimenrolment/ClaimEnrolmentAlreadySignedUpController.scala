@@ -16,16 +16,14 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentAlreadySignedUpController @Inject()(identify: IdentifierAction,
