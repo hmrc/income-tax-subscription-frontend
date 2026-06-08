@@ -21,7 +21,7 @@ import models.No.NO
 import models.SessionData
 import models.Yes.YES
 import models.individual.JourneyStep
-import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
+import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -132,6 +132,17 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
       "return not found" in {
         val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
           identifierRequest(journeyStep = Some(SignUp)), { (_: ConfirmationRequest[_]) =>
+            Future.successful(Results.Ok)
+          }
+        )
+
+        status(result) mustBe NOT_FOUND
+      }
+    }
+    "the user is in a ClaimEnrolment state" must {
+      "return not found" in {
+        val result: Future[Result] = confirmationJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = Some(ClaimEnrolment)), { (_: ConfirmationRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
