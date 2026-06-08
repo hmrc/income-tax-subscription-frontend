@@ -31,9 +31,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnrolmentService,
                                                  auditingService: AuditingService,
-                                                 identify: IdentifierAction
-                                                )
-                                                (implicit val ec: ExecutionContext,
+                                                 identify: IdentifierAction)
+                                                (implicit ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
