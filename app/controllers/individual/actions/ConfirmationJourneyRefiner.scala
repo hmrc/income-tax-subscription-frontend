@@ -72,7 +72,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
             sessionData = sessionData
           ))
         }
-      case state@(None | Some(PreSignUp | SignUp)) =>
+      case state@(None | Some(PreSignUp | SignUp | ClaimEnrolment)) =>
         logger.info(s"[Individual][ConfirmationJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, showing a not found page")
         Future.successful(Left(NotFound))
     }

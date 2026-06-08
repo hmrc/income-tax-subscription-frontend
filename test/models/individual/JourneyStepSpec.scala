@@ -29,8 +29,8 @@ class JourneyStepSpec extends PlaySpec {
       }
     }
     s"the key is provided as ${ClaimEnrolment.name}" should {
-      "return a pre sign up journey step" in {
-        JourneyStep.fromString(ClaimEnrolment.name) mustBe JourneyStep.PreSignUp
+      "return a claim enrolment journey step" in {
+        JourneyStep.fromString(ClaimEnrolment.name) mustBe JourneyStep.ClaimEnrolment
       }
     }
     s"the key is provided as ${JourneyStep.PreSignUp}" should {

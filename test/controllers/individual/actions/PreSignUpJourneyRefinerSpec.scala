@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import controllers.individual.resolvers.MockAlreadyEnrolledResolver
 import models.SessionData
 import models.individual.JourneyStep
-import models.individual.JourneyStep.{Confirmation, PreSignUp, SignUp}
+import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -65,10 +65,40 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
         }
       }
     }
+    "the user is in a ClaimEnrolment state" should {
+      "redirect to the resolver page" when {
+        "the user already has an MTDITID on their cred" in {
+          mockAlreadyEnrolledResolver(testNino, SessionData())
+
+          val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
+            identifierRequest(journeyStep = Some(ClaimEnrolment), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
+              Future.successful(Results.Ok)
+            }
+          )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(resolverUrl)
+        }
+      }
+      "execute the provided code" when {
+        "the user does not have an MTDITID" in {
+          val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
+            identifierRequest(journeyStep = Some(ClaimEnrolment), Some(testEntityId), Some(testUtr), None), { (request: PreSignUpRequest[_]) =>
+              request.nino mustBe testNino
+              request.utr mustBe Some(testUtr)
+
+              Future.successful(Results.Ok)
+            }
+          )
+
+          status(result) mustBe OK
+        }
+      }
+    }
     "the user is in a SignUp state" should {
       "continue as normal" in {
         val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { _ =>
+          identifierRequest(journeyStep = Some(SignUp), None, Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
