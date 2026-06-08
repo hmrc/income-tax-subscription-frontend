@@ -64,6 +64,11 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
       case Some(Confirmation) =>
         logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+      case Some(ClaimEnrolment) =>
+        logger.info(s"[Individual][SignUpJourneyRefiner] - User is in a ClaimEnrolment state. Sending the user to the start of the claim enrolment journey")
+        Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
+          origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
+        ))))
       case state@(None | Some(PreSignUp)) =>
         logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to home")
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))

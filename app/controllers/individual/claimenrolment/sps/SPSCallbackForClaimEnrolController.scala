@@ -16,42 +16,38 @@
 
 package controllers.individual.claimenrolment.sps
 
-import auth.individual.BaseClaimEnrolmentController
-import common.Constants.ITSASessionKeys
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SPSService
 import services.individual.claimenrolment.ClaimEnrolmentService
-import services.{AuditingService, AuthService, SPSService}
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SPSCallbackForClaimEnrolController @Inject()(val auditingService: AuditingService,
-                                                   val authService: AuthService,
+class SPSCallbackForClaimEnrolController @Inject()(identify: IdentifierAction,
+                                                   journeyRefiner: ClaimEnrolmentJourneyRefiner,
                                                    spsService: SPSService,
                                                    claimEnrolmentService: ClaimEnrolmentService)
-                                                  (implicit val appConfig: AppConfig,
-                                                   val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                                  (implicit ec: ExecutionContext,
+                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def callback: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      request.queryString.get("entityId").flatMap(_.headOption) match {
-        case Some(entityId) =>
-          claimEnrolmentService.getMtditidFromSubscription flatMap {
-            case Right(mtdItId) =>
-              spsService.confirmPreferences(mtdItId, Some(entityId)) map { _ =>
-                Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()).addingToSession(
-                  ITSASessionKeys.SPSEntityId -> entityId
-                )
-              }
-            case Left(_) => throw new InternalServerException(
-              "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService"
-            )
-          }
-        case None => Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
-      }
+  def callback: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    request.queryString.get("entityId").flatMap(_.headOption) match {
+      case Some(entityId) =>
+        claimEnrolmentService.getMtditidFromSubscription flatMap {
+          case Right(mtdItId) =>
+            spsService.confirmPreferences(mtdItId, Some(entityId)) map { _ =>
+              Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show())
+            }
+          case Left(_) => throw new InternalServerException(
+            "[SPSCallbackForClaimEnrolController][callback] - failed to retrieve mtditid from claimEnrolmentService"
+          )
+        }
+      case None =>
+        Future.successful(Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.show()))
+    }
   }
 }
