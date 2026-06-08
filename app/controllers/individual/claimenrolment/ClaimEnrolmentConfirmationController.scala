@@ -22,7 +22,6 @@ import controllers.individual.actions.IdentifierAction
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.ClaimEnrolmentBTA
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionDataService
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 import javax.inject.{Inject, Singleton}
