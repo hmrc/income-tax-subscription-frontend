@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentAlreadySignedUpController @Inject()(identify: IdentifierAction,
                                                         claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp)
-                                                       (implicit val ec: ExecutionContext,
+                                                       (implicit ec: ExecutionContext,
                                                         appConfig: AppConfig,
                                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
   def show: Action[AnyContent] = identify { implicit request =>
