@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
@@ -27,11 +27,12 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentAlreadySignedUpController @Inject()(identify: IdentifierAction,
+                                                        refine: ClaimEnrolmentJourneyRefiner,
                                                         claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp)
                                                        (implicit ec: ExecutionContext,
                                                         appConfig: AppConfig,
                                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
-  def show: Action[AnyContent] = identify { implicit request =>
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
     Ok(claimEnrolmentAlreadySignedUp())
   }
 }
