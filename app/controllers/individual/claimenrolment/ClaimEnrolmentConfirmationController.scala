@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentConfirmationController @Inject()(identify: IdentifierAction,
                                                      claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
-                                                    (implicit val ec: ExecutionContext,
+                                                    (implicit ec: ExecutionContext,
                                                      appConfig: AppConfig,
                                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
