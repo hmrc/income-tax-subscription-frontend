@@ -35,10 +35,9 @@ class ClaimEnrolmentConfirmationController @Inject()(identify: IdentifierAction,
                                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identify { implicit request =>
-    val origin: ClaimEnrolmentOrigin = request.sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
     Ok(claimEnrolmentConfirmation(
       postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
-      origin = origin
+      origin = request.sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
     ))
   }
 
