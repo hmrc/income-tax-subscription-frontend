@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import controllers.individual.ControllerBaseSpec
-import controllers.individual.actions.mocks.MockIdentifierAction
+import controllers.individual.actions.mocks.{MockClaimEnrolmentJourneyRefiner, MockIdentifierAction}
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
@@ -31,7 +31,8 @@ import scala.concurrent.Future
 class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
   with MockClaimEnrolmentService
   with MockAuditingService
-  with MockIdentifierAction {
+  with MockIdentifierAction
+  with MockClaimEnrolmentJourneyRefiner {
 
   override val controllerName: String = "ClaimEnrolmentResolverController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -41,7 +42,8 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
   object TestClaimEnrolmentResolverController extends ClaimEnrolmentResolverController(
     claimEnrolmentService,
     mockAuditingService,
-    fakeIdentifierAction
+    fakeIdentifierAction,
+    fakeClaimEnrolmentJourneyRefiner
   )
 
   "the claim enrolment service returned a claim enrolment success and an auditing has been sent" should {

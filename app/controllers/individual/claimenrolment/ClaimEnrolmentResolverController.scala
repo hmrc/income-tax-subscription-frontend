@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.*
 import services.AuditingService
@@ -31,11 +31,12 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnrolmentService,
                                                  auditingService: AuditingService,
-                                                 identify: IdentifierAction)
+                                                 identify: IdentifierAction,
+                                                 refine: ClaimEnrolmentJourneyRefiner)
                                                 (implicit ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def resolve: Action[AnyContent] = identify.async { implicit request =>
+  def resolve: Action[AnyContent] = (identify andThen refine).async { implicit request =>
     claimEnrolmentService.claimEnrolment(request.nino) map {
       case Right(claimEnrolSuccess) =>
         auditingService.audit(ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid))
