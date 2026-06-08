@@ -18,7 +18,7 @@ package controllers.individual.claimenrolment
 
 import config.AppConfig
 import controllers.SignUpBaseController
-import controllers.individual.actions.IdentifierAction
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.ClaimEnrolmentBTA
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,19 +29,20 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentConfirmationController @Inject()(identify: IdentifierAction,
+                                                     refine: ClaimEnrolmentJourneyRefiner,
                                                      claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
                                                     (implicit ec: ExecutionContext,
                                                      appConfig: AppConfig,
                                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = identify { implicit request =>
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
     Ok(claimEnrolmentConfirmation(
       postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
       origin = request.sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
     ))
   }
 
-  def submit: Action[AnyContent] = identify { _ =>
+  def submit: Action[AnyContent] = (identify andThen refine) { _ =>
     Redirect(appConfig.getAccountUrl)
   }
 
