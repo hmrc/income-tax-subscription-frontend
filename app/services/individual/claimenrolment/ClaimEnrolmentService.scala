@@ -19,7 +19,6 @@ package services.individual.claimenrolment
 import cats.data.EitherT
 import cats.implicits.*
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
-import models.SessionData
 import models.common.subscription.EnrolmentKey
 import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
@@ -38,17 +37,15 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
                                       enrolmentService: EnrolmentService,
                                       sessionDataService: SessionDataService)(implicit ec: ExecutionContext) {
 
-  def claimEnrolment(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
-    ninoService.getNino(sessionData) flatMap { nino =>
-      val claimEnrolmentResult = for {
-        mtditid <- EitherT(getMtditid(nino))
-        _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
-        _ <- EitherT(addKnownFacts(nino, mtditid))
-        allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
-      } yield allocationResult
+  def claimEnrolment(nino: String)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
+    val claimEnrolmentResult = for {
+      mtditid <- EitherT(getMtditid(nino))
+      _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
+      _ <- EitherT(addKnownFacts(nino, mtditid))
+      allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
+    } yield allocationResult
 
-      claimEnrolmentResult.value
-    }
+    claimEnrolmentResult.value
   }
 
   def getMtditidFromSubscription(implicit hc: HeaderCarrier): Future[Either[ClaimEnrolmentFailure, String]] = {

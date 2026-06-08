@@ -37,7 +37,7 @@ class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnr
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def resolve: Action[AnyContent] = identify.async { implicit request =>
-    claimEnrolmentService.claimEnrolment(request.sessionData) map {
+    claimEnrolmentService.claimEnrolment(request.nino) map {
       case Right(claimEnrolSuccess) =>
         auditingService.audit(ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid))
         Redirect(controllers.individual.claimenrolment.sps.routes.SPSHandoffForClaimEnrolController.redirectToSPS)

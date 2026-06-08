@@ -18,7 +18,6 @@ package services.individual.claimenrolment
 
 import auth.individual.IncomeTaxSAUser
 import common.Constants
-import models.SessionData
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
@@ -29,8 +28,8 @@ import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated
 import services.individual.claimenrolment.ClaimEnrolmentService.*
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
 
 import scala.concurrent.Future
@@ -55,7 +54,7 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
     mockGetAllSessionData()
     
     def claimEnrolment: Future[ClaimEnrolmentResponse] =
-      super.claimEnrolment(SessionData())
+      super.claimEnrolment(testNino)
   }
 
   implicit val request: Request[AnyContent] = FakeRequest()
