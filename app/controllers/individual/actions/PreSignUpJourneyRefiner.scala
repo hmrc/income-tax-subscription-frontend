@@ -45,7 +45,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
           key = journeyStep
         )
       } match {
-      case Some(PreSignUp) =>
+      case Some(PreSignUp | ClaimEnrolment) =>
         request.mtditid match {
           case Some(mtditid) =>
             logger.info("[Individual][PreSignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")

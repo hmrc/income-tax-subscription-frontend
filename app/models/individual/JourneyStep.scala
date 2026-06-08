@@ -26,6 +26,10 @@ sealed trait JourneyStep {
 
 object JourneyStep extends Logging {
 
+  case object ClaimEnrolment extends JourneyStep {
+    val key: String = "ClaimEnrolment"
+  }
+
   case object PreSignUp extends JourneyStep {
     val key: String = "PreSignUp"
   }
@@ -42,9 +46,10 @@ object JourneyStep extends Logging {
     key match {
       // if the user is in the old state, pretend it's the new sign up state
       case OldSignUp.name => SignUp
-      case OldClaimEnrolment.name => PreSignUp
+      case OldClaimEnrolment.name => ClaimEnrolment
       case PreSignUp.key => PreSignUp
       case SignUp.key => SignUp
+      case ClaimEnrolment.key => ClaimEnrolment
       case Confirmation.key => Confirmation
       case _ => throw new InternalServerException(s"[Individual][JourneyStep] - Unsupported journey key - $key")
     }
