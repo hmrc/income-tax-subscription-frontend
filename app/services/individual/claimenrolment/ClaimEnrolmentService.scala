@@ -17,12 +17,13 @@
 package services.individual.claimenrolment
 
 import cats.data.EitherT
-import cats.implicits._
+import cats.implicits.*
 import common.Constants.{mtdItsaEnrolmentIdentifierKey, mtdItsaEnrolmentName}
+import models.SessionData
 import models.common.subscription.EnrolmentKey
 import services.agent.CheckEnrolmentAllocationService
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
-import services.individual.claimenrolment.ClaimEnrolmentService._
+import services.individual.claimenrolment.ClaimEnrolmentService.*
 import services.individual.{EnrolmentService, KnownFactsService}
 import services.{NinoService, SessionDataService, SubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,18 +38,16 @@ class ClaimEnrolmentService @Inject()(subscriptionService: SubscriptionService,
                                       enrolmentService: EnrolmentService,
                                       sessionDataService: SessionDataService)(implicit ec: ExecutionContext) {
 
-  def claimEnrolment(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      ninoService.getNino(sessionData) flatMap { nino =>
-        val claimEnrolmentResult = for {
-          mtditid <- EitherT(getMtditid(nino))
-          _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
-          _ <- EitherT(addKnownFacts(nino, mtditid))
-          allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
-        } yield allocationResult
+  def claimEnrolment(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[ClaimEnrolmentResponse] = {
+    ninoService.getNino(sessionData) flatMap { nino =>
+      val claimEnrolmentResult = for {
+        mtditid <- EitherT(getMtditid(nino))
+        _ <- EitherT(getEnrolmentAllocation(nino, mtditid))
+        _ <- EitherT(addKnownFacts(nino, mtditid))
+        allocationResult <- EitherT(allocateEnrolment(nino, mtditid))
+      } yield allocationResult
 
-        claimEnrolmentResult.value
-      }
+      claimEnrolmentResult.value
     }
   }
 

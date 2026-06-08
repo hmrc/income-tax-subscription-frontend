@@ -18,6 +18,7 @@ package services.individual.claimenrolment
 
 import auth.individual.IncomeTaxSAUser
 import common.Constants
+import models.SessionData
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
@@ -25,7 +26,7 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
-import services.individual.claimenrolment.ClaimEnrolmentService._
+import services.individual.claimenrolment.ClaimEnrolmentService.*
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -52,6 +53,9 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
     mockSessionDataService
   ) {
     mockGetAllSessionData()
+    
+    def claimEnrolment: Future[ClaimEnrolmentResponse] =
+      super.claimEnrolment(SessionData())
   }
 
   implicit val request: Request[AnyContent] = FakeRequest()
