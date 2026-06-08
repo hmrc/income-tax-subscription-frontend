@@ -30,20 +30,17 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentConfirmationController @Inject()(identify: IdentifierAction,
-                                                     sessionDataService: SessionDataService,
                                                      claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
                                                     (implicit val ec: ExecutionContext,
-                                                     val appConfig: AppConfig,
+                                                     appConfig: AppConfig,
                                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = identify.async { implicit request =>
-    sessionDataService.getAllSessionData().map { sessionData =>
-      val origin: ClaimEnrolmentOrigin = sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
-      Ok(claimEnrolmentConfirmation(
-        postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
-        origin = origin
-      ))
-    }
+  def show: Action[AnyContent] = identify { implicit request =>
+    val origin: ClaimEnrolmentOrigin = request.sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
+    Ok(claimEnrolmentConfirmation(
+      postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
+      origin = origin
+    ))
   }
 
   def submit: Action[AnyContent] = identify { _ =>
