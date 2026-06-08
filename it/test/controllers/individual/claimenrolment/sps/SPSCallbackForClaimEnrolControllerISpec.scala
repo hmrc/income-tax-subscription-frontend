@@ -17,17 +17,16 @@
 package controllers.individual.claimenrolment.sps
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn, testNino}
 import helpers.WiremockHelper.verifyPost
-import helpers.servicemocks.{AuthStub, SubscriptionStub}
-import play.api.http.Status._
+import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, SubscriptionStub}
+import models.individual.JourneyStep.{ClaimEnrolment, SignUp}
+import play.api.http.Status.*
 import play.api.libs.json.JsString
 
 class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
-
 
   s"GET ${controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback.url}" when {
 
@@ -39,7 +38,25 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/claim-enrolment/sps-callback"))
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user is not in the claim enrolment journey state" should {
+      "redirect the user out of the claim enrolment journey" in {
+        AuthStub.stubAuthSuccess()
+
+        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
+          hasEntityId = true,
+          sessionKeys = Map(
+            ITSASessionKeys.JourneyStateKey -> SignUp.key
+          )
+        )
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
         )
       }
     }
@@ -52,14 +69,17 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino)
           ))
+          ChannelPreferencesStub.stubChannelPreferenceConfirm()
 
           val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
             hasEntityId = true,
             sessionKeys = Map(
-              ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+              ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
             )
           )
+
           verifyPost("/channel-preferences/confirm", count = Some(1))
+
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(IndividualURI.claimEnrolmentConfirmationURI)
@@ -78,7 +98,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
             hasEntityId = true,
             sessionKeys = Map(
-              ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+              ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
             )
           )
 
@@ -94,7 +114,7 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = false,
           sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
           )
         )
         res must have(

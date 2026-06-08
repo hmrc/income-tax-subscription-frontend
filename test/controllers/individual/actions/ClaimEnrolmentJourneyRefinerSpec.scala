@@ -17,31 +17,29 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
-import models.Status.InProgress
+import models.SessionData
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
-import models.requests.individual.{IdentifierRequest, SignUpRequest}
-import models.{SessionData, SubmissionStatus}
+import models.requests.individual.{ClaimEnrolmentRequest, IdentifierRequest}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.Json
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockReferenceRetrieval, MockSessionDataService}
+import services.mocks.MockSessionDataService
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with MockSessionDataService {
+class ClaimEnrolmentJourneyRefinerSpec extends PlaySpec with MockSessionDataService {
 
-  "SignUpJourneyRefiner" when {
-    "the user is in a SignUp state" should {
+  "ClaimEnrolmentJourneyRefiner" when {
+    "the user is in a ClaimEnrolment state" should {
       "execute the provided code" when {
         "the user does not have an MTDITID" in {
-          val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-            identifierRequest(journeyStep = Some(SignUp)), { (_: SignUpRequest[_]) =>
+          val result: Future[Result] = claimEnrolmentJourneyRefiner.invokeBlock(
+            identifierRequest(journeyStep = Some(ClaimEnrolment)), { (_: ClaimEnrolmentRequest[_]) =>
               Future.successful(Results.Ok)
             }
           )
@@ -49,27 +47,12 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
           status(result) mustBe OK
         }
       }
-      "redirect to the loading spinner page" when {
-        "there is an ongoing submission" in {
-          val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-            request = identifierRequest(journeyStep = Some(SignUp), sessionData = SessionData(Map(
-              ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(InProgress))
-            ))),
-            block = { (_: SignUpRequest[_]) =>
-              Future.successful(Results.Ok)
-            }
-          )
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.routes.LoadingSpinnerController.show.url)
-        }
-      }
     }
 
     "the user is in a Confirmation state" should {
       "redirect to the confirmation page" in {
-        val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(Confirmation)), { (_: SignUpRequest[_]) =>
+        val result: Future[Result] = claimEnrolmentJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = Some(Confirmation)), { (_: ClaimEnrolmentRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -79,23 +62,23 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
       }
     }
 
-    "the user is in a ClaimEnrolment state" should {
+    "the user is in a SignUp state" should {
       "redirect to the start of the claim enrolment journey" in {
-        val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(ClaimEnrolment)), { (_: SignUpRequest[_]) =>
+        val result: Future[Result] = claimEnrolmentJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = Some(SignUp)), { (_: ClaimEnrolmentRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show().url)
+        redirectLocation(result) mustBe Some(controllers.individual.matching.routes.HomeController.index.url)
       }
     }
 
     "the user is in a PreSignUp state" should {
       "redirect to the home controller" in {
-        val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = Some(PreSignUp)), { (_: SignUpRequest[_]) =>
+        val result: Future[Result] = claimEnrolmentJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = Some(PreSignUp)), { (_: ClaimEnrolmentRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -107,8 +90,8 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
 
     "the user does not have a journey state" should {
       "redirect to the home controller" in {
-        val result: Future[Result] = signUpJourneyRefiner.invokeBlock(
-          identifierRequest(journeyStep = None), { (_: SignUpRequest[_]) =>
+        val result: Future[Result] = claimEnrolmentJourneyRefiner.invokeBlock(
+          identifierRequest(journeyStep = None), { (_: ClaimEnrolmentRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )
@@ -119,7 +102,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     }
   }
 
-  lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval)
+  lazy val claimEnrolmentJourneyRefiner: ClaimEnrolmentJourneyRefiner = new ClaimEnrolmentJourneyRefiner
 
   def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
     maybeJourneyStep match {
@@ -129,16 +112,15 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
   }
 
   lazy val nino: String = "AA000000A"
-  lazy val utr: String = "1234567890"
 
-  def identifierRequest(journeyStep: Option[JourneyStep] = None, mtditid: Option[String] = None, sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
+  def identifierRequest(journeyStep: Option[JourneyStep] = None): IdentifierRequest[_] = {
     IdentifierRequest(
       request = requestWithSession(journeyStep),
-      mtditid = mtditid,
-      nino = nino,
+      mtditid = None,
       utr = None,
+      nino = nino,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = sessionData
+      sessionData = SessionData()
     )
   }
 }
