@@ -18,7 +18,9 @@ package controllers.individual.claimenrolment.sps
 
 import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import play.api.mvc._
+import controllers.SignUpBaseController
+import play.api.mvc.*
+import controllers.individual.actions.IdentifierAction
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
@@ -33,10 +35,10 @@ class SPSHandoffForClaimEnrolController @Inject()(
                                                    val crypto: ApplicationCrypto)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
-  def redirectToSPS: Action[AnyContent] = {
+  def redirectToSPS: Action[AnyContent] = identify.async { implicit request =>
     Authenticated {
       _ =>
         _ =>
