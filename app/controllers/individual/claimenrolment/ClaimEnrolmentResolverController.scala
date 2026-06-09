@@ -16,13 +16,13 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.BaseClaimEnrolmentController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
-import play.api.mvc._
+import play.api.mvc.*
+import services.AuditingService
 import services.individual.claimenrolment.ClaimEnrolmentService
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, NotSubscribed}
-import services.{AuditingService, AuthService}
 import uk.gov.hmrc.http.InternalServerException
 
 import javax.inject.{Inject, Singleton}
@@ -30,23 +30,20 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentResolverController @Inject()(claimEnrolmentService: ClaimEnrolmentService,
-                                                 val auditingService: AuditingService,
-                                                 val authService: AuthService
-                                                )
-                                                (implicit val ec: ExecutionContext,
-                                                 val appConfig: AppConfig,
-                                                 mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                                 auditingService: AuditingService,
+                                                 identify: IdentifierAction,
+                                                 refine: ClaimEnrolmentJourneyRefiner)
+                                                (implicit ec: ExecutionContext,
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def resolve: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      claimEnrolmentService.claimEnrolment map {
-        case Right(claimEnrolSuccess) =>
-          auditingService.audit(ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid))
-          Redirect(controllers.individual.claimenrolment.sps.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
-        case Left(NotSubscribed) => throw new InternalServerException("[ClaimEnrollmentResolverController] User was not subscribed")
-        case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
-        case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
-      }
+  def resolve: Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    claimEnrolmentService.claimEnrolment(request.nino) map {
+      case Right(claimEnrolSuccess) =>
+        auditingService.audit(ClaimEnrolAddToIndivCredAuditingModel(nino = claimEnrolSuccess.nino, mtditid = claimEnrolSuccess.mtditid))
+        Redirect(controllers.individual.claimenrolment.sps.routes.SPSHandoffForClaimEnrolController.redirectToSPS)
+      case Left(NotSubscribed) => throw new InternalServerException("[ClaimEnrollmentResolverController] User was not subscribed")
+      case Left(AlreadySignedUp) => Redirect(routes.ClaimEnrolmentAlreadySignedUpController.show)
+      case Left(ClaimEnrolmentError(msg)) => throw new InternalServerException(msg)
+    }
   }
-
 }
