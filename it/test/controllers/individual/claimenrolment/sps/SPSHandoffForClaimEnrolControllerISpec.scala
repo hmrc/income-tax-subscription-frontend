@@ -40,7 +40,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI(paperlessRedirect())
+          redirectURI(basGatewaySignIn())
         )
       }
     }

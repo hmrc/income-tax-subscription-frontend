@@ -18,16 +18,18 @@ package controllers.individual.claimenrolment.sps
 
 import config.AppConfig
 import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SPSHandoffForClaimEnrolController @Inject()(
+class SPSHandoffForClaimEnrolController @Inject()(identify: IdentifierAction,
+                                                  journeyRefiner: ClaimEnrolmentJourneyRefiner,
                                                    val auditingService: AuditingService,
                                                    val authService: AuthService,
                                                    val crypto: ApplicationCrypto)
@@ -36,12 +38,14 @@ class SPSHandoffForClaimEnrolController @Inject()(
                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
-  def redirectToSPS: Action[AnyContent] = Action {
+  def redirectToSPS: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit result =>
+    Future.successful(
     goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
             returnLinkText = "I have verified",
             regime = "itsa",
             serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
           )
+    )
   }
 
   private def encryptAndEncodeString(s: String): String = {
