@@ -16,27 +16,23 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ClaimEnrolmentAlreadySignedUpController @Inject()(val authService: AuthService,
-                                                        val auditingService: AuditingService,
+class ClaimEnrolmentAlreadySignedUpController @Inject()(identify: IdentifierAction,
+                                                        refine: ClaimEnrolmentJourneyRefiner,
                                                         claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp)
-                                                       (implicit val ec: ExecutionContext,
-                                                        val appConfig: AppConfig,
-                                                        mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController  {
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-        Future.successful(
-          Ok(claimEnrolmentAlreadySignedUp())
-        )
+                                                       (implicit ec: ExecutionContext,
+                                                        appConfig: AppConfig,
+                                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    Ok(claimEnrolmentAlreadySignedUp())
   }
 }
-

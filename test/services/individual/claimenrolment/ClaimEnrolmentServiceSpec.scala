@@ -25,11 +25,11 @@ import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated, EnrolmentNotAllocated, EnrolmentStoreProxyInvalidJsonResponse, UnexpectedEnrolmentStoreProxyFailure}
-import services.individual.claimenrolment.ClaimEnrolmentService._
+import services.individual.claimenrolment.ClaimEnrolmentService.*
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
 
 import scala.concurrent.Future
@@ -52,6 +52,9 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
     mockSessionDataService
   ) {
     mockGetAllSessionData()
+    
+    def claimEnrolment: Future[ClaimEnrolmentResponse] =
+      super.claimEnrolment(testNino)
   }
 
   implicit val request: Request[AnyContent] = FakeRequest()

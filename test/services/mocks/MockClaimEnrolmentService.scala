@@ -36,7 +36,7 @@ trait MockClaimEnrolmentService extends MockitoSugar with BeforeAndAfterEach {
   val claimEnrolmentService: ClaimEnrolmentService = mock[ClaimEnrolmentService]
 
   def mockClaimEnrolment(response: ClaimEnrolmentResponse): Unit = {
-    when(claimEnrolmentService.claimEnrolment(any())) thenReturn Future.successful(response)
+    when(claimEnrolmentService.claimEnrolment(any())(any())) thenReturn Future.successful(response)
   }
 
   def mockGetMtditidFromSubscription(response: Either[ClaimEnrolmentFailure, String]): Unit = {
