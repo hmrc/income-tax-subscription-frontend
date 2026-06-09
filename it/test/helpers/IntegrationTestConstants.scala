@@ -180,6 +180,12 @@ object IntegrationTestConstants {
     s"http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 
+  def paperlessRedirect(continueTo: String = ""): String = {
+    val updatedContinue: String = continueTo.replace("/", "%2F")
+    s"http://localhost:11111/paperless/choose/capture?returnUrl=DO8MisXKpizAWqbqizwb%2FJa9%2BNCLHHqgAm55zTvph%2FNMwk%2F2vsApxzF%2FJsaw9jIyrHFfSwQrP%2BqQcQU90FfT%2BFw14Es%2Fzqc6h9U3UpZg18WfhJXb4iUz3Y5ttgFaoTjs&returnLinkText=lYCIdN%2BV3wGYJ1SSm%2BPhNA%3D%3D&regime=KucfrgeglpOjHad59vo1xg%3D%3D&serviceUrl=42aO70DPMFVgpFdKEsKkRSEXIZFOqu6HvasXX7XME4UPeXjGnVjtd3RlgW5d%2FuOmJaQzr5LM0OrIPOeOwgWuLdo39A%2FctEn5c3uwO6aUo3DaEG4U54Wj24mXuEsKLR2H"
+  }
+
+
   val wrongAffinityURI = s"${IndividualURI.baseURI}/error/affinity-group"
   val ivURI = s"${IndividualURI.baseURI}/iv"
   val userLockedOutURI = s"${IndividualURI.baseURI}/error/lockout"

@@ -16,11 +16,9 @@
 
 package controllers.individual.claimenrolment.sps
 
-import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
 import controllers.SignUpBaseController
 import play.api.mvc.*
-import controllers.individual.actions.IdentifierAction
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
@@ -38,16 +36,12 @@ class SPSHandoffForClaimEnrolController @Inject()(
                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
-  def redirectToSPS: Action[AnyContent] = identify.async { implicit request =>
-    Authenticated {
-      _ =>
-        _ =>
-          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
+  def redirectToSPS: Action[AnyContent] = Action {
+    goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
             returnLinkText = "I have verified",
             regime = "itsa",
             serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
           )
-    }
   }
 
   private def encryptAndEncodeString(s: String): String = {

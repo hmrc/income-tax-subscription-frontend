@@ -55,7 +55,4 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
       }
     }
   }
-
-  authorisationTests()
-
 }
