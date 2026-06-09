@@ -16,40 +16,34 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.ClaimEnrolmentBTA
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SessionDataService}
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ClaimEnrolmentConfirmationController @Inject()(val authService: AuthService,
-                                                     val auditingService: AuditingService,
-                                                     sessionDataService: SessionDataService,
+class ClaimEnrolmentConfirmationController @Inject()(identify: IdentifierAction,
+                                                     refine: ClaimEnrolmentJourneyRefiner,
                                                      claimEnrolmentConfirmation: ClaimEnrolmentConfirmation)
-                                                    (implicit val ec: ExecutionContext,
-                                                     val appConfig: AppConfig,
-                                                     mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                                    (implicit ec: ExecutionContext,
+                                                     appConfig: AppConfig,
+                                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().map { sessionData =>
-        val origin: ClaimEnrolmentOrigin = sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
-        Ok(claimEnrolmentConfirmation(
-          postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
-          origin = origin
-        ))
-      }
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    Ok(claimEnrolmentConfirmation(
+      postAction = controllers.individual.claimenrolment.routes.ClaimEnrolmentConfirmationController.submit(),
+      origin = request.sessionData.fetchClaimEnrolmentOrigin.getOrElse(ClaimEnrolmentBTA)
+    ))
   }
 
-  def submit: Action[AnyContent] = Authenticated { _ =>
-    _ =>
-      Redirect(appConfig.getAccountUrl)
+  def submit: Action[AnyContent] = (identify andThen refine) { _ =>
+    Redirect(appConfig.getAccountUrl)
   }
 
 }
