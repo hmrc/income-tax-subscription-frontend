@@ -17,7 +17,7 @@
 package config.featureswitch
 
 import config.FrontendAppConfig
-import config.featureswitch.FeatureSwitch.{TaxYear27To28Plus, ThrottlingFeature, CompositeEnrolmentKey, DistributedKnownFactsPattern}
+import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern, TaxYear27To28Plus, ThrottlingFeature}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
