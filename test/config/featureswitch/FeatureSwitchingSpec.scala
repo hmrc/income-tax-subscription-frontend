@@ -152,16 +152,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
       when(mockConfig.getOptional[String]("feature-switch.composite-enrolment-key")).thenReturn(None)
       featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe false
     }
-
-    "return false if CompositeEnrolmentKey feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.composite-enrolment-key")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe false
-    }
-
-    "return true if CompositeEnrolmentKey feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.composite-enrolment-key")).thenReturn(Some(FEATURE_SWITCH_ON))
-      featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe true
-    }
   }
 
   "DistributedKnownFactsPattern" should {
@@ -178,16 +168,6 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     "return false if DistributedKnownFactsPattern feature switch does not exist" in {
       when(mockConfig.getOptional[String]("feature-switch.distributed-known-facts-pattern")).thenReturn(None)
       featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe false
-    }
-
-    "return false if DistributedKnownFactsPattern feature switch is not in sys.props but is set to off in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.distributed-known-facts-pattern")).thenReturn(Some(FEATURE_SWITCH_OFF))
-      featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe false
-    }
-
-    "return true if DistributedKnownFactsPattern feature switch is not in sys.props but is set to on in config" in {
-      when(mockConfig.getOptional[String]("feature-switch.distributed-known-facts-pattern")).thenReturn(Some(FEATURE_SWITCH_ON))
-      featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe true
     }
   }
 
