@@ -16,36 +16,34 @@
 
 package controllers.individual.claimenrolment.sps
 
-import auth.individual.BaseClaimEnrolmentController
 import config.AppConfig
-import play.api.mvc._
+import controllers.SignUpBaseController
+import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
+import play.api.mvc.*
 import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SPSHandoffForClaimEnrolController @Inject()(
-                                                   val auditingService: AuditingService,
-                                                   val authService: AuthService,
-                                                   val crypto: ApplicationCrypto)
+class SPSHandoffForClaimEnrolController @Inject()(identify: IdentifierAction,
+                                                  journeyRefiner: ClaimEnrolmentJourneyRefiner,
+                                                  crypto: ApplicationCrypto)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
-                                                  mcc: MessagesControllerComponents) extends BaseClaimEnrolmentController {
+                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
-  def redirectToSPS: Action[AnyContent] = {
-    Authenticated {
-      _ =>
-        _ =>
-          goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
+  def redirectToSPS: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit result =>
+    Future.successful(
+    goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.claimenrolment.sps.routes.SPSCallbackForClaimEnrolController.callback,
             returnLinkText = "I have verified",
             regime = "itsa",
             serviceUrl = appConfig.govukGuidanceITSASignUpIndivLink
           )
-    }
+    )
   }
 
   private def encryptAndEncodeString(s: String): String = {

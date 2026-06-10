@@ -180,6 +180,7 @@ object IntegrationTestConstants {
     s"http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 
+
   val wrongAffinityURI = s"${IndividualURI.baseURI}/error/affinity-group"
   val ivURI = s"${IndividualURI.baseURI}/iv"
   val userLockedOutURI = s"${IndividualURI.baseURI}/error/lockout"

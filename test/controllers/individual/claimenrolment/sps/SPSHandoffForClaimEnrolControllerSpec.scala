@@ -17,23 +17,24 @@
 package controllers.individual.claimenrolment.sps
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockClaimEnrolmentJourneyRefiner, MockIdentifierAction}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import services.individual.mocks.MockApplicationCrypto
+import play.api.test.Helpers.*
+import services.individual.mocks.{MockApplicationCrypto, MockAuthService}
 import services.mocks.MockAuditingService
 
 import scala.concurrent.Future
 
 class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
-  with MockAuditingService
-
+  with MockIdentifierAction
+  with MockClaimEnrolmentJourneyRefiner
   with MockApplicationCrypto {
 
   object TestSPSHandoffForClaimEnrolController extends SPSHandoffForClaimEnrolController(
-    mockAuditingService,
-    mockAuthService,
+    fakeIdentifierAction,
+    fakeClaimEnrolmentJourneyRefiner,
     mockApplicationCrypto
   )(executionContext, appConfig, mockMessagesControllerComponents)
 
@@ -55,7 +56,4 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
       }
     }
   }
-
-  authorisationTests()
-
 }
