@@ -60,4 +60,14 @@ object FeatureSwitch {
     override val displayText: String = "Setup agent V&C session data"
   }
 
+  case object CompositeEnrolmentKey extends FeatureSwitch {
+    override val name: String = s"$prefix.composite-enrolment-key"
+    override val displayText: String = "CompositeEnrolmentKey"
+  }
+
+  case object DistributedKnownFactsPattern extends FeatureSwitch {
+    override val name: String = s"$prefix.distributed-known-facts-pattern"
+    override val displayText: String = "DistributedKnownFactsPattern"
+  }
+
 }
