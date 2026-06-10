@@ -26,7 +26,7 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
   "BusinessAddressModel" should {
     val lines = Seq("line1", "line2", "line3")
 
-    "work with a postcode and country. no urpn" should {
+    "work with a postcode and country. no uprn" should {
 
       val businessAddressModel = BusinessAddressModel(Address(
         lines = lines,
@@ -53,13 +53,13 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
         Json.toJson(businessAddressModel) mustBe json
       }
     }
-    "work with a postcode and country. with urpn" should {
+    "work with a postcode and country. with uprn" should {
 
       val businessAddressModel = BusinessAddressModel(Address(
         lines = lines,
         postcode = Some("TF3 4NT"),
         country = Some(Country("GB", "United Kingdom")),
-        urpn = Some("1234")
+        uprn = Some("1234")
       ))
 
       val json = Json.obj(
@@ -70,7 +70,7 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
             "code" -> "GB",
             "name" -> "United Kingdom"
           ),
-          "urpn" -> "1234"
+          "uprn" -> "1234"
         )
       )
 
