@@ -26,7 +26,7 @@ object BusinessAddressModel {
   implicit val format: OFormat[BusinessAddressModel] = Json.format[BusinessAddressModel]
 }
 
-case class Address(lines: Seq[String], postcode: Option[String], country: Option[Country]) {
+case class Address(lines: Seq[String], postcode: Option[String], country: Option[Country], urpn: Option[String] = None) {
   override def toString: String = (lines ++ postcode ++ country.map(_.name)).mkString("<br>")
 }
 
@@ -41,22 +41,25 @@ object Address {
     val reads: Reads[Address] = (
       (__ \ "lines").read[Seq[SensitiveString]] and
         (__ \ "postcode").readNullable[SensitiveString] and
-        (__ \ "country").readNullable[Country]
+        (__ \ "country").readNullable[Country] and
+        (__ \ "urpn").readNullable[SensitiveString]
       )(
-      (lines, postcode, country) =>
-        Address.apply(lines.map(_.decryptedValue), postcode.map(_.decryptedValue), country)
+      (lines, postcode, country, urpn) =>
+        Address.apply(lines.map(_.decryptedValue), postcode.map(_.decryptedValue), country, urpn.map(_.decryptedValue))
     )
 
     val writes: OWrites[Address] = (
       (__ \ "lines").write[Seq[SensitiveString]] and
         (__ \ "postcode").writeNullable[SensitiveString] and
-        (__ \ "country").writeNullable[Country]
+        (__ \ "country").writeNullable[Country] and
+        (__ \ "urpn").writeNullable[SensitiveString]
       )(
       address =>
         (
           address.lines.map(SensitiveString.apply),
           address.postcode.map(SensitiveString.apply),
-          address.country
+          address.country,
+          address.urpn.map(SensitiveString.apply)
         )
     )
 
