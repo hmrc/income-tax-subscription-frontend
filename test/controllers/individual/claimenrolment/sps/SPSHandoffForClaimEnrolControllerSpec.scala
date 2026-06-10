@@ -28,7 +28,6 @@ import services.mocks.MockAuditingService
 import scala.concurrent.Future
 
 class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
-  with MockAuditingService
   with MockIdentifierAction
   with MockClaimEnrolmentJourneyRefiner
   with MockApplicationCrypto {
@@ -36,8 +35,6 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
   object TestSPSHandoffForClaimEnrolController extends SPSHandoffForClaimEnrolController(
     fakeIdentifierAction,
     fakeClaimEnrolmentJourneyRefiner,
-    mockAuditingService,
-    mockAuthService,
     mockApplicationCrypto
   )(executionContext, appConfig, mockMessagesControllerComponents)
 

@@ -30,9 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SPSHandoffForClaimEnrolController @Inject()(identify: IdentifierAction,
                                                   journeyRefiner: ClaimEnrolmentJourneyRefiner,
-                                                   val auditingService: AuditingService,
-                                                   val authService: AuthService,
-                                                   val crypto: ApplicationCrypto)
+                                                  crypto: ApplicationCrypto)
                                                  (implicit val ec: ExecutionContext,
                                                   val appConfig: AppConfig,
                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
