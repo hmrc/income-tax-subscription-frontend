@@ -58,7 +58,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "sign up and creation of income sources was successful" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
+        mockUpsertAndAllocateEnrolment(mtditid, nino, utr)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
         mockConfirmPreference(entityId, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
@@ -67,13 +67,13 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid)
       }
       "there was a problem upserting and allocating the enrolment" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Left(UpsertAndAllocateEnrolmentService.AllocateEnrolmentFailure))
+        mockUpsertAndAllocateEnrolment(mtditid, nino, utr)(Left(UpsertAndAllocateEnrolmentService.AllocateEnrolmentFailure))
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
 
@@ -81,7 +81,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
     }
@@ -95,7 +95,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
     }
@@ -109,7 +109,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
       s"signing up returned an unprocessable sign up response with a code of $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
@@ -121,7 +121,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
       s"signing up returned an unprocessable sign up response with a code of $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
@@ -133,7 +133,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
     }
@@ -147,7 +147,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
       "an unexpected status error is returned from the sign up" in {
@@ -159,7 +159,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel, count = 0)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino, count = 0)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr, count = 0)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid, count = 0)
       }
     }
@@ -167,7 +167,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
       "an error was returned from the create income sources connector" in {
         mockSignUp(nino, utr, taxYear)(Right(SignUpSuccessful(mtditid)))
         mockCreateIncomeSources(mtditid, createIncomeSourcesModel)(Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(INTERNAL_SERVER_ERROR)))
-        mockUpsertAndAllocateEnrolment(mtditid, nino)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
+        mockUpsertAndAllocateEnrolment(mtditid, nino, utr)(Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess))
         mockConfirmPreference(entityId, mtditid)
 
         val result = TestSignUpOrchestrationService.orchestrateSignUp(nino, utr, taxYear, createIncomeSourcesModel, Some(entityId))
@@ -176,7 +176,7 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
 
         verifySignUp(nino, utr, taxYear)
         verifyCreateIncomeSources(mtditid, createIncomeSourcesModel)
-        verifyUpsertAndAllocateEnrolment(mtditid, nino)
+        verifyUpsertAndAllocateEnrolment(mtditid, nino, utr)
         verifyConfirmPreferencesPostSpsConfirm(entityId, mtditid)
       }
     }

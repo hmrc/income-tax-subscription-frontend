@@ -51,8 +51,8 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
       groupId <- getEnrolmentAllocation(utr = utr, nino = nino)
       enrolmentUserIDs <- getEnrolmentUserIDs(utr = utr, nino = nino)
       adminUserId <- getAdminUserId(groupId = groupId, enrolmentUserIDs = enrolmentUserIDs, nino = nino)
-      _ <- allocateEnrolmentWithoutKnownFacts(mtditid = mtditid, groupId = groupId, credentialId = adminUserId, nino = nino)
-      _ <- assignEnrolmentToUser(enrolmentUserIDs filterNot (_ == adminUserId), mtditid = mtditid, nino = nino)
+      _ <- allocateEnrolmentWithoutKnownFacts(mtditid = mtditid, groupId = groupId, credentialId = adminUserId, nino = nino, utr = utr)
+      _ <- assignEnrolmentToUser(enrolmentUserIDs filterNot (_ == adminUserId), mtditid = mtditid, nino = nino, utr = utr)
     } yield {
       logger.debug(s"[AutoEnrolmentService][autoClaimEnrolment] - Successful auto enrolment for nino: $nino")
       EnrolmentAssigned
@@ -129,12 +129,12 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
     }
   }
 
-  private def allocateEnrolmentWithoutKnownFacts(mtditid: String, groupId: String, credentialId: String, nino: String)
+  private def allocateEnrolmentWithoutKnownFacts(mtditid: String, groupId: String, credentialId: String, nino: String, utr: String)
                                                 (implicit hc: HeaderCarrier): EitherT[Future, AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess] = {
 
     val functionError: String => Unit = logError("allocateEnrolmentWithoutKnownFacts", nino, _)
 
-    EitherT(enrolmentStoreProxyConnector.allocateEnrolmentWithoutKnownFacts(groupId = groupId, credentialId = credentialId, mtditid = mtditid)) transform {
+    EitherT(enrolmentStoreProxyConnector.allocateEnrolmentWithoutKnownFacts(groupId = groupId, credentialId = credentialId, mtditid = mtditid, utr = utr)) transform {
       case Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess) =>
         Right(AutoEnrolmentService.EnrolSuccess)
       case Left(AllocateEnrolmentResponseHttpParser.EnrolFailure(message)) =>
@@ -143,12 +143,12 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
     }
   }
 
-  private def assignEnrolmentToUser(credentialIds: Set[String], mtditid: String, nino: String)
+  private def assignEnrolmentToUser(credentialIds: Set[String], mtditid: String, nino: String, utr: String)
                                    (implicit hc: HeaderCarrier): EitherT[Future, AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess] = {
 
     val functionError: String => Unit = logError("assignEnrolmentToUser", nino, _)
 
-    EitherT(assignEnrolmentToUserService.assignEnrolment(userIds = credentialIds, mtditid = mtditid)) transform {
+    EitherT(assignEnrolmentToUserService.assignEnrolment(userIds = credentialIds, mtditid = mtditid, utr = utr)) transform {
       case Right(AssignEnrolmentToUserService.EnrolmentAssignedToUsers) =>
         Right(AutoEnrolmentService.EnrolmentAssigned)
       case Left(AssignEnrolmentToUserService.EnrolmentAssignmentFailed(failedIds)) =>

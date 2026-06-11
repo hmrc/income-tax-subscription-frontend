@@ -45,7 +45,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
     signUp(nino = nino, utr = utr, taxYear = taxYear).flatMap {
       case Right(SignUpSuccessful(mtdbsa)) =>
         val createIncomeSourcesRequest = createIncomeSourcesConnector.createIncomeSources(mtdbsa, incomeSources)
-        val upsertAndAllocateEnrolmentRequest = upsertAndAllocateEnrolmentService.upsertAndAllocate(mtdbsa, nino)
+        val upsertAndAllocateEnrolmentRequest = upsertAndAllocateEnrolmentService.upsertAndAllocate(mtdbsa, nino, utr)
 
         for {
           createIncomeSourcesResponse <- createIncomeSourcesRequest

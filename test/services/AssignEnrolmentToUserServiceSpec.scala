@@ -34,15 +34,16 @@ class AssignEnrolmentToUserServiceSpec extends AnyWordSpec with Matchers with Mo
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val testMtditid: String = "XAIT00000000000"
+  val testUtr = "test-utr"
 
   "assignEnrolment" should {
     "return Right(EnrolmentsAssigned)" when {
       "the connector returns that all the users have been assigned the enrolment" in {
         val testUserIdSet: Set[String] = Set("userIdOne", "userIdTwo")
 
-        testUserIdSet foreach (userId => mockAssignEnrolment(userId, testMtditid)(Right(EnrolmentAssigned)))
+        testUserIdSet foreach (userId => mockAssignEnrolment(userId, testMtditid, testUtr)(Right(EnrolmentAssigned)))
 
-        val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid))
+        val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid, testUtr))
 
         res shouldBe Right(EnrolmentAssignedToUsers)
       }
@@ -52,10 +53,10 @@ class AssignEnrolmentToUserServiceSpec extends AnyWordSpec with Matchers with Mo
       "the connector returns that it failed to assign some of the enrolments" in {
         val testUserIdSet = Set("userIdOne", "userIdTwo")
 
-        mockAssignEnrolment("userIdOne", testMtditid)(Right(EnrolmentAssigned))
-        mockAssignEnrolment("userIdTwo", testMtditid)(Left(EnrolmentAssignmentFailure(BAD_REQUEST, "")))
+        mockAssignEnrolment("userIdOne", testMtditid, testUtr)(Right(EnrolmentAssigned))
+        mockAssignEnrolment("userIdTwo", testMtditid, testUtr)(Left(EnrolmentAssignmentFailure(BAD_REQUEST, "")))
 
-        val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid))
+        val res = await(TestAssignEnrolmentToUserService.assignEnrolment(testUserIdSet, testMtditid, testUtr))
 
         res shouldBe Left(EnrolmentAssignmentFailed(Set("userIdTwo")))
       }

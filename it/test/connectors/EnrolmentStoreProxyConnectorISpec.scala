@@ -16,8 +16,9 @@
 
 package connectors
 
-
 import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import config.featureswitch.FeatureSwitch.CompositeEnrolmentKey
+import config.featureswitch.FeatureSwitching
 import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.{EnrolmentAssigned, EnrolmentAssignmentFailure}
@@ -25,15 +26,14 @@ import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.{EnrolmentAlre
 import connectors.agent.httpparsers.QueryUsersHttpParser.{EnrolmentStoreProxyConnectionFailure, InvalidJson, NoUsersFound, UsersFound, principalUserIdKey}
 import connectors.agent.httpparsers.UpsertEnrolmentResponseHttpParser.{UpsertEnrolmentFailure, UpsertEnrolmentSuccess}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels.testIRSAEnrolmentKey
-import helpers.servicemocks.EnrolmentStoreProxyStub._
+import helpers.servicemocks.EnrolmentStoreProxyStub.*
 import models.common.subscription.EnrolmentKey
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 
-
-class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
+class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase with FeatureSwitching {
 
   lazy val connector: EnrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
 
@@ -117,19 +117,33 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
   "allocateEnrolmentWithoutKnownFacts" when {
     "Enrolment Store Proxy returns a Created" should {
       "return an EnrolSuccess" in {
-        stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+        Seq(false, true).foreach { useCompositeKey =>
 
-        val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId)
+          if (useCompositeKey) {
+            enable(CompositeEnrolmentKey)
+            info("[CompositeEnrolmentKey] is enabled")
+          } else {
+            disable(CompositeEnrolmentKey)
+            info("[CompositeEnrolmentKey] is disabled")
+          }
 
-        await(res) mustBe Right(EnrolSuccess)
+          val url = stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId, if (useCompositeKey) Some(testUtr) else None)(CREATED)
+
+          val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId, testUtr)
+
+          await(res) mustBe Right(EnrolSuccess)
+
+          url.contains(testUtr) mustBe useCompositeKey
+        }
       }
     }
 
     "Enrolment Store Proxy returns a Bad Request" should {
       "return an EnrolFailure" in {
+        disable(CompositeEnrolmentKey)
         stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(BAD_REQUEST)
 
-        val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId)
+        val res = connector.allocateEnrolmentWithoutKnownFacts(testGroupId, testCredentialId, testMtdId, testUtr)
 
         await(res) mustBe Left(EnrolFailure(""))
       }
@@ -139,25 +153,36 @@ class EnrolmentStoreProxyConnectorISpec extends ComponentSpecBase {
   "assignEnrolment" when {
     "Enrolment Store Proxy returns a Created" should {
       "return an EnrolSuccess" in {
-        stubAssignEnrolment(testMtdId, userId = testCredentialId)(CREATED)
+        Seq(false, true).foreach { useCompositeKey =>
+          val url = stubAssignEnrolment(testMtdId, userId = testCredentialId, if (useCompositeKey) Some(testUtr) else None)(CREATED)
 
-        val res = connector.assignEnrolment(testCredentialId, testMtdId)
+          if (useCompositeKey) {
+            enable(CompositeEnrolmentKey)
+            info("[CompositeEnrolmentKey] is enabled")
+          } else {
+            disable(CompositeEnrolmentKey)
+            info("[CompositeEnrolmentKey] is disabled")
+          }
 
-        await(res) mustBe Right(EnrolmentAssigned)
+          val res = connector.assignEnrolment(testCredentialId, testMtdId, testUtr)
+
+          await(res) mustBe Right(EnrolmentAssigned)
+          url.contains(testUtr) mustBe useCompositeKey
+        }
       }
     }
 
     "Enrolment Store Proxy returns a Bad Request" should {
       "return an EnrolFailure" in {
+        disable(CompositeEnrolmentKey)
         stubAssignEnrolment(testMtdId, userId = testCredentialId)(BAD_REQUEST)
 
-        val res = connector.assignEnrolment(testCredentialId, testMtdId)
+        val res = connector.assignEnrolment(testCredentialId, testMtdId, testUtr)
 
         await(res) mustBe Left(EnrolmentAssignmentFailure(BAD_REQUEST, ""))
       }
     }
   }
-
 
   "upsertEnrolment" when {
     "Enrolment Store Proxy returns a successful response" should {
