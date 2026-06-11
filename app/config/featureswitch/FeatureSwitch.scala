@@ -29,7 +29,8 @@ object FeatureSwitch {
   val switches: Set[FeatureSwitch] = Set(
     ThrottlingFeature,
     AgentRelationshipSingleCall,
-    TaxYear27To28Plus
+    TaxYear27To28Plus,
+    SubmissionAuditUpdate
   )
 
   def apply(str: String): FeatureSwitch =
@@ -58,6 +59,21 @@ object FeatureSwitch {
   case object SetupVAndCSessionData extends FeatureSwitch {
     override val name: String = s"$prefix.setup-v-and-c-session-data"
     override val displayText: String = "Setup agent V&C session data"
+  }
+
+  case object CompositeEnrolmentKey extends FeatureSwitch {
+    override val name: String = s"$prefix.composite-enrolment-key"
+    override val displayText: String = "CompositeEnrolmentKey"
+  }
+
+  case object DistributedKnownFactsPattern extends FeatureSwitch {
+    override val name: String = s"$prefix.distributed-known-facts-pattern"
+    override val displayText: String = "DistributedKnownFactsPattern"
+  }
+
+  case object SubmissionAuditUpdate extends FeatureSwitch {
+    override val name: String = s"$prefix.submission-audit-update"
+    override val displayText: String = "Update submission audits"
   }
 
 }

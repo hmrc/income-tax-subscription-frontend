@@ -17,7 +17,7 @@
 package config.featureswitch
 
 import config.FrontendAppConfig
-import config.featureswitch.FeatureSwitch.{TaxYear27To28Plus, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern, TaxYear27To28Plus, ThrottlingFeature}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -134,6 +134,40 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     "return true if Throttle feature switch is not in sys.props but is set to on in config" in {
       when(mockConfig.getOptional[String]("feature-switch.throttle")).thenReturn(Some(FEATURE_SWITCH_ON))
       featureSwitching.isEnabled(ThrottlingFeature) mustBe true
+    }
+  }
+
+  "CompositeEnrolmentKey" should {
+    "return true if CompositeEnrolmentKey feature switch is enabled in sys.props" in {
+      enable(CompositeEnrolmentKey)
+      featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe true
+    }
+
+    "return false if CompositeEnrolmentKey feature switch is disabled in sys.props" in {
+      disable(CompositeEnrolmentKey)
+      featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe false
+    }
+
+    "return false if CompositeEnrolmentKey feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.composite-enrolment-key")).thenReturn(None)
+      featureSwitching.isEnabled(CompositeEnrolmentKey) mustBe false
+    }
+  }
+
+  "DistributedKnownFactsPattern" should {
+    "return true if DistributedKnownFactsPattern feature switch is enabled in sys.props" in {
+      enable(DistributedKnownFactsPattern)
+      featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe true
+    }
+
+    "return false if DistributedKnownFactsPattern feature switch is disabled in sys.props" in {
+      disable(DistributedKnownFactsPattern)
+      featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe false
+    }
+
+    "return false if DistributedKnownFactsPattern feature switch does not exist" in {
+      when(mockConfig.getOptional[String]("feature-switch.distributed-known-facts-pattern")).thenReturn(None)
+      featureSwitching.isEnabled(DistributedKnownFactsPattern) mustBe false
     }
   }
 
