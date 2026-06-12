@@ -17,7 +17,10 @@
 package services.individual
 
 import common.Constants
-import common.Constants.GovernmentGateway._
+import common.Constants.GovernmentGateway.*
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.individual.TaxEnrolmentsConnector
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
 import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers}
@@ -27,13 +30,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class KnownFactsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector) {
+class KnownFactsService @Inject()(val appConfig: AppConfig,
+                                  taxEnrolmentsConnector: TaxEnrolmentsConnector) extends FeatureSwitching {
 
   def addKnownFacts(mtditid: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditid)
     val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
 
-    taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)
+    if (isEnabled(DistributedKnownFactsPattern)) {
+      Future.successful(Right(
+        KnownFactsSuccess
+      ))
+    } else {
+      taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)
+    }
   }
 
 }

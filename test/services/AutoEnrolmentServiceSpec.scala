@@ -17,9 +17,14 @@
 package services
 
 import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import config.AppConfig
+import config.MockConfig.futureOptionWrapperUtil
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, GetUsersForGroupHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
 import connectors.agent.mocks.{MockEnrolmentStoreProxyConnector, MockUsersGroupsSearchConnector}
 import models.common.subscription.EnrolmentKey
+import org.mockito.Mockito.reset
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers.*
@@ -38,17 +43,20 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
   with MockEnrolmentStoreProxyConnector
   with MockUsersGroupsSearchConnector
   with MockCheckEnrolmentAllocationService
-  with MockAssignEnrolmentToUserService {
+  with MockAssignEnrolmentToUserService
+  with FeatureSwitching {
+
+  override val appConfig: AppConfig = mock[AppConfig]
 
   object TestAutoEnrolmentService extends AutoEnrolmentService(
     enrolmentStoreProxyConnector = mockEnrolmentStoreProxyConnector,
     checkEnrolmentAllocationService = mockCheckEnrolmentAllocationService,
     assignEnrolmentToUserService = mockAssignEnrolmentToUserService,
-    usersGroupsSearchConnector = mockUsersGroupsSearchConnector
+    usersGroupsSearchConnector = mockUsersGroupsSearchConnector,
+    appConfig = appConfig
   )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
 
   val testUtr: String = "1234567890"
   val testSAEnrolment: EnrolmentKey = EnrolmentKey(utrEnrolmentName, utrEnrolmentIdentifierKey -> testUtr)
@@ -58,8 +66,12 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
   val testUserId1: String = UUID.randomUUID().toString
   val testUserId2: String = UUID.randomUUID().toString
 
-  "autoClaimEnrolment" must {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(DistributedKnownFactsPattern)
+  }
 
+  "autoClaimEnrolment" must {
     s"return ${AutoEnrolmentService.EnrolmentAssigned}" when {
       "all calls are successful" in {
         mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
@@ -222,4 +234,24 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
     }
   }
 
+  "upsertEnrolmentAllocation" must {
+    "Skip connector call if FS is on" in {
+      Seq(false, true).foreach { skipES6 =>
+        reset(mockEnrolmentStoreProxyConnector)
+        mockEnrolmentStoreUpsertEnrolment(testMtditid, testNino)(Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess))
+
+        if (skipES6) {
+          enable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is enabled")
+        } else {
+          disable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is disabled")
+        }
+
+        await(TestAutoEnrolmentService.upsertEnrolmentAllocation(testMtditid, testNino))
+
+        verifyEnrolmentStoreUpsertEnrolment(testMtditid, testNino, if (skipES6) 0 else 1)
+      }
+    }
+  }
 }

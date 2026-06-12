@@ -17,20 +17,39 @@
 package services.individual
 
 import common.Constants
-import common.Constants.GovernmentGateway._
+import common.Constants.GovernmentGateway.*
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import models.common.subscription.{EnrolmentKey, EnrolmentVerifiers}
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.Future
 
-class KnownFactsServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolmentsConnector {
+class KnownFactsServiceSpec extends PlaySpec
+  with ScalaFutures
+  with MockTaxEnrolmentsConnector
+  with FeatureSwitching {
 
-  object TestKnownFactsService extends KnownFactsService(mockTaxEnrolmentsConnector)
+  override val appConfig: AppConfig = mock[AppConfig]
+
+  object TestKnownFactsService extends KnownFactsService(
+    appConfig,
+    mockTaxEnrolmentsConnector
+  )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(DistributedKnownFactsPattern)
+  }
 
   "addKnownFacts" should {
 
@@ -41,9 +60,25 @@ class KnownFactsServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrol
     val testEnrolmentVerifiers = EnrolmentVerifiers(NINO -> testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
-      mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
+      Seq(false, true).foreach { skipES6 =>
+        reset(mockTaxEnrolmentsConnector)
+        mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
 
-      whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+        if (skipES6) {
+          enable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is enabled")
+        } else {
+          disable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is disabled")
+        }
+
+        whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+
+        verify(mockTaxEnrolmentsConnector, times(if (skipES6) 0 else 1)).upsertEnrolment(
+          ArgumentMatchers.eq(testEnrolmentKey),
+          ArgumentMatchers.eq(testEnrolmentVerifiers)
+        )(any())
+      }
     }
 
     "return a failure from the EnrolmentStoreConnector" in {

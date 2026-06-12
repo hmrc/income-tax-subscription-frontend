@@ -19,7 +19,7 @@ package services.individual
 import auth.MockAuth
 import common.Constants
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.CompositeEnrolmentKey
+import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern}
 import config.featureswitch.FeatureSwitching
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
@@ -29,13 +29,20 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.Mockito.reset
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolmentsConnector with MockAuth with FeatureSwitching {
 
   override val appConfig: AppConfig = mock[AppConfig]
-  
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(CompositeEnrolmentKey)
+    disable(DistributedKnownFactsPattern)
+  }
+
   "upsertAndAllocate" must {
     "return an UpsertAndAllocateEnrolmentSuccess" when {
       "the enrolment was successfully upserted and allocated" in {
@@ -67,7 +74,6 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
     "return an UpsertAndAllocateEnrolmentFailure" which {
       "is an UpsertKnownFactsFailure" when {
         "there is a failure upserting known facts" in {
-          disable(CompositeEnrolmentKey)
           mockUpsertEnrolmentFailure(testEnrolmentKey(false), testEnrolmentVerifiers)
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)
@@ -80,7 +86,6 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       }
       "is a NoGroupIdFailure" when {
         "there is no group id returned from auth" in {
-          disable(CompositeEnrolmentKey)
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
           mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), None))
 
@@ -94,7 +99,6 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       }
       "is a NoCredentialsFailure" when {
         "there is no credential returned from auth" in {
-          disable(CompositeEnrolmentKey)
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
           mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(None, Some(testGroupId)))
 
@@ -108,7 +112,6 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       }
       "is an AllocateEnrolmentFailure" when {
         "there is a failure allocating the enrolment" in {
-          disable(CompositeEnrolmentKey)
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
           mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), Some(testGroupId)))
           mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey(false), testEnrolmentRequest)
@@ -119,6 +122,29 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           verifyUpsertEnrolment(testEnrolmentKey(false), testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, testEnrolmentKey(false), testEnrolmentRequest)
+        }
+      }
+    }
+
+    "upsertEnrolment" must {
+      "Skip connector call if FS is on" in {
+        Seq(false, true).foreach { skipES6 =>
+          val key = testEnrolmentKey(false)
+
+          reset(mockTaxEnrolmentsConnector)
+          mockUpsertEnrolmentSuccess(key, testEnrolmentVerifiers)
+
+          if (skipES6) {
+            enable(DistributedKnownFactsPattern)
+            info("[DistributedKnownFactsPattern] is enabled")
+          } else {
+            disable(DistributedKnownFactsPattern)
+            info("[DistributedKnownFactsPattern] is disabled")
+          }
+
+          await(TestUpsertAndAllocateEnrolmentService.upsertEnrolment(key, testNino))
+
+          verifyUpsertEnrolment(key, testEnrolmentVerifiers, if (skipES6) 0 else 1)
         }
       }
     }
