@@ -26,10 +26,53 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
   "BusinessAddressModel" should {
     val lines = Seq("line1", "line2", "line3")
 
-    "work with a postcode and country" should {
+    "work with a postcode and country. no uprn" should {
 
-      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = Some("TF3 4NT"), country = Some(Country("GB", "United Kingdom"))))
-      val json = Json.obj("address" -> Json.obj("lines" -> lines, "postcode" -> Some("TF3 4NT"), "country" -> Json.obj("code" -> "GB", "name" -> "United Kingdom")))
+      val businessAddressModel = BusinessAddressModel(Address(
+        lines = lines,
+        postcode = Some("TF3 4NT"),
+        country = Some(Country("GB", "United Kingdom"))
+      ))
+
+      val json = Json.obj(
+        "address" -> Json.obj(
+          "lines" -> lines,
+          "postcode" -> Some("TF3 4NT"),
+          "country" -> Json.obj(
+            "code" -> "GB",
+            "name" -> "United Kingdom"
+          )
+        )
+      )
+
+      "read from Json correctly" in {
+        Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)
+      }
+
+      "write from Json correctly" in {
+        Json.toJson(businessAddressModel) mustBe json
+      }
+    }
+    "work with a postcode and country. with uprn" should {
+
+      val businessAddressModel = BusinessAddressModel(Address(
+        lines = lines,
+        postcode = Some("TF3 4NT"),
+        country = Some(Country("GB", "United Kingdom")),
+        uprn = Some("1234")
+      ))
+
+      val json = Json.obj(
+        "address" -> Json.obj(
+          "lines" -> lines,
+          "postcode" -> Some("TF3 4NT"),
+          "country" -> Json.obj(
+            "code" -> "GB",
+            "name" -> "United Kingdom"
+          ),
+          "uprn" -> "1234"
+        )
+      )
 
       "read from Json correctly" in {
         Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)
@@ -41,8 +84,17 @@ class BusinessAddressModelSpec extends PlaySpec with GuiceOneServerPerSuite {
     }
     "work without a postcode or country" should {
 
-      val businessAddressModel = BusinessAddressModel(Address(lines = lines, postcode = None, country = None))
-      val json = Json.obj("address" -> Json.obj("lines" -> lines))
+      val businessAddressModel = BusinessAddressModel(Address(
+        lines = lines,
+        postcode = None,
+        country = None
+      ))
+
+      val json = Json.obj(
+        "address" -> Json.obj(
+          "lines" -> lines
+        )
+      )
 
       "read from Json correctly" in {
         Json.fromJson[BusinessAddressModel](json) mustBe JsSuccess(businessAddressModel)
