@@ -17,6 +17,8 @@
 package connectors.agent
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.CompositeEnrolmentKey
+import config.featureswitch.FeatureSwitching
 import connectors.agent.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.AssignEnrolmentToUserResponse
 import connectors.agent.httpparsers.EnrolmentStoreProxyHttpParser.EnrolmentStoreProxyResponse
@@ -33,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EnrolmentStoreProxyConnector @Inject()(http: HttpClientV2,
-                                             appConfig: AppConfig)(implicit ec: ExecutionContext) {
+                                             val appConfig: AppConfig
+                                            )(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def getAllocatedEnrolments(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[EnrolmentStoreProxyResponse] = {
     val base = appConfig.getAllocatedEnrolmentUrl(enrolmentKey)
@@ -67,9 +70,11 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClientV2,
 
   def allocateEnrolmentWithoutKnownFacts(groupId: String,
                                          credentialId: String,
-                                         mtditid: String
+                                         mtditid: String,
+                                         utr: String
                                         )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtditid"
+    val utrId = if (isEnabled(CompositeEnrolmentKey)) s"~UTR~$utr" else ""
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtditid$utrId"
 
     val requestBody = Json.obj(
       "userId" -> credentialId,
@@ -84,9 +89,11 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClientV2,
 
 
   def assignEnrolment(credentialId: String,
-                      mtdid: String
+                      mtdid: String,
+                      utr: String
                      )(implicit hc: HeaderCarrier): Future[AssignEnrolmentToUserResponse] = {
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
+    val utrId = if (isEnabled(CompositeEnrolmentKey)) s"~UTR~$utr" else ""
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid$utrId"
 
     http
       .post(url"${appConfig.assignEnrolmentUrl(credentialId, enrolmentKey)}")

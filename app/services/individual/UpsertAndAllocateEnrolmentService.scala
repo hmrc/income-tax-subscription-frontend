@@ -18,12 +18,15 @@ package services.individual
 
 import cats.data.EitherT
 import common.Constants
-import common.Constants.GovernmentGateway._
+import common.Constants.GovernmentGateway.*
+import config.AppConfig
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitch.CompositeEnrolmentKey
 import connectors.individual.TaxEnrolmentsConnector
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,11 +35,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                                  authConnector: AuthConnector)(implicit ec: ExecutionContext) {
+                                                  val appConfig: AppConfig,
+                                                  authConnector: AuthConnector)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   import services.individual.UpsertAndAllocateEnrolmentService._
-  def upsertAndAllocate(mtditid: String, nino: String)(implicit hc: HeaderCarrier): Future[UpsertAndAllocateEnrolmentResponse] = {
-    val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditid)
+  def upsertAndAllocate(mtditid: String, nino: String, utr: String)(implicit hc: HeaderCarrier): Future[UpsertAndAllocateEnrolmentResponse] = {
+    val utrId = if (isEnabled(CompositeEnrolmentKey)) Seq("UTR" -> utr) else Seq.empty
+    val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, Seq(MTDITID -> mtditid) ++ utrId:_*)
 
     val upsertAndAllocateResult = for {
       _ <- EitherT(upsertEnrolment(enrolmentKey, nino))
