@@ -69,8 +69,8 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
           testUserId1 -> User,
           testUserId2 -> Assistant
         ))))
-        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid)(Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess))
-        mockAssignEnrolment(Set(testUserId2), testMtditid)(Right(AssignEnrolmentToUserService.EnrolmentAssignedToUsers))
+        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid, testUtr)(Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess))
+        mockAssignEnrolment(Set(testUserId2), testMtditid, testUtr)(Right(AssignEnrolmentToUserService.EnrolmentAssignedToUsers))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
@@ -193,7 +193,7 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
           testUserId1 -> User,
           testUserId2 -> Assistant
         ))))
-        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid)(Left(AllocateEnrolmentResponseHttpParser.EnrolFailure("error message")))
+        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid, testUtr)(Left(AllocateEnrolmentResponseHttpParser.EnrolFailure("error message")))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 
@@ -211,8 +211,8 @@ class AutoEnrolmentServiceSpec extends AnyWordSpec
           testUserId1 -> User,
           testUserId2 -> Assistant
         ))))
-        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid)(Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess))
-        mockAssignEnrolment(Set(testUserId2), testMtditid)(Left(AssignEnrolmentToUserService.EnrolmentAssignmentFailed(Set(testUserId2))))
+        mockAllocateEnrolmentWithoutKnownFacts(testGroupId, testUserId1, testMtditid, testUtr)(Right(AllocateEnrolmentResponseHttpParser.EnrolSuccess))
+        mockAssignEnrolment(Set(testUserId2), testMtditid, testUtr)(Left(AssignEnrolmentToUserService.EnrolmentAssignmentFailed(Set(testUserId2))))
 
         val result: Future[AutoClaimEnrolmentResponse] = TestAutoEnrolmentService.autoClaimEnrolment(utr = testUtr, nino = testNino, mtditid = testMtditid)
 

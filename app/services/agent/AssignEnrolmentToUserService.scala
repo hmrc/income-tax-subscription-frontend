@@ -27,10 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class AssignEnrolmentToUserService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)
                                             (implicit ec: ExecutionContext) {
 
-  def assignEnrolment(userIds: Set[String], mtditid: String)(implicit hc: HeaderCarrier): Future[EnrolmentAssignmentResponse] = {
+  def assignEnrolment(userIds: Set[String], mtditid: String, utr: String)(implicit hc: HeaderCarrier): Future[EnrolmentAssignmentResponse] = {
     Future.sequence {
       userIds.map { userId =>
-        enrolmentStoreProxyConnector.assignEnrolment(userId, mtditid)
+        enrolmentStoreProxyConnector.assignEnrolment(userId, mtditid, utr)
       }
     } map { userIdResponses =>
       if (userIdResponses.forall(_.isRight)) {

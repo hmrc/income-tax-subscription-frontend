@@ -55,17 +55,21 @@ trait MockEnrolmentStoreProxyConnector extends MockitoSugar with BeforeAndAfterE
 
   def mockAllocateEnrolmentWithoutKnownFacts(groupId: String,
                                              credentialId: String,
-                                             mtdId: String)(response: AllocateEnrolmentResponse): Unit =
+                                             mtdId: String,
+                                             utr: String
+                                            )(response: AllocateEnrolmentResponse): Unit =
     when(mockEnrolmentStoreProxyConnector.allocateEnrolmentWithoutKnownFacts(
       ArgumentMatchers.eq(groupId),
       ArgumentMatchers.eq(credentialId),
-      ArgumentMatchers.eq(mtdId)
+      ArgumentMatchers.eq(mtdId),
+      ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
 
-  def mockAssignEnrolment(userId: String, mtdId: String)(response: AssignEnrolmentToUserResponse): Unit =
+  def mockAssignEnrolment(userId: String, mtdId: String, utr: String)(response: AssignEnrolmentToUserResponse): Unit =
     when(mockEnrolmentStoreProxyConnector.assignEnrolment(
       ArgumentMatchers.eq(userId),
-      ArgumentMatchers.eq(mtdId)
+      ArgumentMatchers.eq(mtdId),
+      ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
 
 

@@ -35,17 +35,19 @@ trait MockUpsertAndAllocateEnrolmentService extends MockitoSugar with BeforeAndA
     reset(mockUpsertAndAllocateEnrolmentService)
   }
 
-  def mockUpsertAndAllocateEnrolment(mtditid: String, nino: String)(response: UpsertAndAllocateEnrolmentResponse): Unit =
+  def mockUpsertAndAllocateEnrolment(mtditid: String, nino: String, utr: String)(response: UpsertAndAllocateEnrolmentResponse): Unit =
     when(mockUpsertAndAllocateEnrolmentService.upsertAndAllocate(
       ArgumentMatchers.eq(mtditid),
-      ArgumentMatchers.eq(nino)
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any()))
       .thenReturn(Future.successful(response))
 
-  def verifyUpsertAndAllocateEnrolment(mtditid: String, nino: String, count: Int = 1): Unit = {
+  def verifyUpsertAndAllocateEnrolment(mtditid: String, nino: String, utr: String, count: Int = 1): Unit = {
     verify(mockUpsertAndAllocateEnrolmentService, times(count)).upsertAndAllocate(
       ArgumentMatchers.eq(mtditid),
-      ArgumentMatchers.eq(nino)
+      ArgumentMatchers.eq(nino),
+      ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any())
   }
 

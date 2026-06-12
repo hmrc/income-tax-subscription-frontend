@@ -56,23 +56,29 @@ object EnrolmentStoreProxyStub extends WireMockMethods {
   private def assignEnrolmentUrl(userId: String, enrolmentKey: String) =
     s"$enrolmentStoreProxyUri/users/$userId/enrolments/$enrolmentKey"
 
-  def stubAllocateEnrolmentWithoutKnownFacts(mtdid: String, groupId: String, credentialId: String)(status: Int): Unit = {
+  def stubAllocateEnrolmentWithoutKnownFacts(mtdid: String, groupId: String, credentialId: String, utr: Option[String] = None)(status: Int): String = {
     val allocateEnrolmentJsonBody = Json.obj(
       "userId" -> credentialId,
       "type" -> "principal",
       "action" -> "enrolAndActivate"
     )
 
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
+    val utrId = utr match {
+      case Some(utr) => s"~UTR~$utr"
+      case _ => ""
+    }
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid$utrId"
 
+    val url = allocateEnrolmentUrl(
+      groupId = groupId,
+      enrolmentKey = enrolmentKey
+    )
     when(
       method = POST,
-      uri = allocateEnrolmentUrl(
-        groupId = groupId,
-        enrolmentKey = enrolmentKey
-      ),
+      uri = url,
       body = allocateEnrolmentJsonBody
     ) thenReturn status
+    url
   }
 
   def verifyAllocateEnrolmentWithoutKnownFacts(mtdid: String, groupId: String, credentialId: String): Unit = {
@@ -93,16 +99,22 @@ object EnrolmentStoreProxyStub extends WireMockMethods {
       body = allocateEnrolmentJsonBody)
   }
 
-  def stubAssignEnrolment(mtdid: String, userId: String)(status: Int): Unit = {
-    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid"
+  def stubAssignEnrolment(mtdid: String, userId: String, utr: Option[String] = None)(status: Int): String = {
+    val utrId = utr match {
+      case Some(utr) => s"~UTR~$utr"
+      case _ => ""
+    }
+    val enrolmentKey = s"HMRC-MTD-IT~MTDITID~$mtdid$utrId"
 
+    val url = assignEnrolmentUrl(
+      userId = userId,
+      enrolmentKey = enrolmentKey
+    )
     when(
       method = POST,
-      uri = assignEnrolmentUrl(
-        userId = userId,
-        enrolmentKey = enrolmentKey
-      )
+      uri = url
     ) thenReturn status
+    url
   }
 
   def verifyAssignEnrolment(mtdid: String, userId: String): Unit = {

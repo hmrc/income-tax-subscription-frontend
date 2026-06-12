@@ -36,10 +36,11 @@ trait MockAssignEnrolmentToUserService extends MockitoSugar with BeforeAndAfterE
 
   val mockAssignEnrolmentToUserService: AssignEnrolmentToUserService = mock[AssignEnrolmentToUserService]
 
-  def mockAssignEnrolment(userIDs: Set[String], mtditid: String)(response: EnrolmentAssignmentResponse): Unit = {
+  def mockAssignEnrolment(userIDs: Set[String], mtditid: String, utr: String)(response: EnrolmentAssignmentResponse): Unit = {
     when(mockAssignEnrolmentToUserService.assignEnrolment(
       ArgumentMatchers.eq(userIDs),
-      ArgumentMatchers.eq(mtditid)
+      ArgumentMatchers.eq(mtditid),
+      ArgumentMatchers.eq(utr)
     )(ArgumentMatchers.any[HeaderCarrier])) thenReturn Future.successful(response)
   }
 
