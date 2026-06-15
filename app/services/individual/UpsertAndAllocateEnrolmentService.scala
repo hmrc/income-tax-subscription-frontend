@@ -58,7 +58,7 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
   def upsertEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
     if (isEnabled(DistributedKnownFactsPattern)) {
       Future.successful(Right(
-        UpsertEnrolmentResponseHttpParser
+        UpsertEnrolmentResponseHttpParser.KnownFactsSuccess
       ))
     } else {
       val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
