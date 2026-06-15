@@ -20,9 +20,10 @@ import cats.data.EitherT
 import common.Constants
 import common.Constants.GovernmentGateway.*
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern}
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import config.featureswitch.FeatureSwitch.CompositeEnrolmentKey
 import connectors.individual.TaxEnrolmentsConnector
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
@@ -38,7 +39,7 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
                                                   val appConfig: AppConfig,
                                                   authConnector: AuthConnector)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
-  import services.individual.UpsertAndAllocateEnrolmentService._
+  import services.individual.UpsertAndAllocateEnrolmentService.*
   def upsertAndAllocate(mtditid: String, nino: String, utr: String)(implicit hc: HeaderCarrier): Future[UpsertAndAllocateEnrolmentResponse] = {
     val utrId = if (isEnabled(CompositeEnrolmentKey)) Seq("UTR" -> utr) else Seq.empty
     val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, Seq(MTDITID -> mtditid) ++ utrId:_*)
@@ -54,11 +55,17 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
 
   }
 
-  private def upsertEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
-    val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
-    taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers) map {
-      case Right(value) => Right(value)
-      case Left(_) => Left(UpsertKnownFactsFailure)
+  def upsertEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
+    if (isEnabled(DistributedKnownFactsPattern)) {
+      Future.successful(Right(
+        UpsertEnrolmentResponseHttpParser.KnownFactsSuccess
+      ))
+    } else {
+      val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
+      taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers) map {
+        case Right(value) => Right(value)
+        case Left(_) => Left(UpsertKnownFactsFailure)
+      }
     }
   }
 
@@ -96,4 +103,3 @@ object UpsertAndAllocateEnrolmentService {
   case object AllocateEnrolmentFailure extends UpsertAndAllocateEnrolmentFailure
 
 }
-

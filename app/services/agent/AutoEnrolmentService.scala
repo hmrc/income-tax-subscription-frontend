@@ -17,8 +17,11 @@
 package services.agent
 
 import cats.data.EitherT
-import cats.implicits._
+import cats.implicits.*
 import common.Constants.{utrEnrolmentIdentifierKey, utrEnrolmentName}
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
@@ -36,8 +39,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
                                      checkEnrolmentAllocationService: CheckEnrolmentAllocationService,
                                      assignEnrolmentToUserService: AssignEnrolmentToUserService,
-                                     usersGroupsSearchConnector: UsersGroupsSearchConnector)
-                                    (implicit ec: ExecutionContext) extends Logging {
+                                     usersGroupsSearchConnector: UsersGroupsSearchConnector,
+                                     val appConfig: AppConfig)
+                                    (implicit ec: ExecutionContext) extends FeatureSwitching with Logging {
 
   import services.agent.AutoEnrolmentService._
   
@@ -115,17 +119,23 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
     }
   }
 
-  private def upsertEnrolmentAllocation(mtditid: String, nino: String)
-                                       (implicit hc: HeaderCarrier): EitherT[Future, AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess] = {
+  def upsertEnrolmentAllocation(mtditid: String, nino: String)
+                               (implicit hc: HeaderCarrier): EitherT[Future, AutoClaimEnrolmentFailure, AutoClaimEnrolmentSuccess] = {
 
     val functionError: String => Unit = logError("upsertEnrolmentAllocation", nino, _)
 
-    EitherT(enrolmentStoreProxyConnector.upsertEnrolment(mtditid = mtditid, nino = nino)) transform {
-      case Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess) =>
+    if (isEnabled(DistributedKnownFactsPattern)) {
+      EitherT(Future.successful(
         Right(AutoEnrolmentService.UpsertEnrolmentSuccess)
-      case Left(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentFailure(status, message)) =>
-        functionError(s"Failed to upsert enrolment with status: $status, message: $message")
-        Left(AutoEnrolmentService.UpsertEnrolmentFailure(message))
+      ))
+    } else {
+      EitherT(enrolmentStoreProxyConnector.upsertEnrolment(mtditid = mtditid, nino = nino)) transform {
+        case Right(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentSuccess) =>
+          Right(AutoEnrolmentService.UpsertEnrolmentSuccess)
+        case Left(UpsertEnrolmentResponseHttpParser.UpsertEnrolmentFailure(status, message)) =>
+          functionError(s"Failed to upsert enrolment with status: $status, message: $message")
+          Left(AutoEnrolmentService.UpsertEnrolmentFailure(message))
+      }
     }
   }
 
