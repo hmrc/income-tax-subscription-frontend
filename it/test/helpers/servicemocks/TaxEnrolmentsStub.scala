@@ -17,14 +17,33 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 object TaxEnrolmentsStub extends WireMockMethods {
   def stubUpsertEnrolmentResult(enrolmentKey: String, status: Int): StubMapping =
     when(method = PUT, uri = s"/tax-enrolments/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
 
+  def stubUpsertEnrolmentResult(enrolmentKey: String,
+                                status: Int,
+                                requestBody: JsObject,
+                                responseBody: JsValue): StubMapping =
+    when(method = PUT, uri = s"/tax-enrolments/enrolments/$enrolmentKey", body = requestBody)
+      .thenReturn(status = status, body = responseBody)
+
   def stubAllocateEnrolmentResult(groupId: String, enrolmentKey: String, status: Int): StubMapping =
     when(method = POST, uri = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
+
+  def stubAllocateEnrolmentResult(groupId: String, enrolmentKey: String, status: Int, requestBody: JsObject): StubMapping =
+    when(method = POST, uri = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey", body = requestBody)
+      .thenReturn(status = status, body = Json.obj())
+
+  def stubAllocateEnrolmentResult(groupId: String,
+                                  enrolmentKey: String,
+                                  status: Int,
+                                  requestBody: JsObject,
+                                  responseBody: JsValue): StubMapping =
+    when(method = POST, uri = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey", body = requestBody)
+      .thenReturn(status = status, body = responseBody)
 }

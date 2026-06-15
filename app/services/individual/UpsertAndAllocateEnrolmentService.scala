@@ -72,8 +72,13 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
   private def allocateEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
     authConnector.authorise(EmptyPredicate, credentials and groupIdentifier) flatMap {
       case Some(Credentials(credId, _)) ~ Some(groupId) =>
-        val enrolmentRequest = EmacEnrolmentRequest(credId, nino)
-        taxEnrolmentsConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest) map {
+        val allocateCall = if (isEnabled(DistributedKnownFactsPattern)) {
+          taxEnrolmentsConnector.adminAllocateEnrolment(groupId, enrolmentKey, credId)
+        } else {
+          val enrolmentRequest = EmacEnrolmentRequest(credId, nino)
+          taxEnrolmentsConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest)
+        }
+        allocateCall map {
           case Right(_) => Right(UpsertAndAllocateEnrolmentSuccess)
           case Left(_) => Left(AllocateEnrolmentFailure)
         }

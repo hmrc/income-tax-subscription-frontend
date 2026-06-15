@@ -29,7 +29,6 @@ import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import org.mockito.Mockito.reset
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -45,9 +44,8 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
   "upsertAndAllocate" must {
     "return an UpsertAndAllocateEnrolmentSuccess" when {
-      "the enrolment was successfully upserted and allocated" in {
-        Seq(false, true).foreach { useCompositeKey =>
-
+      Seq(false, true).foreach { useCompositeKey =>
+        s"all calls are successful and [CompositeEnrolmentKey] is ${if (useCompositeKey) "enabled" else "disabled"}" in {
           if (useCompositeKey) {
             enable(CompositeEnrolmentKey)
             info("[CompositeEnrolmentKey] is enabled")
@@ -65,9 +63,32 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           await(result) mustBe Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess)
           enrolmentKey.asString.contains(testUtr) mustBe useCompositeKey
-          
+
           verifyUpsertEnrolment(enrolmentKey, testEnrolmentVerifiers)
           verifyAllocateEnrolment(testGroupId, enrolmentKey, testEnrolmentRequest)
+        }
+      }
+
+      Seq(false, true).foreach { useAdminAllocate =>
+        s"all calls are successful and [DistributedKnownFactsPattern] is ${if (useAdminAllocate) "enabled" else "disabled"}" in {
+          val key = testEnrolmentKey(false)
+
+          mockUpsertEnrolmentSuccess(key, testEnrolmentVerifiers)
+          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), Some(testGroupId)))
+          mockAllocateEnrolmentSuccess(testGroupId, key, testEnrolmentRequest)
+          mockAdminAllocateEnrolmentSuccess(testGroupId, key, testCredentialId)
+
+          if (useAdminAllocate) {
+            enable(DistributedKnownFactsPattern)
+          } else {
+            disable(DistributedKnownFactsPattern)
+          }
+
+          val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)
+
+          await(result) mustBe Right(UpsertAndAllocateEnrolmentService.UpsertAndAllocateEnrolmentSuccess)
+          verifyAllocateEnrolment(testGroupId, key, testEnrolmentRequest, if (useAdminAllocate) 0 else 1)
+          verifyAdminAllocateEnrolment(testGroupId, key, testCredentialId, if (useAdminAllocate) 1 else 0)
         }
       }
     }
@@ -125,27 +146,25 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
         }
       }
     }
+  }
 
-    "upsertEnrolment" must {
-      "Skip connector call if FS is on" in {
-        Seq(false, true).foreach { skipES6 =>
-          val key = testEnrolmentKey(false)
+  "upsertEnrolment" must {
+    Seq(false, true).foreach { skipES6 =>
+      s"${if (skipES6) "skip" else "call"} the connector when [DistributedKnownFactsPattern] is ${if (skipES6) "enabled" else "disabled"}" in {
+        val key = testEnrolmentKey(false)
+        mockUpsertEnrolmentSuccess(key, testEnrolmentVerifiers)
 
-          reset(mockTaxEnrolmentsConnector)
-          mockUpsertEnrolmentSuccess(key, testEnrolmentVerifiers)
-
-          if (skipES6) {
-            enable(DistributedKnownFactsPattern)
-            info("[DistributedKnownFactsPattern] is enabled")
-          } else {
-            disable(DistributedKnownFactsPattern)
-            info("[DistributedKnownFactsPattern] is disabled")
-          }
-
-          await(TestUpsertAndAllocateEnrolmentService.upsertEnrolment(key, testNino))
-
-          verifyUpsertEnrolment(key, testEnrolmentVerifiers, if (skipES6) 0 else 1)
+        if (skipES6) {
+          enable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is enabled")
+        } else {
+          disable(DistributedKnownFactsPattern)
+          info("[DistributedKnownFactsPattern] is disabled")
         }
+
+        await(TestUpsertAndAllocateEnrolmentService.upsertEnrolment(key, testNino))
+
+        verifyUpsertEnrolment(key, testEnrolmentVerifiers, if (skipES6) 0 else 1)
       }
     }
   }

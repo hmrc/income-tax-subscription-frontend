@@ -109,4 +109,42 @@ trait MockTaxEnrolmentsConnector extends MockitoSugar with BeforeAndAfterEach {
       )(ArgumentMatchers.any())
   }
 
+  private def mockAdminAllocateEnrolment(groupId: String,
+                                         enrolmentKey: EnrolmentKey,
+                                         userId: String
+                                        )(response: Future[AllocateEnrolmentResponse]): Unit =
+    when(mockTaxEnrolmentsConnector.adminAllocateEnrolment(
+      ArgumentMatchers.eq(groupId),
+      ArgumentMatchers.eq(enrolmentKey),
+      ArgumentMatchers.eq(userId)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+
+  def mockAdminAllocateEnrolmentSuccess(groupId: String,
+                                        enrolmentKey: EnrolmentKey,
+                                        userId: String): Unit =
+    mockAdminAllocateEnrolment(groupId, enrolmentKey, userId)(Future.successful(Right(EnrolSuccess)))
+
+  def mockAdminAllocateEnrolmentFailure(groupId: String,
+                                        enrolmentKey: EnrolmentKey,
+                                        userId: String): Unit =
+    mockAdminAllocateEnrolment(groupId, enrolmentKey, userId)(Future.successful(Left(EnrolFailure(testErrorMessage))))
+
+  def mockAdminAllocateEnrolmentException(groupId: String,
+                                          enrolmentKey: EnrolmentKey,
+                                          userId: String): Unit =
+    mockAdminAllocateEnrolment(groupId, enrolmentKey, userId)(Future.failed(testException))
+
+  def verifyAdminAllocateEnrolment(groupId: String,
+                                   enrolmentKey: EnrolmentKey,
+                                   userId: String,
+                                   count: Int = 1): Unit = {
+    verify(mockTaxEnrolmentsConnector, times(count))
+      .adminAllocateEnrolment(
+        ArgumentMatchers.eq(groupId),
+        ArgumentMatchers.eq(enrolmentKey),
+        ArgumentMatchers.eq(userId)
+      )(ArgumentMatchers.any())
+  }
+
 }
