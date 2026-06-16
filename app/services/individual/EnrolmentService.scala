@@ -18,6 +18,9 @@ package services.individual
 
 import common.Constants
 import common.Constants.GovernmentGateway._
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.individual.TaxEnrolmentsConnector
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey}
@@ -32,14 +35,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EnrolmentService @Inject()(enrolmentStoreConnector: TaxEnrolmentsConnector,
-                                 authConnector: AuthConnector)(implicit ec: ExecutionContext) {
+                                 authConnector: AuthConnector,
+                                 val appConfig: AppConfig)(implicit ec: ExecutionContext) extends FeatureSwitching {
 
   def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
     authConnector.authorise(EmptyPredicate, credentials and groupIdentifier) flatMap {
       case Some(Credentials(credId, _)) ~ Some(groupId) =>
         val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
-        val enrolmentRequest = EmacEnrolmentRequest(credId, nino)
-        enrolmentStoreConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest)
+        if (isEnabled(DistributedKnownFactsPattern)) {
+          enrolmentStoreConnector.adminAllocateEnrolment(groupId, enrolmentKey, credId)
+        } else {
+          val enrolmentRequest = EmacEnrolmentRequest(credId, nino)
+          enrolmentStoreConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest)
+        }
       case Some(_) ~ None =>
         Future.failed(new InternalServerException("Failed to enrol - user did not have a group identifier (not a valid user)"))
       case _ ~ _ =>

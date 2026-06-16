@@ -17,10 +17,14 @@
 package services.individual
 
 import auth.MockAuth
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
+import config.featureswitch.FeatureSwitching
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
+import org.mockito.Mockito.reset
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
@@ -30,18 +34,37 @@ import utilities.individual.TestConstants._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EnrolmentServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolmentsConnector with MockAuth {
+class EnrolmentServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolmentsConnector with MockAuth with FeatureSwitching {
 
-  object TestEnrolmentService extends EnrolmentService(mockTaxEnrolmentsConnector, mockAuth)
+  override val appConfig: AppConfig = mock[AppConfig]
+
+  object TestEnrolmentService extends EnrolmentService(mockTaxEnrolmentsConnector, mockAuth, appConfig)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(DistributedKnownFactsPattern)
+  }
 
   "addKnownFacts" should {
     def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
-      mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
+      Seq(false, true).foreach { useAdminAllocate =>
+        reset(mockTaxEnrolmentsConnector)
+        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+        mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
+        mockAdminAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testCredId)
 
-      whenReady(result)(_ mustBe Right(EnrolSuccess))
+        if (useAdminAllocate) {
+          enable(DistributedKnownFactsPattern)
+        } else {
+          disable(DistributedKnownFactsPattern)
+        }
+
+        whenReady(result)(_ mustBe Right(EnrolSuccess))
+        verifyAllocateEnrolment(testGroupId, testEnrolmentKey, testEnrolmentRequest, if (useAdminAllocate) 0 else 1)
+        verifyAdminAllocateEnrolment(testGroupId, testEnrolmentKey, testCredId, if (useAdminAllocate) 1 else 0)
+      }
     }
 
     "return a failure from the EnrolmentStoreConnector" in {

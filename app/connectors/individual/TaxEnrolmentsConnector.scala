@@ -50,4 +50,21 @@ class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
       .withBody(Json.toJson(enrolmentRequest))
       .execute[AllocateEnrolmentResponse]
   }
+
+  def adminAllocateEnrolment(groupId: String,
+                             enrolmentKey: EnrolmentKey,
+                             userId: String
+                            )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
+    val url = appConfig.allocateEnrolmentUrl(groupId, enrolmentKey.asString)
+    val requestBody = Json.obj(
+      "userId" -> userId,
+      "type" -> "principal",
+      "action" -> "enrolAndActivate"
+    )
+    http
+      .post(url"${url}")
+      .withBody(requestBody)
+      .execute[AllocateEnrolmentResponse]
+  }
 }
+
