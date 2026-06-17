@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package models.audits
 
 import models.common.business.SelfEmploymentData
@@ -6,8 +22,20 @@ import models.status.MandationStatusModel
 import play.api.libs.json.{JsArray, JsValue}
 import services.AuditModel
 import utilities.AccountingPeriodUtil
+import models.common.business.{Address, SelfEmploymentData}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.{Current, Next}
+import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json._
+import services.JsonAuditModel
+import models.{EligibilityStatus, SessionData}
 
 object ITSASignUpSubmissionRequestAuditing {
+
+  private val ITSASignUpSubmissionRequestAudit: String = "ITSASignUpSubmissionRequest"
+  private val ukPropertyIncomeSource = "ukProperty"
+  private val overseasPropertyIncomeSource = "foreignProperty"
+  private val selfEmploymentIncomeSource = "selfEmployment"
 
   case class ITSASignUpSubmissionRequestAuditModel(agentReferenceNumber: Option[String],
                                                    utr: Option[String],
@@ -19,26 +47,39 @@ object ITSASignUpSubmissionRequestAuditing {
                                                    maybeOverseasPropertyModel: Option[OverseasPropertyModel])
     extends JsonAuditModel {
 
+    override val auditType: String = ITSASignUpSubmissionRequestAudit
 
     private val overseasPropertyAsJson: Option[JsValue] = maybeOverseasPropertyModel.map { overseasProperty =>
-      Json.toJson(AuditDetailPropertyIncome(
+      val dateLimitYesNo: String = {
+        overseasProperty.startDateBeforeLimit match {
+          case Some(true) => "Yes"
+          case _ => "No"
+        }
+      }
+      Json.toJson(AuditDetailUserPropertyIncome(
         incomeSource = overseasPropertyIncomeSource,
-        startDateLimit = AccountingPeriodUtil.getStartDateLimit,
-        startDateBeforeLimit = overseasProperty.startDateBeforeLimit,
+        startDateLimit = Some(AccountingPeriodUtil.getStartDateLimit.toString),
+        startDateBeforeLimit = Some(dateLimitYesNo),
         commencementDate = overseasProperty.startDate.map(_.toDesDateFormat)
       ))
     }
     private val ukPropertyAsJson: Option[JsValue] = maybePropertyModel.map { property =>
-      Json.toJson(AuditDetailPropertyIncome(
+      val dateLimitYesNo: String = {
+        property.startDateBeforeLimit match {
+          case Some(true) => "Yes"
+          case _ => "No"
+        }
+      }
+      Json.toJson(AuditDetailUserPropertyIncome(
         incomeSource = ukPropertyIncomeSource,
-        startDateLimit = AccountingPeriodUtil.getStartDateLimit,
-        startDateBeforeLimit = property.startDateBeforeLimit,
+        startDateLimit = Some(AccountingPeriodUtil.getStartDateLimit.toString),
+        startDateBeforeLimit = Some(dateLimitYesNo),
         commencementDate = property.startDate.map(_.toDesDateFormat)
       ))
     }
 
-    private val signUpTaxYearsAsJson: Option[JsValue] = { signUpTaxYears =>
-      Json.toJson(AuditDetailPropertyIncome(
+    private val signUpTaxYearsAsJson: JsValue = {
+      Json.toJson(AuditDetailSignUpTaxYears(
         currentTaxYear = AccountingPeriodUtil.getCurrentTaxYear.toString,
         nextTaxYear = AccountingPeriodUtil.getNextTaxYear.toString
       ))
@@ -46,109 +87,119 @@ object ITSASignUpSubmissionRequestAuditing {
 
     private val itsaStatusAsJson: Option[JsValue] = maybeItsaStatusModel.map { itsaStatus =>
       Json.toJson(AuditDetailItsaStatus(
-        currentYearStatus = itsaStatus.currentYearStatus,
-        nextYearStatus = itsaStatus.nextYearStatus
+        currentYearStatus = itsaStatus.currentYearStatus.toString,
+        nextYearStatus = itsaStatus.nextYearStatus.toString
       ))
     }
 
-    private val elibilityAsJson: Option[JsValue] = eligibility.map { eligibilityStatus =>
+    private val eligibilityAsJson: Option[JsValue] = eligibility.map { eligibilityStatus =>
+      val boolToStringCurrent: String = {
+        if (eligibilityStatus.eligibleCurrentYear) {
+          "Eligible"
+        } else {
+          "Ineligible"
+        }
+      }
+      val boolToStringNext: String = {
+        if (eligibilityStatus.eligibleNextYear) {
+          "Eligible"
+        } else {
+          "Ineligible"
+        }
+      }
       Json.toJson(AuditDetailEligibilityStatus(
-        currentYearStatus = eligibilityStatus.currentYearStatus,
-        nextYearStatus = eligibilityStatus.nextYearStatus
+        currentYearStatus = boolToStringCurrent,
+        nextYearStatus = boolToStringNext
       ))
     }
 
     val income: Seq[JsValue] = Seq() ++ ukPropertyAsJson ++ overseasPropertyAsJson ++
       selfEmploymentAsJson(selfEmployments)
 
-    override val transactionName: Option[String] = None
     val userType: String = if (agentReferenceNumber.isDefined) "agent" else "individual"
     val arn: Option[String] = agentReferenceNumber
-    val nino: Option[String] = nino
-    val utr: Option[String] = utr
     val currentYear: String = AccountingPeriodUtil.getCurrentTaxYear.toString
 
-    override val detail: Map[String, String] = Map(
-      "userType" -> userType,
-      "arn" -> arn,
-      "nino" -> nino,
-      "utr" -> utr,
-      "taxYear" -> currentYear,
-      "signUpTaxYears" -> signUpTaxYearsAsJson,
-      "itsaStatus" -> itsaStatusAsJson,
-      "eligibilityStatus" -> elibilityAsJson,
-      "income" -> JsArray(income)
-    )
+    override val detail: JsValue =
+      Json.obj(
+        "userType" -> userType,
+        "arn" -> arn,
+        "nino" -> nino,
+        "utr" -> utr,
+        "taxYear" -> currentYear,
+        "signUpTaxYears" -> signUpTaxYearsAsJson,
+        "itsaStatus" -> itsaStatusAsJson,
+        "eligibilityStatus" -> eligibilityAsJson,
+        "income" -> JsArray(income)
+      )
 
-    override val auditType: String = itsaSignUpSubmissionRequestType
-  }
-}
+    case class AuditDetailUserPropertyIncome(
+                                              incomeSource: String,
+                                              startDateLimit: Option[String],
+                                              startDateBeforeLimit: Option[String],
+                                              commencementDate: Option[String]
+                                            )
 
-private def selfEmploymentAsJson(
-                                  selfEmployments: Seq[SelfEmploymentData]
-                                ): Option[JsValue] =
-  selfEmployments match {
-    case Seq() => None
-    case _ => Some(
-      Json.toJson(AuditDetailSelfEmploymentIncome(
-        incomeSource = selfEmploymentIncomeSource,
-        numberOfBusinesses = s"${
-          selfEmployments.size
-        }",
-        businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
-          businessName = se.businessName.map(_.businessName),
-          businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
-          businessTrade = se.businessTradeName.map(_.businessTradeName),
-          businessAddress = se.businessAddress.map(_.address)
-        ))
-      )))
-  }
+    object AuditDetailUserPropertyIncome {
+      implicit val format: OFormat[AuditDetailUserPropertyIncome] = Json.format[AuditDetailUserPropertyIncome]
+    }
 
-  case class AuditDetailPropertyIncome(
-                                        incomeSource: String,
-                                        startDateLimit: Option[String],
-                                        startDateBeforeLimit: Boolean,
-                                        commencementDate: Option[String]
-                                      )
-
-  object AuditDetailPropertyIncome {
-    implicit val format: OFormat[AuditDetailPropertyIncome] = Json.format[AuditDetailPropertyIncome]
-  }
-
-  case class AuditDetailSelfEmploymentIncome(
+    case class AuditDetailSelfEmployedIncome(
                                               incomeSource: String,
                                               numberOfBusinesses: String,
                                               businesses: Seq[AuditDetailBusinessIncome]
                                             )
 
-  object AuditDetailSelfEmploymentIncome {
-    implicit val format: OFormat[AuditDetailSelfEmploymentIncome] = Json.format[AuditDetailSelfEmploymentIncome]
+    object AuditDetailSelfEmployedIncome {
+      implicit val format: OFormat[AuditDetailSelfEmployedIncome] = Json.format[AuditDetailSelfEmployedIncome]
+    }
+
+
+    case class AuditDetailSignUpTaxYears(
+                                          currentTaxYear: String,
+                                          nextTaxYear: String
+                                        )
+
+    object AuditDetailSignUpTaxYears {
+      implicit val format: OFormat[AuditDetailSignUpTaxYears] = Json.format[AuditDetailSignUpTaxYears]
+    }
+
+    case class AuditDetailItsaStatus(
+                                      currentYearStatus: String,
+                                      nextYearStatus: String
+                                    )
+
+    object AuditDetailItsaStatus {
+      implicit val format: OFormat[AuditDetailItsaStatus] = Json.format[AuditDetailItsaStatus]
+    }
+
+    case class AuditDetailEligibilityStatus(
+                                             currentYearStatus: String,
+                                             nextYearStatus: String
+                                           )
+
+    object AuditDetailEligibilityStatus {
+      implicit val format: OFormat[AuditDetailEligibilityStatus] = Json.format[AuditDetailEligibilityStatus]
+    }
+
+    private def selfEmploymentAsJson(
+                                      selfEmployments: Seq[SelfEmploymentData]
+                                    ): Option[JsValue] =
+      selfEmployments match {
+        case Seq() => None
+        case _ => Some(
+          Json.toJson(AuditDetailSelfEmployedIncome(
+            incomeSource = selfEmploymentIncomeSource,
+            numberOfBusinesses = s"${
+              selfEmployments.size
+            }",
+            businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
+              businessName = se.businessName.map(_.businessName),
+              businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
+              businessTrade = se.businessTradeName.map(_.businessTradeName),
+              businessAddress = se.businessAddress.map(_.address)
+            ))
+          )))
+      }
   }
-
-
-  case class AuditDetailSignUpTaxYears(
-                                        currentTaxYear: String,
-                                        nextTaxYear: String
-                                      )
-
-  object AuditDetailSignUpTaxYears {
-    implicit val format: OFormat[AuditDetailSignUpTaxYears] = Json.format[AuditDetailSignUpTaxYears]
-  }
-
-  case class AuditDetailItsaStatus(
-                                    currentYearStatus: String,
-                                    nextYearStatus: String
-                                  )
-
-  object AuditDetailItsaStatus {
-    implicit val format: OFormat[AuditDetailItsaStatus] = Json.format[AuditDetailItsaStatus]
-  }
-
-  case class AuditDetailEligibilityStatus(
-                                           currentYearStatus: String,
-                                           nextYearStatus: String
-                                         )
-
-  object AuditDetailEligibilityStatus {
-    implicit val format: OFormat[AuditDetailEligibilityStatus] = Json.format[AuditDetailEligibilityStatus]
-  }
+}
