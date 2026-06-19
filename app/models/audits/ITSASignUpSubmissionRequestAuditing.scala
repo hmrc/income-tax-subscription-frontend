@@ -190,9 +190,6 @@ object ITSASignUpSubmissionRequestAuditing {
         case _ => Some(
           Json.toJson(AuditDetailSelfEmployedIncome(
             incomeSource = selfEmploymentIncomeSource,
-            numberOfBusinesses = s"${
-              selfEmployments.size
-            }",
             businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
               businessName = se.businessName.map(_.businessName),
               businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
