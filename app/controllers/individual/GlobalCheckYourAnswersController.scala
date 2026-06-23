@@ -16,12 +16,14 @@
 
 package controllers.individual
 
-import common.Constants.ITSASessionKeys
+import common.Constants.{ITSASessionKeys, agentServiceIdentifierKey}
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
+import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.individual.SignUpRequest
+import models.SessionData
 import play.api.mvc.*
 import services.*
 import services.GetCompleteDetailsService.CompleteDetails
@@ -41,21 +43,29 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
+                                                 eligibilityStatusService: GetEligibilityStatusService,
                                                  utrService: UTRService,
+                                                 ninoService: NinoService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
                                                  mandationStatusService: MandationStatusService)
+                                                (val auditingService: AuditingService)
                                                 (implicit ec: ExecutionContext,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      mandationStatusService.getMandationStatus(request.sessionData).map { mandationStatus =>
-        Ok(globalCheckYourAnswers(
-          postAction = routes.GlobalCheckYourAnswersController.submit,
-          completeDetails = completeDetails,
-          softwareStatus = request.sessionData.fetchSoftwareStatus,
-          isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
-        ))
+      mandationStatusService.getMandationStatus(request.sessionData).flatMap { mandationStatus =>
+        for {sessionData <- sessionDataService.getAllSessionData()
+             itsaSignUpSubmissionAuditData <- itsaSignUpSubmissionRequestAuditEvent(sessionData, request.reference)
+             _ <- auditingService.audit(itsaSignUpSubmissionAuditData)
+             } yield {
+          Ok(globalCheckYourAnswers(
+            postAction = routes.GlobalCheckYourAnswersController.submit,
+            completeDetails = completeDetails,
+            softwareStatus = request.sessionData.fetchSoftwareStatus,
+            isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
+          ))
+        }
       }
     }
   }
@@ -108,5 +118,26 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
     }
   }
 
+  private def itsaSignUpSubmissionRequestAuditEvent(sessionData: SessionData, reference: String)(implicit hc: HeaderCarrier): Future[ITSASignUpSubmissionRequestAuditModel] = {
+    for {
+      nino <- ninoService.getNino(sessionData)
+      utr <- utrService.getUTR(sessionData)
+      eligibity <- eligibilityStatusService.getEligibilityStatus(sessionData)
+      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
+      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
+      property <- subscriptionDetailsService.fetchProperty(reference)
+      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
+    } yield {
+      ITSASignUpSubmissionRequestAuditModel(
+        agentReferenceNumber = None,
+        utr = Some(utr),
+        nino = Some(nino),
+        eligibility = Some(eligibity),
+        maybeItsaStatusModel = Some(mandationStatus),
+        selfEmployments = businesses,
+        maybePropertyModel = property,
+        maybeOverseasPropertyModel = overseasProperty
+      )
+    }
+  }
 }
-

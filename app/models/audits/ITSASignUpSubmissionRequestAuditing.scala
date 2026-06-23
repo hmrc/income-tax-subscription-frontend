@@ -146,7 +146,6 @@ object ITSASignUpSubmissionRequestAuditing {
 
     case class AuditDetailSelfEmployedIncome(
                                               incomeSource: String,
-                                              numberOfBusinesses: String,
                                               businesses: Seq[AuditDetailBusinessIncome]
                                             )
 
