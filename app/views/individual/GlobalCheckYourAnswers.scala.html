@@ -62,6 +62,8 @@
         content = Text(messages("individual.global-check-your-answers.para-note"))
     ))
 
+    <h2 class="govuk-heading-m">@messages("individual.global-check-your-answers.information.heading")</h2>
+
     @compatibleSoftwareSection(softwareStatus)
 
     @taxYearSection(completeDetails.taxYear)
@@ -161,43 +163,52 @@
 @toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
 
     @if(soleTraderBusinesses.businesses.nonEmpty) {
-        <h2 id="sole-trader-business-heading" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.self-employment.heading")</h2>
-    }
+        @for((business, index) <- soleTraderBusinesses.businesses.zipWithIndex) {
+            <h2 id="sole-trader-business-heading" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.self-employment.heading", index + 1)</h2>
 
-    @soleTraderBusinesses.businesses.map { business =>
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.trade"))),
-                    value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
-                                visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.trade"))),
+                        value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
+                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                )
                             )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.name"))),
-                    value = Value(content = Text(business.name))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.start-date"))),
-                    value = Value(content = Text(
-                        business.startDate.map(_.toLongDate).getOrElse(
-                            messages("individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
-                    value = Value(content = HtmlContent(business.address.toString))
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.name"))),
+                        value = Value(content = Text(business.name)),
+                        actions = Some(Actions(
+                        items = Seq(
+                        ActionItem(
+                        href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                        content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
+                        visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.start-date"))),
+                        value = Value(content = Text(
+                            business.startDate.map(_.toLongDate).getOrElse(
+                                messages("individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
+                        value = Value(content = HtmlContent(business.address.toString))
+                    )
                 )
-            )
-        ))
+            ))
+        }
     }
 }
 
