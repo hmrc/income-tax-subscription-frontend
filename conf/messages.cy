@@ -1091,11 +1091,12 @@ individual.global-check-your-answers.heading                                    
 individual.global-check-your-answers.para                                                       = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
 individual.global-check-your-answers.para-note                                                  = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
 individual.global-check-your-answers.accounting.period                                          = Cyfnod cyfrifyddu
+individual.global-check-your-answers.information.heading                                        = Gwybodaeth sydd gennym ni ar eich cyfer chi
 individual.global-check-your-answers.compatible-software.label                                  = Mae’r feddalwedd rydych wedi’i dewis yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 individual.global-check-your-answers.tax-year.label                                             = Blwyddyn dreth
 individual.global-check-your-answers.tax.year.current                                           = Flwyddyn dreth bresennol
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
-individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr
+individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr {0}
 individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
 individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = busnesau unig fasnachwr {0}, {1}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
