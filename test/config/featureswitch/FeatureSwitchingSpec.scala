@@ -17,7 +17,7 @@
 package config.featureswitch
 
 import config.FrontendAppConfig
-import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern, TaxYear27To28Plus, ThrottlingFeature}
+import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern, TaxYear27To28Plus, ThrottlingFeature, UseIdempotency}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -171,6 +171,26 @@ class FeatureSwitchingSpec extends UnitTestTrait with BeforeAndAfterEach {
     }
   }
 
+  "UseIdempotency" should {
+    "return true if enabled in sys.props" in {
+      enable(UseIdempotency)
+      featureSwitching.isEnabled(UseIdempotency) mustBe true
+    }
+
+    "return false if disabled in sys.props" in {
+      disable(UseIdempotency)
+      featureSwitching.isEnabled(UseIdempotency) mustBe false
+    }
+
+    "return false if does not exist in config" in {
+      when(mockConfig.getOptional[String](UseIdempotency.name)).thenReturn(None)
+      featureSwitching.isEnabled(UseIdempotency) mustBe false
+    }
+
+    "shown on the feature switch page" in {
+      FeatureSwitch.switches.contains(UseIdempotency) mustBe true
+    }
+  }
 }
 
 trait FeatureSwitchingUtil extends FeatureSwitching {
