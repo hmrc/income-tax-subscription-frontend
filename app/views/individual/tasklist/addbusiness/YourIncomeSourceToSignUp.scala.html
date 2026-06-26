@@ -171,6 +171,10 @@
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
+                    key = Key(content = Text(messages("your-income-source.self-employed.business-trade.para"))),
+                    value = Value(Text(selfEmploymentTrade(business, index)))
+                ),
+                SummaryListRow(
                     key = Key(content = Text(messages("your-income-source.self-employed.business-name.para"))),
                     value = Value(Text(selfEmploymentName(business, index)))
                 ),
@@ -178,19 +182,19 @@
                     key = Key(content = Text(messages("your-income-source.self-employed.business-start-date-para"))),
                     value = Value(Text(selfEmploymentStartDate(business)))
                 ),
-            SummaryListRow(
-                key = Key(content = Text(messages("base.status.label"))),
-                value = Value(statusTag(business.isComplete, business.confirmed)),
-                actions = maybeStatusTagAction(
-                    isComplete = business.isComplete,
-                    isConfirmed = business.confirmed,
-                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                    visuallyHidden = business.businessName.map(_.businessName)
+                SummaryListRow(
+                    key = Key(content = Text(messages("base.status.label"))),
+                    value = Value(statusTag(business.isComplete, business.confirmed)),
+                    actions = maybeStatusTagAction(
+                        isComplete = business.isComplete,
+                        isConfirmed = business.confirmed,
+                        href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true"
+                    )
                 )
-            )),
+            ),
             card = Some(Card(
                 title = Some(CardTitle(
-                    content = Text(selfEmploymentTrade(business, index)),
+                    content = Text(messages("your-income-source.self-employed.card", index)),
                     headingLevel = Some(3)
                 )),
                 actions = Some(Actions(
@@ -198,13 +202,11 @@
                         maybeIncomeSourceChangeAction(
                             isComplete = business.isComplete,
                             isConfirmed = business.confirmed,
-                            href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            visuallyHidden = business.businessName.map(_.businessName)
+                            href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true"
                         ) ++
                         Seq(ActionItem(
                             href = controllers.individual.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
-                            content = Text(messages("base.remove")),
-                            visuallyHiddenText = business.businessName.map(_.businessName)
+                            content = Text(messages("base.remove"))
                     ))
                 ))
             ))
