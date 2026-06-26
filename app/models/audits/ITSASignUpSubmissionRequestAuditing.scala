@@ -16,19 +16,14 @@
 
 package models.audits
 
+import models.EligibilityStatus
 import models.common.business.SelfEmploymentData
 import models.common.{OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatusModel
-import play.api.libs.json.{JsArray, JsValue}
-import services.AuditModel
-import utilities.AccountingPeriodUtil
-import models.common.business.{Address, SelfEmploymentData}
-import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import models.{Current, Next}
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json._
+import play.api.libs.json.*
 import services.JsonAuditModel
-import models.{EligibilityStatus, SessionData}
+import utilities.AccountingPeriodUtil
 
 object ITSASignUpSubmissionRequestAuditing {
 
