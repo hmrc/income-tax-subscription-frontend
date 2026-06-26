@@ -19,11 +19,11 @@ package controllers.individual
 import common.Constants.{ITSASessionKeys, agentServiceIdentifierKey}
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
+import models.SessionData
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.individual.SignUpRequest
-import models.SessionData
 import play.api.mvc.*
 import services.*
 import services.GetCompleteDetailsService.CompleteDetails
