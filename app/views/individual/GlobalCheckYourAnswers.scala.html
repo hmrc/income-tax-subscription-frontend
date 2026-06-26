@@ -174,8 +174,8 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                    content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
+                                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
                                     visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
                                 )
                             )
@@ -185,11 +185,11 @@
                         key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.name"))),
                         value = Value(content = Text(business.name)),
                         actions = Some(Actions(
-                        items = Seq(
-                        ActionItem(
-                        href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                        content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.change")),
-                        visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
                                 )
                             )
                         ))
@@ -200,11 +200,29 @@
                             business.startDate.map(_.toLongDate).getOrElse(
                                 messages("individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                             )
+                        )),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                )
+                            )
                         ))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.address"))),
-                        value = Value(content = HtmlContent(business.address.toString))
+                        value = Value(content = HtmlContent(business.address.toString)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                )
+                            )
+                        ))
                     )
                 )
             ))
