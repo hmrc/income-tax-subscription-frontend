@@ -93,6 +93,8 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val incomeTaxSelfEmploymentsFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments"
   override val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
   override val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/client/self-employments/details/business-check-your-answers"
+  override val incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/details/sole-trader-business"
+  override val incomeTaxSelfEmploymentsUKForeignBusinessUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/uk-foreign-business"
   override val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/details"
   override val incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String = s"$incomeTaxSelfEmploymentsFrontendUrl/client/details"
 
