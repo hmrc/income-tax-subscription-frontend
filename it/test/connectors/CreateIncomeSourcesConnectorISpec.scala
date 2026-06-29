@@ -23,29 +23,32 @@ import connectors.stubs.CreateIncomeSourcesAPIStub
 import connectors.stubs.CreateIncomeSourcesAPIStub.createIncomeSourcesUri
 import helpers.{ComponentSpecBase, WiremockHelper}
 import models.DateModel
-import play.api.inject.bind
 import models.common.business.*
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
-import play.api.{Application, Environment, Mode, inject}
-import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR, NO_CONTENT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
+import play.api.http.Status.*
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.{AccountingPeriodUtil, UUIDProvider}
-
-import scala.collection.mutable
 
 class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSwitching {
 
   private val testIdempotencyKey = "test-uuid"
 
   private class TestUUIDProvider extends UUIDProvider {
-    var count: Int = 0
+    private var c = 0
 
-    def reset(): Unit = count = 0
+    def reset(): Unit = {
+      c = 0
+    }
+
+    def count(): Int =
+      c
 
     override def getUUID: String = {
-      count += 1
+      c += 1
       testIdempotencyKey
     }
   }
@@ -102,7 +105,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         // -  Once for the initial post
         // -  A second d time for first retry (UNPROCESSABLE_ENTITY)
         // The same key is used again for BAD_GATEWAY
-        testUUIDProvider.count mustBe 2
+        testUUIDProvider.count() mustBe 2
       }
       s"status = ($SERVICE_UNAVAILABLE, $GATEWAY_TIMEOUT)" in {
         enable(UseIdempotency)
@@ -120,7 +123,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         )
         // An [IdempotencyKey] is only generated for the initial post
         // And the same key is used for both retries
-        testUUIDProvider.count mustBe 1
+        testUUIDProvider.count() mustBe 1
       }
     }
   }
