@@ -16,26 +16,58 @@
 
 package connectors
 
+import com.typesafe.config.Config
 import config.AppConfig
-import connectors.httpparser.CreateIncomeSourcesResponseHttpParser._
+import config.featureswitch.FeatureSwitch.UseIdempotency
+import config.featureswitch.FeatureSwitching
+import connectors.httpparser.CreateIncomeSourcesResponseHttpParser.*
 import models.common.subscription.CreateIncomeSourcesModel
+import org.apache.pekko.actor.ActorSystem
+import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateIncomeSourcesConnector @Inject()(appConfig: AppConfig, http: HttpClientV2)
-                                            (implicit ec: ExecutionContext) {
+class CreateIncomeSourcesConnector @Inject()(
+  val appConfig: AppConfig,
+  val configuration: Config,
+  val actorSystem: ActorSystem,
+  http: HttpClientV2
+) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching {
 
   def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
+    if (isEnabled(UseIdempotency)) {
+      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", idempotencyKey()) {
+        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY)), _) => idempotencyKey()
+        case (Left(UnexpectedStatus(BAD_GATEWAY)), key) => key
+        case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE)), key) => key
+        case (Left(UnexpectedStatus(GATEWAY_TIMEOUT)), key) => key
+      } { key =>
+        updateBackend(
+          mtdbsa = mtdbsa,
+          request = request.copy(
+            idempotencyKey = Some(key)
+          )
+        )
+      }
+    } else {
+      updateBackend(mtdbsa, request)
+    }
+
+  private def updateBackend(mtdbsa: String, request: CreateIncomeSourcesModel)
+                           (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     http
       .post(url"${s"${appConfig.createIncomeSourcesUrl}/$mtdbsa"}")
       .withBody(Json.toJson(request))
       .execute[CreateIncomeSourcesResponse]
-
+      
+  private def idempotencyKey() =
+    UUID.randomUUID().toString
 }

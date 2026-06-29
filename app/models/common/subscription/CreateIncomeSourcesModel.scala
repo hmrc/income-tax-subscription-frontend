@@ -24,10 +24,13 @@ import services.GetCompleteDetailsService.CompleteDetails
 import utilities.AccountingPeriodUtil
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
-case class CreateIncomeSourcesModel(nino: String,
-                                    soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
-                                    ukProperty: Option[UkProperty] = None,
-                                    overseasProperty: Option[OverseasProperty] = None) {
+case class CreateIncomeSourcesModel(
+  nino: String,
+  soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
+  ukProperty: Option[UkProperty] = None,
+  overseasProperty: Option[OverseasProperty] = None,
+  idempotencyKey: Option[String] = None
+) {
   require(soleTraderBusinesses.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
 }
 
