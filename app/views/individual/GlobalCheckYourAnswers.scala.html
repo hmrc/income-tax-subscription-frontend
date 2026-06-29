@@ -235,7 +235,15 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.label"))),
-                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.value")), classes = "govuk-!-font-weight-bold"),
+                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.value")), classes = "govuk-!-font-weight-bold")
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.start-date"))),
+                value = Value(content = Text(
+                    ukProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
+                )),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -243,14 +251,6 @@
                             content = Text(messages("base.change")),
                             visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.uk-property.value"))
                         )
-                    )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.start-date"))),
-                value = Value(content = Text(
-                    ukProperty.startDate.map(_.toLongDate).getOrElse(
-                        messages("individual.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     )
                 ))
             )
@@ -263,7 +263,15 @@
         rows = Seq(
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.label"))),
-                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.value")), classes = "govuk-!-font-weight-bold"),
+                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.value")), classes = "govuk-!-font-weight-bold")
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.start-date"))),
+                value = Value(content = Text(
+                    foreignProperty.startDate.map(_.toLongDate).getOrElse(
+                        messages("individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
+                    )
+                )),
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
@@ -271,14 +279,6 @@
                             content = Text(messages("base.change")),
                             visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.foreign-property.value"))
                         )
-                    )
-                ))
-            ),
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.start-date"))),
-                value = Value(content = Text(
-                    foreignProperty.startDate.map(_.toLongDate).getOrElse(
-                        messages("individual.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
                     )
                 ))
             )

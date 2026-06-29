@@ -335,6 +335,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
+                value = Some("2 January 1980"),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -342,11 +347,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some("2 January 1980"),
-                actions = Seq.empty
               )
             ))
           }
@@ -359,6 +359,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
+                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -366,11 +371,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
-                actions = Seq.empty
               )
             ))
           }
@@ -384,6 +384,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
+                value = Some("3 January 1980"),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -391,11 +396,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some("3 January 1980"),
-                actions = Seq.empty
               )
             ))
           }
@@ -408,6 +408,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
+                actions = Seq.empty
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
+                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -415,11 +420,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
-                actions = Seq.empty
               )
             ))
           }
