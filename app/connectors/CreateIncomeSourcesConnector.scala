@@ -25,11 +25,11 @@ import models.common.subscription.CreateIncomeSourcesModel
 import org.apache.pekko.actor.ActorSystem
 import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import utilities.UUIDProvider
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,6 +38,7 @@ class CreateIncomeSourcesConnector @Inject()(
   val appConfig: AppConfig,
   val configuration: Config,
   val actorSystem: ActorSystem,
+  uuidProvider: UUIDProvider,
   http: HttpClientV2
 ) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching {
 
@@ -69,5 +70,5 @@ class CreateIncomeSourcesConnector @Inject()(
       .execute[CreateIncomeSourcesResponse]
       
   private def idempotencyKey() =
-    UUID.randomUUID().toString
+    uuidProvider.getUUID
 }
