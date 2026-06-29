@@ -16,91 +16,256 @@
 
 package connectors
 
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import config.featureswitch.FeatureSwitch.UseIdempotency
 import connectors.stubs.SignUpAPIStub
 import helpers.ComponentSpecBase
 import models.common.subscription.{SignUpFailureResponse, SignUpRequestModel, SignUpSuccessful}
 import models.{Current, Next}
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
+import org.scalatest.BeforeAndAfterEach
+import play.api.http.Status.*
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.UUIDProvider
 
-class SignUpConnectorISpec extends ComponentSpecBase {
+import scala.collection.mutable
 
-  "signUp" when {
-    "an OK status response is received" should {
-      "return a sign up success response" when {
-        "signing up for the current year" in {
-          SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-            status = OK,
-            json = Json.obj("mtdbsa" -> mtdbsa)
-          )
+class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
 
-          val result = connector.signUp(nino, utr, Current)
+  private lazy val testUUIDProvider = new TestUUIDProvider
 
-          await(result) mustBe Right(SignUpSuccessful(mtdbsa))
-        }
-        "signing up for the next year" in {
-          SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Next))(
-            status = OK,
-            json = Json.obj("mtdbsa" -> mtdbsa)
-          )
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(configuration)
+    .overrides(bind[UUIDProvider].to(testUUIDProvider))
+    .build()
 
-          val result = connector.signUp(nino, utr, Next)
+  override protected def afterEach(): Unit = {
+    testUUIDProvider.setKeys(Seq("test-uuid"))
+    disable(UseIdempotency)
+    super.afterEach()
+  }
 
-          await(result) mustBe Right(SignUpSuccessful(mtdbsa))
-        }
-      }
-      "return an invalid json failure response" when {
-        "the response body could not be parsed" in {
-          SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-            status = OK
-          )
+  "signUp when UseIdempotency feature switch is disabled" should {
+    "return a sign up success response for the current year without idempotency key" in {
+      disable(UseIdempotency)
 
-          val result = connector.signUp(nino, utr, Current)
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+        status = OK,
+        json = Json.obj("mtdbsa" -> mtdbsa)
+      )
 
-          await(result) mustBe Left(SignUpFailureResponse.InvalidJson)
-        }
-      }
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Right(SignUpSuccessful(mtdbsa))
     }
-    "an UNPROCESSABLE_ENTITY status response is received" should {
-      "return an unprocessable sign up response with the code and reason" in {
-        SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-          status = UNPROCESSABLE_ENTITY,
-          json = Json.obj(
-            "code" -> "500",
-            "reason" -> "reason"
-          )
-        )
 
-        val result = connector.signUp(nino, utr, Current)
+    "return a sign up success response for the next year without idempotency key" in {
+      disable(UseIdempotency)
 
-        await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("500", "reason"))
-      }
-      "return an invalid json failure response" when {
-        "the response body could not be parsed" in {
-          SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-            status = UNPROCESSABLE_ENTITY
-          )
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Next))(
+        status = OK,
+        json = Json.obj("mtdbsa" -> mtdbsa)
+      )
 
-          val result = connector.signUp(nino, utr, Current)
+      val result = connector.signUp(nino, utr, Next)
 
-          await(result) mustBe Left(SignUpFailureResponse.InvalidJson)
-        }
-      }
+      await(result) mustBe Right(SignUpSuccessful(mtdbsa))
     }
-    "an unhandled status is received" should {
-      "return an unexpected status failure response" in {
-        SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
-          status = INTERNAL_SERVER_ERROR
+
+    "return InvalidJson when an OK response body cannot be parsed" in {
+      disable(UseIdempotency)
+
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+        status = OK
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.InvalidJson)
+    }
+
+    "return UnprocessableSignUp when a 422 response has a code and reason" in {
+      disable(UseIdempotency)
+
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+        status = UNPROCESSABLE_ENTITY,
+        json = Json.obj(
+          "code" -> "500",
+          "reason" -> "reason"
         )
+      )
 
-        val result = connector.signUp(nino, utr, Current)
+      val result = connector.signUp(nino, utr, Current)
 
-        await(result) mustBe Left(SignUpFailureResponse.UnexpectedStatus(INTERNAL_SERVER_ERROR))
-      }
+      await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("500", "reason"))
+    }
+
+    "return InvalidJson when a 422 response body cannot be parsed" in {
+      disable(UseIdempotency)
+
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+        status = UNPROCESSABLE_ENTITY
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.InvalidJson)
+    }
+
+    "return UnexpectedStatus for an unhandled upstream status" in {
+      disable(UseIdempotency)
+
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+        status = INTERNAL_SERVER_ERROR
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.UnexpectedStatus(INTERNAL_SERVER_ERROR))
     }
   }
+
+  "signUp when UseIdempotency feature switch is enabled" should {
+    "return a sign up success response with idempotency key in the request" in {
+      enable(UseIdempotency)
+
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some("test-uuid")))(
+        status = OK,
+        json = successJson
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Right(SignUpSuccessful(mtdbsa))
+    }
+
+    "retry with the same idempotency key when SERVICE_UNAVAILABLE (503) is returned" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
+        scenarioName = "retry-same-key",
+        firstAttemptStatus = SERVICE_UNAVAILABLE,
+        idempotencyKey = "key-1",
+        successBody = successJson
+      )
+
+      val result = await(connector.signUp(nino, utr, Current))
+
+      result mustBe Right(SignUpSuccessful(mtdbsa))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "key-1")
+    }
+
+    "retry with the same idempotency key when BAD_GATEWAY (502) is returned" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
+        scenarioName = "retry-502",
+        firstAttemptStatus = BAD_GATEWAY,
+        idempotencyKey = "key-1",
+        successBody = successJson
+      )
+
+      val result = await(connector.signUp(nino, utr, Current))
+
+      result mustBe Right(SignUpSuccessful(mtdbsa))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "key-1")
+    }
+
+    "retry with the same idempotency key when GATEWAY_TIMEOUT (504) is returned" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
+        scenarioName = "retry-504",
+        firstAttemptStatus = GATEWAY_TIMEOUT,
+        idempotencyKey = "key-1",
+        successBody = successJson
+      )
+
+      val result = await(connector.signUp(nino, utr, Current))
+
+      result mustBe Right(SignUpSuccessful(mtdbsa))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "key-1")
+    }
+
+    "retry with a new idempotency key when 422 code 003 is returned" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1", "key-2"))
+
+      SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+        scenarioName = "retry-different-key",
+        firstAttemptKey = "key-1",
+        secondAttemptKey = "key-2",
+        retryableCode = "003",
+        successBody = successJson
+      )
+
+      val result = await(connector.signUp(nino, utr, Current))
+
+      result mustBe Right(SignUpSuccessful(mtdbsa))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 1, idempotencyKey = "key-1")
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 1, idempotencyKey = "key-2")
+    }
+
+    "return the final error when retries are exhausted for a retryable status" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      SignUpAPIStub.stubIdempotencyAlwaysFailWithSameKey(SERVICE_UNAVAILABLE, "key-1")
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.UnexpectedStatus(SERVICE_UNAVAILABLE))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 4, idempotencyKey = "key-1")
+    }
+
+    "not retry when 422 has a non-retryable code" in {
+      enable(UseIdempotency)
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      stubFor(
+        post(urlEqualTo(signUpUri))
+          .withRequestBody(matchingJsonPath("$.idempotencyKey"))
+          .willReturn(
+            aResponse()
+              .withStatus(UNPROCESSABLE_ENTITY)
+              .withHeader("Content-Type", "application/json")
+              .withBody("""{"code":"500","reason":"not retryable"}""")
+          )
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("500", "not retryable"))
+    }
+  }
+
+  private class TestUUIDProvider extends UUIDProvider {
+    private val remaining: mutable.Queue[String] = mutable.Queue("test-uuid")
+
+    def setKeys(keys: Seq[String]): Unit = {
+      remaining.clear()
+      remaining.addAll(keys)
+    }
+
+    override def getUUID: String = if (remaining.nonEmpty) remaining.dequeue() else "test-uuid"
+  }
+
+  private lazy val successJson: play.api.libs.json.JsObject = Json.obj("mtdbsa" -> mtdbsa)
+
+  private lazy val signUpUri: String = "/income-tax-subscription/mis/sign-up"
 
   lazy val connector: SignUpConnector = app.injector.instanceOf[SignUpConnector]
   lazy val nino: String = "test-nino"
