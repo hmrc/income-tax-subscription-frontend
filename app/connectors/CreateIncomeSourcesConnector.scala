@@ -45,8 +45,8 @@ class CreateIncomeSourcesConnector @Inject()(
   def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     if (isEnabled(UseIdempotency)) {
-      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", idempotencyKey()) {
-        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY)), _) => idempotencyKey()
+      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey()) {
+        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY)), _) => getNewIdempotencyKey()
         case (Left(UnexpectedStatus(BAD_GATEWAY)), key) => key
         case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE)), key) => key
         case (Left(UnexpectedStatus(GATEWAY_TIMEOUT)), key) => key
@@ -69,6 +69,6 @@ class CreateIncomeSourcesConnector @Inject()(
       .withBody(Json.toJson(request))
       .execute[CreateIncomeSourcesResponse]
       
-  private def idempotencyKey() =
+  private def getNewIdempotencyKey() =
     uuidProvider.getUUID
 }
