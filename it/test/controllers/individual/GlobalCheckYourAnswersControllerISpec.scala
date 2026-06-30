@@ -231,7 +231,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                   )
                 )),
                 ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
-                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                idempotencyKey = Some("test-uuid")
               )
             )(NO_CONTENT)
 
