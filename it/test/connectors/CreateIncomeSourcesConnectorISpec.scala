@@ -39,16 +39,22 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
 
   private val testIdempotencyKey = "test-uuid"
 
+  private case class Item(
+    status: Option[Int] = None,
+    code: Option[String] = None,
+    isNewKey: Boolean
+  )
+
   private class TestUUIDProvider extends UUIDProvider {
-    var data: mutable.Seq[(Option[Int], Option[String], Boolean)] = mutable.Seq()
+    var data: mutable.Seq[Item] = mutable.Seq()
 
     override def getUUID(status: Option[Int], code: Option[String]): String = {
-      data = data ++ mutable.Seq((status, code, true))
+      data = data ++ mutable.Seq(Item(status, code, isNewKey = true))
       testIdempotencyKey
     }
 
     override def same(status: Option[Int], code: Option[String]): Unit = {
-      data = data ++ mutable.Seq((status, code, false))
+      data = data ++ mutable.Seq(Item(status, code, isNewKey = false))
     }
 
     def reset(): Unit =
@@ -112,9 +118,9 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         // -  A second d time for first retry (UNPROCESSABLE_ENTITY, "003")
         // The same key is used again for BAD_GATEWAY
         testUUIDProvider.data mustBe mutable.Seq(
-          (None, None, true),
-          (Some(UNPROCESSABLE_ENTITY), Some("003"), true),
-          (Some(BAD_GATEWAY), None, false)
+          Item(isNewKey = true),
+          Item(Some(UNPROCESSABLE_ENTITY), Some("003"), isNewKey = true),
+          Item(Some(BAD_GATEWAY), isNewKey = false)
         )
       }
       s"status = ($SERVICE_UNAVAILABLE, $GATEWAY_TIMEOUT)" in {
@@ -138,9 +144,9 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         // An [IdempotencyKey] is only generated for the initial post
         // And the same key is used for both retries
         testUUIDProvider.data mustBe mutable.Seq(
-          (None, None, true),
-          (Some(SERVICE_UNAVAILABLE), None, false),
-          (Some(GATEWAY_TIMEOUT), None, false)
+          Item(isNewKey =  true),
+          Item(Some(SERVICE_UNAVAILABLE), isNewKey = false),
+          Item(Some(GATEWAY_TIMEOUT), isNewKey = false)
         )
       }
     }
