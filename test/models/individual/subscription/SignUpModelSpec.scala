@@ -24,17 +24,18 @@ import utilities.AccountingPeriodUtil
 
 class SignUpModelSpec extends PlaySpec {
 
-  def model(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
+  def model(taxYear: AccountingYear, idempotencyKey: Option[String] = None): SignUpRequestModel = SignUpRequestModel(
     nino = "test-nino",
     utr = "test-utr",
-    taxYear = taxYear
+    taxYear = taxYear,
+    idempotencyKey = idempotencyKey
   )
 
-  def json(taxYear: String): JsObject = Json.obj(
+  def json(taxYear: String, idempotencyKey: Option[String] = None): JsObject = Json.obj(
     "nino" -> "test-nino",
     "utr" -> "test-utr",
     "taxYear" -> taxYear
-  )
+  ) ++ idempotencyKey.fold(Json.obj())(key => Json.obj("idempotencyKey" -> key))
 
   "SignUpModel" must {
     "write to json as expected" when {
@@ -43,6 +44,9 @@ class SignUpModelSpec extends PlaySpec {
       }
       "tax year is the next tax year" in {
         Json.toJson(model(Next)) mustBe json(AccountingPeriodUtil.getNextTaxYear.toLongTaxYear)
+      }
+      "idempotency key is provided" in {
+        Json.toJson(model(Current, Some("abc-123"))) mustBe json(AccountingPeriodUtil.getCurrentTaxYear.toLongTaxYear, Some("abc-123"))
       }
 
     }

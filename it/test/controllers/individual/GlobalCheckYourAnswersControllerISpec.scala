@@ -18,6 +18,7 @@ package controllers.individual
 
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
+import config.featureswitch.FeatureSwitch.UseIdempotency
 import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubGetAllSessionData, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
 import helpers.*
@@ -48,6 +49,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
       ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(true, false, None)),
       ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
     ))
+  }
+
+  override def afterEach(): Unit = {
+    disable(UseIdempotency)
+    super.afterEach()
   }
 
   def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
@@ -175,6 +181,78 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
 
             val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
+          }
+          "sign up initially returns retryable 422 code 003 and then succeeds when UseIdempotency is enabled" in {
+            Given("I setup the Wiremock stubs")
+            enable(UseIdempotency)
+
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
+                startDate = Some(testUkProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+              scenarioName = "global-cya-idempotency-retry-success",
+              firstAttemptKey = "test-uuid",
+              secondAttemptKey = "test-uuid",
+              retryableCode = "003",
+              successBody = Json.obj("mtdbsa" -> testMtdId)
+            )
+
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                  businesses = testSoleTraderBusinesses().businesses.map(business =>
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
+                  )
+                )),
+                ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
+              )
+            )(NO_CONTENT)
+
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+
+            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should still redirect to the confirmation flow")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.spinnyWheelURI)
+            )
+
+            waitUntilStatusIs(success)
+
+            SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "test-uuid")
             verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
           "sign up indicated the customer is already signed up" in {

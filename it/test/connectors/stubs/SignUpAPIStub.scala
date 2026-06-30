@@ -16,9 +16,14 @@
 
 package connectors.stubs
 
+import com.github.tomakehurst.wiremock.client.WireMock as WireMockClient
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.servicemocks.WireMockMethods
 import models.common.subscription.SignUpRequestModel
+import play.api.http.ContentTypes
+import play.api.http.Status.UNPROCESSABLE_ENTITY
 import play.api.libs.json.{JsValue, Json}
 
 object SignUpAPIStub extends WireMockMethods {
@@ -33,6 +38,96 @@ object SignUpAPIStub extends WireMockMethods {
     ).thenReturn(
       status = status,
       body = json
+    )
+  }
+
+  def stubIdempotencyRetrySameKeyScenario(scenarioName: String,
+                                          firstAttemptStatus: Int,
+                                          idempotencyKey: String,
+                                          successBody: JsValue): Unit = {
+    val secondState = s"$scenarioName-second-attempt"
+
+    stubFor(
+      post(urlEqualTo(signUpUri))
+        .inScenario(scenarioName)
+        .whenScenarioStateIs(STARTED)
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
+        .willSetStateTo(secondState)
+        .willReturn(
+          aResponse()
+            .withStatus(firstAttemptStatus)
+            .withHeader("Content-Type", ContentTypes.JSON)
+            .withBody("{}")
+        )
+    )
+
+    stubFor(
+      post(urlEqualTo(signUpUri))
+        .inScenario(scenarioName)
+        .whenScenarioStateIs(secondState)
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", ContentTypes.JSON)
+            .withBody(successBody.toString())
+        )
+    )
+  }
+
+  def stubIdempotencyRetryNewKeyScenario(scenarioName: String,
+                                         firstAttemptKey: String,
+                                         secondAttemptKey: String,
+                                         retryableCode: String,
+                                         successBody: JsValue): Unit = {
+    val secondState = s"$scenarioName-second-attempt"
+
+    stubFor(
+      post(urlEqualTo(signUpUri))
+        .inScenario(scenarioName)
+        .whenScenarioStateIs(STARTED)
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(firstAttemptKey)))
+        .willSetStateTo(secondState)
+        .willReturn(
+          aResponse()
+            .withStatus(UNPROCESSABLE_ENTITY)
+            .withHeader("Content-Type", ContentTypes.JSON)
+            .withBody(Json.obj("code" -> retryableCode, "reason" -> "retry").toString())
+        )
+    )
+
+    stubFor(
+      post(urlEqualTo(signUpUri))
+        .inScenario(scenarioName)
+        .whenScenarioStateIs(secondState)
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(secondAttemptKey)))
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", ContentTypes.JSON)
+            .withBody(successBody.toString())
+        )
+    )
+  }
+
+  def stubIdempotencyAlwaysFailWithSameKey(status: Int, idempotencyKey: String): Unit = {
+    stubFor(
+      post(urlEqualTo(signUpUri))
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withHeader("Content-Type", ContentTypes.JSON)
+            .withBody("{}")
+        )
+    )
+  }
+
+  def verifyIdempotencyKeyRequestCount(expectedCount: Int, idempotencyKey: String): Unit = {
+    WireMockClient.verify(
+      expectedCount,
+      postRequestedFor(urlEqualTo(signUpUri))
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
     )
   }
 

@@ -105,8 +105,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     "microservice.services.users-groups-search.host" -> mockHost,
     "microservice.services.users-groups-search.port" -> mockPort,
     "microservice.services.channel-preferences.host" -> mockHost,
-    "microservice.services.channel-preferences.port" -> mockPort
-  )
+    "microservice.services.channel-preferences.port" -> mockPort,
+    "retries.intervals.0" -> "1.millisecond",
+    "retries.intervals.1" -> "1.millisecond",
+    "retries.intervals.2" -> "1.millisecond"
+  ) ++ overriddenConfig()
+
+  def overriddenConfig(): Map[String, String] = Map.empty
 
   lazy val fakeUUIDProvider: UUIDProvider = new UUIDProvider {
     override def getUUID: String = "test-uuid"

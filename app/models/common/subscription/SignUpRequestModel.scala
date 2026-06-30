@@ -17,10 +17,10 @@
 package models.common.subscription
 
 import models.{AccountingYear, Current, Next}
-import play.api.libs.json.{Json, OWrites}
+import play.api.libs.json.{JsObject, Json, OWrites}
 import utilities.AccountingPeriodUtil
 
-case class SignUpRequestModel(nino: String, utr: String, taxYear: AccountingYear)
+case class SignUpRequestModel(nino: String, utr: String, taxYear: AccountingYear, idempotencyKey: Option[String] = None)
 
 object SignUpRequestModel {
 
@@ -31,11 +31,14 @@ object SignUpRequestModel {
       case Next => AccountingPeriodUtil.getNextTaxYear.toLongTaxYear
     }
 
+    val idempotencyJson: JsObject = signUpRequestModel.idempotencyKey.fold(Json.obj()) { key =>
+      Json.obj("idempotencyKey" -> key)
+    }
+
     Json.obj(
       "nino" -> signUpRequestModel.nino,
       "utr" -> signUpRequestModel.utr,
       "taxYear" -> taxYear
-    )
-
+    ) ++ idempotencyJson
   }
 }
