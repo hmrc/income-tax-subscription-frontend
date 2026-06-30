@@ -30,6 +30,7 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.individual.SignUpOrchestrationService
 import services.individual.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 import views.html.individual.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -44,6 +45,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
                                                  eligibilityStatusService: GetEligibilityStatusService,
+                                                 currentDateProvider: CurrentDateProvider,
                                                  utrService: UTRService,
                                                  ninoService: NinoService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
@@ -134,12 +136,13 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
           utr = Some(utr),
           nino = Some(request.nino),
           eligibility = Some(eligibility),
+          currentYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
           maybeItsaStatusModel = Some(mandationStatus),
-          selfEmployments = Some(completeDetails.incomeSources.soleTraderBusinesses),
-          maybePropertyModel = Some(completeDetails.incomeSources.ukProperty),
-          maybeOverseasPropertyModel = Some(completeDetails.incomeSources.foreignProperty)
+          completeDetails = completeDetails
         )
+
       _ <- auditingService.audit(auditModel)
+
     } yield ()
   }
 }

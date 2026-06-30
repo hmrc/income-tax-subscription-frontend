@@ -16,76 +16,95 @@
 
 package models.audits
 
-import models.EligibilityStatus
-import models.DateModel
+import models.{Current, EligibilityStatus}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
-import models.common._
-import models.common.business._
+import models.common.AccountingYearModel
+import models.common.business.{Address, Country}
 import models.status.{MandationStatus, MandationStatusModel}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import utilities.AccountingPeriodUtil
-import play.api.libs.json._
+import play.api.libs.json.{JsArray, Json}
+import services.GetCompleteDetailsService.*
+import utilities.{AccountingPeriodUtil, CurrentDateProvider}
+
+import java.time.LocalDate
 
 class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matchers {
+
+  private val currentYear = 2023
+  private val selectedTaxYear = Some(AccountingYearModel(Current))
+  private val populatedCompleteDetails =
+    CompleteDetails(
+      incomeSources =
+        IncomeSources(
+          soleTraderBusinesses = Some(
+            SoleTraderBusinesses(
+              Seq(
+                SoleTraderBusiness(
+                  id = "business-1",
+                  name = "ABC Builders",
+                  trade = "Builder",
+                  startDate = Some(LocalDate.of(2022, 1, 1)),
+                  address =
+                    Address(
+                      lines = Seq("line 1", "line 2"),
+                      postcode = Some("testPostcode"),
+                      country = Some(Country("GB", "United Kingdom"))
+                    )
+                )
+              )
+            )
+          ),
+          ukProperty = Some(
+            UKProperty(
+              startDate = Some(LocalDate.of(2024, 4, 6))
+            )
+          ),
+          foreignProperty = Some(
+            ForeignProperty(
+              startDate = None
+            )
+          )
+        ),
+      taxYear = AccountingYearModel(Current)
+    )
+
+  private val emptyCompleteDetails =
+    CompleteDetails(
+      incomeSources =
+        IncomeSources(
+          soleTraderBusinesses = None,
+          ukProperty = None,
+          foreignProperty = None
+        ),
+      taxYear = AccountingYearModel(Current)
+    )
 
   "ITSASignUpSubmissionRequestAuditModel" should {
 
     "generate the expected JSON when all data is supplied" in {
 
-      val model = ITSASignUpSubmissionRequestAuditModel(
-        agentReferenceNumber = Some("TARN1234567"),
-        utr = Some("1234567890"),
-        nino = Some("AA123456A"),
-        eligibility = Some(
-          EligibilityStatus(
-            eligibleCurrentYear = true,
-            eligibleNextYear = false,
-            exemptionReason = None
-          )
-        ),
-        maybeItsaStatusModel = Some(
-          MandationStatusModel(
-            currentYearStatus = MandationStatus.Voluntary,
-            nextYearStatus = MandationStatus.Mandated
-          )
-        ),
-        selfEmployments = Seq(
-          SelfEmploymentData(
-            id = "business-1",
-            startDateBeforeLimit = Some(false),
-            businessStartDate = Some(
-              BusinessStartDate(DateModel("01", "01", "2022"))
-            ),
-            businessName = Some(
-              BusinessNameModel("ABC Builders")
-            ),
-            businessTradeName = Some(
-              BusinessTradeNameModel("Builder")
-            ),
-            businessAddress = Some(
-              BusinessAddressModel(
-                Address(lines = Seq("line 1", "line 2"), postcode = Some("testPostcode"), country = Some(Country("GB", "United Kingdom")))
-              )
-            ),
-            confirmed = true
-          )
-        ),
-        maybePropertyModel = Some(
-          PropertyModel(
-            startDateBeforeLimit = Some(false),
-            startDate = Some(DateModel("06", "04", "2024")),
-            confirmed = true
-          )
-        ),
-        maybeOverseasPropertyModel = Some(
-          OverseasPropertyModel(
-            startDateBeforeLimit = Some(true),
-            startDate = None,
-            confirmed = true
-          )
+      val model =
+        ITSASignUpSubmissionRequestAuditModel(
+          agentReferenceNumber = Some("TARN1234567"),
+          utr = Some("1234567890"),
+          nino = Some("AA123456A"),
+          eligibility = Some(
+            EligibilityStatus(
+              eligibleCurrentYear = true,
+              eligibleNextYear = false,
+              exemptionReason = None
+            )
+          ),
+          currentYear = 2023,
+          maybeItsaStatusModel = Some(
+            MandationStatusModel(
+              currentYearStatus = MandationStatus.Voluntary,
+              nextYearStatus = MandationStatus.Mandated
+            )
+          ),
+          completeDetails = populatedCompleteDetails
         )
-      )
 
       val expectedJson =
         Json.obj(
@@ -93,7 +112,7 @@ class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matcher
           "arn" -> "TARN1234567",
           "nino" -> "AA123456A",
           "utr" -> "1234567890",
-          "taxYear" -> AccountingPeriodUtil.getCurrentTaxYear.toString,
+          "taxYear" -> currentYear.toString,
           "signUpTaxYears" -> Json.obj(
             "currentTaxYear" -> AccountingPeriodUtil.getCurrentTaxYear.toString,
             "nextTaxYear" -> AccountingPeriodUtil.getNextTaxYear.toString
@@ -146,36 +165,34 @@ class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matcher
 
     "generate an individual user when no ARN is supplied" in {
 
-      val model = ITSASignUpSubmissionRequestAuditModel(
-        None,
-        None,
-        None,
-        None,
-        None,
-        Seq.empty,
-        None,
-        None
-      )
+      val model =
+        ITSASignUpSubmissionRequestAuditModel(
+          agentReferenceNumber = None,
+          utr = None,
+          nino = None,
+          eligibility = None,
+          currentYear = currentYear,
+          maybeItsaStatusModel = None,
+          completeDetails = emptyCompleteDetails
+        )
 
       (model.detail \ "userType").as[String] shouldBe "individual"
     }
 
     "generate an empty income array when no income sources exist" in {
 
-      val model = ITSASignUpSubmissionRequestAuditModel(
-        None,
-        None,
-        None,
-        None,
-        None,
-        Seq.empty,
-        None,
-        None
-      )
+      val model =
+        ITSASignUpSubmissionRequestAuditModel(
+          agentReferenceNumber = None,
+          utr = None,
+          nino = None,
+          eligibility = None,
+          currentYear = currentYear,
+          maybeItsaStatusModel = None,
+          completeDetails = emptyCompleteDetails
+        )
 
       (model.detail \ "income").as[JsArray].value shouldBe Seq.empty
     }
-
   }
-
 }

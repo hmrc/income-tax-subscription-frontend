@@ -31,6 +31,7 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -46,6 +47,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  signUpOrchestrationService: SignUpOrchestrationService,
                                                  subscriptionDetailsService: SubscriptionDetailsService,
                                                  eligibilityStatusService: GetEligibilityStatusService,
+                                                 currentDateProvider: CurrentDateProvider,
                                                  utrService: UTRService,
                                                  ninoService: NinoService,
                                                  mandationStatusService: MandationStatusService)
@@ -55,34 +57,31 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
-      mandationStatusService.getMandationStatus(request.sessionData).flatMap { mandationStatus =>
-        for {sessionData <- sessionDataService.getAllSessionData()
-             itsaSignUpSubmissionAuditData <- itsaSignUpSubmissionRequestAuditEvent(sessionData, request.reference)
-             _ <- auditingService.audit(itsaSignUpSubmissionAuditData)
-             } yield {
-          Ok(
-            globalCheckYourAnswers(
-              postAction = routes.GlobalCheckYourAnswersController.submit,
-              completeDetails = completeDetails,
-              clientDetails = request.clientDetails,
-              softwareStatus = request.sessionData.fetchSoftwareStatus,
-              isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
-            )
+      mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
+        Ok(
+          globalCheckYourAnswers(
+            postAction = routes.GlobalCheckYourAnswersController.submit,
+            completeDetails = completeDetails,
+            clientDetails = request.clientDetails,
+            softwareStatus = request.sessionData.fetchSoftwareStatus,
+            isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
           )
+        )
+      }
+    }
+  }
+
+  def submit: Action[AnyContent] =
+    (identify andThen journeyRefiner).async { implicit request =>
+      withCompleteDetails(request.reference) { completeDetails =>
+        itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+          sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
+            backgroundSignUp(completeDetails)
+            Redirect(routes.LoadingSpinnerController.show)
+          }
         }
       }
     }
-  }
-
-  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    withCompleteDetails(request.reference) { completeDetails =>
-      sessionDataService.saveSubmissionStatus(inProgress) map { _ =>
-        backgroundSignUp(completeDetails)
-        Redirect(routes.LoadingSpinnerController.show)
-      }
-    }
-  }
-
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent]): Unit = {
     signUp(completeDetails).onComplete {
       case Success(Right(_)) | Success(Left(AlreadySignedUp)) =>
@@ -120,27 +119,28 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 
-  private def itsaSignUpSubmissionRequestAuditEvent(sessionData: SessionData, reference: String)(implicit hc: HeaderCarrier): Future[ITSASignUpSubmissionRequestAuditModel] = {
+  private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent],
+                                                                                      hc: HeaderCarrier): Future[Unit] = {
+  val arn = request.arn
+
     for {
-      nino <- ninoService.getNino(sessionData)
-      utr <- utrService.getUTR(sessionData)
-      eligibity <- eligibilityStatusService.getEligibilityStatus(sessionData)
-      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-      businesses <- subscriptionDetailsService.fetchAllSelfEmployments(reference)
-      property <- subscriptionDetailsService.fetchProperty(reference)
-      overseasProperty <- subscriptionDetailsService.fetchOverseasProperty(reference)
-    } yield {
-      ITSASignUpSubmissionRequestAuditModel(
-        agentReferenceNumber = None,
-        utr = Some(utr),
-        nino = Some(nino),
-        eligibility = Some(eligibity),
-        maybeItsaStatusModel = Some(mandationStatus),
-        selfEmployments = businesses,
-        maybePropertyModel = property,
-        maybeOverseasPropertyModel = overseasProperty
-      )
-    }
+      eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
+      mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
+
+      auditModel =
+        ITSASignUpSubmissionRequestAuditModel(
+          agentReferenceNumber = Some(arn),
+          utr = Some(request.utr),
+          nino = Some(request.clientDetails.nino),
+          eligibility = Some(eligibility),
+          currentYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
+          maybeItsaStatusModel = Some(mandationStatus),
+          completeDetails = completeDetails
+        )
+
+      _ <- auditingService.audit(auditModel)
+
+    } yield ()
   }
 }
 

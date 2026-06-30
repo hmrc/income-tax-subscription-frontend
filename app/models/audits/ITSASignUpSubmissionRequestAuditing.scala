@@ -22,8 +22,9 @@ import models.common.{OverseasPropertyModel, PropertyModel}
 import models.status.MandationStatusModel
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.*
+import services.GetCompleteDetailsService.{CompleteDetails, SoleTraderBusinesses}
 import services.JsonAuditModel
-import utilities.AccountingPeriodUtil
+import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
 object ITSASignUpSubmissionRequestAuditing {
 
@@ -36,40 +37,27 @@ object ITSASignUpSubmissionRequestAuditing {
                                                    utr: Option[String],
                                                    nino: Option[String],
                                                    eligibility: Option[EligibilityStatus],
+                                                   currentYear: Int,
                                                    maybeItsaStatusModel: Option[MandationStatusModel],
-                                                   selfEmployments: Seq[SelfEmploymentData],
-                                                   maybePropertyModel: Option[PropertyModel],
-                                                   maybeOverseasPropertyModel: Option[OverseasPropertyModel])
+                                                   completeDetails: CompleteDetails)
     extends JsonAuditModel {
 
     override val auditType: String = ITSASignUpSubmissionRequestAudit
 
-    private val overseasPropertyAsJson: Option[JsValue] = maybeOverseasPropertyModel.map { overseasProperty =>
-      val dateLimitYesNo: String = {
-        overseasProperty.startDateBeforeLimit match {
-          case Some(true) => "Yes"
-          case _ => "No"
-        }
-      }
+    private val overseasPropertyAsJson: Option[JsValue] = completeDetails.incomeSources.foreignProperty.map { overseasProperty =>
       Json.toJson(AuditDetailUserPropertyIncome(
         incomeSource = overseasPropertyIncomeSource,
         startDateLimit = Some(AccountingPeriodUtil.getStartDateLimit.toString),
-        startDateBeforeLimit = Some(dateLimitYesNo),
-        commencementDate = overseasProperty.startDate.map(_.toDesDateFormat)
+        startDateBeforeLimit = Some(if (overseasProperty.startDate.isEmpty) "Yes" else "No"),
+        commencementDate = overseasProperty.startDate.map(_.toString)
       ))
     }
-    private val ukPropertyAsJson: Option[JsValue] = maybePropertyModel.map { property =>
-      val dateLimitYesNo: String = {
-        property.startDateBeforeLimit match {
-          case Some(true) => "Yes"
-          case _ => "No"
-        }
-      }
+    private val ukPropertyAsJson: Option[JsValue] = completeDetails.incomeSources.ukProperty.map { property =>
       Json.toJson(AuditDetailUserPropertyIncome(
         incomeSource = ukPropertyIncomeSource,
         startDateLimit = Some(AccountingPeriodUtil.getStartDateLimit.toString),
-        startDateBeforeLimit = Some(dateLimitYesNo),
-        commencementDate = property.startDate.map(_.toDesDateFormat)
+        startDateBeforeLimit = Some(if (property.startDate.isEmpty) "Yes" else "No"),
+        commencementDate = property.startDate.map(_.toString)
       ))
     }
 
@@ -108,12 +96,13 @@ object ITSASignUpSubmissionRequestAuditing {
       ))
     }
 
+    
     val income: Seq[JsValue] = Seq() ++ ukPropertyAsJson ++ overseasPropertyAsJson ++
-      selfEmploymentAsJson(selfEmployments)
+      selfEmploymentAsJson(completeDetails.incomeSources.soleTraderBusinesses)
 
     val userType: String = if (agentReferenceNumber.isDefined) "agent" else "individual"
     val arn: Option[String] = agentReferenceNumber
-    val currentYear: String = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate)
+    
 
     override val detail: JsValue =
       Json.obj(
@@ -121,7 +110,7 @@ object ITSASignUpSubmissionRequestAuditing {
         "arn" -> arn,
         "nino" -> nino,
         "utr" -> utr,
-        "taxYear" -> currentYear,
+        "taxYear" -> currentYear.toString,
         "signUpTaxYears" -> signUpTaxYearsAsJson,
         "itsaStatus" -> itsaStatusAsJson,
         "eligibilityStatus" -> eligibilityAsJson,
@@ -177,20 +166,23 @@ object ITSASignUpSubmissionRequestAuditing {
     }
 
     private def selfEmploymentAsJson(
-                                      selfEmployments: Seq[SelfEmploymentData]
+                                      selfEmployments: Option[SoleTraderBusinesses]
                                     ): Option[JsValue] =
-      selfEmployments match {
-        case Seq() => None
-        case _ => Some(
-          Json.toJson(AuditDetailSelfEmployedIncome(
-            incomeSource = selfEmploymentIncomeSource,
-            businesses = selfEmployments.map(se => AuditDetailBusinessIncome(
-              businessName = se.businessName.map(_.businessName),
-              businessCommencementDate = se.businessStartDate.map(_.startDate.toDesDateFormat),
-              businessTrade = se.businessTradeName.map(_.businessTradeName),
-              businessAddress = se.businessAddress.map(_.address)
-            ))
-          )))
+      selfEmployments.map { businesses => 
+        Json.toJson(
+          AuditDetailSelfEmployedIncome(
+            incomeSource =  selfEmploymentIncomeSource,
+            businesses = businesses.businesses.map{ business =>
+              
+              AuditDetailBusinessIncome(
+                businessName = Some(business.name),
+                businessTrade = Some(business.trade),
+                businessAddress =  Some(business.address),
+                businessCommencementDate = business.startDate.map(_.toString)
+              )
+            }
+          )
+        )
       }
   }
 }
