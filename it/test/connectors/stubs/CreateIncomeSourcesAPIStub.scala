@@ -37,16 +37,18 @@ object CreateIncomeSourcesAPIStub extends WireMockMethods {
       body = json
     )
   }
+  
+  case class StubResponse(status: Int, code: Option[String] = None)
 
   def stubCreateIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
-                             (statuses: Seq[Int]): Unit = {
+                             (responses: Seq[StubResponse]): Unit = {
     val url = createIncomeSourcesUri(mtdbsa)
-    statuses.zipWithIndex.foreach {
-      case (status, index) =>
+    responses.zipWithIndex.foreach {
+      case (response, index) =>
         stubFor(
           post(urlMatching(url))
             .inScenario(url)
-            .willReturn(aResponse().withStatus(status))
+            .willReturn(aResponse().withStatus(response.status).withBody(response.code.fold("{}")(c => s"""{"code":"$c"}""")))
             .whenScenarioStateIs(if (index == 0) Scenario.STARTED else s"State #$index")
             .willSetStateTo(s"State #${index + 1}")
         )

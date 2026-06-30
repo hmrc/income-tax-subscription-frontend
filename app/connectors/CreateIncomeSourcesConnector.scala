@@ -46,10 +46,10 @@ class CreateIncomeSourcesConnector @Inject()(
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     if (isEnabled(UseIdempotency)) {
       retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey()) {
-        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY)), _) => getNewIdempotencyKey()
-        case (Left(UnexpectedStatus(BAD_GATEWAY)), key) => key
-        case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE)), key) => key
-        case (Left(UnexpectedStatus(GATEWAY_TIMEOUT)), key) => key
+        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY, Some("003"))), _) => getNewIdempotencyKey(Some(UNPROCESSABLE_ENTITY), Some("003"))
+        case (Left(UnexpectedStatus(BAD_GATEWAY, _)), key) => sameIdemPotencyKey(BAD_GATEWAY, key)
+        case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE, _)), key) => sameIdemPotencyKey(SERVICE_UNAVAILABLE, key)
+        case (Left(UnexpectedStatus(GATEWAY_TIMEOUT, _)), key) => sameIdemPotencyKey(GATEWAY_TIMEOUT, key)
       } { key =>
         updateBackend(
           mtdbsa = mtdbsa,
@@ -69,6 +69,12 @@ class CreateIncomeSourcesConnector @Inject()(
       .withBody(Json.toJson(request))
       .execute[CreateIncomeSourcesResponse]
       
-  private def getNewIdempotencyKey() =
-    uuidProvider.getUUID
+  private def getNewIdempotencyKey(status: Option[Int] = None, code: Option[String] = None) = {
+    uuidProvider.getUUID(status, code)
+  }
+  
+  private def sameIdemPotencyKey(status: Int, key: String) = {
+    uuidProvider.same(Some(status), None)
+    key
+  }
 }

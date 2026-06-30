@@ -21,6 +21,11 @@ import javax.inject.{Inject, Singleton}
 
 trait UUIDProvider {
   def getUUID: String = UUID.randomUUID().toString
+  
+  def getUUID(status: Option[Int], code: Option[String]): String =
+    getUUID
+    
+  def same(status: Option[Int], code: Option[String]): Unit = {}
 }
 
 @Singleton

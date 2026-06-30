@@ -17,13 +17,14 @@
 package connectors.httpparser
 
 import play.api.http.Status.NO_CONTENT
+import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object CreateIncomeSourcesResponseHttpParser {
 
   case object CreateIncomeSourcesSuccess
 
-  case class UnexpectedStatus(status: Int)
+  case class UnexpectedStatus(status: Int, code: Option[String] = None)
 
   type CreateIncomeSourcesResponse = Either[UnexpectedStatus, CreateIncomeSourcesSuccess.type]
 
@@ -31,7 +32,12 @@ object CreateIncomeSourcesResponseHttpParser {
     override def read(method: String, url: String, response: HttpResponse): CreateIncomeSourcesResponse = {
       response.status match {
         case NO_CONTENT => Right(CreateIncomeSourcesSuccess)
-        case status => Left(UnexpectedStatus(status))
+        case status =>
+          val code = (response.json \ "code").validate[String] match {
+            case JsSuccess(code, _) => Some(code)
+            case _ => None
+          }
+          Left(UnexpectedStatus(status, code))
       }
     }
   }
