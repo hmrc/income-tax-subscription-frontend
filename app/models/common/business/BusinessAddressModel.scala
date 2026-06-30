@@ -27,7 +27,7 @@ object BusinessAddressModel {
 }
 
 case class Address(lines: Seq[String], postcode: Option[String], country: Option[Country], uprn: Option[String] = None) {
-  override def toString: String = (lines ++ postcode ++ country.map(_.name)).mkString("<br>")
+  override def toString: String = (lines ++ postcode ++ country.map(_.name) ++ uprn).mkString("<br>")
 }
 
 object Address {

@@ -113,7 +113,7 @@ object ITSASignUpSubmissionRequestAuditing {
 
     val userType: String = if (agentReferenceNumber.isDefined) "agent" else "individual"
     val arn: Option[String] = agentReferenceNumber
-    val currentYear: String = AccountingPeriodUtil.getCurrentTaxYear.toString
+    val currentYear: String = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate)
 
     override val detail: JsValue =
       Json.obj(
