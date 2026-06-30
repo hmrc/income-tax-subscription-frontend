@@ -164,7 +164,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     "microservice.services.channel-preferences.host" -> mockHost,
     "microservice.services.channel-preferences.port" -> mockPort,
     "microservice.services.income-tax-session-data.host" -> mockHost,
-    "microservice.services.income-tax-session-data.port" -> mockPort
+    "microservice.services.income-tax-session-data.port" -> mockPort,
+    "retries.intervals.0" -> "1.millisecond",
+    "retries.intervals.1" -> "1.millisecond",
+    "retries.intervals.2" -> "1.millisecond"
   )
 
   override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
