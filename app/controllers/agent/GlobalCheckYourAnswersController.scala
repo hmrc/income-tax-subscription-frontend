@@ -19,17 +19,15 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
-import models.SessionData
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.subscription.CreateIncomeSourcesModel
-import services.{AuditingService, SubscriptionDetailsService}
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
-import services.*
 import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 import views.html.agent.GlobalCheckYourAnswers
@@ -82,6 +80,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         }
       }
     }
+
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent]): Unit = {
     signUp(completeDetails).onComplete {
       case Success(Right(_)) | Success(Left(AlreadySignedUp)) =>
@@ -119,9 +118,9 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 
-  private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent],
-                                                                                      hc: HeaderCarrier): Future[Unit] = {
-  val arn = request.arn
+  private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)
+                                                   (implicit request: ConfirmedClientRequest[AnyContent], hc: HeaderCarrier): Future[Unit] = {
+    val arn = request.arn
 
     for {
       eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
@@ -130,11 +129,10 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       auditModel =
         ITSASignUpSubmissionRequestAuditModel(
           agentReferenceNumber = Some(arn),
-          utr = Some(request.utr),
-          nino = Some(request.clientDetails.nino),
-          eligibility = Some(eligibility),
-          currentYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
-          maybeItsaStatusModel = Some(mandationStatus),
+          utr = request.utr,
+          nino = request.clientDetails.nino,
+          eligibility = eligibility,
+          itsaStatus = mandationStatus,
           completeDetails = completeDetails
         )
 

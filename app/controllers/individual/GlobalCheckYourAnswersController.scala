@@ -16,10 +16,9 @@
 
 package controllers.individual
 
-import common.Constants.{ITSASessionKeys, agentServiceIdentifierKey}
+import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import models.SessionData
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.subscription.CreateIncomeSourcesModel
@@ -30,7 +29,7 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.individual.SignUpOrchestrationService
 import services.individual.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.{AccountingPeriodUtil, CurrentDateProvider}
+import utilities.CurrentDateProvider
 import views.html.individual.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -133,11 +132,10 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
       auditModel =
         ITSASignUpSubmissionRequestAuditModel(
           agentReferenceNumber = None,
-          utr = Some(utr),
-          nino = Some(request.nino),
-          eligibility = Some(eligibility),
-          currentYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate),
-          maybeItsaStatusModel = Some(mandationStatus),
+          utr = utr,
+          nino = request.nino,
+          eligibility = eligibility,
+          itsaStatus = mandationStatus,
           completeDetails = completeDetails
         )
 
