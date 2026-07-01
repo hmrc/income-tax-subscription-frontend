@@ -394,6 +394,85 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             verifyPost("/channel-preferences/enrolment", Some(Json.toJson(expectedSPSBody).toString), Some(1))
             verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
+          "sign up and create income sources fail with a retry status on the first attempt and then succeed" in {
+            Given("I setup the Wiremock stubs")
+            enable(UseIdempotency)
+
+            AuthStub.stubAuthSuccess()
+            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              Property,
+              OK,
+              Json.toJson(testFullPropertyModel.copy(
+                startDate = Some(testUkProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
+              OverseasProperty,
+              OK,
+              Json.toJson(testFullOverseasPropertyModel.copy(
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              ))
+            )
+            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr)
+            ))
+
+            AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+            AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
+
+            SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+              scenarioName = "global-cya-idempotency-retry-success",
+              firstAttemptKey = "test-uuid",
+              secondAttemptKey = "test-uuid",
+              retryableCode = "003",
+              successBody = Json.obj("mtdbsa" -> testMtdId)
+            )
+
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, CreateIncomeSourcesModel(
+              nino = testNino,
+              soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                businesses = testSoleTraderBusinesses().businesses.map(business =>
+                  business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
+                )
+              )),
+              ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+              idempotencyKey = Some("test-uuid")
+            ))(
+              responses = Seq(
+                StubResponse(GATEWAY_TIMEOUT),
+                StubResponse(NO_CONTENT)
+              )
+            )
+
+            And("The wiremock stubs for auto enrolment")
+            EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testIRSAEnrolmentKey)(OK)
+            EnrolmentStoreProxyStub.stubGetUserIds(testUtr)(OK, jsonResponseBody(principalUserIdKey, testCredentialId, testCredentialId2))
+            UsersGroupsSearchStub.stubGetUsersForGroups(testGroupId)(NON_AUTHORITATIVE_INFORMATION, UsersGroupsSearchStub.successfulResponseBody)
+            EnrolmentStoreProxyStub.stubUpsertEnrolment(testMtdId, testNino)(NO_CONTENT)
+            EnrolmentStoreProxyStub.stubAllocateEnrolmentWithoutKnownFacts(testMtdId, testGroupId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId)(CREATED)
+            EnrolmentStoreProxyStub.stubAssignEnrolment(testMtdId, testCredentialId2)(CREATED)
+
+            When("POST /client/final-check-your-answers is called")
+            val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+            Then("Should still redirect to the confirmation flow")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(AgentURI.spinnyWheelURI)
+            )
+
+            waitUntilStatusIs(success, timeout = 15000)
+
+            SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "test-uuid")
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
+          }
         }
         "signing up for the next tax year" when {
           "all calls were successful" in {
