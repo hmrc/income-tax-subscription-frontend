@@ -17,6 +17,9 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
+import config.AppConfig
+import config.featureswitch.*
+import config.featureswitch.FeatureSwitch.SubmissionAuditUpdate
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
@@ -48,10 +51,11 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  utrService: UTRService,
                                                  ninoService: NinoService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
-                                                 mandationStatusService: MandationStatusService)
+                                                 mandationStatusService: MandationStatusService,
+                                                 val appConfig: AppConfig)
                                                 (val auditingService: AuditingService)
                                                 (implicit ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
@@ -68,8 +72,17 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] =
     (identify andThen journeyRefiner).async { implicit request =>
-      withCompleteDetails(request.reference) { completeDetails =>
-        itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+      if (isEnabled(SubmissionAuditUpdate)) {
+        withCompleteDetails(request.reference) { completeDetails =>
+          itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+            sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
+              backgroundSignUp(completeDetails)
+              Redirect(routes.LoadingSpinnerController.show)
+            }
+          }
+        }
+      } else {
+        withCompleteDetails(request.reference) { completeDetails =>
           sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
             backgroundSignUp(completeDetails)
             Redirect(routes.LoadingSpinnerController.show)
@@ -77,6 +90,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
         }
       }
     }
+      
 
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: SignUpRequest[AnyContent]): Unit = {
     signUp(completeDetails).onComplete {

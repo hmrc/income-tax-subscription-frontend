@@ -17,6 +17,9 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.SubmissionAuditUpdate
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
@@ -24,10 +27,10 @@ import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionReq
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
+import services.*
 import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
-import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 import views.html.agent.GlobalCheckYourAnswers
@@ -48,10 +51,11 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  currentDateProvider: CurrentDateProvider,
                                                  utrService: UTRService,
                                                  ninoService: NinoService,
-                                                 mandationStatusService: MandationStatusService)
+                                                 mandationStatusService: MandationStatusService,
+                                                 val appConfig: AppConfig)
                                                 (val auditingService: AuditingService)
                                                 (implicit ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
@@ -71,8 +75,17 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def submit: Action[AnyContent] =
     (identify andThen journeyRefiner).async { implicit request =>
-      withCompleteDetails(request.reference) { completeDetails =>
-        itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+      if (isEnabled(SubmissionAuditUpdate)) {
+        withCompleteDetails(request.reference) { completeDetails =>
+          itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+            sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
+              backgroundSignUp(completeDetails)
+              Redirect(routes.LoadingSpinnerController.show)
+            }
+          }
+        }
+      } else {
+        withCompleteDetails(request.reference) { completeDetails =>
           sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
             backgroundSignUp(completeDetails)
             Redirect(routes.LoadingSpinnerController.show)
