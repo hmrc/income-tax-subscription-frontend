@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 
 trait UUIDProvider {
   def getUUID: String = UUID.randomUUID().toString
-  
+
   def getAndNoteNewKeyForStatusAndCode(status: Option[Int], code: Option[String]): String = {
     // This just returns a new key.
     // \The "note" part is to be implemented by derived (test) classes.
