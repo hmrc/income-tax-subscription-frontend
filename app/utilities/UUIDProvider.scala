@@ -22,10 +22,15 @@ import javax.inject.{Inject, Singleton}
 trait UUIDProvider {
   def getUUID: String = UUID.randomUUID().toString
   
-  def getUUID(status: Option[Int], code: Option[String]): String =
+  def getAndNoteNewKeyForStatusAndCode(status: Option[Int], code: Option[String]): String = {
+    // This just returns a new key.
+    // \The "note" part is to be implemented by derived (test) classes.
     getUUID
-    
-  def same(status: Option[Int], code: Option[String]): Unit = {}
+  }
+
+  def noteSameKeyForStatusAndCode(status: Option[Int], code: Option[String]): Unit = {
+    // This does nothing and is to be implemented by derived (test) classes.
+  }
 }
 
 @Singleton

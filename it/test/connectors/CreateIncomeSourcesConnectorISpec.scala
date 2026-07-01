@@ -48,12 +48,12 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
   private class TestUUIDProvider extends UUIDProvider {
     var data: mutable.Seq[Item] = mutable.Seq()
 
-    override def getUUID(status: Option[Int], code: Option[String]): String = {
+    override def getAndNoteNewKeyForStatusAndCode(status: Option[Int], code: Option[String]): String = {
       data = data ++ mutable.Seq(Item(status, code, isNewKey = true))
       testIdempotencyKey
     }
 
-    override def same(status: Option[Int], code: Option[String]): Unit = {
+    override def noteSameKeyForStatusAndCode(status: Option[Int], code: Option[String]): Unit = {
       data = data ++ mutable.Seq(Item(status, code, isNewKey = false))
     }
 

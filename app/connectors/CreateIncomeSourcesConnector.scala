@@ -70,11 +70,11 @@ class CreateIncomeSourcesConnector @Inject()(
       .execute[CreateIncomeSourcesResponse]
       
   private def getNewIdempotencyKey(status: Option[Int] = None, code: Option[String] = None) = {
-    uuidProvider.getUUID(status, code)
+    uuidProvider.getAndNoteNewKeyForStatusAndCode(status, code)
   }
   
   private def sameIdemPotencyKey(status: Int, key: String) = {
-    uuidProvider.same(Some(status), None)
+    uuidProvider.noteSameKeyForStatusAndCode(Some(status), None)
     key
   }
 }
