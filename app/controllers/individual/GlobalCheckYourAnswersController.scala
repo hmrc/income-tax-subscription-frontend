@@ -123,12 +123,8 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def itsaSignUpSubmissionRequestAuditEvent(
-                                                     completeDetails: CompleteDetails
-                                                   )(
-                                                     implicit request: SignUpRequest[AnyContent],
-                                                     hc: HeaderCarrier
-                                                   ): Future[Unit] = {
+  private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)
+                                                   (implicit request: SignUpRequest[AnyContent], hc: HeaderCarrier): Future[Unit] = {
     if(!isEnabled(SubmissionAuditUpdate)){
       Future.unit
     }else{
