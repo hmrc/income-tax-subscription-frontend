@@ -22,7 +22,7 @@ import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.stubs.CreateIncomeSourcesAPIStub
 import connectors.stubs.CreateIncomeSourcesAPIStub.{StubResponse, createIncomeSourcesUri}
 import helpers.{ComponentSpecBase, WiremockHelper}
-import models.DateModel
+import models.{DateModel, ErrorModel}
 import models.common.business.*
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
 import play.api.http.Status.*
@@ -72,14 +72,20 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
   "createIncomeSources" when {
     s"a $NO_CONTENT status response is received" must {
       "return a create income sources success response" in {
-        disable(UseIdempotency)
-        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
-          status = NO_CONTENT
-        )
+        Seq(false, true).foreach { withIdempotency =>
+          if (withIdempotency) {
+            enable(UseIdempotency)
+          } else {
+            disable(UseIdempotency)
+          }
+          CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(withIdempotency))(
+            status = NO_CONTENT
+          )
 
-        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
+          val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(withIdempotency))
 
-        await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
+          await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
+        }
       }
     }
     "an unhandled status response is received" must {
@@ -148,6 +154,38 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
           Item(Some(SERVICE_UNAVAILABLE), isNewKey = false),
           Item(Some(GATEWAY_TIMEOUT), isNewKey = false)
         )
+      }
+    }
+    "returns an error when using [idempotencyKey]" must {
+      "runs-out of retries" in {
+        enable(UseIdempotency)
+        testUUIDProvider.reset()
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+          responses = Seq(
+            StubResponse(BAD_GATEWAY),
+            StubResponse(BAD_GATEWAY),
+            StubResponse(BAD_GATEWAY),
+            StubResponse(BAD_GATEWAY)
+          )
+        )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+
+        await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(BAD_GATEWAY))
+      }
+      s"status = $UNPROCESSABLE_ENTITY and code is not 003" in {
+        val code = "999"
+        enable(UseIdempotency)
+        testUUIDProvider.reset()
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+          responses = Seq(
+            StubResponse(UNPROCESSABLE_ENTITY, Some(code))
+          )
+        )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+
+        await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(UNPROCESSABLE_ENTITY, Some(code)))
       }
     }
   }
