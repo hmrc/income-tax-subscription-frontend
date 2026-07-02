@@ -72,17 +72,8 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] =
     (identify andThen journeyRefiner).async { implicit request =>
-      if (isEnabled(SubmissionAuditUpdate)) {
-        withCompleteDetails(request.reference) { completeDetails =>
-          itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
-            sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
-              backgroundSignUp(completeDetails)
-              Redirect(routes.LoadingSpinnerController.show)
-            }
-          }
-        }
-      } else {
-        withCompleteDetails(request.reference) { completeDetails =>
+      withCompleteDetails(request.reference) { completeDetails =>
+        itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
           sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
             backgroundSignUp(completeDetails)
             Redirect(routes.LoadingSpinnerController.show)
@@ -90,6 +81,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
         }
       }
     }
+    
       
 
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: SignUpRequest[AnyContent]): Unit = {
@@ -137,24 +129,29 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                      implicit request: SignUpRequest[AnyContent],
                                                      hc: HeaderCarrier
                                                    ): Future[Unit] = {
+    if(!isEnabled(SubmissionAuditUpdate)){
+      Future.unit
+    }else{
+      for {
+        utr <- utrService.getUTR(request.sessionData)
+        eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
+        mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
 
-    for {
-      utr <- utrService.getUTR(request.sessionData)
-      eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
-      mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
+        auditModel =
+          ITSASignUpSubmissionRequestAuditModel(
+            agentReferenceNumber = None,
+            utr = utr,
+            nino = request.nino,
+            eligibility = eligibility,
+            itsaStatus = mandationStatus,
+            completeDetails = completeDetails
+          )
 
-      auditModel =
-        ITSASignUpSubmissionRequestAuditModel(
-          agentReferenceNumber = None,
-          utr = utr,
-          nino = request.nino,
-          eligibility = eligibility,
-          itsaStatus = mandationStatus,
-          completeDetails = completeDetails
-        )
+        _ <- auditingService.audit(auditModel)
 
-      _ <- auditingService.audit(auditModel)
+      } yield ()
+    }
 
-    } yield ()
+    
   }
 }
