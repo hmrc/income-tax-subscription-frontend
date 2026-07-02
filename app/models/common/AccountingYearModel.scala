@@ -16,10 +16,16 @@
 
 package models.common
 
-import models.AccountingYear
+import models.{AccountingYear, Current, Next}
 import play.api.libs.json.{Json, OFormat}
+import utilities.AccountingPeriodUtil.{getCurrentTaxEndYear, getCurrentTaxStartYear, getNextTaxEndYear, getNextTaxStartYear}
 
-case class AccountingYearModel(accountingYear: AccountingYear, confirmed: Boolean = false, editable: Boolean = true)
+case class AccountingYearModel(accountingYear: AccountingYear, confirmed: Boolean = false, editable: Boolean = true) {
+  lazy val toFullYearFormat: String = accountingYear match {
+    case Current => s"$getCurrentTaxStartYear-$getCurrentTaxEndYear"
+    case Next => s"$getNextTaxStartYear-$getNextTaxEndYear"
+  }
+}
 
 object AccountingYearModel {
   implicit val format: OFormat[AccountingYearModel] = Json.using[Json.WithDefaultValues].format[AccountingYearModel]

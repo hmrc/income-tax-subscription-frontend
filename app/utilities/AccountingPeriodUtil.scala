@@ -42,8 +42,11 @@ object AccountingPeriodUtil {
   def getTaxEndYear(accountingPeriodModel: AccountingPeriodModel): Int = getTaxEndYear(accountingPeriodModel.endDate.toLocalDate)
 
   def getCurrentTaxStartYear: Int = getTaxStartYear(LocalDate.now())
+
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())
+
   def getNextTaxStartYear: Int = getTaxStartYear(LocalDate.now().plusYears(1))
+
   def getNextTaxEndYear: Int = getTaxEndYear(LocalDate.now().plusYears(1))
 
   def getEndOfPeriodStatementDate(isNextTaxYear: Boolean): LocalDate = {

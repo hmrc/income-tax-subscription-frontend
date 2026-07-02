@@ -34,6 +34,7 @@ case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
     else this
   val toShortTaxYear: String = s"${startDate.year.takeRight(2)}-${endDate.year.takeRight(2)}"
   val toLongTaxYear: String = s"${startDate.year}-${endDate.year.takeRight(2)}"
+  val toFullTaxYear: String = s"${startDate.year}-${endDate.year}"
 }
 
 object AccountingPeriodModel {

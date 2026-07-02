@@ -17,9 +17,13 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.SubmissionAuditUpdate
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
+import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.subscription.CreateIncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
@@ -28,6 +32,7 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -41,9 +46,16 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  sessionDataService: SessionDataService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
-                                                 mandationStatusService: MandationStatusService)
+                                                 subscriptionDetailsService: SubscriptionDetailsService,
+                                                 eligibilityStatusService: GetEligibilityStatusService,
+                                                 currentDateProvider: CurrentDateProvider,
+                                                 utrService: UTRService,
+                                                 ninoService: NinoService,
+                                                 mandationStatusService: MandationStatusService,
+                                                 val appConfig: AppConfig)
+                                                (val auditingService: AuditingService)
                                                 (implicit ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withCompleteDetails(request.reference) { completeDetails =>
@@ -61,14 +73,17 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 
-  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    withCompleteDetails(request.reference) { completeDetails =>
-      sessionDataService.saveSubmissionStatus(inProgress) map { _ =>
-        backgroundSignUp(completeDetails)
-        Redirect(routes.LoadingSpinnerController.show)
+  def submit: Action[AnyContent] =
+    (identify andThen journeyRefiner).async { implicit request =>
+      withCompleteDetails(request.reference) { completeDetails =>
+        itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
+          sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
+            backgroundSignUp(completeDetails)
+            Redirect(routes.LoadingSpinnerController.show)
+          }
+        }
       }
     }
-  }
 
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: ConfirmedClientRequest[AnyContent]): Unit = {
     signUp(completeDetails).onComplete {
@@ -107,5 +122,32 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 
+  private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)
+                                                   (implicit request: ConfirmedClientRequest[AnyContent], hc: HeaderCarrier): Future[Unit] = {
+
+    if (!isEnabled(SubmissionAuditUpdate)) {
+      Future.unit
+    } else {
+      val arn = request.arn
+
+      for {
+        eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
+        mandationStatus <- mandationStatusService.getMandationStatus(request.sessionData)
+
+        auditModel =
+          ITSASignUpSubmissionRequestAuditModel(
+            agentReferenceNumber = Some(arn),
+            utr = request.utr,
+            nino = request.clientDetails.nino,
+            eligibility = eligibility,
+            itsaStatus = mandationStatus,
+            completeDetails = completeDetails
+          )
+
+        _ <- auditingService.audit(auditModel)
+
+      } yield ()
+    }
+  }
 }
 
