@@ -156,8 +156,8 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         )
       }
     }
-    "returns an error when using [idempotencyKey]" must {
-      "runs-out of retries" in {
+    "return an error when using [idempotencyKey]" must {
+      "run-out of retries" in {
         enable(UseIdempotency)
         testUUIDProvider.reset()
         CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
@@ -173,7 +173,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
 
         await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(BAD_GATEWAY))
       }
-      s"status = $UNPROCESSABLE_ENTITY and code is not 003" in {
+      s"when return status = $UNPROCESSABLE_ENTITY and code is not 003" in {
         val code = "999"
         enable(UseIdempotency)
         testUUIDProvider.reset()
