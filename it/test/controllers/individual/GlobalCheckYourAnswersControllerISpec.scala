@@ -43,12 +43,22 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
   override def beforeEach(): Unit = {
     super.beforeEach()
     stubSaveSubmissionStatus()(OK)
-    stubGetAllSessionData(Map(
-      ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.UTR -> JsString(testUtr),
-      ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(true, false, None)),
-      ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
-    ))
+    SessionDataConnectorStub.stubGetAllSessionData(
+      Map(
+        ITSASessionKeys.NINO -> JsString(testNino),
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.MANDATION_STATUS ->
+          Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+        ITSASessionKeys.ELIGIBILITY_STATUS ->
+          Json.toJson(
+            EligibilityStatus(
+              eligibleCurrentYear = true,
+              eligibleNextYear = true,
+              exemptionReason = None
+            )
+          )
+      )
+    )
   }
 
   override def afterEach(): Unit = {
@@ -84,10 +94,22 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
-        SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        ))
+        SessionDataConnectorStub.stubGetAllSessionData(
+          Map(
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.MANDATION_STATUS ->
+              Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+            ITSASessionKeys.ELIGIBILITY_STATUS ->
+              Json.toJson(
+                EligibilityStatus(
+                  eligibleCurrentYear = true,
+                  eligibleNextYear = true,
+                  exemptionReason = None
+                )
+              )
+          )
+        )
 
         val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
