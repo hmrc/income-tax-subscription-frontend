@@ -177,9 +177,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         enable(UseIdempotency)
         CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
           responses = Seq(
-            StubResponse(UNPROCESSABLE_ENTITY, Some(code)),
-            StubResponse(BAD_GATEWAY),
-            StubResponse(NO_CONTENT)
+            StubResponse(UNPROCESSABLE_ENTITY, Some(code))
           )
         )
 

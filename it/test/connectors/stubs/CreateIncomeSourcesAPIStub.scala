@@ -48,7 +48,7 @@ object CreateIncomeSourcesAPIStub extends WireMockMethods {
         stubFor(
           post(urlMatching(url))
             .inScenario(url)
-            .willReturn(aResponse().withStatus(response.status).withBody(response.code.fold("{}")(c => s"""{"code":"$c"}""")))
+            .willReturn(aResponse().withStatus(response.status).withBody(response.code.fold("")(c => s"""{"code":"$c"}""")))
             .whenScenarioStateIs(if (index == 0) Scenario.STARTED else s"State #$index")
             .willSetStateTo(s"State #${index + 1}")
         )

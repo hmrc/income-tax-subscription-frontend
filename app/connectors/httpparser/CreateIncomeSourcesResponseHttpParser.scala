@@ -20,6 +20,8 @@ import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
+import scala.util.Try
+
 object CreateIncomeSourcesResponseHttpParser {
 
   case object CreateIncomeSourcesSuccess
@@ -33,10 +35,12 @@ object CreateIncomeSourcesResponseHttpParser {
       response.status match {
         case NO_CONTENT => Right(CreateIncomeSourcesSuccess)
         case status =>
-          val code = (response.json \ "code").validate[String] match {
-            case JsSuccess(code, _) => Some(code)
-            case _ => None
-          }
+          val code = Try {
+            (response.json \ "code").validate[String] match {
+              case JsSuccess(code, _) => Some(code)
+              case _ => None
+            }
+          }.getOrElse(None)
           Left(UnexpectedStatus(status, code))
       }
     }
