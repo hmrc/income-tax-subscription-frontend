@@ -16,14 +16,15 @@
 
 package connectors.stubs
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, post, stubFor, urlMatching}
+import com.github.tomakehurst.wiremock.stubbing.{Scenario, StubMapping}
 import helpers.servicemocks.WireMockMethods
 import models.common.subscription.CreateIncomeSourcesModel
 import play.api.libs.json.{JsValue, Json}
 
 object CreateIncomeSourcesAPIStub extends WireMockMethods {
 
-  private def createIncomeSourcesUri(mtdbsa: String): String = s"/income-tax-subscription/mis/create/$mtdbsa"
+  def createIncomeSourcesUri(mtdbsa: String): String = s"/income-tax-subscription/mis/create/$mtdbsa"
 
   def stubCreateIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                              (status: Int, json: JsValue = Json.obj()): StubMapping = {
@@ -35,5 +36,22 @@ object CreateIncomeSourcesAPIStub extends WireMockMethods {
       status = status,
       body = json
     )
+  }
+  
+  case class StubResponse(status: Int, code: Option[String] = None)
+
+  def stubCreateIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
+                             (responses: Seq[StubResponse]): Unit = {
+    val url = createIncomeSourcesUri(mtdbsa)
+    responses.zipWithIndex.foreach {
+      case (response, index) =>
+        stubFor(
+          post(urlMatching(url))
+            .inScenario(url)
+            .willReturn(aResponse().withStatus(response.status).withBody(response.code.fold("")(c => s"""{"code":"$c"}""")))
+            .whenScenarioStateIs(if (index == 0) Scenario.STARTED else s"State #$index")
+            .willSetStateTo(s"State #${index + 1}")
+        )
+    }
   }
 }
