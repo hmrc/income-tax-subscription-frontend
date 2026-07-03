@@ -821,7 +821,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             rows = Seq(
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessTradeKey,
-                value = Some("busin1ess trade"),
+                value = Some("business trade"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
