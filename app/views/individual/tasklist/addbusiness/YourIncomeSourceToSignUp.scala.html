@@ -97,7 +97,7 @@
 @selfEmploymentStartDate(business: SelfEmploymentData) = @{
     (business.startDateBeforeLimit, business.businessStartDate) match {
         case (Some(true), _)  => messages("your-income-source.property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-        case (_, Some(BusinessStartDate(startDate))) => messages("your-income-source.self-employed.business-start-date", startDate.toLocalDate)
+        case (_, businessStartDate) => messages("your-income-source.self-employed.business-start-date", startDate(businessStartDate.map(_.startDate)))
         case _ => ""
     }
 }

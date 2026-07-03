@@ -533,7 +533,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 ),
                 SummaryListRowValues(
                   key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                  value = Some("1980-01-01"),
+                  value = Some("1 January 1980"),
                   actions = Seq.empty
                 ),
                 SummaryListRowValues(
@@ -821,7 +821,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
             rows = Seq(
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessTradeKey,
-                value = Some("business trade"),
+                value = Some("busin1ess trade"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
@@ -831,7 +831,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               ),
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some("1980-01-01"),
+                value = Some("1 January 1980"),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
