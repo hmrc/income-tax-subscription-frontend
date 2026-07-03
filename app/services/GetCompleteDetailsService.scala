@@ -69,7 +69,9 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
 
     if (selfEmployments.forall(_.confirmed) && ukPropertyBusiness.forall(_.confirmed && foreignPropertyBusiness.forall(_.confirmed))) {
       Try {
-        val soleTraderBusinesses: Option[SoleTraderBusinesses] = {
+        val soleTraderBusinesses: Option[SoleTraderBusinesses] = if (selfEmployments.isEmpty) {
+          None
+        } else {
           Some(SoleTraderBusinesses(
             businesses = selfEmployments.map { selfEmploymentData =>
               val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)

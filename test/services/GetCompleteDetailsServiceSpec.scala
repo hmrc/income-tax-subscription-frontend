@@ -123,6 +123,19 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
     taxYear = AccountingYearModel(Current)
   )
 
+  val completeDetailsNoSoleTraders: CompleteDetails = CompleteDetails(
+    incomeSources = IncomeSources(
+      soleTraderBusinesses = None,
+      ukProperty = Some(UKProperty(
+        startDate = Some(startDateLimit.plusDays(1))
+      )),
+      foreignProperty = Some(ForeignProperty(
+        startDate = Some(startDateLimit.plusDays(2))
+      ))
+    ),
+    taxYear = AccountingYearModel(Current)
+  )
+
   "getCompleteSignUpDetails" must {
     "return a complete details model" when {
       "all fetches were successful and are full + confirmed data sets" in new Setup {
@@ -177,6 +190,20 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with MockSubs
         }
 
         await(result) mustBe Right(completeDetailsNoDates)
+      }
+      "no self employments are provided" in new Setup {
+        mockFetchAllSelfEmployments(Seq())
+        mockFetchProperty(Some(ukProperty))
+        mockFetchOverseasProperty(Some(foreignProperty))
+        mockGetMandationService(Voluntary, Voluntary)
+        mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+        mockFetchSelectedTaxYear(Some(accountingYear))
+
+        val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+          service.getCompleteSignUpDetails("reference")(hc)
+        }
+
+        await(result) mustBe Right(completeDetailsNoSoleTraders)
       }
     }
 
