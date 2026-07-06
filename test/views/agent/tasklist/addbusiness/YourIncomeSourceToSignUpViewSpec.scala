@@ -212,11 +212,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
@@ -243,11 +238,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
@@ -280,11 +270,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = AgentIncomeSource.statusTagKey,
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
@@ -311,11 +296,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 4"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = AgentIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
