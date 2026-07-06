@@ -324,11 +324,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
-                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = IndividualIncomeSource.statusTagKey,
                 value = Some(IndividualIncomeSource.missingDetails),
                 actions = Seq(SummaryListActionValues(
@@ -363,11 +358,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 actions = Seq.empty
               ),
               SummaryListRowValues(
-                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = IndividualIncomeSource.statusTagKey,
                 value = Some(IndividualIncomeSource.missingDetails),
                 actions = Seq(SummaryListActionValues(
@@ -399,11 +389,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = IndividualIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 3"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = IndividualIncomeSource.soleTraderBusinessStartDateKey,
-                value = Some(""),
                 actions = Seq.empty
               ),
               SummaryListRowValues(
