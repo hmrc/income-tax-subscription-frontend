@@ -762,7 +762,7 @@ agent.client-details-lockout.line-1                             = I gofrestru’
 
 # Check your client’s details page
 agent.client-details.summary.title                              = Gwirio’ch atebion – manylion y cleient
-agent.client-details.card.title                                 = Your clients details
+agent.client-details.card.title                                 = Manylion eich cleient
 agent.client-details.summary.caption                            = Y manylion rydych yn eu defnyddio i gofrestru’ch cleient
 agent.client-details.summary.heading                            = Gwiriwch eich atebion
 agent.client-details.summary.first-name                         = Enw cyntaf

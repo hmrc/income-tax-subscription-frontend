@@ -67,12 +67,12 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
     "have a summary of answers" when {
       "display the correct info for the client details" in {
         document().mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-          title = "Your clients details",
+          title = "Your client’s details",
           cardActions = Seq(
             SummaryListActionValues(
               href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-              text = s"${ConfirmClient.change} Change (Your clients details)",
-              visuallyHidden = s"Change (Your clients details)"
+              text = s"${ConfirmClient.change} Change (Your client’s details)",
+              visuallyHidden = s"Change (Your client’s details)"
             )
           ),
           rows = Seq(
