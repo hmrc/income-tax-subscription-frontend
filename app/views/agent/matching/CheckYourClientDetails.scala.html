@@ -39,64 +39,69 @@
             isSection = true
         )
 
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.client-details.field-1"))),
-                    value = Value(content = Text(userDetailsModel.firstName)),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.client-details.field-1"))
-                            )
-                        )
-                    ))
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("agent.client-details.field-1"))
+            ),
+                value = Value(
+                    content = Text(userDetailsModel.firstName)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("agent.client-details.field-2"))
+            ),
+                value = Value(
+                    content = Text(userDetailsModel.lastName)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("agent.client-details.field-3"))
                 ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.client-details.field-2"))),
-                    value = Value(content = Text(userDetailsModel.lastName)),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.client-details.field-2"))
-                            )
-                        )
-                    ))
+                value = Value(
+                    content = Text(userDetailsModel.ninoInDisplayFormat)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("agent.client-details.field-4"))
                 ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.client-details.field-3"))),
-                    value = Value(content = Text(userDetailsModel.ninoInDisplayFormat)),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.client-details.field-3"))
-                            )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.client-details.field-4"))),
-                    value = Value(content = Text(userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat)),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.client-details.field-4"))
-                            )
-                        )
-                    ))
+                value = Value(
+                    content = Text(userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat)
                 )
             )
-        ))
+        ),
+            card = Some(
+                Card(
+                    title = Some(
+                        CardTitle(
+                            content = Text(messages("agent.client-details.card.title")),
+                            headingLevel = Some(3)
+                        )
+                    ),
+                    actions = Some(
+                        Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = controllers.agent.matching.routes.ClientDetailsController
+                                    .show(editMode = true)
+                                    .url,
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(
+                                    messages("base.change")
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    ))
 
-        @form(action = postAction) {
-            @continueButton()
-        }
+@form(action = postAction) {
+@continueButton()
+}
 }

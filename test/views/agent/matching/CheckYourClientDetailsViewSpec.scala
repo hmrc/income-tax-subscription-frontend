@@ -65,53 +65,39 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
     }
 
     "have a summary of answers" when {
-      "display the correct info for client details" in {
-        document().mainContent.mustHaveSummaryList(".govuk-summary-list")(Seq(
+      "display the correct info for the client details" in {
+        document().mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
+          title = "Your clients details",
+          cardActions = Seq(
+            SummaryListActionValues(
+              href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
+              text = s"${ConfirmClient.change} Change (Your clients details)",
+              visuallyHidden = s"Change (Your clients details)"
+            )
+          ),
+          rows = Seq(
           SummaryListRowValues(
             key = ConfirmClient.firstName,
             value = Some("FirstName"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                text = s"${ConfirmClient.change} ${ConfirmClient.firstName}",
-                visuallyHidden = ConfirmClient.firstName
-              )
-            )
+            actions = Seq.empty
           ),
           SummaryListRowValues(
             key = ConfirmClient.lastName,
             value = Some("LastName"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                text = s"${ConfirmClient.change} ${ConfirmClient.lastName}",
-                visuallyHidden = ConfirmClient.lastName
-              )
-            )
+            actions = Seq.empty
           ),
           SummaryListRowValues(
             key = ConfirmClient.nino,
             value = Some("ZZ 11 11 11 Z"),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                text = s"${ConfirmClient.change} ${ConfirmClient.nino}",
-                visuallyHidden = ConfirmClient.nino
-              )
-            )
+            actions = Seq.empty
           ),
           SummaryListRowValues(
             key = ConfirmClient.dob,
             value = Some(testDob.toOutputDateFormat),
-            actions = Seq(
-              SummaryListActionValues(
-                href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-                text = s"${ConfirmClient.change} ${ConfirmClient.dob}",
-                visuallyHidden = ConfirmClient.dob
-              )
-            )
+            actions = Seq.empty
           )
-        ))
+          )
+        )
       }
 
       "have a form" which {

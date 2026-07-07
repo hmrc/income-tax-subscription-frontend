@@ -771,6 +771,7 @@ agent.client-details-lockout.line-1                             = To sign your c
 
 # Check your client’s details page
 agent.client-details.summary.title                              = Check your answers - client’s details
+agent.client-details.card.title                                 = Your clients details
 agent.client-details.summary.caption                            = Details you are signing up your client with
 agent.client-details.summary.heading                            = Check your answers
 agent.client-details.summary.first-name                         = First name
