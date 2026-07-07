@@ -173,7 +173,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("Plumbing-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -184,7 +184,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("ABC-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -195,7 +195,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("1 January 1980"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -225,7 +225,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("Plumbing-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -236,7 +236,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("ABC-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -247,7 +247,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.beforeStartDateLimit),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -281,7 +281,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               value = Some("Plumbing-2"),
               actions = Seq(
                 SummaryListActionValues(
-                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
                   text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )
@@ -292,7 +292,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               value = Some("ABC-2"),
               actions = Seq(
                 SummaryListActionValues(
-                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
                   text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )
@@ -303,7 +303,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               value = Some("1 February 1980"),
               actions = Seq(
                 SummaryListActionValues(
-                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
                   text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )

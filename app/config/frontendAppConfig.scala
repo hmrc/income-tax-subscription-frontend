@@ -142,7 +142,11 @@ trait AppConfig {
 
   def incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
-  def incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl: String
+  def incomeTaxSelfEmploymentsSoleTraderTradeNameUrl: String
+
+  def incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl: String
+
+  def incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String
 
   def incomeTaxSelfEmploymentsUKForeignBusinessUrl: String
 
@@ -316,8 +320,16 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
   }
 
-  override lazy val incomeTaxSelfEmploymentsSoleTraderBusinessAnswersUrl: String = {
-    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/sole-trader-business"
+  override lazy val incomeTaxSelfEmploymentsSoleTraderTradeNameUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-trade"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-business-name"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-start-date-before-limit"
   }
 
   override lazy val incomeTaxSelfEmploymentsUKForeignBusinessUrl: String = {
