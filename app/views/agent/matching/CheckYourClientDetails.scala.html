@@ -86,9 +86,7 @@
                         Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.agent.matching.routes.ClientDetailsController
-                                    .show(editMode = true)
-                                    .url,
+                                    href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
                                     content = Text(messages("base.change")),
                                     visuallyHiddenText = Some(
                                     messages("base.change")
