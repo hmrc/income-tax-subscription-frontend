@@ -40,40 +40,40 @@
         )
 
     @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("agent.client-details.field-1"))
-            ),
-                value = Value(
-                    content = Text(userDetailsModel.firstName)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("agent.client-details.field-2"))
-            ),
-                value = Value(
-                    content = Text(userDetailsModel.lastName)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("agent.client-details.field-3"))
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.client-details.field-1"))
+                    ),
+                    value = Value(
+                        content = Text(userDetailsModel.firstName)
+                    )
                 ),
-                value = Value(
-                    content = Text(userDetailsModel.ninoInDisplayFormat)
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.client-details.field-2"))
+                    ),
+                    value = Value(
+                        content = Text(userDetailsModel.lastName)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.client-details.field-3"))
+                    ),
+                    value = Value(
+                        content = Text(userDetailsModel.ninoInDisplayFormat)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("agent.client-details.field-4"))
+                    ),
+                    value = Value(
+                        content = Text(userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat)
+                    )
                 )
             ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages("agent.client-details.field-4"))
-                ),
-                value = Value(
-                    content = Text(userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat)
-                )
-            )
-        ),
             card = Some(
                 Card(
                     title = Some(
@@ -99,7 +99,7 @@
         )
     ))
 
-@form(action = postAction) {
-@continueButton()
-}
+    @form(action = postAction) {
+            @continueButton()
+        }
 }
