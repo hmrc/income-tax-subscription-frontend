@@ -329,7 +329,7 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   }
 
   override lazy val incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String = {
-    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-start-date-before-limit"
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/business-start-date-before-limit"
   }
 
   override lazy val incomeTaxSelfEmploymentsUKForeignBusinessUrl: String = {
