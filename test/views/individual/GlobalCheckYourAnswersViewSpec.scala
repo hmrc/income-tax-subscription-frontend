@@ -139,16 +139,11 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have the correct income source headings" when {
-      "only sole trader businesses are present" in {
-        val mainContent: Element = document(details = minDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource()))).mainContent
-        mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
-        mainContent.selectOptionally("#property-business-heading") mustBe None
-      }
 
       "only property income sources are present" in {
         val mainContent: Element = document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource()))).mainContent
         mainContent.selectOptionally("#sole-trader-business-heading") mustBe None
-        mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+        mainContent.selectHead("#uk-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.ukHeading
       }
     }
 
@@ -162,11 +157,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       "all income sources are present" should {
-        "display the sole trader income sources heading" in {
-          document().mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
-        }
 
         "display the first sole trader business" when {
+
+          "display the sole trader income sources heading" in {
+            document().mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
+          }
+
           "there is a start date present" in {
             def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
 
@@ -176,7 +173,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("Plumbing-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -185,17 +182,35 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
                 value = Some("ABC-1"),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
                 value = Some("1 January 1980"),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
                 value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               )
             ))
           }
@@ -210,7 +225,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 value = Some("Plumbing-1"),
                 actions = Seq(
                   SummaryListActionValues(
-                    href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
                     text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
                     visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
                   )
@@ -219,23 +234,44 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
                 value = Some("ABC-1"),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.beforeStartDateLimit),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
                 value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
-                actions = Seq.empty
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
               )
             ))
           }
         }
 
         "display the next sole trader business" in {
+
+
+          document().mainContent.selectNth("#sole-trader-business-heading", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading2
 
           def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 4)
 
@@ -245,7 +281,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               value = Some("Plumbing-2"),
               actions = Seq(
                 SummaryListActionValues(
-                  href = s"${appConfig.incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
                   text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )
@@ -254,23 +290,41 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             SummaryListRowValues(
               key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
               value = Some("ABC-2"),
-              actions = Seq.empty
+              actions = Seq(
+                SummaryListActionValues(
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
+                )
+              )
             ),
             SummaryListRowValues(
               key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
               value = Some("1 February 1980"),
-              actions = Seq.empty
+              actions = Seq(
+                SummaryListActionValues(
+                  href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
+                )
+              )
             ),
             SummaryListRowValues(
               key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
               value = Some("2 Long Road Lonely City ZZ22ZZ United Kingdom"),
-              actions = Seq.empty
+              actions = Seq(
+                SummaryListActionValues(
+                  href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
+                )
+              )
             )
           ))
         }
 
-        "display the property income sources heading" in {
-          document().mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+        "display the uk property heading" in {
+          document().mainContent.selectHead("#uk-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.ukHeading
         }
 
         "display the uk property income" when {
@@ -279,8 +333,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
+                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
+                value = Some("2 January 1980"),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -288,11 +342,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some("2 January 1980"),
-                actions = Seq.empty
               )
             ))
           }
@@ -303,8 +352,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
+                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
+                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -312,14 +361,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
-                actions = Seq.empty
               )
             ))
           }
+        }
+
+        "display the foreign property heading" in {
+          document().mainContent.selectHead("#foreign-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.foreignHeading
         }
 
         "display the foreign property income" when {
@@ -328,8 +376,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
+                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
+                value = Some("3 January 1980"),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -337,11 +385,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some("3 January 1980"),
-                actions = Seq.empty
               )
             ))
           }
@@ -352,8 +395,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
+                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
+                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
                 actions = Seq(
                   SummaryListActionValues(
                     href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
@@ -361,11 +404,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                     visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
                   )
                 )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
-                actions = Seq.empty
               )
             ))
           }
@@ -374,7 +412,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second subheading" in {
-      document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.subheading
+      document().mainContent.selectNth("h2", 6).text mustBe GlobalCheckYourAnswersMessages.subheading
     }
 
     "have a second paragraph" in {
@@ -445,8 +483,9 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     object IncomeSources {
 
       object SoleTrader {
-        val heading: String = "Sole trader businesses"
-        val change: String = "Change details"
+        val heading: String = "Sole trader businesses 1"
+        val heading2: String = "Sole trader businesses 2"
+        val change: String = "Change"
         val details: String = "of sole trader business"
         val trade: String = "Trade"
         val name: String = "Business name"
@@ -456,7 +495,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       object Property {
-        val heading: String = "Property income"
+        val ukHeading: String = "UK property"
+        val foreignHeading: String = "Foreign property"
       }
 
       object UKProperty {

@@ -142,6 +142,14 @@ trait AppConfig {
 
   def incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
+  def incomeTaxSelfEmploymentsSoleTraderTradeNameUrl: String
+
+  def incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl: String
+
+  def incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String
+
+  def incomeTaxSelfEmploymentsUKForeignBusinessUrl: String
+
   def agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
@@ -310,6 +318,22 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsSoleTraderTradeNameUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-trade"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-business-name"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/business/business-start-date-before-limit"
+  }
+
+  override lazy val incomeTaxSelfEmploymentsUKForeignBusinessUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/uk-foreign-business"
   }
 
   override lazy val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
