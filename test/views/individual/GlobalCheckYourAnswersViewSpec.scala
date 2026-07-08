@@ -143,7 +143,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       "only property income sources are present" in {
         val mainContent: Element = document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource()))).mainContent
         mainContent.selectOptionally("#sole-trader-business-heading") mustBe None
-        mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+        mainContent.selectHead("#uk-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.ukHeading
       }
     }
 
@@ -323,8 +323,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           ))
         }
 
-        "display the property income sources heading" in {
-          document().mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
+        "display the uk property heading" in {
+          document().mainContent.selectHead("#uk-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.ukHeading
         }
 
         "display the uk property income" when {
@@ -332,11 +332,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 5)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
-                actions = Seq.empty
-              ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
                 value = Some("2 January 1980"),
@@ -357,11 +352,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
                 actions = Seq(
@@ -376,16 +366,15 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
           }
         }
 
+        "display the foreign property heading" in {
+          document().mainContent.selectHead("#foreign-property").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.foreignHeading
+        }
+
         "display the foreign property income" when {
           "there is a stored start date" in {
             def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 6)
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
-                actions = Seq.empty
-              ),
               SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
                 value = Some("3 January 1980"),
@@ -406,11 +395,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
             summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
               SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.key,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
                 actions = Seq(
@@ -428,7 +412,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "have a second subheading" in {
-      document().mainContent.selectNth("h2", 5).text mustBe GlobalCheckYourAnswersMessages.subheading
+      document().mainContent.selectNth("h2", 6).text mustBe GlobalCheckYourAnswersMessages.subheading
     }
 
     "have a second paragraph" in {
@@ -511,7 +495,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
 
       object Property {
-        val heading: String = "Property income"
+        val ukHeading: String = "UK property"
+        val foreignHeading: String = "Foreign property"
       }
 
       object UKProperty {

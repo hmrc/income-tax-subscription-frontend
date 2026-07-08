@@ -152,10 +152,6 @@
 @incomeSourcesSection(incomeSources: IncomeSources) = {
     @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
 
-    @if(incomeSources.ukProperty.isDefined || incomeSources.foreignProperty.isDefined) {
-        <h2 id="property-business-heading" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.property.heading")</h2>
-    }
-
     @incomeSources.ukProperty.map(toUKPropertyDisplay)
     @incomeSources.foreignProperty.map(toForeignPropertyDisplay)
 }
@@ -231,12 +227,9 @@
 }
 
 @toUKPropertyDisplay(ukProperty: UKProperty) = {
+    <h2 id="uk-property" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.uk-property.value")</h2>
     @govukSummaryList(SummaryList(
         rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.label"))),
-                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.value")), classes = "govuk-!-font-weight-bold")
-            ),
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.uk-property.start-date"))),
                 value = Value(content = Text(
@@ -259,12 +252,9 @@
 }
 
 @toForeignPropertyDisplay(foreignProperty: ForeignProperty) = {
+    <h2 id="foreign-property" class="govuk-heading-m">@messages("individual.global-check-your-answers.income-sources.foreign-property.value")</h2>
     @govukSummaryList(SummaryList(
         rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.label"))),
-                value = Value(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.value")), classes = "govuk-!-font-weight-bold")
-            ),
             SummaryListRow(
                 key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.foreign-property.start-date"))),
                 value = Value(content = Text(
