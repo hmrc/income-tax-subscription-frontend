@@ -59,19 +59,9 @@ object ITSASignUpSubmissionRequestAuditing {
     private def optField[A](key: String, opt: Option[A])(implicit writes: Writes[A]): JsObject =
       opt.fold(Json.obj())(v => Json.obj(key -> v))
 
-    private def addressJson(address: Address): JsObject = Json.obj(
-      "lines" -> address.lines
-    ) ++
-      optField("uprn", address.uprn) ++
-      optField("postcode", address.postcode) ++
-      address.country.fold(Json.obj()) { country =>
-        Json.obj(
-          "country" -> Json.obj(
-            "code" -> country.code,
-            "name" -> country.name
-          )
-        )
-      }
+    private def addressJson(address: Address): JsValue = Json.toJson(
+      AuditAddress(address)
+    )
 
     private val selfEmploymentJson: Option[JsValue] = {
       completeDetails.incomeSources.soleTraderBusinesses.map { soleTraderBusinesses =>

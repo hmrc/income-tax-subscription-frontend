@@ -180,7 +180,7 @@ class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matcher
                 "startDate" -> "2022-01-01",
                 "trade" -> "Builder",
                 "name" -> "ABC Builders",
-                "address" -> Json.toJson(soleTraderBusiness.address)
+                "address" -> Json.toJson(AuditAddress(soleTraderBusiness.address))
               )
             )
           )
@@ -206,7 +206,7 @@ class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matcher
       "include only selfEmployment when only sole trader businesses are present" in {
         val model = modelWith(IncomeSources(
           soleTraderBusinesses = Some(SoleTraderBusinesses(Seq(
-            SoleTraderBusiness(id = "b1", name = "Name", trade = "Trade", startDate = Some(LocalDate.of(2022, 1, 1)), address = Address(Seq("l1"), None, None))
+            soleTraderBusiness
           ))),
           ukProperty = None,
           foreignProperty = None
