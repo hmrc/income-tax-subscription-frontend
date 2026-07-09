@@ -18,7 +18,7 @@ package models.audits
 
 import models.common.business.{Address, Country}
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsSuccess, Json}
+import play.api.libs.json.Json
 
 class AuditAddressSpec extends PlaySpec {
   private val line = "Line"
