@@ -89,9 +89,9 @@ class AuditAddressSpec extends PlaySpec {
       }
     }
 
-    json.foreach { case (lines, json) =>
+    json.foreach { case (lines, expected) =>
       s"Writes address with $lines line(s) to correct Json" in {
-        Json.toJson(AuditAddress(completeAddress(lines))) mustBe json
+        Json.toJson(AuditAddress(completeAddress(lines))) mustBe expected
       }
     }
   }
