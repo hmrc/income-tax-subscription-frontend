@@ -27,44 +27,41 @@ class AuditAddressSpec extends PlaySpec {
   private val country = Country("UK", "United Kingdom")
   private val uprn = Some("1234")
 
-  private val json1Line =
-    s"""{
-       |   "addressLine1": "$line",
-       |   "townOrCity": "$town",
-       |   "postcode": "$postcode",
-       |   "country": {
-       |     "code": "${country.code}",
-       |     "name": "${country.name}"
-       |   },
-       |   "uprn": "${uprn.getOrElse("")}"
-       |}""".stripMargin
+  private val json1Line = Json.obj(
+    "addressLine1" -> line,
+    "townOrCity" -> town,
+    "postcode" -> postcode,
+    "country" -> Json.obj(
+      "code" -> country.code,
+      "name" -> country.name
+    ),
+    "uprn" -> uprn.getOrElse("")
+  )
 
-  private val json2Lines =
-    s"""{
-       |   "addressLine1": "$line",
-       |   "addressLine2": "$line",
-       |   "townOrCity": "$town",
-       |   "postcode": "$postcode",
-       |   "country": {
-       |     "code": "${country.code}",
-       |     "name": "${country.name}"
-       |   },
-       |   "uprn": "${uprn.getOrElse("")}"
-       |}""".stripMargin
+  private val json2Lines = Json.obj(
+    "addressLine1" -> line,
+    "addressLine2" -> line,
+    "townOrCity" -> town,
+    "postcode" -> postcode,
+    "country" -> Json.obj(
+      "code" -> country.code,
+      "name" -> country.name
+    ),
+    "uprn" -> uprn.getOrElse("")
+  )
 
-  private val json3Lines =
-    s"""{
-       |   "addressLine1": "$line",
-       |   "addressLine2": "$line",
-       |   "addressLine3": "$line",
-       |   "townOrCity": "$town",
-       |   "postcode": "$postcode",
-       |   "country": {
-       |     "code": "${country.code}",
-       |     "name": "${country.name}"
-       |   },
-       |   "uprn": "${uprn.getOrElse("")}"
-       |}""".stripMargin
+  private val json3Lines = Json.obj(
+    "addressLine1" -> line,
+    "addressLine2" -> line,
+    "addressLine3" -> line,
+    "townOrCity" -> town,
+    "postcode" -> postcode,
+    "country" -> Json.obj(
+      "code" -> country.code,
+      "name" -> country.name
+    ),
+    "uprn" -> uprn.getOrElse("")
+  )
 
   private def completeAddress(lines: Int) = Address(
     lines = Seq.fill(lines)(line) ++ Seq(town),
@@ -93,8 +90,8 @@ class AuditAddressSpec extends PlaySpec {
     }
 
     json.foreach { case (lines, json) =>
-      s"Address with $lines line(s) transforms to correct JSON" in {
-        JsSuccess(AuditAddress(completeAddress(lines))) mustBe Json.parse(json).validate[AuditAddress]
+      s"Writes address with $lines line(s) to correct Json" in {
+        Json.toJson(AuditAddress(completeAddress(lines))) mustBe json
       }
     }
   }

@@ -17,7 +17,7 @@
 package models.audits
 
 import models.common.business.{Address, Country}
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites}
 
 case class AuditAddress(
   addressLine1: String,
@@ -30,7 +30,7 @@ case class AuditAddress(
 )
 
 object AuditAddress {
-  implicit val format: OFormat[AuditAddress] = Json.format[AuditAddress]
+  implicit val writes: OWrites[AuditAddress] = Json.writes[AuditAddress]
 
   def apply(address: Address): AuditAddress = {
     val lines = if (address.lines.nonEmpty) address.lines.tail.dropRight(1) else Seq()
