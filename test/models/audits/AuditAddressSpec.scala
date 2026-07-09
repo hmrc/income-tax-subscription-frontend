@@ -73,16 +73,10 @@ class AuditAddressSpec extends PlaySpec {
     uprn = uprn
   )
 
-  private def missingData(index: Int) = Address(
-    lines = if (index == 1) Seq() else Seq(line),
-    postcode = if (index == 2) None else Some(postcode),
-    country = if (index == 3) None else Some(country)
-  )
-
   private val data = Map(
-    1 -> AuditAddress(line, None, None, town, postcode, country, uprn),
-    2 -> AuditAddress(line, Some(line), None, town, postcode, country, uprn),
-    3 -> AuditAddress(line, Some(line), Some(line), town, postcode, country, uprn),
+    1 -> AuditAddress(line, None, None, town, Some(postcode), Some(country), uprn),
+    2 -> AuditAddress(line, Some(line), None, town, Some(postcode), Some(country), uprn),
+    3 -> AuditAddress(line, Some(line), Some(line), town, Some(postcode), Some(country), uprn),
   )
 
   private val json = Map(
@@ -91,12 +85,6 @@ class AuditAddressSpec extends PlaySpec {
     3 -> json3Lines
   )
   
-  private val missing = Map(
-    1 -> "addressLine1",
-    2 -> "postcode",
-    3 -> "country"
-  )
-
   "AuditAddress" should {
     data.foreach { case (lines, expected) =>
       s"Correctly converts an completeAddress with $lines line(s)" in {
@@ -107,14 +95,6 @@ class AuditAddressSpec extends PlaySpec {
     json.foreach { case (lines, expected) =>
       s"Address with $lines line(s) transforms to correct JSON" in {
         JsSuccess(AuditAddress(completeAddress(lines))) mustBe Json.parse(expected).validate[AuditAddress]
-      }
-    }
-    
-    missing.foreach { case (index, field) =>
-      s"throws an Exception if [$field] is missing" in {
-        intercept[IllegalArgumentException](
-          AuditAddress(missingData(index))
-        ).getMessage mustBe s"[AuditAddress] Missing data: $field"
       }
     }
   }

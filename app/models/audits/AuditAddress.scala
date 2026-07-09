@@ -24,26 +24,23 @@ case class AuditAddress(
   addressLine2: Option[String],
   addressLine3: Option[String],
   townOrCity: String,
-  postcode: String,
-  country: Country,
+  postcode: Option[String],
+  country: Option[Country],
   uprn: Option[String]
 )
 
 object AuditAddress {
   implicit val format: OFormat[AuditAddress] = Json.format[AuditAddress]
 
-  private def error(field: String) =
-    new IllegalArgumentException(s"[AuditAddress] Missing data: $field")
-
   def apply(address: Address): AuditAddress = {
     val lines = if (address.lines.nonEmpty) address.lines.tail.dropRight(1) else Seq()
     AuditAddress(
-      addressLine1 = address.lines.headOption.getOrElse(throw error("addressLine1")),
+      addressLine1 = address.lines.headOption.getOrElse(""),
       addressLine2 = lines.headOption,
       addressLine3 = lines.lift(1),
-      townOrCity = address.lines.lastOption.getOrElse(throw error("townOrCity")),
-      postcode = address.postcode.getOrElse(throw error("postcode")),
-      country = address.country.getOrElse(throw error("country")),
+      townOrCity = address.lines.lastOption.getOrElse(""),
+      postcode = address.postcode,
+      country = address.country,
       uprn = address.uprn
     )
   }
