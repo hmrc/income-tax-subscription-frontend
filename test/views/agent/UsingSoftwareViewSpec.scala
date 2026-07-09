@@ -46,12 +46,16 @@ class UsingSoftwareViewSpec extends ViewSpec {
       document().mainContent.selectNth("p", 2).text mustBe paraTwo
     }
 
+    "have a third paragraph" in {
+      document().mainContent.selectNth("p", 3).text mustBe paraThree
+    }
+
     "have the link text" in {
-      document().mainContent.selectNth("p", 3).text mustBe linkText
+      document().mainContent.selectNth("p", 4).text mustBe linkText
     }
 
     "have a link " in {
-      document().mainContent.selectNth("p", 3).selectHead("a").attr("href") mustBe linkHref
+      document().mainContent.selectNth("p", 4).selectHead("a").attr("href") mustBe linkHref
     }
 
     "has a continue button" in {
@@ -73,6 +77,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
     val heading = "Check you have compatible software"
     val paraOne = "To use this service, you or your client must use software that works with Making Tax Digital for Income Tax."
     val paraTwo = "If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax."
+    val paraThree = "If you do not already use software, you can get this after you sign up your client."
     val linkText = "Find software that works with Making Tax Digital for Income Tax (opens in new tab)"
     val linkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
   }
