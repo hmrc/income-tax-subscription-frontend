@@ -84,7 +84,7 @@ class AuditAddressSpec extends PlaySpec {
     2 -> json2Lines,
     3 -> json3Lines
   )
-  
+
   "AuditAddress" should {
     data.foreach { case (lines, expected) =>
       s"Correctly converts an completeAddress with $lines line(s)" in {
@@ -92,9 +92,9 @@ class AuditAddressSpec extends PlaySpec {
       }
     }
 
-    json.foreach { case (lines, expected) =>
+    json.foreach { case (lines, json) =>
       s"Address with $lines line(s) transforms to correct JSON" in {
-        JsSuccess(AuditAddress(completeAddress(lines))) mustBe Json.parse(expected).validate[AuditAddress]
+        JsSuccess(AuditAddress(completeAddress(lines))) mustBe Json.parse(json).validate[AuditAddress]
       }
     }
   }
