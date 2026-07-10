@@ -65,7 +65,6 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
             postAction = routes.GlobalCheckYourAnswersController.submit,
             completeDetails = completeDetails,
             clientDetails = request.clientDetails,
-            softwareStatus = request.sessionData.fetchSoftwareStatus,
             isMandatedNextYear = mandationStatus.nextYearStatus.isMandated
           )
         )
@@ -150,4 +149,3 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     }
   }
 }
-
