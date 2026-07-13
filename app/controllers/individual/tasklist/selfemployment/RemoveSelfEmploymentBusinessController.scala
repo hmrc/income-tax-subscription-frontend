@@ -16,8 +16,6 @@
 
 package controllers.individual.tasklist.selfemployment
 
-import auth.individual.SignUpController
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
