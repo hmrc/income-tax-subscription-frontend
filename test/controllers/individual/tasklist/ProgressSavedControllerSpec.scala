@@ -17,13 +17,14 @@
 package controllers.individual.tasklist
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
-import models.common.business._
+import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
 import models.status.MandationStatus.Voluntary
 import models.{DateModel, EligibilityStatus, Next}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.Configuration
@@ -31,7 +32,7 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import utilities.individual.TestConstants.{testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
@@ -45,7 +46,9 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockReferenceRetrieval
   with MockNinoService
   with MockUTRService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -176,7 +179,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       mockSessionDataService
     )(
       mockAuditingService,
-      mockAuthService,
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner,
       appConfig
     )
 

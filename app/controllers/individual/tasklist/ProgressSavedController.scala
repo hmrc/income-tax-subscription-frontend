@@ -16,15 +16,16 @@
 
 package controllers.individual.tasklist
 
-import auth.individual.SignUpController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
 import models.SessionData
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
-import services._
+import services.*
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.{AccountingPeriodUtil, CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
@@ -42,34 +43,34 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         referenceRetrieval: ReferenceRetrieval,
                                         sessionDataService: SessionDataService)
                                        (val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        val appConfig: AppConfig)
+                                        identify: IdentifierAction,
+                                        refine: SignUpJourneyRefiner,
+                                        appConfig: AppConfig)
                                        (implicit val ec: ExecutionContext,
                                         val config: Configuration,
                                         val env: Environment,
-                                        mcc: MessagesControllerComponents) extends SignUpController {
+                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(location: Option[String] = None): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-            case Some(timestamp) =>
-              location.fold(
-                Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
-              )(location => {
-                for {
-                  sessionData <- sessionDataService.getAllSessionData()
-                  saveAndComebackAuditData <- retrieveAuditData(sessionData, reference, location)
-                  _ <- auditingService.audit(saveAndComebackAuditData)
-                } yield {
-                  Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
-                }
-              })
-            case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
-          }
+  def show(location: Option[String] = None): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+        subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
+          case Some(timestamp) =>
+            location.fold(
+              Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
+            )(location => {
+              for {
+                sessionData <- sessionDataService.getAllSessionData()
+                saveAndComebackAuditData <- retrieveAuditData(sessionData, reference, location)
+                _ <- auditingService.audit(saveAndComebackAuditData)
+              } yield {
+                Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+              }
+            })
+          case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
         }
       }
+    }
   }
 
   private def retrieveAuditData(sessionData: SessionData, reference: String, location: String)(implicit hc: HeaderCarrier): Future[SaveAndComeBackAuditModel] = {
