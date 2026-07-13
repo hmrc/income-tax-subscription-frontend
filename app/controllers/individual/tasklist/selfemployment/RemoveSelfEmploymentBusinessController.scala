@@ -18,13 +18,15 @@ package controllers.individual.tasklist.selfemployment
 
 import auth.individual.SignUpController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
-import play.api.mvc._
-import services._
+import play.api.mvc.*
+import services.*
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.selfemployments.RemoveSelfEmploymentBusiness
 
@@ -37,40 +39,35 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                                                        subscriptionDetailsService: SubscriptionDetailsService,
                                                        removeBusinessService: RemoveBusinessService,
                                                        sessionDataService: SessionDataService)
-                                                      (val auditingService: AuditingService,
-                                                       val authService: AuthService,
-                                                       val appConfig: AppConfig)
+                                                      (identify: IdentifierAction,
+                                                       refine: SignUpJourneyRefiner)
                                                       (implicit val ec: ExecutionContext,
-                                                       mcc: MessagesControllerComponents) extends SignUpController {
+                                                       mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ => {
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-            Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-          }
+  def show(businessId: String): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
       }
     }
   }
 
-  def submit(businessId: String): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ => {
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-                Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-              }
-            },
-            {
-              case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
-              case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+  def submit(businessId: String): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    sessionDataService.getAllSessionData().flatMap { sessionData =>
+      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
+        form.bindFromRequest().fold(
+          formWithErrors => {
+            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
             }
-          )
-        }
+          },
+          {
+            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
+            case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+          }
+        )
       }
     }
   }
