@@ -175,8 +175,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       mockNinoService,
       mockUTRService,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval,
-      mockSessionDataService
+      mockReferenceRetrieval
     )(
       mockAuditingService,
       fakeIdentifierAction,

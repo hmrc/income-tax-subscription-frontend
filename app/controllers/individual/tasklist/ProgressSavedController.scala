@@ -40,8 +40,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         ninoService: NinoService,
                                         utrService: UTRService,
                                         subscriptionDetailsService: SubscriptionDetailsService,
-                                        referenceRetrieval: ReferenceRetrieval,
-                                        sessionDataService: SessionDataService)
+                                        referenceRetrieval: ReferenceRetrieval)
                                        (val auditingService: AuditingService,
                                         identify: IdentifierAction,
                                         refine: SignUpJourneyRefiner,
@@ -52,23 +51,20 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(location: Option[String] = None): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-        subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
-          case Some(timestamp) =>
-            location.fold(
-              Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
-            )(location => {
-              for {
-                sessionData <- sessionDataService.getAllSessionData()
-                saveAndComebackAuditData <- retrieveAuditData(sessionData, reference, location)
-                _ <- auditingService.audit(saveAndComebackAuditData)
-              } yield {
-                Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
-              }
-            })
-          case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
-        }
+    referenceRetrieval.getIndividualReference(request.sessionData) flatMap { reference =>
+      subscriptionDetailsService.fetchLastUpdatedTimestamp(reference) flatMap {
+        case Some(timestamp) =>
+          location.fold(
+            Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
+          )(location => {
+            for {
+              saveAndComebackAuditData <- retrieveAuditData(request.sessionData, reference, location)
+              _ <- auditingService.audit(saveAndComebackAuditData)
+            } yield {
+              Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+            }
+          })
+        case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
       }
     }
   }
