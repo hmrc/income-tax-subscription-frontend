@@ -19,6 +19,7 @@ package controllers.individual.tasklist.taxyear
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.AccountingYearForm
 import models.common.AccountingYearModel
 import models.{AccountingYear, Current, Next}
@@ -36,8 +37,9 @@ class NextYearMandatorySignUpControllerSpec extends ControllerBaseSpec
   with MockAccountingPeriodService
   with MockGetEligibilityStatusService
   with MockReferenceRetrieval
-  with MockAuditingService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "WhenDoYouWantToStartMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -52,9 +54,8 @@ class NextYearMandatorySignUpControllerSpec extends ControllerBaseSpec
     mockSubscriptionDetailsService,
     mockSessionDataService
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 
   "show" should {
