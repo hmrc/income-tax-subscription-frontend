@@ -16,8 +16,8 @@
 
 package controllers.individual.tasklist.taxyear
 
-
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.*
@@ -26,8 +26,9 @@ import services.mocks.*
 class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
   with MockMandatoryBothSignUp
   with MockAccountingPeriodService
-  with MockAuditingService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "MandatoryBothSignUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,9 +41,8 @@ class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
     mockAccountingPeriodService,
     mockSessionDataService
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 
   "show" should {
