@@ -33,7 +33,6 @@ import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
 import services.mocks.*
-import utilities.individual.TestConstants.{testNino, testUtr}
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
 
@@ -43,9 +42,6 @@ import scala.concurrent.Future
 class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockNinoService
-  with MockUTRService
   with MockSessionDataService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner {
@@ -118,8 +114,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         mockFetchSelectedTaxYear(selectedTaxYear)
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        mockGetNino(testNino)
-        mockGetUTR(testUtr)
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(subscriptionRequest))
 
@@ -131,8 +125,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.individualUserType,
-          utr = testUtr,
-          nino = testNino,
+          utr = utr,
+          nino = nino,
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
@@ -171,10 +165,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       progressSavedView,
       currentDateProvider,
       cacheExpiryDateProvider,
-      mockNinoService,
-      mockUTRService,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval
+      mockSubscriptionDetailsService
     )(
       mockAuditingService,
       fakeIdentifierAction,
