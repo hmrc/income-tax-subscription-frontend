@@ -28,8 +28,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBothSignUp,
-                                              accountingPeriodService: AccountingPeriodService,
-                                              sessionDataService: SessionDataService)
+                                              accountingPeriodService: AccountingPeriodService)
                                              (identify: IdentifierAction,
                                               refine: SignUpJourneyRefiner)
                                              (implicit val ec: ExecutionContext,

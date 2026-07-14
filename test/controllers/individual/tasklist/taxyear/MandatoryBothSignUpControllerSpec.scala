@@ -26,7 +26,6 @@ import services.mocks.*
 class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
   with MockMandatoryBothSignUp
   with MockAccountingPeriodService
-  with MockSessionDataService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner {
 
@@ -38,8 +37,7 @@ class MandatoryBothSignUpControllerSpec extends ControllerBaseSpec
 
   object TestMandatoryBothSignUpController extends MandatoryBothSignUpController(
     mandatoryBothSignUp,
-    mockAccountingPeriodService,
-    mockSessionDataService
+    mockAccountingPeriodService
   )(
     fakeIdentifierAction,
     fakeSignUpJourneyRefiner
