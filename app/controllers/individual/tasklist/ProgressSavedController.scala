@@ -36,13 +36,11 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         currentDateProvider: CurrentDateProvider,
                                         cacheExpiryDateProvider: CacheExpiryDateProvider,
                                         subscriptionDetailsService: SubscriptionDetailsService)
-                                       (val auditingService: AuditingService,
+                                       (auditingService: AuditingService,
                                         identify: IdentifierAction,
                                         refine: SignUpJourneyRefiner,
                                         appConfig: AppConfig)
-                                       (implicit val ec: ExecutionContext,
-                                        val config: Configuration,
-                                        val env: Environment,
+                                       (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(location: Option[String] = None): Action[AnyContent] = (identify andThen refine).async { implicit request =>
