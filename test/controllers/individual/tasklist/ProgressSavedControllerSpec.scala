@@ -107,7 +107,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-
         verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
       }
 
