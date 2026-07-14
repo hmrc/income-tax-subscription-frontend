@@ -19,15 +19,15 @@ package controllers.individual.tasklist
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{testNino, testUtr}
+import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.servicemocks.AuditStub.stubAuditing
 import helpers.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import play.api.http.Status.{NO_CONTENT, OK}
+import play.api.http.Status.{NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
-import utilities.SubscriptionDataKeys._
+import utilities.SubscriptionDataKeys.*
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
 
@@ -77,6 +77,20 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
           )
         )
       }
+    }
+
+    "user is unauthorised" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubUnauthorised()
+
+      When("GET /business/progress-saved is called")
+      val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))
+
+      Then("Should return a SEE_OTHER with a redirect location of gg sign in")
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(basGatewaySignIn(""))
+      )
     }
   }
 }
