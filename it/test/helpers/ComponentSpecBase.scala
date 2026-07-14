@@ -402,12 +402,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def youCanSignUp(): WSResponse = get("/you-can-sign-up-now")
 
-    def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false): WSResponse = {
-      get(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")
+    def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse = {
+      get(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeState = includeState)
     }
 
-    def submitUKPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false)(request: Option[YesNo]): WSResponse = {
-      post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")(
+    def submitUKPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeJourneyState: Boolean = true)(request: Option[YesNo]): WSResponse = {
+      post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeJourneyState = includeJourneyState)(
         request.fold(Map.empty[String, Seq[String]]) { model =>
           PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(model).data.map {
             case (k, v) => (k, Seq(v))
