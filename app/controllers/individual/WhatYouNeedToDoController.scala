@@ -16,47 +16,26 @@
 
 package controllers.individual
 
-import auth.individual.SignUpController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import play.api.mvc.*
-import services.*
 import views.html.individual.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
-class WhatYouNeedToDoController @Inject()(whatYouNeedToDo: WhatYouNeedToDo,
-                                          mandationStatusService: MandationStatusService,
-                                          getEligibilityStatusService: GetEligibilityStatusService,
-                                          referenceRetrieval: ReferenceRetrieval,
-                                          sessionDataService: SessionDataService)
-                                         (val auditingService: AuditingService,
-                                          val appConfig: AppConfig,
-                                          val authService: AuthService)
-                                         (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
+class WhatYouNeedToDoController @Inject()(identify: IdentifierAction,
+                                          journeyRefiner: SignUpJourneyRefiner,
+                                          whatYouNeedToDo: WhatYouNeedToDo)
+                                         (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-        mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-      } yield {
-        Ok(whatYouNeedToDo(
-          postAction = routes.WhatYouNeedToDoController.submit
-        ))
-      }
+  val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Ok(whatYouNeedToDo(
+      postAction = routes.WhatYouNeedToDoController.submit
+    ))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-      } yield {
-        Redirect(controllers.individual.routes.UsingSoftwareController.show())
-      }
+  val submit: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    Redirect(controllers.individual.routes.UsingSoftwareController.show())
   }
 }
