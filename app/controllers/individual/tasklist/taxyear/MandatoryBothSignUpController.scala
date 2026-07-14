@@ -16,8 +16,8 @@
 
 package controllers.individual.tasklist.taxyear
 
-import auth.individual.SignUpController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.*
@@ -28,13 +28,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBothSignUp,
-                                              accountingPeriodService: AccountingPeriodService,
-                                              sessionDataService: SessionDataService)
-                                             (val auditingService: AuditingService,
-                                              val authService: AuthService,
-                                              val appConfig: AppConfig)
+                                              accountingPeriodService: AccountingPeriodService)
+                                             (identify: IdentifierAction,
+                                              refine: SignUpJourneyRefiner)
                                              (implicit val ec: ExecutionContext,
-                                              mcc: MessagesControllerComponents) extends SignUpController {
+                                              mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(implicit request: Request[_]): Html = {
     mandatoryBothSignUp(
@@ -43,12 +41,11 @@ class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBoth
     )
   }
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ => Ok(view)
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    Ok(view)
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+  def submit: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
   }
 }

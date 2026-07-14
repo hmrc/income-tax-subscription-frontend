@@ -18,6 +18,7 @@ package controllers.individual.tasklist.taxyear
 
 import config.{AppConfig, MockConfig}
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -31,19 +32,17 @@ import views.html.individual.tasklist.taxyear.NonEligibleMandated
 
 import scala.concurrent.Future
 
-class NonEligibleMandatedControllerSpec
-  extends ControllerBaseSpec
-    with MockAuditingService
-    with MockAuthService {
+class NonEligibleMandatedControllerSpec extends ControllerBaseSpec
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val appConfig: AppConfig = MockConfig
 
   object TestNonEligibleMandatedController extends NonEligibleMandatedController(
     mock[NonEligibleMandated]
   )(
-    mockAuditingService,
-    appConfig,
-    mockAuthService
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 
   trait Setup {
@@ -51,9 +50,8 @@ class NonEligibleMandatedControllerSpec
     val controller: NonEligibleMandatedController = new NonEligibleMandatedController(
       NonEligibleMandated
     )(
-      mockAuditingService,
-      appConfig,
-      mockAuthService
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )
   }
 
