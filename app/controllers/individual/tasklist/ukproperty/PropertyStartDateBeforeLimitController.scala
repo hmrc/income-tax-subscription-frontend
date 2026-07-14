@@ -16,13 +16,13 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import auth.individual.SignUpController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.business.PropertyStartDateBeforeLimitForm
-import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import models.requests.individual.SignUpRequest
+import models.{No, Yes, YesNo}
+import play.api.mvc.*
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.ukproperty.PropertyStartDateBeforeLimit
 
@@ -30,55 +30,49 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
-                                                       referenceRetrieval: ReferenceRetrieval,
-                                                       view: PropertyStartDateBeforeLimit,
-                                                       sessionDataService: SessionDataService,
-                                                       val appConfig: AppConfig,
-                                                       val authService: AuthService,
-                                                       val auditingService: AuditingService)
-                                                      (implicit mcc: MessagesControllerComponents,
-                                                       val ec: ExecutionContext) extends SignUpController {
+class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierAction,
+                                                       journeyRefiner: SignUpJourneyRefiner,
+                                                       subscriptionDetailsService: SubscriptionDetailsService,
+                                                       view: PropertyStartDateBeforeLimit)
+                                                      (implicit ec: ExecutionContext,
+                                                       mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-        maybePropertyStartDateBeforeLimit <- subscriptionDetailsService.fetchPropertyStartDateBeforeLimit(reference)
-      } yield {
-        Ok(view(
-          startDateBeforeLimitForm = PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybePropertyStartDateBeforeLimit),
-          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
-        ))
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.fetchPropertyStartDateBeforeLimit(request.reference) map { maybePropertyStartDateBeforeLimit =>
+      Ok(view(
+        startDateBeforeLimitForm = PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybePropertyStartDateBeforeLimit),
+        postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
+      ))
+    }
+  }
+
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(view(
+        startDateBeforeLimitForm = formWithErrors,
+        postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
+      ))),
+      {
+        case Yes =>
+          saveAnswerAndRedirect(
+            answer = Yes,
+            call = routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit)
+          )
+        case No =>
+          saveAnswerAndRedirect(
+            answer = No,
+            call = routes.PropertyStartDateController.show(isEditMode, isGlobalEdit)
+          )
       }
+    )
   }
 
-  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      PropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(
-          startDateBeforeLimitForm = formWithErrors,
-          postAction = routes.PropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
-        ))), { answer =>
-          for {
-            sessionData <- sessionDataService.getAllSessionData()
-            reference <- referenceRetrieval.getIndividualReference(sessionData)
-            saveResult <- subscriptionDetailsService.savePropertyStartDateBeforeLimit(reference, answer)
-          } yield {
-            saveResult match {
-              case Left(_) =>
-                throw new InternalServerException("[PropertyStartDateBeforeLimitController][submit] - Failure during save")
-              case Right(_) =>
-                answer match {
-                  case Yes =>
-                    Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                  case No =>
-                    Redirect(routes.PropertyStartDateController.show(isEditMode, isGlobalEdit))
-                }
-            }
-          }
-        }
-      )
+  private def saveAnswerAndRedirect(answer: YesNo, call: Call)
+                                   (implicit request: SignUpRequest[_]): Future[Result] = {
+    subscriptionDetailsService.savePropertyStartDateBeforeLimit(request.reference, answer) map {
+      case Right(_) => Redirect(call)
+      case Left(_) => throw new InternalServerException("[PropertyStartDateBeforeLimitController][saveAnswerAndRedirect] - Failure during save")
+    }
   }
+
 }
