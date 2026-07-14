@@ -510,6 +510,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         }
       )
     }
+    
+    def showNonEligibleVoluntary(): WSResponse =
+      get("/tax-year/sign-up-next-year-voluntary")
+
+    def submitNonEligibleVoluntary(): WSResponse =
+      post("/tax-year/sign-up-next-year-voluntary")(Map.empty)
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
