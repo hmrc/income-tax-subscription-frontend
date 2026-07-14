@@ -728,6 +728,7 @@ agent.cannot-take-part-exempt-26-27.link-href                   = https://www.go
 agent.using-software.heading                                    = Check you have compatible software
 agent.using-software.para1                                      = To use this service, you or your client must use software that works with Making Tax Digital for Income Tax.
 agent.using-software.para2                                      = If you already use software to keep digital records for your clients, you may need to ask your software provider if it works with Making Tax Digital for Income Tax.
+agent.using-software.para3                                      = If you do not already use software, you can get this after you sign up your client.
 agent.using-software.link                                       = Find software that works with Making Tax Digital for Income Tax
 agent.using-software.link-href                                  = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax
 
