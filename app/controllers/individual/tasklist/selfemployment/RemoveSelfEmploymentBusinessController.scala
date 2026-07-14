@@ -33,41 +33,31 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: RemoveSelfEmploymentBusiness,
-                                                       referenceRetrieval: ReferenceRetrieval,
                                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                                       removeBusinessService: RemoveBusinessService,
-                                                       sessionDataService: SessionDataService)
+                                                       removeBusinessService: RemoveBusinessService)
                                                       (identify: IdentifierAction,
                                                        refine: SignUpJourneyRefiner)
                                                       (implicit val ec: ExecutionContext,
                                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(businessId: String): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-        withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-          Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-        }
-      }
+    withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+      Future.successful(Ok(view(businessId, form, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
     }
   }
 
   def submit(businessId: String): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-        form.bindFromRequest().fold(
-          formWithErrors => {
-            withBusinessData(reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-              Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-            }
-          },
-          {
-            case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, reference)
-            case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+      form.bindFromRequest().fold(
+        formWithErrors => {
+          withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+            Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
           }
-        )
-      }
-    }
+        },
+        {
+          case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, request.reference)
+          case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+        }
+      )
   }
 
   private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {

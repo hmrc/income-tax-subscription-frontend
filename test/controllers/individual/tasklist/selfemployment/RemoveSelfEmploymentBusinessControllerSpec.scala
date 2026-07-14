@@ -39,10 +39,8 @@ import scala.concurrent.Future
 
 class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector
   with MockRemoveBusinessService
-  with MockSessionDataService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner {
 
@@ -133,10 +131,8 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
 
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
-      mockReferenceRetrieval,
       mockSubscriptionDetailsService,
-      mockRemoveBusinessService,
-      mockSessionDataService
+      mockRemoveBusinessService
     )(
       fakeIdentifierAction,
       fakeSignUpJourneyRefiner
