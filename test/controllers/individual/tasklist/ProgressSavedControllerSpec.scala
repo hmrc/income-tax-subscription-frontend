@@ -17,13 +17,14 @@
 package controllers.individual.tasklist
 
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.audits.SaveAndComebackAuditing
 import models.audits.SaveAndComebackAuditing.SaveAndComeBackAuditModel
-import models.common.business._
+import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, TimestampModel}
 import models.status.MandationStatus.Voluntary
 import models.{DateModel, EligibilityStatus, Next}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.Configuration
@@ -31,8 +32,7 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
-import utilities.individual.TestConstants.{testNino, testUtr}
+import services.mocks.*
 import utilities.{CacheExpiryDateProvider, CurrentDateProvider}
 import views.html.individual.tasklist.ProgressSaved
 
@@ -42,10 +42,9 @@ import scala.concurrent.Future
 class ProgressSavedControllerSpec extends ControllerBaseSpec
   with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockNinoService
-  with MockUTRService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "ProgressSavedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -104,7 +103,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-
         verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
       }
 
@@ -116,8 +114,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         mockFetchSelectedTaxYear(selectedTaxYear)
         mockGetMandationService(Voluntary, Voluntary)
         mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-        mockGetNino(testNino)
-        mockGetUTR(testUtr)
 
         val result: Future[Result] = await(controller.show(location = Some("test-location"))(subscriptionRequest))
 
@@ -129,8 +125,8 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.individualUserType,
-          utr = testUtr,
-          nino = testNino,
+          utr = utr,
+          nino = nino,
           saveAndRetrieveLocation = "test-location",
           currentTaxYear = currentYear,
           selectedTaxYear = selectedTaxYear,
@@ -169,14 +165,11 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
       progressSavedView,
       currentDateProvider,
       cacheExpiryDateProvider,
-      mockNinoService,
-      mockUTRService,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval,
-      mockSessionDataService
+      mockSubscriptionDetailsService
     )(
       mockAuditingService,
-      mockAuthService,
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner,
       appConfig
     )
 

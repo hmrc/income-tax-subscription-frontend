@@ -18,14 +18,12 @@
 
 package testonly.controllers.individual
 
-import auth.individual.SignUpController
-import config.AppConfig
+import controllers.SignUpBaseController
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
 import services.individual.KnownFactsService
-import services.{AuditingService, AuthService}
-import testonly.form.individual.KnownFactsForm._
+import testonly.form.individual.KnownFactsForm.*
 import testonly.models.KnownFactsModel
 import testonly.views.html.individual.AddKnownFacts
 
@@ -33,13 +31,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KnownFactsController @Inject()(val auditingService: AuditingService,
-                                     addKnownFacts: AddKnownFacts,
-                                     val authService: AuthService,
+class KnownFactsController @Inject()(addKnownFacts: AddKnownFacts,
                                      knownFactsService: KnownFactsService)
                                     (implicit val ec: ExecutionContext,
-                                     val appConfig: AppConfig,
-                                     mcc: MessagesControllerComponents) extends SignUpController {
+                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     addKnownFacts(
