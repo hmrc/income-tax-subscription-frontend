@@ -19,11 +19,21 @@ package controllers.individual.tasklist.taxyear
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{OK, SEE_OTHER}
 
 class NonEligibleVoluntaryControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/tax-year/sign-up-next-year-voluntary" should {
+    "user is authorised" in {
+      AuthStub.stubAuthSuccess()
+
+      val result = IncomeTaxSubscriptionFrontend.showNonEligibleVoluntary()
+
+      result must have(
+        httpStatus(OK)
+      )
+    }
+
     "user in unauthorised" in {
       AuthStub.stubUnauthorised()
 
@@ -37,6 +47,17 @@ class NonEligibleVoluntaryControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/tax-year/sign-up-next-year-voluntary" should {
+    "user is authorised" in {
+      AuthStub.stubAuthSuccess()
+
+      val result = IncomeTaxSubscriptionFrontend.submitNonEligibleVoluntary()
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+      )
+    }
+
     "user in unauthorised" in {
       AuthStub.stubUnauthorised()
 
