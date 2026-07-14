@@ -18,6 +18,8 @@ package controllers.individual.tasklist.taxyear
 
 import auth.individual.SignUpController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import play.api.mvc.*
 import services.*
 import utilities.AccountingPeriodUtil
@@ -28,23 +30,21 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class NonEligibleMandatedController @Inject()(view: NonEligibleMandated)
-                                              (val auditingService: AuditingService,
-                                               val appConfig: AppConfig,
-                                               val authService: AuthService)
-                                              (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext) extends SignUpController {
+                                              (identify: IdentifierAction,
+                                               refine: SignUpJourneyRefiner)
+                                              (implicit mcc: MessagesControllerComponents,
+                                               val ec: ExecutionContext) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      val model = AccountingPeriodUtil.getCurrentTaxYear
-      Ok(view(
-        postAction = routes.NonEligibleMandatedController.submit,
-        startYear = model.startDate.year.toInt,
-        endYear = model.endDate.year.toInt
-      ))
+  def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    val model = AccountingPeriodUtil.getCurrentTaxYear
+    Ok(view(
+      postAction = routes.NonEligibleMandatedController.submit,
+      startYear = model.startDate.year.toInt,
+      endYear = model.endDate.year.toInt
+    ))
   }
 
-  def submit: Action[AnyContent] = Authenticated { implicit request =>
-    _ =>
-      Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+  def submit: Action[AnyContent] = (identify andThen refine) { implicit request =>
+    Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
   }
 }

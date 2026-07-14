@@ -19,6 +19,7 @@ package controllers.individual.tasklist.selfemployment
 import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.RemoveBusinessForm
 import models.common.SoleTraderBusinesses
 import models.common.business.*
@@ -37,12 +38,11 @@ import views.html.individual.tasklist.selfemployments.RemoveSelfEmploymentBusine
 import scala.concurrent.Future
 
 class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
-  with MockAuditingService
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector
   with MockRemoveBusinessService
-  with MockSessionDataService {
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "RemoveBusinessController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -131,14 +131,11 @@ class RemoveSelfEmploymentBusinessControllerSpec extends ControllerBaseSpec
 
     val controller = new RemoveSelfEmploymentBusinessController(
       view,
-      mockReferenceRetrieval,
       mockSubscriptionDetailsService,
-      mockRemoveBusinessService,
-      mockSessionDataService
+      mockRemoveBusinessService
     )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )
 
     testCode(controller)
