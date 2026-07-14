@@ -36,8 +36,6 @@ class NextYearMandatorySignUpControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockGetEligibilityStatusService
-  with MockReferenceRetrieval
-  with MockSessionDataService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner {
 
@@ -50,9 +48,7 @@ class NextYearMandatorySignUpControllerSpec extends ControllerBaseSpec
   object TestNextYearMandatorySignUpController extends NextYearMandatorySignUpController(
     nextYearMandatorySignUp,
     mockAccountingPeriodService,
-    mockReferenceRetrieval,
-    mockSubscriptionDetailsService,
-    mockSessionDataService
+    mockSubscriptionDetailsService
   )(
     fakeIdentifierAction,
     fakeSignUpJourneyRefiner

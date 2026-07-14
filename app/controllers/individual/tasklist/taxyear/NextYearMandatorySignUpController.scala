@@ -37,9 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NextYearMandatorySignUpController @Inject()(nextYearMandatorySignUp: NextYearMandatorySignUp,
                                                accountingPeriodService: AccountingPeriodService,
-                                               referenceRetrieval: ReferenceRetrieval,
-                                               subscriptionDetailsService: SubscriptionDetailsService,
-                                               sessionDataService: SessionDataService)
+                                               subscriptionDetailsService: SubscriptionDetailsService)
                                               (identify: IdentifierAction,
                                                refine: SignUpJourneyRefiner)
                                               (implicit val ec: ExecutionContext,
@@ -55,41 +53,33 @@ class NextYearMandatorySignUpController @Inject()(nextYearMandatorySignUp: NextY
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-        subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
-          case Some(taxYearModel) if !taxYearModel.editable =>
-            Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-          case accountingYearModel =>
-            Ok(view(
-              accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
-              isEditMode = isEditMode
-            ))
-        }
-      }
+    subscriptionDetailsService.fetchSelectedTaxYear(request.reference) map {
+      case Some(taxYearModel) if !taxYearModel.editable =>
+        Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+      case accountingYearModel =>
+        Ok(view(
+          accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
+          isEditMode = isEditMode
+        ))
     }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-    sessionDataService.getAllSessionData().flatMap { sessionData =>
-      referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-        AccountingYearForm.accountingYearForm.bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
-          accountingYear => {
-            subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
-              case Right(_) =>
-                if (isEditMode) {
-                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else {
-                  Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                }
-              case Left(_) =>
-                throw new InternalServerException("[WhenDoYouWantToStartController][submit] - Could not save accounting year")
+    AccountingYearForm.accountingYearForm.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+      accountingYear => {
+        subscriptionDetailsService.saveSelectedTaxYear(request.reference, AccountingYearModel(accountingYear)) map {
+          case Right(_) =>
+            if (isEditMode) {
+              Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
             }
-          }
-        )
+          case Left(_) =>
+            throw new InternalServerException("[WhenDoYouWantToStartController][submit] - Could not save accounting year")
+        }
       }
-    }
+    )
   }
 }
