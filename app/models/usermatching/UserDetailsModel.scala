@@ -20,7 +20,6 @@ import models.DateModel
 import models.usermatching.UserDetailsModel.StringNinoUtil
 import play.api.libs.json.{Json, OFormat}
 
-
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
 
   def ninoInBackendFormat: String = nino.toUpperCase.replace(" ", "")
