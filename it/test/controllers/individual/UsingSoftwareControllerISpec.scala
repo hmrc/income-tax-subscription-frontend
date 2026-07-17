@@ -19,11 +19,13 @@ package controllers.individual
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
+import models.individual.JourneyStep.Confirmation
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, No, Yes, YesNo}
+import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
@@ -35,6 +37,49 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
 
   s"GET ${controllers.individual.routes.UsingSoftwareController.show().url}" when {
+
+    "the user is unauthenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.showUsingSoftware()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user does not have a journey state" should {
+      "redirect to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.get("/using-software", includeState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+        )
+      }
+    }
+
+    "the user is in confirmation journey state" should {
+      "redirect to the confirmation page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.get(
+          uri = "/using-software",
+          includeState = false,
+          additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
+        )
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.routes.ConfirmationController.show.url)
+        )
+      }
+    }
 
     "the Session Details Connector returns some data for Has Software" should {
       "show the Using Software page with a radio option selected" in {
@@ -74,6 +119,37 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${controllers.individual.routes.UsingSoftwareController.submit().url}" when {
+    "the user is unauthenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.submitUsingSoftware(request = Some(Yes))
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user does not have a journey state" should {
+      "redirect to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.post(
+          uri = "/using-software",
+          includeJourneyState = false
+        )(
+          Map.empty[String, Seq[String]]
+        )
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+        )
+      }
+    }
+
     s"return a redirect to ${controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url}" when {
       "the user selects the Yes radio button" in {
         val userInput = Yes
