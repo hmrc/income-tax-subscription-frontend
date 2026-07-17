@@ -31,10 +31,6 @@ import java.time.LocalDate
 
 class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-  }
-
   "GlobalCheckYourAnswers" must {
 
     "use the correct template" in new TemplateViewTest(
@@ -48,7 +44,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       error = None
     )
 
-    "have a heading" in {
+    "have a heading with a caption" in {
       document().mustHaveHeadingAndCaption(
         GlobalCheckYourAnswersMessages.heading,
         GlobalCheckYourAnswersMessages.caption,
@@ -68,11 +64,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       link.attr("data-module") mustBe "hmrc-print-link"
     }
 
-    "have a first paragraph" in {
-      document().mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.para1
+    "have the introduction paragraphs" in {
+      val mainContent = document().mainContent
+      mainContent.selectNth("p", 2).text mustBe GlobalCheckYourAnswersMessages.paraOne
+      mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.paraTwo
     }
 
-    "have a first paragraph note" in {
+    "have an inset note" in {
       document().mainContent.selectHead(".govuk-inset-text").text mustBe GlobalCheckYourAnswersMessages.note
     }
 
@@ -101,8 +99,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             actions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url,
-                text = s"${GlobalCheckYourAnswersMessages.SelectedTaxYear.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
-                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.change}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.change
               )
             )
           )
@@ -123,8 +121,8 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
             actions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url,
-                text = s"${GlobalCheckYourAnswersMessages.SelectedTaxYear.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.key}",
-                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.key
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.SelectedTaxYear.change}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.SelectedTaxYear.change
               )
             )
           )
@@ -132,252 +130,187 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       }
     }
 
-    "display the correct income source headings" when {
-      "only sole trader businesses are present" in {
-        val mainContent: Element = document(details = minDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource()))).mainContent
-        mainContent.selectHead("#sole-trader-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
-        mainContent.selectOptionally("#property-business-heading") mustBe None
-      }
+    "render sole trader summaries" when {
+      "sole trader businesses are present" in {
+        val mainContent = document().mainContent
+        mainContent.selectNth("h2.govuk-heading-m", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(1)
+        mainContent.selectNth("h2.govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(2)
 
-      "only property income sources are present" in {
-        val mainContent: Element = document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource()))).mainContent
-        mainContent.selectOptionally("#sole-trader-business-heading") mustBe None
-        mainContent.selectHead("#property-business-heading").text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
-      }
-    }
-
-    "have the correct income sources displayed" when {
-
-      "no income sources are present" in {
-        val mainContent: Element = document(details = minDetails()).mainContent
-        mainContent.selectOptionalNth("h2", 4) mustBe None
-        mainContent.selectOptionalNth(".govuk-summary-list", 3) mustBe None
-      }
-
-      "all income sources are present" should {
-
-        "display the sole trader income sources heading" in {
-          document().mainContent.selectNth("h2", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading
-        }
-
-        "display the first sole trader business" when {
-          "there is a table present present" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 2)
-
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
-                value = Some("Plumbing-1"),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.firstIncome,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
-                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
-                value = Some("ABC-1"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
-                value = Some("1 January 1980"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-                value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
-                actions = Seq.empty
+        val firstSoleTraderList = mainContent.selectNth(".govuk-summary-list", 2)
+        firstSoleTraderList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsKey,
+            value = Some(""),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")
               )
-            ))
-          }
-          "there is no start date present" in {
-            def summaryList: Element = document(
-              details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 2)
-
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
-                value = Some("Plumbing-1"),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.firstIncome,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
-                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
-                value = Some("ABC-1"),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.beforeStartDateLimit),
-                actions = Seq.empty
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-                value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
-                actions = Seq.empty
-              )
-            ))
-          }
-        }
-
-        "display the next sole trader business" in {
-
-          def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 3)
-
-          summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-            SummaryListRowValues(
-              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
-              value = Some("Plumbing-2"),
-              actions = Seq(
-                SummaryListActionValues(
-                  href = GlobalCheckYourAnswersMessages.IncomeSources.nextIncome,
-                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
-                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
-                )
-              )
-            ),
-            SummaryListRowValues(
-              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
-              value = Some("ABC-2"),
-              actions = Seq.empty
-            ),
-            SummaryListRowValues(
-              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
-              value = Some("1 February 1980"),
-              actions = Seq.empty
-            ),
-            SummaryListRowValues(
-              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
-              value = Some("2 Long Road Lonely City ZZ22ZZ United Kingdom"),
-              actions = Seq.empty
             )
-          ))
-        }
-
-        "display the property income sources heading" in {
-          document().mainContent.selectNth("h2", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.Property.heading
-
-        }
-
-        "display the uk property income" when {
-          "there is a stored start date" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 4)
-
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.propertyKey,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.link,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.change} ${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value}",
-                    visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some("2 January 1980"),
-                actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+            value = Some("Plumbing-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+            value = Some("ABC-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+            value = Some("1 January 1980"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+            value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")
               )
-            ))
-          }
-          "there is no stored start date" in {
-            def summaryList: Element = document(
-              details = completeDetails(ukProperty = Some(ukPropertyIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 4)
+            )
+          )
+        ))
+      }
 
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.propertyKey,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.link,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.change} ${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value}",
-                    visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.value
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.beforeStartDateLimit),
-                actions = Seq.empty
+      "a sole trader start date is not present" in {
+        val summaryList = document(
+          details = completeDetails(soleTraderBusinesses = Some(selfEmploymentIncomeSource(startDate = None)))
+        ).mainContent.selectNth(".govuk-summary-list", 2)
+
+        summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsKey,
+            value = Some(""),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")
               )
-            ))
-          }
-        }
-
-        "display the foreign property income" when {
-          "there is a stored start date" in {
-            def summaryList: Element = document().mainContent.selectNth(".govuk-summary-list", 5)
-
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.propertyKey,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.link,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.change} ${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value}",
-                    visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some("3 January 1980"),
-                actions = Seq.empty
+            )
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+            value = Some("Plumbing-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+            value = Some("ABC-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+            value = Some(GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.beforeStartDateLimit),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+            value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")
               )
-            ))
-          }
-          "there is no stored start date" in {
-            def summaryList: Element = document(
-              details = completeDetails(foreignProperty = Some(foreignPropertyIncomeSource(startDate = None)))
-            ).mainContent.selectNth(".govuk-summary-list", 5)
-
-            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.propertyKey,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value),
-                actions = Seq(
-                  SummaryListActionValues(
-                    href = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.link,
-                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.change} ${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value}",
-                    visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.value
-                  )
-                )
-              ),
-              SummaryListRowValues(
-                key = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.startDate,
-                value = Some(GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.beforeStartDateLimit),
-                actions = Seq.empty
-              )
-            ))
-          }
-        }
+            )
+          )
+        ))
       }
     }
 
-    "have a second subheading" in {
-      document().mainContent.selectNth("h2", 4).text mustBe GlobalCheckYourAnswersMessages.declarationHeading
+    "render property summaries" when {
+      "all income sources are present" in {
+        val mainContent = document().mainContent
+        mainContent.selectNth("h2.govuk-heading-m", 4).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading
+        mainContent.selectNth("h2.govuk-heading-m", 5).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading
+
+        val ukPropertyList = mainContent.selectNth(".govuk-summary-list", 4)
+        ukPropertyList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.StartDate.key,
+            value = Some("2 January 1980"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.link,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.changeHiddenText}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.changeHiddenText
+              )
+            )
+          )
+        ))
+
+        val foreignPropertyList = mainContent.selectNth(".govuk-summary-list", 5)
+        foreignPropertyList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.StartDate.key,
+            value = Some("3 January 1980"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.link,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.changeHiddenText}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.changeHiddenText
+              )
+            )
+          )
+        ))
+      }
+
+      "only UK property is present" in {
+        val mainContent = document(details = minDetails(ukProperty = Some(ukPropertyIncomeSource()))).mainContent
+        mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading})") must not be None
+        mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading})") mustBe None
+      }
+
+      "only foreign property is present" in {
+        val mainContent = document(details = minDetails(foreignProperty = Some(foreignPropertyIncomeSource()))).mainContent
+        mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading})") mustBe None
+        mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading})") must not be None
+      }
+
+      "a property start date is not present" in {
+        val ukPropertySummary = document(
+          details = completeDetails(ukProperty = Some(ukPropertyIncomeSource(startDate = None)), foreignProperty = None)
+        ).mainContent.selectNth(".govuk-summary-list", 4)
+
+        ukPropertySummary.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.StartDate.key,
+            value = Some(GlobalCheckYourAnswersMessages.IncomeSources.beforeStartDateLimit),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.link,
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.changeHiddenText}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.changeHiddenText
+              )
+            )
+          )
+        ))
+      }
     }
 
-    "have a second paragraph" in {
-      document().mainContent.selectNth("p", 3).text mustBe GlobalCheckYourAnswersMessages.para2
+    "not render income source sections when there are no income sources" in {
+      val mainContent = document(details = minDetails()).mainContent
+      mainContent.select(".govuk-summary-list").size() mustBe 1
+      mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.UKProperty.heading})") mustBe None
+      mainContent.selectOptionally(s"h2:contains(${GlobalCheckYourAnswersMessages.IncomeSources.ForeignProperty.heading})") mustBe None
+      mainContent.selectOptionally("h2:contains(Sole trader business)") mustBe None
     }
 
-    "have a third paragraph" in {
-      document().mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.para3
+    "have a declaration section" in {
+      document().mainContent.selectNth("h2.govuk-heading-m", 6).text mustBe GlobalCheckYourAnswersMessages.declarationHeading
+    }
+
+    "have declaration paragraphs" in {
+      val mainContent = document().mainContent
+      mainContent.selectNth("p", 4).text mustBe GlobalCheckYourAnswersMessages.declarationParaOne
+      mainContent.selectNth("p", 5).text mustBe GlobalCheckYourAnswersMessages.declarationParaTwo
     }
 
     "have a form" which {
@@ -388,13 +321,13 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         form.attr("action") mustBe testCall.url
       }
 
-      "has a confirm and continue button" in {
-        form.selectNth(".govuk-button", 1).text mustBe GlobalCheckYourAnswersMessages.confirmAndSend
+      "has a confirm and submit button" in {
+        form.selectNth(".govuk-button", 1).text mustBe GlobalCheckYourAnswersMessages.confirmAndSubmit
       }
 
       "has a save and comeback later button" in {
         val saveAndComeBackLater = form.selectNth(".govuk-button", 2)
-        saveAndComeBackLater.text mustBe GlobalCheckYourAnswersMessages.saveAndComeback
+        saveAndComeBackLater.text mustBe GlobalCheckYourAnswersMessages.saveAndComeBack
         saveAndComeBackLater.attr("href") mustBe controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("global-check-your-answers")).url
       }
     }
@@ -407,7 +340,6 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     postAction = testCall,
     completeDetails = completeDetails,
     clientDetails = clientDetails,
-    softwareStatus = None,
     isMandatedNextYear = isMandatedNextYear
   )
 
@@ -423,63 +355,70 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
 
   object GlobalCheckYourAnswersMessages {
     val heading: String = "Check your answers before signing up your client"
-    val caption = "FirstName LastName – ZZ 11 11 11 Z"
-    val para1: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information."
+    val caption: String = "FirstName LastName – ZZ 11 11 11 Z"
+    val paraOne: String = "Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct."
+    val paraTwo: String = "You can change any incorrect information."
     val note = "Make sure that you have not added limited companies or business partnerships here."
     val printLink = "Print this page"
 
     object SelectedTaxYear {
       val key: String = "Selected tax year"
-      val current: String = s"${AccountingPeriodUtil.getCurrentTaxStartYear} to ${AccountingPeriodUtil.getCurrentTaxEndYear}"
-      val next: String = s"${AccountingPeriodUtil.getNextTaxStartYear} to ${AccountingPeriodUtil.getNextTaxEndYear}"
-      val change: String = "Change"
+      val current: String = s"6 April ${AccountingPeriodUtil.getCurrentTaxStartYear} to 5 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
+      val next: String = s"6 April ${AccountingPeriodUtil.getNextTaxStartYear} to 5 April ${AccountingPeriodUtil.getNextTaxEndYear}"
+      val change: String = "tax year"
     }
 
     object IncomeSources {
-      val heading: String = "Sole trader businesses"
-      val propertyHeading: String = "Income from property"
-      val propertyKey: String = "Property"
-      val firstIncome: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-1&isEditMode=true&isGlobalEdit=true"
-      val nextIncome: String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=id-2&isEditMode=true&isGlobalEdit=true"
-
       object SoleTrader {
-        val heading: String = "Sole trader businesses"
+        def heading(index: Int): String = s"Sole trader business $index"
+
+        val detailsKey: String = "Business details"
         val trade: String = "Trade"
         val name: String = "Business name"
-        val startDate: String = "Start date"
-        val address: String = "Address"
+        val startDate: String = "Business start date"
+        val address: String = "Business address"
         val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
-        val change: String = "Change details"
-        val details: String = "of sole trader business"
-      }
 
-      object Property {
-        val heading: String = "Property income"
+        def detailsHiddenText(tradeName: String, businessName: String): String = s"details of sole trader business $tradeName, $businessName"
+
+        def addressHiddenText(tradeName: String, businessName: String): String = s"business address of sole trader business $tradeName, $businessName"
+
+        def detailsLink(index: Int): String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendFullIncomeSourceUrl}?id=id-$index&isEditMode=true&isGlobalEdit=true"
+
+        def addressLink(index: Int): String = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendAddressStartUrl}?id=id-$index&isEditMode=true&isGlobalEdit=true"
       }
 
       object UKProperty {
+        val heading: String = "UK property"
         val value: String = "UK property"
-        val startDate: String = "Start date"
-        val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
-        val change: String = "Change"
-        val link: String = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url
+        val link: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
+        val changeHiddenText: String = "details of UK property"
       }
 
       object ForeignProperty {
+        val heading: String = "Foreign property"
         val value: String = "Foreign property"
-        val startDate: String = "Start date"
-        val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
-        val change: String = "Change"
-        val link: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url
+        val link: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
+        val changeHiddenText: String = "details of foreign property"
       }
+
+      object StartDate {
+        val key: String = "Start date"
+      }
+
+      val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
 
     }
 
     val declarationHeading: String = "Declaration"
-    val para2: String = "The information you have given must be correct to the best of your knowledge."
-    val para3: String = "By confirming, your client will be signed up to Making Tax Digital for Income Tax."
-    val confirmAndSend: String = "Confirm and send"
-    val saveAndComeback: String = "Save and come back later"
+    val declarationParaOne: String = "The information you have given must be correct to the best of your knowledge."
+    val declarationParaTwo: String = "By confirming, your client will be signed up to Making Tax Digital for Income Tax."
+    val confirmAndSubmit: String = "Confirm and submit"
+    val saveAndComeBack: String = "Save and come back later"
+
+    object Common {
+      val change: String = "Change"
+    }
 
   }
 

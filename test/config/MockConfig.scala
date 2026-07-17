@@ -93,6 +93,8 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val incomeTaxSelfEmploymentsFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments"
   override val incomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/details/business-check-your-answers"
   override val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = "/report-quarterly/income-and-expenses/sign-up/client/self-employments/details/business-check-your-answers"
+  override val agentIncomeTaxSelfEmploymentsFrontendFullIncomeSourceUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/sole-trader-business"
+  override val agentIncomeTaxSelfEmploymentsFrontendAddressStartUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/client/uk-foreign-business"
   override val incomeTaxSelfEmploymentsSoleTraderTradeNameUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-trade"
   override val incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/business/sole-trader-business-name"
   override val incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl: String = "/report-quarterly/income-and-expenses/sign-up/self-employments/business/business-start-date-before-limit"

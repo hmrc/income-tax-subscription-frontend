@@ -55,6 +55,7 @@ base.tax-year.next                                              = Blwyddyn dreth
 base.print-page                                                 = Argraffu’r dudalen hon
 base.section-caption.hidden                                     = Teitl yr adran hon yw
 base.or                                                         = neu
+base.tax-year-range                                             = 6 Ebrill {0} i 5 Ebrill {1}
 
 # Loading Spinner
 loading-spinner.heading                                         = Wrthi’n cadarnhau, arhoswch
@@ -1121,34 +1122,34 @@ individual.global-check-your-answers.bottom.heading                             
 individual.global-check-your-answers.para-two                                                   = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
 individual.global-check-your-answers.para-three                                                 = Wrth gadarnhau, byddwch yn cael eich cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
 
-# Agent Global Check Your Answers
-agent.global-check-your-answers.caption                                                         = {0} – {1}
-agent.global-check-your-answers.para                                                            = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir. Gallwch newid unrhyw wybodaeth sy’n anghywir.
-agent.global-check-your-answers.para-note                                                       = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
-agent.global-check-your-answers.subheading                                                      = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
-agent.global-check-your-answers.declaration.subheading                                          = Datganiad
-agent.global-check-your-answers.income-sources.subheading                                       = Busnesau unig fasnachwr
-agent.global-check-your-answers.income-sources.self-employment.change                           = Newid
-agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = busnesau unig fasnachwr {0}, {1}
-agent.global-check-your-answers.income-sources.self-employment.trade                            = Masnach
-agent.global-check-your-answers.income-sources.self-employment.name                             = Enw’r busnes
-agent.global-check-your-answers.income-sources.self-employment.start-date                       = Dyddiad dechrau
-agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit          = Cyn 6 Ebrill {0}
-agent.global-check-your-answers.income-sources.self-employment.address                          = Cyfeiriad
-agent.global-check-your-answers.income-sources.property.label                                   = Eiddo
-agent.global-check-your-answers.income-sources.uk-property.label                                = Eiddo yn y DU
-agent.global-check-your-answers.income-sources.foreign-property.label                           = Eiddo tramor
-agent.global-check-your-answers.income-sources.uk-property.start-date                           = Dyddiad dechrau
-agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Cyn 6 Ebrill {0}
-agent.global-check-your-answers.income-sources.property.heading                                 = Incwm o eiddo
-agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Dyddiad dechrau
-agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Cyn 6 Ebrill {0}
-agent.global-check-your-answers.tax-year.heading                                                = Y flwyddyn dreth a ddewiswyd
-agent.global-check-your-answers.tax-year.label                                                  = Blwydden treth
-agent.global-check-your-answers.tax-year.current                                                = Blwyddyn dreth bresennol
-agent.global-check-your-answers.tax-year.next                                                   = Blwyddyn dreth nesaf
-agent.global-check-your-answers.para2                                                           = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
-agent.global-check-your-answers.para3                                                           = Wrth gadarnhau, bydd eich cleient wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+# Agent - global check your answers
+agent.global-check-your-answers.heading = Gwirio’ch atebion cyn i chi gofrestru’ch cleient
+agent.global-check-your-answers.caption = {0} – {1}
+agent.global-check-your-answers.para-one = Cyn i chi gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae angen i chi wirio’r wybodaeth rydych wedi’i rhoi i ni a chadarnhau ei bod yn gywir.
+agent.global-check-your-answers.para-two = Gallwch newid unrhyw wybodaeth sy’n anghywir.
+agent.global-check-your-answers.inset-text = Peidiwch ag ychwanegu cwmnïau cyfyngedig na phartneriaethau yma.
+agent.global-check-your-answers.you-told-us.heading = Gwybodaeth sydd gennym ni ar eich cyfer chi
+agent.global-check-your-answers.you-told-us.summary.tax-year.key = Blwyddyn dreth
+agent.global-check-your-answers.you-told-us.summary.tax-year.change = blwyddyn dreth
+agent.global-check-your-answers.sole-trader.heading = Busnes unig fasnachwr {0}
+agent.global-check-your-answers.sole-trader.summary.business-details.key = Manylion y busnes
+agent.global-check-your-answers.sole-trader.summary.business-details.change = busnes unig fasnachwr {0}, {1}
+agent.global-check-your-answers.sole-trader.summary.trade.key = Gwaith masnach
+agent.global-check-your-answers.sole-trader.summary.name.key = Enw’r busnes
+agent.global-check-your-answers.sole-trader.summary.start-date.key = Dyddiad dechrau’r busnes
+agent.global-check-your-answers.sole-trader.summary.address.key = Cyfeiriad y busnes
+agent.global-check-your-answers.sole-trader.summary.address.change = Newid cyfeiriad busnes unig fasnachwr {0}, {1}
+agent.global-check-your-answers.uk-property.heading = Incwm o eiddo
+agent.global-check-your-answers.uk-property.summary.property-details.change = manylion eiddo yn y DU
+agent.global-check-your-answers.uk-property.summary.start-date.key = Dyddiad dechrau’r
+agent.global-check-your-answers.foreign-property.heading = Eiddo tramor
+agent.global-check-your-answers.foreign-property.summary.property-details.change = manylion eiddo tramor
+agent.global-check-your-answers.foreign-property.summary.start-date.key = Dyddiad dechrau’r
+agent.global-check-your-answers.declaration.heading = Datganiad
+agent.global-check-your-answers.declaration.para-one = Mae’n rhaid i’r wybodaeth a roddwyd gennych fod yn gywir hyd eithaf eich gwybodaeth.
+agent.global-check-your-answers.declaration.para-two = Wrth gadarnhau, bydd eich cleient wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm.
+agent.global-check-your-answers.submit = Cadarnhau a chyflwyno
+agent.global-check-your-answers.before-start-date-limit = Cyn 6 Ebrill {0}
 
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = Mae’n bosibl y byddwch yn gallu cofrestru

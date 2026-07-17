@@ -16,7 +16,7 @@
 
 package utilities
 
-import models.DateModel
+import models.{AccountingYear, Current, DateModel, Next}
 import models.common.AccountingPeriodModel
 
 import java.time.LocalDate
@@ -71,6 +71,13 @@ object AccountingPeriodUtil {
 
   implicit object LocalDateOrdering extends Ordering[LocalDate] {
     override def compare(x: LocalDate, y: LocalDate): Int = x.compareTo(y)
+  }
+
+  def getAccountingYearRange(accountingYear: AccountingYear): Seq[String] = {
+    accountingYear match {
+      case Current => Seq(getCurrentTaxStartYear.toString, getCurrentTaxEndYear.toString)
+      case Next => Seq(getNextTaxStartYear.toString, getNextTaxEndYear.toString)
+    }
   }
 
 }

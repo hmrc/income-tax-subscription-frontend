@@ -15,13 +15,14 @@
  *@
 
 @import config.AppConfig
+@import java.time.LocalDate
 @import models._
 @import models.common.{IncomeSources => _, SoleTraderBusinesses => _, _}
 @import models.YesNo
 @import services.GetCompleteDetailsService._
 @import utilities.{AccountingPeriodUtil, ImplicitDateFormatterImpl}
 @import utilities.UserMatchingSessionUtil.ClientDetails
-@import views.html.helpers.{PageHeadingHelper, SaveAndContinueButtonHelper}
+@import views.html.helpers.{InsetText, PageHeadingHelper, PrintLink, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
 
 @this(
@@ -32,209 +33,191 @@
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     form: FormWithCSRF,
-    govukInsetText: GovukInsetText
+    insetText: InsetText,
+    printLink: PrintLink
 )
 
-@(postAction: Call,
+@(
+    postAction: Call,
     completeDetails: CompleteDetails,
     clientDetails: ClientDetails,
-    softwareStatus: Option[YesNo],
     isMandatedNextYear: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
 
-@mainTemplate(title = messages("agent.global-check-your-answers.subheading")) {
+@mainTemplate(title = messages("agent.global-check-your-answers.heading")) {
 
     @pageHeadingHelper(
-        heading = messages("agent.global-check-your-answers.subheading"),
+        heading = messages("agent.global-check-your-answers.heading"),
         caption = messages("agent.global-check-your-answers.caption", clientDetails.name, clientDetails.formattedNino),
         isSection = false
     )
 
-    @printLink
+    @printLink()
 
-    <p class="govuk-body">@messages("agent.global-check-your-answers.para")</p>
+    <p class="govuk-body">@messages("agent.global-check-your-answers.para-one")</p>
 
-    @govukInsetText(InsetText(
-        content = Text(messages("agent.global-check-your-answers.para-note"))
-    ))
+    <p class="govuk-body">@messages("agent.global-check-your-answers.para-two")</p>
 
-    @taxYearSection(completeDetails.taxYear)
+    @insetText(content = messages("agent.global-check-your-answers.inset-text"))
 
-    @incomeSourcesSection(completeDetails.incomeSources)
+    @youToldUs()
 
-    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.declaration.subheading")</h2>
+    @incomeSources()
 
-    <p class="govuk-body">@messages("agent.global-check-your-answers.para2")</p>
-    <p class="govuk-body">@messages("agent.global-check-your-answers.para3")</p>
+    @declaration()
 
     @form(action = postAction) {
         @saveAndContinueButtonHelper(
             isIndividual = false,
-            saveAndContinueText = Some(messages("base.confirm-and-send")),
+            saveAndContinueText = Some(messages("agent.global-check-your-answers.submit")),
             saveAndReturnReference = Some("global-check-your-answers")
         )
     }
+}
+
+@youToldUs() = {
+
+    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.you-told-us.heading")</h2>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(Text(messages("agent.global-check-your-answers.you-told-us.summary.tax-year.key"))),
+                value = Value(Text(messages(
+                    key = "base.tax-year-range",
+                    args = AccountingPeriodUtil.getAccountingYearRange(completeDetails.taxYear.accountingYear): _*
+                ))),
+                actions = Some(Actions(
+                    items = if(completeDetails.taxYear.editable) {
+                        Seq(
+                            ActionItem(
+                                href = if(isMandatedNextYear) {
+                                    controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url
+                                } else {
+                                    controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url
+                                },
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.you-told-us.summary.tax-year.change"))
+                            )
+                        )
+                    } else {
+                        Seq.empty
+                    }
+                ))
+            )
+        )
+    ))
 
 }
 
-@printLink = {
-    <p class="govuk-body govuk-!-display-none-print hmrc-!-js-visible">
-        <a href="#" data-module="hmrc-print-link" class="govuk-link">
-            @messages("base.print-page")
-        </a>
-    </p>
-}
+@incomeSources() = {
 
-@incomeSourcesSection(incomeSources: IncomeSources) = {
-
-    @incomeSources.soleTraderBusinesses.map(toSoleTraderBusinessesDisplay)
-    @if(incomeSources.ukProperty.nonEmpty || incomeSources.foreignProperty.nonEmpty) {
-        <h2 id="property-business-heading" class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.property.heading")</h2>
-    }
-    @incomeSources.ukProperty.map(toUKPropertyDisplay)
-    @incomeSources.foreignProperty.map(toForeignPropertyDisplay)
-
-}
-
-@toSoleTraderBusinessesDisplay(soleTraderBusinesses: SoleTraderBusinesses) = {
-
-    @if(soleTraderBusinesses.businesses.nonEmpty) {
-        <h2 id="sole-trader-business-heading" class="govuk-heading-m">@messages("agent.global-check-your-answers.income-sources.subheading")</h2>
-    }
-
-    @soleTraderBusinesses.businesses.map { business =>
-
-        @govukSummaryList(SummaryList(
-            rows = Seq(
+    @completeDetails.incomeSources.soleTraderBusinesses.map { soleTraderBusinesses =>
+        @soleTraderBusinesses.businesses.zip(1 to soleTraderBusinesses.businesses.length).map { case (business, index) =>
+            <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.sole-trader.heading", index)</h2>
+            @govukSummaryList(SummaryList(
+                rows = Seq(
                     SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.trade"))),
-                        value = Value(content = Text(business.trade), classes = "govuk-!-font-weight-bold"),
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.business-details.key"))),
+                        value = Value(),
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
-                                    content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.change")),
-                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendFullIncomeSourceUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.sole-trader.summary.business-details.change", business.trade, business.name))
                                 )
                             )
                         ))
                     ),
                     SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.name"))),
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.trade.key"))),
+                        value = Value(content = Text(business.trade))
+                    ),
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.name.key"))),
                         value = Value(content = Text(business.name))
                     ),
                     SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.start-date"))),
-                        value = Value(content = Text(
-                            business.startDate.map(_.toLongDate).getOrElse(
-                                messages("agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                            )
-                        ))
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.start-date.key"))),
+                        value = Value(content = Text(startDateDisplay(business.startDate)))
                     ),
                     SummaryListRow(
-                        key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.self-employment.address"))),
-                        value = Value(content = HtmlContent(business.address.toString))
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.address.key"))),
+                        value = Value(content = HtmlContent(business.address.toString)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendAddressStartUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.sole-trader.summary.address.change", business.trade, business.name))
+                                )
+                            )
+                        ))
                     )
                 )
+            ))
+        }
+    }
+
+    @completeDetails.incomeSources.ukProperty.map { ukProperty =>
+        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.uk-property.heading")</h2>
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.uk-property.summary.start-date.key"))),
+                    value = Value(content = Text(startDateDisplay(ukProperty.startDate))),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.uk-property.summary.property-details.change"))
+                            )
+                        )
+                    ))
+                )
+            )
+        ))
+    }
+
+    @completeDetails.incomeSources.foreignProperty.map { foreignProperty =>
+        <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.foreign-property.heading")</h2>
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.global-check-your-answers.foreign-property.summary.start-date.key"))),
+                    value = Value(content = Text(startDateDisplay(foreignProperty.startDate))),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url,
+                                content = Text(messages("base.change")),
+                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.foreign-property.summary.property-details.change"))
+                            )
+                        )
+                    ))
+                )
+            )
         ))
     }
 }
 
-@toUKPropertyDisplay(ukProperty: UKProperty) = {
-
-    @govukSummaryList(SummaryList(
-        rows =
-            Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                    value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.label")), classes = "govuk-!-font-weight-bold"),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.uk-property.label"))
-                            )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.uk-property.start-date"))),
-                    value = Value(content = Text(
-                        ukProperty.startDate.map(_.toLongDate).getOrElse(
-                            messages("agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        )
-                    ))
-                )
-            )
-    ))
-}
-
-@toForeignPropertyDisplay(foreignProperty: ForeignProperty) = {
-
-    @govukSummaryList(SummaryList(
-        rows =
-            Seq(
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.property.label"))),
-                    value = Value(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.label")), classes = "govuk-!-font-weight-bold"),
-                    actions = Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url,
-                                content = Text(messages("base.change")),
-                                visuallyHiddenText = Some(messages("agent.global-check-your-answers.income-sources.foreign-property.label"))
-                            )
-                        )
-                    ))
-                ),
-                SummaryListRow(
-                    key = Key(content = Text(messages("agent.global-check-your-answers.income-sources.foreign-property.start-date"))),
-                    value = Value(content = Text(
-                        foreignProperty.startDate.map(_.toLongDate).getOrElse(
-                            messages("agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
-                        )
-                    ))
-                )
-            )
-    ))
-}
-
-@taxYearSection(selectedTaxYear: AccountingYearModel) = {
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("agent.global-check-your-answers.tax-year.heading"))),
-                value = Value(content = Text(taxYear(selectedTaxYear.accountingYear))),
-                actions = if(selectedTaxYear.editable) {
-                    Some(Actions(
-                        items = Seq(
-                            ActionItem(
-                                href = if(isMandatedNextYear) {
-                                        controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show(editMode = true).url
-                                    } else {
-                                        controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show(editMode = true).url
-                                    },
-                                    content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.tax-year.heading"))
-                            )
-                        )
-                    ))
-                } else None
-            )
-        )
-    ))
-}
-
-@taxYear(accountingYear: AccountingYear) = @{
-    accountingYear match {
-        case Current => {
-            s"${AccountingPeriodUtil.getCurrentTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getCurrentTaxYear.endDate.year}"
-        }
-        case Next => {
-            s"${AccountingPeriodUtil.getNextTaxYear.startDate.year} ${messages("base.to")} ${AccountingPeriodUtil.getNextTaxYear.endDate.year}"
-        }
+@startDateDisplay(maybeStartDate: Option[LocalDate]) = @{
+    maybeStartDate match {
+        case Some(startDate) => startDate.toLongDate
+        case None => messages("agent.global-check-your-answers.before-start-date-limit", AccountingPeriodUtil.getStartDateLimit.getYear.toString)
     }
+}
+
+@declaration() = {
+
+    <h2 class="govuk-heading-m">@messages("agent.global-check-your-answers.declaration.heading")</h2>
+
+    <p class="govuk-body">@messages("agent.global-check-your-answers.declaration.para-one")</p>
+
+    <p class="govuk-body">@messages("agent.global-check-your-answers.declaration.para-two")</p>
+
 }
