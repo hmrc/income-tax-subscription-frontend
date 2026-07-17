@@ -55,6 +55,7 @@ base.tax-year.next                                              = Next tax year 
 base.print-page                                                 = Print this page
 base.section-caption.hidden                                     = This section is
 base.or                                                         = or
+base.tax-year-range                                             = 6 April {0} to 5 April {1}
 
 # Loading Spinner
 loading-spinner.heading                                         = Confirming, please wait
@@ -1143,34 +1144,34 @@ individual.global-check-your-answers.bottom.heading                             
 individual.global-check-your-answers.para-two                                                   = The information you have given must be correct to the best of your knowledge.
 individual.global-check-your-answers.para-three                                                 = By confirming, you will be signed up to Making Tax Digital for Income Tax.
 
-# Agent Global Check Your Answers
-agent.global-check-your-answers.caption                                                         = {0} – {1}
-agent.global-check-your-answers.para                                                            = Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct. You can change any incorrect information.
-agent.global-check-your-answers.para-note                                                       = Make sure that you have not added limited companies or business partnerships here.
-agent.global-check-your-answers.subheading                                                      = Check your answers before signing up your client
-agent.global-check-your-answers.declaration.subheading                                          = Declaration
-agent.global-check-your-answers.income-sources.subheading                                       = Sole trader businesses
-agent.global-check-your-answers.income-sources.self-employment.change                           = Change details
-agent.global-check-your-answers.income-sources.self-employment.hidden-text                      = of sole trader business {0}, {1}
-agent.global-check-your-answers.income-sources.self-employment.trade                            = Trade
-agent.global-check-your-answers.income-sources.self-employment.name                             = Business name
-agent.global-check-your-answers.income-sources.self-employment.start-date                       = Start date
-agent.global-check-your-answers.income-sources.self-employment.before-start-date-limit          = Before 6 April {0}
-agent.global-check-your-answers.income-sources.self-employment.address                          = Address
-agent.global-check-your-answers.income-sources.property.label                                   = Property
-agent.global-check-your-answers.income-sources.uk-property.label                                = UK property
-agent.global-check-your-answers.income-sources.foreign-property.label                           = Foreign property
-agent.global-check-your-answers.income-sources.uk-property.start-date                           = Start date
-agent.global-check-your-answers.income-sources.uk-property.before-start-date-limit              = Before 6 April {0}
-agent.global-check-your-answers.income-sources.property.heading                                 = Property income
-agent.global-check-your-answers.income-sources.foreign-property.start-date                      = Start date
-agent.global-check-your-answers.income-sources.foreign-property.before-start-date-limit         = Before 6 April {0}
-agent.global-check-your-answers.tax-year.heading                                                = Selected tax year
-agent.global-check-your-answers.tax-year.label                                                  = When you’re signing up from
-agent.global-check-your-answers.tax-year.current                                                = Current tax year
-agent.global-check-your-answers.tax-year.next                                                   = Next tax year
-agent.global-check-your-answers.para2                                                           = The information you have given must be correct to the best of your knowledge.
-agent.global-check-your-answers.para3                                                           = By confirming, your client will be signed up to Making Tax Digital for Income Tax.
+# Agent - global check your answers
+agent.global-check-your-answers.heading = Check your answers before signing up your client
+agent.global-check-your-answers.caption = {0} – {1}
+agent.global-check-your-answers.para-one = Before your client is signed up to Making Tax Digital for Income Tax you need to check the information you have given us and confirm it is correct.
+agent.global-check-your-answers.para-two = You can change any incorrect information.
+agent.global-check-your-answers.inset-text = Make sure that you have not added limited companies or business partnerships here.
+agent.global-check-your-answers.you-told-us.heading = Information you have told us
+agent.global-check-your-answers.you-told-us.summary.tax-year.key = Selected tax year
+agent.global-check-your-answers.you-told-us.summary.tax-year.change = tax year
+agent.global-check-your-answers.sole-trader.heading = Sole trader business {0}
+agent.global-check-your-answers.sole-trader.summary.business-details.key = Business details
+agent.global-check-your-answers.sole-trader.summary.business-details.change = details of sole trader business {0}, {1}
+agent.global-check-your-answers.sole-trader.summary.trade.key = Trade
+agent.global-check-your-answers.sole-trader.summary.name.key = Business name
+agent.global-check-your-answers.sole-trader.summary.start-date.key = Business start date
+agent.global-check-your-answers.sole-trader.summary.address.key = Business address
+agent.global-check-your-answers.sole-trader.summary.address.change = business address of sole trader business {0}, {1}
+agent.global-check-your-answers.uk-property.heading = UK property
+agent.global-check-your-answers.uk-property.summary.property-details.change = details of UK property
+agent.global-check-your-answers.uk-property.summary.start-date.key = Start date
+agent.global-check-your-answers.foreign-property.heading = Foreign property
+agent.global-check-your-answers.foreign-property.summary.property-details.change = details of foreign property
+agent.global-check-your-answers.foreign-property.summary.start-date.key = Start date
+agent.global-check-your-answers.declaration.heading = Declaration
+agent.global-check-your-answers.declaration.para-one = The information you have given must be correct to the best of your knowledge.
+agent.global-check-your-answers.declaration.para-two = By confirming, your client will be signed up to Making Tax Digital for Income Tax.
+agent.global-check-your-answers.submit = Confirm and submit
+agent.global-check-your-answers.before-start-date-limit = Before 6 April {0}
 
 ## Sign Up To Pilot Page ##
 sign-up.heading                                                         = You may be able to sign up

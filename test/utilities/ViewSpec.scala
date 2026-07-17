@@ -279,7 +279,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
 
     //scalastyle:off
     def mustHaveSummaryCard(selector: String, nth: Option[Int] = None)
-                           (title: String, cardActions: Seq[SummaryListActionValues], rows: Seq[SummaryListRowValues]): Assertion = {
+                           (title: String, headingLevel: Int = 3, cardActions: Seq[SummaryListActionValues], rows: Seq[SummaryListRowValues]): Assertion = {
 
       val checkpoint: Checkpoint = new Checkpoint()
 
@@ -297,7 +297,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
       val titleWrapper: Element = card.selectHead(".govuk-summary-card__title-wrapper")
 
       checkpoint {
-        titleWrapper.selectHead("h3").text mustBe title
+        titleWrapper.selectHead(s"h$headingLevel").text mustBe title
       }
 
       cardActions match {
