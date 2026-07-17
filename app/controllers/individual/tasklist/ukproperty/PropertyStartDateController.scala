@@ -18,9 +18,11 @@ package controllers.individual.tasklist.ukproperty
 
 import auth.individual.SignUpController
 import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
-import forms.individual.business.PropertyStartDateForm._
+import forms.individual.business.PropertyStartDateForm.*
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -35,49 +37,36 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyStartDateController @Inject()(view: PropertyStartDate,
-                                            subscriptionDetailsService: SubscriptionDetailsService,
-                                            referenceRetrieval: ReferenceRetrieval,
-                                            sessionDataService: SessionDataService)
-                                           (val auditingService: AuditingService,
-                                            val authService: AuthService,
-                                            val appConfig: AppConfig,
-                                            val languageUtils: LanguageUtils)
+                                            subscriptionDetailsService: SubscriptionDetailsService)
+                                           (val languageUtils: LanguageUtils,
+                                            identify: IdentifierAction,
+                                            refine: SignUpJourneyRefiner)
                                            (implicit val ec: ExecutionContext,
-                                            mcc: MessagesControllerComponents) extends SignUpController with ImplicitDateFormatter {
-
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-        startDate <- subscriptionDetailsService.fetchPropertyStartDate(reference)
-      } yield {
-        Ok(view(
-          propertyStartDateForm = form.fill(startDate),
-          postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
-        ))
-      }
+                                            mcc: MessagesControllerComponents) extends SignUpBaseController with ImplicitDateFormatter {
+2
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    subscriptionDetailsService.fetchPropertyStartDate(request.reference).map { startDate =>
+      Ok(view(
+        propertyStartDateForm = form.fill(startDate),
+        postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
+      ))
+    }
   }
 
-  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              Future.successful(BadRequest(view(
-                propertyStartDateForm = formWithErrors,
-                postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
-              )))
-            },
-            startDate =>
-              subscriptionDetailsService.savePropertyStartDate(reference, startDate) map {
-                case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
-              }
-          )
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors => {
+        Future.successful(BadRequest(view(
+          propertyStartDateForm = formWithErrors,
+          postAction = routes.PropertyStartDateController.submit(editMode = isEditMode, isGlobalEdit = isGlobalEdit)
+        )))
+      },
+      startDate =>
+        subscriptionDetailsService.savePropertyStartDate(request.reference, startDate) map {
+          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+          case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
         }
-      }
+    )
   }
 
   def form(implicit request: Request[_]): Form[DateModel] = {

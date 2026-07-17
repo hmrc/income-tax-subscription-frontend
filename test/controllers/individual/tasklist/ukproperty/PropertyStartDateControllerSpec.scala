@@ -19,11 +19,12 @@ package controllers.individual.tasklist.ukproperty
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.PropertyStartDateForm
 import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyStartDate
@@ -33,40 +34,30 @@ import scala.concurrent.Future
 
 class PropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
-  with MockAuditingService
-  with MockReferenceRetrieval
   with MockPropertyStartDate
-  with MockSessionDataService {
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "PropertyStartDateController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
-    "submit" -> TestPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestPropertyStartDateController extends PropertyStartDateController(
     propertyStartDate,
-    mockSubscriptionDetailsService,
-    mockReferenceRetrieval,
-    mockSessionDataService
+    mockSubscriptionDetailsService
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig,
-    mockLanguageUtils
+    mockLanguageUtils,
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 
   trait Test {
     val controller = new PropertyStartDateController(
       propertyStartDate,
-      mockSubscriptionDetailsService,
-      mockReferenceRetrieval,
-      mockSessionDataService
+      mockSubscriptionDetailsService
     )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig,
-      mockLanguageUtils
+      mockLanguageUtils,
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )
   }
 
