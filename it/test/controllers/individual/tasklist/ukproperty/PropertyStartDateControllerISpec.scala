@@ -17,20 +17,19 @@
 package controllers.individual.tasklist.ukproperty
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
-import helpers.IntegrationTestConstants.IndividualURI
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.IntegrationTestModels.testFullPropertyModel
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models.DateModel
 import models.common.PropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.Property
 
 class PropertyStartDateControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/property-start-date" should {
-
     "show the property start date page" when {
       "the Subscription Details Connector returns all data" in {
         Given("I setup the Wiremock stubs")
@@ -63,6 +62,17 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           govukDateField("startDate", DateModel("", "", ""))
         )
       }
+    }
+
+    "user is unauthorised" in {
+      AuthStub.stubUnauthorised()
+
+      val res = IncomeTaxSubscriptionFrontend.propertyStartDate()
+
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(basGatewaySignIn())
+      )
     }
   }
 
@@ -207,6 +217,18 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
+    }
+
+    "user is unauthorised" in {
+      AuthStub.stubUnauthorised()
+
+      val userInput: DateModel = IntegrationTestModels.testValidStartDate
+      val res = IncomeTaxSubscriptionFrontend.submitPropertyStartDate(inEditMode = false, Some(userInput))
+
+      res must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(basGatewaySignIn())
+      )
     }
   }
 }

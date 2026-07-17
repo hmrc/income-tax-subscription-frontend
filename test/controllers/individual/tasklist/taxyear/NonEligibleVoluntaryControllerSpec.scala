@@ -18,6 +18,7 @@ package controllers.individual.tasklist.taxyear
 
 import config.{AppConfig, MockConfig}
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -31,37 +32,25 @@ import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future
 
-class NonEligibleVoluntaryControllerSpec
-  extends ControllerBaseSpec
-    with MockAuditingService
-    with MockAuthService {
+class NonEligibleVoluntaryControllerSpec extends ControllerBaseSpec
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val appConfig: AppConfig = MockConfig
-
-  object TestNonEligibleVoluntaryController extends NonEligibleVoluntaryController(
-    mock[NonEligibleVoluntary]
-  )(
-    mockAuditingService,
-    appConfig,
-    mockAuthService
-  )
 
   trait Setup {
     val NonEligibleVoluntary: NonEligibleVoluntary = mock[NonEligibleVoluntary]
     val controller: NonEligibleVoluntaryController = new NonEligibleVoluntaryController(
       NonEligibleVoluntary
     )(
-      mockAuditingService,
       appConfig,
-      mockAuthService
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )
   }
 
   override val controllerName: String = "WhatYouNeedToDoController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestNonEligibleVoluntaryController.show,
-    "submit" -> TestNonEligibleVoluntaryController.submit
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" must {
     "return OK with the page content" in new Setup {
