@@ -30,6 +30,25 @@ case class UserDetailsModel(firstName: String, lastName: String, nino: String, d
 }
 
 object UserDetailsModel {
+  def apply(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel): UserDetailsModel =
+    new UserDetailsModel(
+      firstName = firstName.capitaliseAll,
+      lastName = lastName.capitaliseAll,
+      nino = nino,
+      dateOfBirth = dateOfBirth
+    )
+
+  implicit class StringCapitalise(text: String) {
+    private val space = " "
+    private val hyphen = "-"
+
+    def capitaliseAll: String = {
+      text.split(space).toSeq.map { word =>
+        word.split(hyphen).toSeq.map(_.capitalize).mkString(hyphen)
+      }.mkString(space)
+    }
+  }
+
   implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
 
   implicit class StringNinoUtil(string: String) {
