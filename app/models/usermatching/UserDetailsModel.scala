@@ -39,14 +39,10 @@ object UserDetailsModel {
     )
 
   implicit class StringCapitalise(text: String) {
-    private val space = " "
-    private val hyphen = "-"
+    private val pattern = raw"\b\p{L}".r
 
-    def capitaliseAll: String = {
-      text.split(space).toSeq.map { word =>
-        word.split(hyphen).toSeq.map(_.capitalize).mkString(hyphen)
-      }.mkString(space)
-    }
+    def capitaliseAll: String =
+      pattern.replaceAllIn(text, _.matched.toUpperCase)
   }
 
   implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
