@@ -68,6 +68,7 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
       "display the correct info for the client details" in {
         document().mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
           title = "Your client’s details",
+          headingLevel = 2,
           cardActions = Seq(
             SummaryListActionValues(
               href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
@@ -76,26 +77,26 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
             )
           ),
           rows = Seq(
-          SummaryListRowValues(
-            key = ConfirmClient.firstName,
-            value = Some("FirstName"),
-            actions = Seq.empty
-          ),
-          SummaryListRowValues(
-            key = ConfirmClient.lastName,
-            value = Some("LastName"),
-            actions = Seq.empty
-          ),
-          SummaryListRowValues(
-            key = ConfirmClient.nino,
-            value = Some("ZZ 11 11 11 Z"),
-            actions = Seq.empty
-          ),
-          SummaryListRowValues(
-            key = ConfirmClient.dob,
-            value = Some(testDob.toOutputDateFormat),
-            actions = Seq.empty
-          )
+            SummaryListRowValues(
+              key = ConfirmClient.firstName,
+              value = Some("FirstName"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = ConfirmClient.lastName,
+              value = Some("LastName"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = ConfirmClient.nino,
+              value = Some("ZZ 11 11 11 Z"),
+              actions = Seq.empty
+            ),
+            SummaryListRowValues(
+              key = ConfirmClient.dob,
+              value = Some(testDob.toOutputDateFormat),
+              actions = Seq.empty
+            )
           )
         )
       }

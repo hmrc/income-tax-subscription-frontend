@@ -152,6 +152,10 @@ trait AppConfig {
 
   def agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String
 
+  def agentIncomeTaxSelfEmploymentsFrontendFullIncomeSourceUrl: String
+
+  def agentIncomeTaxSelfEmploymentsFrontendAddressStartUrl: String
+
   def incomeTaxSelfEmploymentsFrontendInitialiseUrl: String
 
   def incomeTaxSelfEmploymentsFrontendClientInitialiseUrl: String
@@ -338,6 +342,14 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
 
   override lazy val agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl: String = {
     s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/business-check-your-answers"
+  }
+
+  override lazy val agentIncomeTaxSelfEmploymentsFrontendFullIncomeSourceUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/details/sole-trader-business"
+  }
+
+  override lazy val agentIncomeTaxSelfEmploymentsFrontendAddressStartUrl: String = {
+    s"${config.getString("income-tax-subscription-self-employed-frontend.url")}/report-quarterly/income-and-expenses/sign-up/self-employments/client/uk-foreign-business"
   }
 
   override lazy val incomeTaxSelfEmploymentsFrontendInitialiseUrl: String = {
