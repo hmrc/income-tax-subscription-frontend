@@ -26,7 +26,8 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import utilities.SubscriptionDataKeys
 import views.individual.mocks.MockRemoveUkProperty
 
@@ -34,11 +35,10 @@ import scala.concurrent.Future
 
 class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
   with MockRemoveUkProperty
-  with MockAuditingService
+  with MockIdentifierAction
   with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
-  with MockIncomeTaxSubscriptionConnector
-  with MockSessionDataService {
+  with MockSignUpJourneyRefiner
+  with MockIncomeTaxSubscriptionConnector {
 
   "show" should {
     "return OK and display the remove Uk property page" in {
@@ -128,13 +128,10 @@ class RemoveUkPropertyControllerSpec extends ControllerBaseSpec
 
   object TestRemoveUkPropertyController extends RemoveUkPropertyController(
     mockIncomeTaxSubscriptionConnector,
-    mockReferenceRetrieval,
     mockSubscriptionDetailsService,
-    removeUkProperty,
-    mockSessionDataService
+    removeUkProperty
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 }
