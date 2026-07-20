@@ -20,7 +20,6 @@ import models.DateModel
 import models.usermatching.UserDetailsModel.StringNinoUtil
 import play.api.libs.json.{Json, OFormat}
 
-
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
 
   def ninoInBackendFormat: String = nino.toUpperCase.replace(" ", "")
@@ -30,6 +29,21 @@ case class UserDetailsModel(firstName: String, lastName: String, nino: String, d
 }
 
 object UserDetailsModel {
+  def apply(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel): UserDetailsModel =
+    new UserDetailsModel(
+      firstName = firstName.capitaliseAll,
+      lastName = lastName.capitaliseAll,
+      nino = nino,
+      dateOfBirth = dateOfBirth
+    )
+
+  implicit class StringCapitalise(text: String) {
+    private val pattern = raw"\b\p{L}".r
+
+    def capitaliseAll: String =
+      pattern.replaceAllIn(text, _.matched.toUpperCase)
+  }
+
   implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
 
   implicit class StringNinoUtil(string: String) {
