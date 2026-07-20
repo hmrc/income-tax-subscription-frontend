@@ -25,6 +25,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
+import helpers.IntegrationTestConstants.basGatewaySignIn
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
 
@@ -42,6 +43,32 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         httpStatus(OK),
         pageTitle(messages("remove-uk-property-business.heading") + serviceNameGovUk)
       )
+    }
+
+    "the user is unauthenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.getRemoveUkProperty
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user does not have a journey state" should {
+      "redirect to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.get("/business/remove-uk-property-business", includeState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+        )
+      }
     }
 
     "redirect to Business Already removed page" in {
@@ -79,6 +106,41 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
 
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(Property, Some(1))
         IncomeTaxSubscriptionConnectorStub.verifyDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation, Some(1))
+      }
+
+      "the user is unauthenticated" should {
+        "redirect to the login page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubUnauthorised()
+
+          When("POST /business/remove-uk-property-business is called")
+          val result = IncomeTaxSubscriptionFrontend.submitRemoveUkProperty(Map("yes-no" -> Seq("Yes")))
+
+          Then("Should return a SEE_OTHER redirecting to sign in")
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(basGatewaySignIn())
+          )
+        }
+      }
+
+      "the user does not have a journey state" should {
+        "redirect to the home page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          When("POST business/remove-uk-property-business is called with no state")
+          val result = IncomeTaxSubscriptionFrontend.post(
+            uri = "/business/remove-uk-property-business",
+            includeJourneyState = false
+          )(Map.empty[String, Seq[String]])
+
+          Then("Should return a SEE_OTHER redirecting to the home page")
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+          )
+        }
       }
 
       "the user submits the 'no' answer" in {
