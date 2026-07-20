@@ -416,12 +416,12 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def foreignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false): WSResponse = {
-      get(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")
+    def foreignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse = {
+      get(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeState = includeState)
     }
 
-    def submitForeignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false)(request: Option[YesNo]): WSResponse = {
-      post(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit")(
+    def submitForeignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeJourneyState: Boolean = true)(request: Option[YesNo]): WSResponse = {
+      post(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeJourneyState = includeJourneyState)(
         request.fold(Map.empty[String, Seq[String]]) { model =>
           ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(model).data.map {
             case (k, v) => (k, Seq(v))

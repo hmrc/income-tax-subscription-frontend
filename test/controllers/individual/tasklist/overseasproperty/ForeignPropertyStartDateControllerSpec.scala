@@ -19,11 +19,12 @@ package controllers.individual.tasklist.overseasproperty
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.ForeignPropertyStartDateForm
 import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.individual.mocks.MockAuthService
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
@@ -33,12 +34,10 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
-  with MockSubscriptionDetailsService
-  with MockAuthService
-  with MockAuditingService
-  with MockReferenceRetrieval
   with MockOverseasPropertyStartDate
-  with MockSessionDataService {
+  with MockSubscriptionDetailsService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "ForeignPropertyStartDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -49,12 +48,9 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   object TestForeignPropertyStartDateController extends ForeignPropertyStartDateController(
     foreignPropertyStartDate,
     mockSubscriptionDetailsService,
-    mockReferenceRetrieval,
-    mockSessionDataService
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner,
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig,
     mockLanguageUtils
   )
 
@@ -212,12 +208,9 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
     val controller = new ForeignPropertyStartDateController(
       foreignPropertyStartDate,
       mockSubscriptionDetailsService,
-      mockReferenceRetrieval,
-      mockSessionDataService
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig,
       mockLanguageUtils
     )
 

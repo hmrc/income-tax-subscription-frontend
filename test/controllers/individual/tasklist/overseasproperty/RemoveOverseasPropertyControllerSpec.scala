@@ -19,6 +19,7 @@ package controllers.individual.tasklist.overseasproperty
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.RemoveOverseasPropertyForm
 import forms.submapping.YesNoMapping
 import models.common.OverseasPropertyModel
@@ -27,7 +28,7 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
 import utilities.SubscriptionDataKeys
@@ -36,11 +37,10 @@ import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBus
 import scala.concurrent.Future
 
 class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
-  with MockAuditingService
-  with MockSubscriptionDetailsService
-  with MockReferenceRetrieval
   with MockIncomeTaxSubscriptionConnector
-  with MockSessionDataService {
+  with MockSubscriptionDetailsService
+  with MockIdentifierAction
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "RemoveOverseasPropertyController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -132,14 +132,11 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
     val controller = new RemoveOverseasPropertyController(
       view,
-      mockReferenceRetrieval,
-      mockSubscriptionDetailsService,
       mockIncomeTaxSubscriptionConnector,
-      mockSessionDataService
+      mockSubscriptionDetailsService
     )(
-      mockAuditingService,
-      mockAuthService,
-      appConfig
+      fakeIdentifierAction,
+      fakeSignUpJourneyRefiner
     )
 
     testCode(controller)
@@ -147,13 +144,10 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
   object TestRemoveOverseasPropertyController extends RemoveOverseasPropertyController(
     mockRemoveOverseasProperty,
-    mockReferenceRetrieval,
-    mockSubscriptionDetailsService,
     mockIncomeTaxSubscriptionConnector,
-    mockSessionDataService
+    mockSubscriptionDetailsService
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 }
