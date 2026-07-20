@@ -16,16 +16,15 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import auth.individual.SignUpController
-import config.AppConfig
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import connectors.IncomeTaxSubscriptionConnector
-import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveUkPropertyForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.ukproperty.RemoveUkPropertyBusiness
@@ -34,45 +33,32 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveUkPropertyController @Inject()(incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                           referenceRetrieval: ReferenceRetrieval,
                                            subscriptionDetailsService: SubscriptionDetailsService,
-                                           removeUkProperty: RemoveUkPropertyBusiness,
-                                           sessionDataService: SessionDataService)
-                                          (val auditingService: AuditingService,
-                                           val authService: AuthService,
-                                           val appConfig: AppConfig)
+                                           removeUkProperty: RemoveUkPropertyBusiness)
+                                          (identify: IdentifierAction,
+                                           refine: SignUpJourneyRefiner)
                                           (implicit val ec: ExecutionContext,
-                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          subscriptionDetailsService.fetchProperty(reference) map {
-            case Some(_) =>
-              Ok(view(form))
-            case None =>
-              Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
-          }
-        }
-      }
+  def show: Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    subscriptionDetailsService.fetchProperty(request.reference) map {
+      case Some(_) =>
+        Ok(view(form))
+      case None =>
+        Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
+  def submit: Action[AnyContent] = (identify andThen refine).async { implicit request =>
       form.bindFromRequest().fold(
         hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
           case Yes =>
-            sessionDataService.getAllSessionData().flatMap { sessionData =>
-              referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-                incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.Property) flatMap {
-                  case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
-                    case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                    case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Failure to delete income source confirmation")
-                  }
-                  case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
-                }
+            incomeTaxSubscriptionConnector.deleteSubscriptionDetails(request.reference, SubscriptionDataKeys.Property) flatMap {
+              case Right(_) => incomeTaxSubscriptionConnector.deleteSubscriptionDetails(request.reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
+                case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Failure to delete income source confirmation")
               }
+              case Left(_) => throw new InternalServerException("[RemoveUkPropertyController][submit] - Could not remove UK property")
             }
           case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
         }
