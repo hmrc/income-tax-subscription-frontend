@@ -16,11 +16,11 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import auth.individual.SignUpController
 import config.AppConfig
+import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
-import play.api.mvc._
+import play.api.mvc.*
 import services.{AuditingService, AuthService, SubscriptionDetailsService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
@@ -33,11 +33,8 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
                                                            identify: IdentifierAction,
                                                            journeyRefiner: SignUpJourneyRefiner,
                                                            subscriptionDetailsService: SubscriptionDetailsService)
-                                                          (val auditingService: AuditingService,
-                                                           val authService: AuthService,
-                                                           val appConfig: AppConfig)
                                                           (implicit val ec: ExecutionContext,
-                                                           mcc: MessagesControllerComponents) extends SignUpController {
+                                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withProperty(request.reference) { property =>

@@ -40,11 +40,23 @@ class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBa
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/business/foreign-property-start-date-before-limit"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
-    "the user is authenticated" should {
+    "the user does not have a journey state" should {
+      "redirect the user to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.foreignPropertyStartDateBeforeLimit(includeState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+        )
+      }
+    }
+    "the user is authenticated and in a sign up state" should {
       "display the page" when {
         "the question has not previously been answered" in {
           AuthStub.stubAuthSuccess()
@@ -106,11 +118,23 @@ class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBa
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(basGatewaySignIn("/business/foreign-property-start-date-before-limit"))
+          redirectURI(basGatewaySignIn())
         )
       }
     }
-    "the user is authenticated" should {
+    "the user does not have a journey state" should {
+      "redirect the user to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.submitForeignPropertyStartDateBeforeLimit(includeJourneyState = false)(request = None)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
+        )
+      }
+    }
+    "the user is authenticated and in a sign up state" should {
       "display a bad request error" when {
         "the user does not select an answer" in {
           AuthStub.stubAuthSuccess()

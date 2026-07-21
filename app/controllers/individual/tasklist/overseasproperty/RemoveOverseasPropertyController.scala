@@ -16,16 +16,15 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import auth.individual.SignUpController
-import config.AppConfig
 import connectors.IncomeTaxSubscriptionConnector
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.business.RemoveOverseasPropertyForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
@@ -34,52 +33,39 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveOverseasPropertyController @Inject()(removeOverseasProperty: RemoveOverseasPropertyBusiness,
-                                                 referenceRetrieval: ReferenceRetrieval,
-                                                 subscriptionDetailsService: SubscriptionDetailsService,
                                                  incomeTaxSubscriptionConnector: IncomeTaxSubscriptionConnector,
-                                                 sessionDataService: SessionDataService)
-                                                (val auditingService: AuditingService,
-                                                 val authService: AuthService,
-                                                 val appConfig: AppConfig)
+                                                 subscriptionDetailsService: SubscriptionDetailsService)
+                                                (identify: IdentifierAction,
+                                                 journeyRefiner: SignUpJourneyRefiner)
                                                 (implicit val ec: ExecutionContext,
-                                                 mcc: MessagesControllerComponents) extends SignUpController {
+                                                 mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          subscriptionDetailsService.fetchOverseasProperty(reference) map {
-            case Some(_) =>
-              Ok(view(form))
-            case None =>
-              Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
-          }
-        }
-      }
+  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.fetchOverseasProperty(request.reference) map {
+      case Some(_) =>
+        Ok(view(form))
+      case None =>
+        Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show())
+    }
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      form.bindFromRequest().fold(
-        hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
-          case Yes =>
-            sessionDataService.getAllSessionData().flatMap { sessionData =>
-              referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-                incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.OverseasProperty) flatMap {
-                  case Right(_) =>
-                    incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
-                      case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                      case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation")
-                    }
-                  case Left(_) =>
-                    throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
-                }
+  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    form.bindFromRequest().fold(
+      hasErrors => Future.successful(BadRequest(view(form = hasErrors))), {
+        case Yes =>
+          incomeTaxSubscriptionConnector.deleteSubscriptionDetails(request.reference, SubscriptionDataKeys.OverseasProperty).flatMap {
+            case Right(_) =>
+              incomeTaxSubscriptionConnector.deleteSubscriptionDetails(request.reference, SubscriptionDataKeys.IncomeSourceConfirmation).map {
+                case Right(_) => Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+                case Left(_) => throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Failure to delete income source confirmation")
               }
-            }
-          case No =>
-            Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
-        }
-      )
+            case Left(_) =>
+              throw new InternalServerException("[RemoveOverseasPropertyController][submit] - Could not remove overseas property")
+          }
+        case No =>
+          Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+      }
+    )
   }
 
   private def view(form: Form[YesNo])(implicit request: Request[_]): Html = removeOverseasProperty(

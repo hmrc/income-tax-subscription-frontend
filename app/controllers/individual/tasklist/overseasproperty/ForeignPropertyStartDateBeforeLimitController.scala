@@ -16,13 +16,13 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import auth.individual.SignUpController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.business.ForeignPropertyStartDateBeforeLimitForm
-import models.{No, Yes}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import models.requests.individual.SignUpRequest
+import models.{No, Yes, YesNo}
+import play.api.mvc.*
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.overseasproperty.ForeignPropertyStartDateBeforeLimit
 
@@ -31,54 +31,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
-                                                              referenceRetrieval: ReferenceRetrieval,
-                                                              sessionDataService: SessionDataService,
                                                               view: ForeignPropertyStartDateBeforeLimit,
-                                                              val appConfig: AppConfig,
-                                                              val authService: AuthService,
-                                                              val auditingService: AuditingService)
+                                                              identify: IdentifierAction,
+                                                              journeyRefiner: SignUpJourneyRefiner)
                                                              (implicit mcc: MessagesControllerComponents,
-                                                              val ec: ExecutionContext) extends SignUpController {
+                                                              val ec: ExecutionContext) extends SignUpBaseController {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-        reference <- referenceRetrieval.getIndividualReference(sessionData)
-        maybeForeignPropertyStartDateBeforeLimit <- subscriptionDetailsService.fetchForeignPropertyStartDateBeforeLimit(reference)
-      } yield {
-        Ok(view(
-          startDateBeforeLimitForm = ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybeForeignPropertyStartDateBeforeLimit),
-          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
-        ))
-      }
+  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    subscriptionDetailsService.fetchForeignPropertyStartDateBeforeLimit(request.reference) map { maybeForeignPropertyStartDateBeforeLimit =>
+      Ok(view(
+        startDateBeforeLimitForm = ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.fill(maybeForeignPropertyStartDateBeforeLimit),
+        postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
+      ))
+    }
   }
 
-  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(
-          startDateBeforeLimitForm = formWithErrors,
-          postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
-        ))), { answer =>
-          for {
-            sessionData <- sessionDataService.getAllSessionData()
-            reference <- referenceRetrieval.getIndividualReference(sessionData)
-            saveResult <- subscriptionDetailsService.saveForeignPropertyStartDateBeforeLimit(reference, answer)
-          } yield {
-            saveResult match {
-              case Left(_) =>
-                throw new InternalServerException("[ForeignPropertyStartDateBeforeLimitController][submit] - Failure during save")
-              case Right(_) =>
-                answer match {
-                  case Yes =>
-                    Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
-                  case No =>
-                    Redirect(routes.ForeignPropertyStartDateController.show(isEditMode, isGlobalEdit))
-                }
-            }
-          }
-        }
-      )
+  def submit(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    ForeignPropertyStartDateBeforeLimitForm.startDateBeforeLimitForm.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(view(
+        startDateBeforeLimitForm = formWithErrors,
+        postAction = routes.ForeignPropertyStartDateBeforeLimitController.submit(isEditMode, isGlobalEdit)
+      ))),
+      {
+        case Yes =>
+          saveAnswerAndRedirect(
+            answer = Yes,
+            call = routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit)
+          )
+        case No =>
+          saveAnswerAndRedirect(
+            answer = No,
+            call = routes.ForeignPropertyStartDateController.show(isEditMode, isGlobalEdit)
+          )
+      }
+    )
+  }
+
+  private def saveAnswerAndRedirect(answer: YesNo, call: Call)
+                                   (implicit request: SignUpRequest[_]): Future[Result] = {
+    subscriptionDetailsService.saveForeignPropertyStartDateBeforeLimit(request.reference, answer) map {
+      case Right(_) => Redirect(call)
+      case Left(_) => throw new InternalServerException("[ForeignPropertyStartDateBeforeLimitController][submit] - Failure during save")
+    }
   }
 }
+
