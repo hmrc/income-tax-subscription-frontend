@@ -29,6 +29,7 @@ import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
+import helpers.IntegrationTestConstants.basGatewaySignIn
 
 import java.time.LocalDate
 
@@ -96,6 +97,32 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           httpStatus(OK),
           pageTitle(messages("business.when-do-you-want-to-start.heading") + serviceNameGovUk),
           radioButtonSet(id = "accountingYear-2", selectedRadioButton = Some(expectedText))
+        )
+      }
+    }
+
+    "the user is unauthenticated" should {
+      "redirect to the login page" in {
+        AuthStub.stubUnauthorised()
+
+        val result = IncomeTaxSubscriptionFrontend.whenDoYouWantToStart()
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user does not have a journey state" should {
+      "redirect to the home page" in {
+        AuthStub.stubAuthSuccess()
+
+        val result = IncomeTaxSubscriptionFrontend.get("/tax-year/select-tax-year", includeState = false)
+
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
         )
       }
     }
@@ -194,6 +221,54 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.individual.routes.WhatYouNeedToDoController.show.url)
+        )
+      }
+    }
+
+    "the user is unauthenticated" should {
+      val userInput = Current
+      "redirect to the login page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
+        ))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
+          SelectedTaxYear,
+          AccountingYearModel(userInput)
+        )
+
+        When("POST /tax-year/select-tax-year is called")
+        val result = IncomeTaxSubscriptionFrontend.submitWhenDoYouWantToStart(inEditMode = false, request = Some(userInput))
+
+        Then("Should return a SEE_OTHER redirecting to sign in")
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignIn())
+        )
+      }
+    }
+
+    "the user does not have a journey state" should {
+      val userInput = Current
+      "redirect to the home page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
+        ))
+        IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
+          SelectedTaxYear,
+          AccountingYearModel(userInput)
+        )
+
+        When("POST business/remove-uk-property-business is called with no state")
+        val result = IncomeTaxSubscriptionFrontend.submitWhenDoYouWantToStart(inEditMode = false, request = Some(userInput))
+
+        Then("Should return a SEE_OTHER redirecting to the home page")
+        result must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.individual.matching.routes.HomeController.index.url)
         )
       }
     }

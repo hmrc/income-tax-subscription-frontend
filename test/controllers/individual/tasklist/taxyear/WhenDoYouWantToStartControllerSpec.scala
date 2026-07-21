@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import views.individual.mocks._
 import services.mocks._
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 
 import scala.concurrent.Future
 
@@ -38,10 +39,9 @@ class WhenDoYouWantToStartControllerSpec extends ControllerBaseSpec
   with MockSubscriptionDetailsService
   with MockAccountingPeriodService
   with MockGetEligibilityStatusService
-  with MockReferenceRetrieval
-  with MockAuditingService
+  with MockIdentifierAction
   with FeatureSwitching
-  with MockSessionDataService {
+  with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "WhenDoYouWantToStartMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -52,13 +52,10 @@ class WhenDoYouWantToStartControllerSpec extends ControllerBaseSpec
   object TestWhenDoYouWantToStartController extends WhenDoYouWantToStartController(
     whenDoYouWantToStart,
     mockAccountingPeriodService,
-    mockReferenceRetrieval,
     mockSubscriptionDetailsService,
-    mockSessionDataService
   )(
-    mockAuditingService,
-    mockAuthService,
-    appConfig
+    fakeIdentifierAction,
+    fakeSignUpJourneyRefiner
   )
 
   "show" should {
