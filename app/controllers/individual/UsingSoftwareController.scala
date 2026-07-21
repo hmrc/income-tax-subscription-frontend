@@ -16,15 +16,14 @@
 
 package controllers.individual
 
-import auth.individual.SignUpController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.UsingSoftwareForm
 import models.YesNo
 import play.api.data.Form
 import play.api.mvc.*
 import play.twirl.api.Html
-import services.*
+import services.SessionDataService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.UsingSoftware
 
@@ -33,19 +32,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
-class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
-                                        sessionDataService: SessionDataService,
-                                        eligibilityStatusService: GetEligibilityStatusService,
-                                        mandationStatusService: MandationStatusService,
-                                        referenceRetrieval: ReferenceRetrieval,
-                                        subscriptionDetailsService: SubscriptionDetailsService
-                                       )
-                                       (val auditingService: AuditingService,
-                                        val authService: AuthService,
-                                        val appConfig: AppConfig)
-                                       (implicit val ec: ExecutionContext,
+class UsingSoftwareController @Inject()(identify: IdentifierAction,
+                                        journeyRefiner: SignUpJourneyRefiner,
+                                        usingSoftware: UsingSoftware,
+                                        sessionDataService: SessionDataService)
+                                       (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents)
-  extends SignUpController {
+  extends SignUpBaseController {
 
   private val form: Form[YesNo] = UsingSoftwareForm.usingSoftwareForm
 
@@ -58,50 +51,38 @@ class UsingSoftwareController @Inject()(usingSoftware: UsingSoftware,
     )
   }
 
-  def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      for {
-        sessionData <- sessionDataService.getAllSessionData()
-      } yield {
-        val usingSoftwareStatus = sessionData.fetchSoftwareStatus
-        Ok(view(
-          usingSoftwareForm = form.fill(usingSoftwareStatus),
-          editMode = editMode
-        ))
-      }
+  def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
+    val usingSoftwareStatus = request.sessionData.fetchSoftwareStatus
+    Ok(view(
+      usingSoftwareForm = form.fill(usingSoftwareStatus),
+      editMode = editMode
+    ))
   }
 
-  def submit(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful {
-            BadRequest(view(
-              usingSoftwareForm = formWithErrors,
-              editMode = editMode
-            ))
-          },
-        yesNo =>
-          for {
-            sessionData <- sessionDataService.getAllSessionData()
-            usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
-            mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-          } yield {
-            val isMandatedCurrentYear: Boolean = mandationStatus.currentYearStatus.isMandated
-
-            usingSoftwareStatus match {
-              case Left(_) =>
-                throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
-              case Right(_) =>
-                if (editMode) {
-                  Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                } else if (isMandatedCurrentYear) {
-                  Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                } else {
-                  Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
-                }
-            }
+  def submit(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful {
+          BadRequest(view(
+            usingSoftwareForm = formWithErrors,
+            editMode = editMode
+          ))
+        },
+      yesNo =>
+        for {
+          usingSoftwareStatus <- sessionDataService.saveSoftwareStatus(yesNo)
+        } yield {
+          usingSoftwareStatus match {
+            case Left(_) =>
+              throw new InternalServerException("[UsingSoftwareController][submit] - Could not save using software answer")
+            case Right(_) =>
+              if (editMode) {
+                Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+              } else {
+                Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show)
+              }
           }
-      )
+        }
+    )
   }
 }
