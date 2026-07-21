@@ -25,8 +25,7 @@ import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
-import services.individual.mocks.MockAuthService
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockOverseasPropertyStartDate
 
@@ -40,29 +39,17 @@ class ForeignPropertyStartDateControllerSpec extends ControllerBaseSpec
   with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "ForeignPropertyStartDateController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestForeignPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false),
-    "submit" -> TestForeignPropertyStartDateController.submit(isEditMode = false, isGlobalEdit = false)
-  )
-
-  object TestForeignPropertyStartDateController extends ForeignPropertyStartDateController(
-    foreignPropertyStartDate,
-    mockSubscriptionDetailsService,
-    fakeIdentifierAction,
-    fakeSignUpJourneyRefiner,
-  )(
-    mockLanguageUtils
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" must {
     "display the foreign property start date view and return OK (200)" when {
-      "a start date is returned" in {
+      "a start date is returned" in withController { controller =>
         mockForeignPropertyStartDateView(
           postAction = routes.ForeignPropertyStartDateController.submit()
         )
         mockFetchOverseasPropertyStartDate(Some(DateModel("22", "11", "2021")))
 
-        lazy val result: Result = await(TestForeignPropertyStartDateController.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        lazy val result: Result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
 
         status(result) must be(Status.OK)
       }

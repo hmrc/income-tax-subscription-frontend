@@ -30,7 +30,7 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import utilities.SubscriptionDataKeys
 import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBusiness
 
@@ -43,10 +43,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
   with MockSignUpJourneyRefiner {
 
   override val controllerName: String = "RemoveOverseasPropertyController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestRemoveOverseasPropertyController.show,
-    "submit" -> TestRemoveOverseasPropertyController.submit
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
   val mockRemoveOverseasProperty: RemoveOverseasPropertyBusiness = mock[RemoveOverseasPropertyBusiness]
 
   "show" should {
@@ -141,13 +138,5 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
     testCode(controller)
   }
-
-  object TestRemoveOverseasPropertyController extends RemoveOverseasPropertyController(
-    mockRemoveOverseasProperty,
-    mockIncomeTaxSubscriptionConnector,
-    mockSubscriptionDetailsService
-  )(
-    fakeIdentifierAction,
-    fakeSignUpJourneyRefiner
-  )
+  
 }
