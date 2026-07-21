@@ -17,7 +17,6 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys.FULLNAME
-import config.FrontendAppConfig
 import connectors.individual.PreferencesFrontendConnector
 import controllers.ControllerSpec
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
@@ -25,15 +24,12 @@ import models.common.AccountingYearModel
 import models.{Current, Next, SessionData}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.Configuration
 import play.api.mvc.Result
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.SignedUpDateService
 import services.mocks.*
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utilities.ImplicitDateFormatterImpl
 import views.html.individual.confirmation.SignUpConfirmation
 
@@ -194,25 +190,14 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
     super.beforeEach()
   }
 
-  val mockConfig: Configuration = mock[Configuration]
-  val mockServicesConfig: ServicesConfig = mock[ServicesConfig]
-  val appConfig: FrontendAppConfig = new FrontendAppConfig(mockServicesConfig, mockConfig)
-
   object TestConfirmationController extends ConfirmationController(
     fakeIdentifierAction,
     fakeConfirmationJourneyRefiner,
     mockPreferencesFrontendConnector,
     mockSubscriptionDetailsService,
     mockSignedUpDateService,
-    mockSignUpConfirmation,
-    appConfig
+    mockSignUpConfirmation
   ) {
-    when(mockConfig.getOptional(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(
-      None
-    )
-    when(mockServicesConfig.getString(ArgumentMatchers.any())).thenReturn(
-      ""
-    )
   }
 
 }

@@ -16,13 +16,10 @@
 
 package controllers.individual.sps
 
-import auth.individual.AuthPredicate.AuthPredicate
-import auth.individual.{IncomeTaxSAUser, SignUpController}
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.*
-import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
 import java.net.URLEncoder
@@ -31,10 +28,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class SPSHandoffController @Inject()(identify: IdentifierAction,
-                                     val crypto: ApplicationCrypto)
-                                    (implicit val ec: ExecutionContext,
-                                     val appConfig: AppConfig,
+                                     crypto: ApplicationCrypto)
+                                    (implicit ec: ExecutionContext,
+                                     appConfig: AppConfig,
                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
+
   def redirectToSPS: Action[AnyContent] = identify { implicit request =>
     goToSPS(returnUrl = appConfig.baseUrl + controllers.individual.sps.routes.SPSCallbackController.callback(None).url,
       returnLinkText = "I have verified",

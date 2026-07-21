@@ -16,8 +16,6 @@
 
 package services.individual.claimenrolment
 
-import auth.individual.IncomeTaxSAUser
-import common.Constants
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR}
@@ -28,8 +26,6 @@ import services.agent.CheckEnrolmentAllocationService.{EnrolmentAlreadyAllocated
 import services.individual.claimenrolment.ClaimEnrolmentService.*
 import services.individual.mocks.{MockEnrolmentService, MockKnownFactsService}
 import services.mocks.{MockCheckEnrolmentAllocationService, MockNinoService, MockSessionDataService, MockSubscriptionService}
-import uk.gov.hmrc.auth.core.*
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utilities.individual.TestConstants.{testEnrolmentKey, testGroupId, testMTDID, testNino}
 
 import scala.concurrent.Future
@@ -58,27 +54,6 @@ class ClaimEnrolmentServiceSpec extends PlaySpec
   }
 
   implicit val request: Request[AnyContent] = FakeRequest()
-  private val fullEnrolments: Enrolments = Enrolments(Set(
-    Enrolment(
-      Constants.ninoEnrolmentName,
-      Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-      "Activated"
-    )
-  ))
-  implicit val user: IncomeTaxSAUser = new IncomeTaxSAUser(
-    enrolments = fullEnrolments,
-    affinityGroup = Some(Individual),
-    credentialRole = Some(User),
-    confidenceLevel = ConfidenceLevel.L200,
-    userId = "testUserId"
-  )
-  val userWithNoNino: IncomeTaxSAUser = new IncomeTaxSAUser(
-    enrolments = Enrolments(Set.empty),
-    affinityGroup = Some(Individual),
-    credentialRole = Some(User),
-    confidenceLevel = ConfidenceLevel.L200,
-    userId = "testUserId"
-  )
 
   "claimEnrolment" when {
     "the user has a nino in their user profile" when {

@@ -16,7 +16,6 @@
 
 package controllers.individual.sps
 
-import auth.individual.SignUpController
 import common.Constants.ITSASessionKeys
 import config.AppConfig
 import controllers.SignUpBaseController

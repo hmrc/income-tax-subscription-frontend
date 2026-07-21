@@ -16,13 +16,12 @@
 
 package testonly.controllers
 
-import auth.individual.BaseFrontendController
 import config.AppConfig
-import config.featureswitch.FeatureSwitch
-import config.featureswitch.FeatureSwitch._
+import config.featureswitch.FeatureSwitch.*
+import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import controllers.SignUpBaseController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.Html
-import services.{AuditingService, AuthService}
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
 import testonly.views.html.FeatureSwitchSettings
@@ -31,14 +30,12 @@ import javax.inject.Inject
 import scala.collection.immutable.ListMap
 import scala.concurrent.{ExecutionContext, Future}
 
-class FeatureSwitchController @Inject()(val auditingService: AuditingService,
-                                        featureSwitchSettings: FeatureSwitchSettings,
-                                        val authService: AuthService,
+class FeatureSwitchController @Inject()(featureSwitchSettings: FeatureSwitchSettings,
                                         backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
-                                       (implicit val ec: ExecutionContext,
-                                        val appConfig: AppConfig,
-                                        mcc: MessagesControllerComponents) extends BaseFrontendController  {
+                                       (implicit ec: ExecutionContext,
+                                        mcc: MessagesControllerComponents,
+                                        val appConfig: AppConfig) extends SignUpBaseController with FeatureSwitching {
 
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],

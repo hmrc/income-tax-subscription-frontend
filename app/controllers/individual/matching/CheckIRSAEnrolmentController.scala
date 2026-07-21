@@ -16,8 +16,8 @@
 
 package controllers.individual.matching
 
-import auth.individual.JourneyState.ResultFunctions
 import auth.individual.SignUp
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
@@ -80,6 +80,6 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
       }
     }
 
-    next.map(Redirect(_).withJourneyState(SignUp))
+    next.map(_.url).map(url => Redirect(url).addingToSession(ITSASessionKeys.JourneyStateKey -> SignUp.name))
   }
 }

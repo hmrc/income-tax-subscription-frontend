@@ -16,9 +16,6 @@
 
 package auth.individual
 
-import common.Constants.ITSASessionKeys
-import play.api.mvc._
-
 trait JourneyState {
   val name: String
 }
@@ -31,18 +28,3 @@ object ClaimEnrolment extends JourneyState {
   override val name: String = "claimEnrolment"
 }
 
-object JourneyState {
-
-  implicit class SessionFunctions(session: Session) {
-    def isInState(state: JourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
-  }
-
-  implicit class RequestFunctions(request: Request[_]) {
-    def isInState(state: JourneyState): Boolean = request.session.isInState(state)
-  }
-
-  implicit class ResultFunctions(result: Result) {
-    def withJourneyState(state: JourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
-  }
-
-}

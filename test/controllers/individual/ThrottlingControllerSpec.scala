@@ -23,10 +23,9 @@ import play.api.http.Status.OK
 import play.api.mvc.{Action, AnyContent, Codec}
 import play.api.test.Helpers.{HTML, charset, contentType, defaultAwaitTimeout, status}
 import play.twirl.api.HtmlFormat
-import services.mocks.MockAuditingService
 import views.html.individual.throttling.{ThrottleEndOfJourney, ThrottleStartOfJourney}
 
-class ThrottlingControllerSpec extends ControllerBaseSpec with MockAuditingService {
+class ThrottlingControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
@@ -65,8 +64,6 @@ class ThrottlingControllerSpec extends ControllerBaseSpec with MockAuditingServi
     )(any(), any())).thenReturn(HtmlFormat.empty)
 
     val controller = new ThrottlingController(
-      mockAuditingService,
-      mockAuthService,
       startOfJourneyView,
       endOfJourneyView
     )
