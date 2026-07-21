@@ -16,8 +16,10 @@
 
 package controllers.individual.tasklist.overseasproperty
 
+import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
+import controllers.ControllerSpec
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
@@ -25,21 +27,20 @@ import models.{DateModel, Yes}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
+import services.individual.mocks.MockAuthService
 import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockOverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
-class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
+class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
   with MockAuditingService
+  with MockAuthService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner
   with MockSubscriptionDetailsService
   with MockOverseasPropertyCheckYourAnswers {
-
-  override val controllerName: String = "OverseasPropertyCheckYourAnswersController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "show" should {
     "return an OK status with the foreign property CYA page" when {
@@ -53,7 +54,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           isGlobalEdit = false
         )
 
-        val result = await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = false)(request)
         status(result) mustBe OK
       }
 
@@ -67,7 +68,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           isGlobalEdit = false
         )
 
-        val result = await(controller.show(isEditMode = true, isGlobalEdit = false)(subscriptionRequest))
+        val result: Future[Result] = controller.show(isEditMode = true, isGlobalEdit = false)(request)
         status(result) mustBe OK
       }
 
@@ -81,7 +82,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           isGlobalEdit = true
         )
 
-        val result = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
+        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = true)(request)
         status(result) mustBe OK
       }
 
@@ -95,7 +96,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           isGlobalEdit = true
         )
 
-        val result = await(controller.show(isEditMode = false, isGlobalEdit = true)(subscriptionRequest))
+        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = true)(request)
         status(result) mustBe OK
       }
     }
@@ -110,8 +111,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         isGlobalEdit = false
       )
 
-      val result: Future[Result] =
-        await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest))
+      val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = false)(request)
 
       status(result) mustBe OK
     }
@@ -119,7 +119,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     "throw an exception if cannot retrieve overseas property details" in withController { controller =>
       mockFetchOverseasProperty(None)
 
-      intercept[InternalServerException](await(controller.show(isEditMode = false, isGlobalEdit = false)(subscriptionRequest)))
+      intercept[InternalServerException](await(controller.show(isEditMode = false, isGlobalEdit = false)(request)))
         .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
     }
   }
@@ -134,7 +134,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
             Right(PostSubscriptionDetailsSuccessResponse)
           )
 
-          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+          val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
@@ -143,7 +143,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         "the user submits valid partial data and overseas property answers is not saved" in withController { controller =>
           mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-          val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+          val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
@@ -160,7 +160,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
             Right(PostSubscriptionDetailsSuccessResponse)
           )
 
-          val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+          val result: Future[Result] = controller.submit(isGlobalEdit = true)(request)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
@@ -170,7 +170,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           "the user submits valid partial data" in withController { controller =>
             mockFetchOverseasProperty(Some(OverseasPropertyModel()))
 
-            val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+            val result: Future[Result] = controller.submit(isGlobalEdit = true)(request)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
@@ -188,7 +188,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
               Right(PostSubscriptionDetailsSuccessResponse)
             )
 
-            val result: Future[Result] = await(controller.submit(isGlobalEdit = false)(subscriptionRequest))
+            val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url)
@@ -205,7 +205,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
               Right(PostSubscriptionDetailsSuccessResponse)
             )
 
-            val result: Future[Result] = await(controller.submit(isGlobalEdit = true)(subscriptionRequest))
+            val result: Future[Result] = controller.submit(isGlobalEdit = true)(request)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.routes.GlobalCheckYourAnswersController.show.url)
@@ -221,7 +221,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
       "cannot retrieve property details" in withController { controller =>
         mockFetchOverseasProperty(None)
 
-        val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
+        val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
         intercept[InternalServerException](await(result)).message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
       }
@@ -232,7 +232,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
           Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
         )
 
-        val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
+        val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
         intercept[InternalServerException](await(result))
           .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details"
@@ -244,7 +244,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
         "cannot retrieve property details" in withController { controller =>
           mockFetchOverseasProperty(None)
 
-          val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
+          val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
           intercept[InternalServerException](await(result)).message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
         }
@@ -255,7 +255,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
             Left(PostSubscriptionDetailsHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
           )
 
-          val result: Future[Result] = controller.submit(isGlobalEdit = false)(subscriptionRequest)
+          val result: Future[Result] = controller.submit(isGlobalEdit = false)(request)
 
           intercept[InternalServerException](await(result))
             .message mustBe "[OverseasPropertyCheckYourAnswersController][submit] - Could not confirm property details"
@@ -264,6 +264,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
   }
 
+  val appConfig: AppConfig = MockConfig
 
   private val testFullOverseasProperty: OverseasPropertyModel = OverseasPropertyModel(startDate = Some(DateModel("10", "11", "2021")))
 
@@ -280,7 +281,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerBaseSpec
     )(
       mockAuditingService,
       mockAuthService,
-      appConfig
+      MockConfig
     )
 
     testCode(controller)

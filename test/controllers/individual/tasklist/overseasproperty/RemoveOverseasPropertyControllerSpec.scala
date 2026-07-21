@@ -18,7 +18,7 @@ package controllers.individual.tasklist.overseasproperty
 
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
-import controllers.individual.ControllerBaseSpec
+import controllers.ControllerSpec
 import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.RemoveOverseasPropertyForm
 import forms.submapping.YesNoMapping
@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.*
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.MockSubscriptionDetailsService
@@ -36,20 +36,16 @@ import views.html.individual.tasklist.overseasproperty.RemoveOverseasPropertyBus
 
 import scala.concurrent.Future
 
-class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
+class RemoveOverseasPropertyControllerSpec extends ControllerSpec
   with MockIncomeTaxSubscriptionConnector
   with MockSubscriptionDetailsService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner {
 
-  override val controllerName: String = "RemoveOverseasPropertyController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-  val mockRemoveOverseasProperty: RemoveOverseasPropertyBusiness = mock[RemoveOverseasPropertyBusiness]
-
   "show" should {
     "return OK and display the remove overseas property page" in withController { controller =>
       mockFetchOverseasProperty(Some(OverseasPropertyModel()))
-      val result: Future[Result] = controller.show(subscriptionRequest)
+      val result: Future[Result] = controller.show(request)
       status(result) mustBe OK
       contentType(result) mustBe Some(HTML)
     }
@@ -57,7 +53,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     "redirect to Business Already Removed page" when {
       "no uk property business exists" in withController { controller =>
         mockFetchOverseasProperty(None)
-        val result: Future[Result] = controller.show(subscriptionRequest)
+        val result: Future[Result] = controller.show(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url)
@@ -72,7 +68,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
         mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(Right(DeleteSubscriptionDetailsSuccessResponse))
 
         val result: Result = controller.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+          request.withMethod("POST").withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
         ).futureValue
 
         status(result) mustBe SEE_OTHER
@@ -84,7 +80,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
       "the user selects to not remove the business" in withController { controller =>
         val result: Result = controller.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
+          request.withMethod("POST").withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_no)
         ).futureValue
 
         status(result) mustBe SEE_OTHER
@@ -97,7 +93,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
 
     "return BAD_REQUEST and display the overseas property page" when {
       "the user does not select an option" in withController { controller =>
-        val result: Future[Result] = controller.submit(subscriptionRequest)
+        val result: Future[Result] = controller.submit(request)
 
         status(result) mustBe BAD_REQUEST
         contentType(result) mustBe Some(HTML)
@@ -113,7 +109,7 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
         mockDeleteSubscriptionDetailsFailure(SubscriptionDataKeys.IncomeSourceConfirmation)
 
         val result = controller.submit(
-          subscriptionRequest.withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
+          request.withMethod("POST").withFormUrlEncodedBody(RemoveOverseasPropertyForm.yesNo -> YesNoMapping.option_yes)
         )
 
         result.failed.futureValue mustBe an[uk.gov.hmrc.http.InternalServerException]
@@ -134,9 +130,12 @@ class RemoveOverseasPropertyControllerSpec extends ControllerBaseSpec
     )(
       fakeIdentifierAction,
       fakeSignUpJourneyRefiner
+    )(
+      ec,
+      cc
     )
 
     testCode(controller)
   }
-  
+
 }
