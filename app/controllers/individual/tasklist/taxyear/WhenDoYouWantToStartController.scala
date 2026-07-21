@@ -16,9 +16,7 @@
 
 package controllers.individual.tasklist.taxyear
 
-import auth.individual.SignUpController
-import config.AppConfig
-import controllers.utils.ReferenceRetrieval
+import controllers.SignUpBaseController
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -28,6 +26,7 @@ import play.twirl.api.Html
 import services.*
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.taxyear.WhenDoYouWantToStart
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,14 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class WhenDoYouWantToStartController @Inject()(whenDoYouWantToStart: WhenDoYouWantToStart,
                                                accountingPeriodService: AccountingPeriodService,
-                                               referenceRetrieval: ReferenceRetrieval,
-                                               subscriptionDetailsService: SubscriptionDetailsService,
-                                               sessionDataService: SessionDataService)
-                                              (val auditingService: AuditingService,
-                                               val authService: AuthService,
-                                               val appConfig: AppConfig)
+                                               subscriptionDetailsService: SubscriptionDetailsService)
+                                              (identify: IdentifierAction,
+                                               refine: SignUpJourneyRefiner)
                                               (implicit val ec: ExecutionContext,
-                                               mcc: MessagesControllerComponents) extends SignUpController {
+                                               mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(accountingYearForm: Form[AccountingYear], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     whenDoYouWantToStart(
@@ -53,44 +49,34 @@ class WhenDoYouWantToStartController @Inject()(whenDoYouWantToStart: WhenDoYouWa
     )
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          subscriptionDetailsService.fetchSelectedTaxYear(reference) map {
-            case Some(taxYearModel) if !taxYearModel.editable =>
-              Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-            case accountingYearModel =>
-              Ok(view(
-                accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
-                isEditMode = isEditMode
-              ))
-          }
-        }
-      }
+  def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    subscriptionDetailsService.fetchSelectedTaxYear(request.reference) map {
+      case Some(taxYearModel) if !taxYearModel.editable =>
+        Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
+      case accountingYearModel =>
+        Ok(view(
+          accountingYearForm = AccountingYearForm.accountingYearForm.fill(accountingYearModel.map(_.accountingYear)),
+          isEditMode = isEditMode
+        ))
+    }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    _ =>
-      sessionDataService.getAllSessionData().flatMap { sessionData =>
-        referenceRetrieval.getIndividualReference(sessionData) flatMap { reference =>
-          AccountingYearForm.accountingYearForm.bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
-            accountingYear => {
-              subscriptionDetailsService.saveSelectedTaxYear(reference, AccountingYearModel(accountingYear)) map {
-                case Right(_) =>
-                  if (isEditMode) {
-                    Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
-                  } else {
-                    Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
-                  }
-                case Left(_) =>
-                  throw new InternalServerException("[WhenDoYouWantToStartController][submit] - Could not save accounting year")
-              }
+  def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
+    AccountingYearForm.accountingYearForm.bindFromRequest().fold(
+      formWithErrors =>
+        Future.successful(BadRequest(view(accountingYearForm = formWithErrors, isEditMode = isEditMode))),
+      accountingYear => {
+        subscriptionDetailsService.saveSelectedTaxYear(request.reference, AccountingYearModel(accountingYear)) map {
+          case Right(_) =>
+            if (isEditMode) {
+              Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            } else {
+              Redirect(controllers.individual.routes.WhatYouNeedToDoController.show)
             }
-          )
+          case Left(_) =>
+            throw new InternalServerException("[WhenDoYouWantToStartController][submit] - Could not save accounting year")
         }
       }
+    )
   }
 }
