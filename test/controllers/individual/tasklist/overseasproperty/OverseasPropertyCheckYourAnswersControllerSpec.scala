@@ -20,23 +20,19 @@ import config.{AppConfig, MockConfig}
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.ControllerSpec
-import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
 import models.{DateModel, Yes}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, status}
-import services.individual.mocks.MockAuthService
-import services.mocks.{MockAuditingService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockOverseasPropertyCheckYourAnswers
 
 import scala.concurrent.Future
 
 class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
-  with MockAuditingService
-  with MockAuthService
   with MockIdentifierAction
   with MockSignUpJourneyRefiner
   with MockSubscriptionDetailsService
@@ -278,10 +274,6 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
       fakeIdentifierAction,
       fakeSignUpJourneyRefiner,
       mockSubscriptionDetailsService
-    )(
-      mockAuditingService,
-      mockAuthService,
-      MockConfig
     )
 
     testCode(controller)

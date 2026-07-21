@@ -33,9 +33,6 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
                                                            identify: IdentifierAction,
                                                            journeyRefiner: SignUpJourneyRefiner,
                                                            subscriptionDetailsService: SubscriptionDetailsService)
-                                                          (val auditingService: AuditingService,
-                                                           val authService: AuthService,
-                                                           val appConfig: AppConfig)
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends SignUpBaseController {
 
