@@ -16,17 +16,14 @@
 
 package controllers.individual.tasklist.ukproperty
 
-import auth.individual.SignUpController
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import controllers.utils.ReferenceRetrieval
 import forms.individual.business.PropertyStartDateForm
 import forms.individual.business.PropertyStartDateForm.*
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import services.{AuditingService, AuthService, SessionDataService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils
 import utilities.ImplicitDateFormatter
@@ -43,7 +40,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
                                             refine: SignUpJourneyRefiner)
                                            (implicit val ec: ExecutionContext,
                                             mcc: MessagesControllerComponents) extends SignUpBaseController with ImplicitDateFormatter {
-2
+
   def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen refine).async { implicit request =>
     subscriptionDetailsService.fetchPropertyStartDate(request.reference).map { startDate =>
       Ok(view(

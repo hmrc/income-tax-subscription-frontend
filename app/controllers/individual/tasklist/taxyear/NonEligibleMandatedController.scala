@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist.taxyear
 
-import auth.individual.SignUpController
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}

@@ -16,22 +16,16 @@
 
 package controllers.agent
 
-import auth.individual.BaseFrontendController
-import config.AppConfig
+import controllers.SignUpBaseController
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
 import views.html.agent.throttling.{ThrottleEndOfJourney, ThrottleStartOfJourney}
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class ThrottlingController @Inject()(val auditingService: AuditingService,
-                                     val authService: AuthService,
-                                     throttleStart: ThrottleStartOfJourney,
+class ThrottlingController @Inject()(throttleStart: ThrottleStartOfJourney,
                                      throttleEnd: ThrottleEndOfJourney)
-                                    (implicit mcc: MessagesControllerComponents,
-                                     val ec: ExecutionContext,
-                                     val appConfig: AppConfig) extends BaseFrontendController {
+                                    (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def start(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(throttleStart(controllers.agent.matching.routes.ConfirmedClientResolver.resolve)))

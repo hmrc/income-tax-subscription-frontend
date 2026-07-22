@@ -16,8 +16,6 @@
 
 package controllers.utils
 
-import auth.agent.IncomeTaxAgentUser
-import auth.individual.IncomeTaxSAUser
 import common.Constants.ITSASessionKeys
 import connectors.httpparser.RetrieveReferenceHttpParser
 import models.SessionData
@@ -33,7 +31,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, defaultAwaitTimeout, status}
 import services.AuditingService
 import services.mocks.{MockNinoService, MockSessionDataService, MockSubscriptionDetailsService, MockUTRService}
-import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
@@ -67,10 +64,6 @@ class ReferenceRetrievalSpec extends PlaySpec
   val reference: String = "test-reference"
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
-  implicit val individualUser: IncomeTaxSAUser = new IncomeTaxSAUser(Enrolments(Set()), None, None, ConfidenceLevel.L200, "userId")
-  implicit val agentUser: IncomeTaxAgentUser = new IncomeTaxAgentUser(
-    Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("ARN", arn)), "activated", None)))
-    , None, ConfidenceLevel.L50)
   implicit val userArn: String = arn
 
   implicit val request: Request[AnyContent] = FakeRequest()

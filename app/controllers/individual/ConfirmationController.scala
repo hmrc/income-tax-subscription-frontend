@@ -16,8 +16,7 @@
 
 package controllers.individual
 
-import auth.individual.IncomeTaxSAUser
-import config.AppConfig
+import common.Constants.ITSASessionKeys
 import connectors.individual.PreferencesFrontendConnector
 import controllers.SignUpBaseController
 import controllers.individual.actions.{ConfirmationJourneyRefiner, IdentifierAction}
@@ -36,8 +35,7 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
                                        preferencesFrontendConnector: PreferencesFrontendConnector,
                                        subscriptionDetailsService: SubscriptionDetailsService,
                                        signedUpDateService: SignedUpDateService,
-                                       view: SignUpConfirmation,
-                                       val appConfig: AppConfig)
+                                       view: SignUpConfirmation)
                                       (implicit mcc: MessagesControllerComponents,
                                        ec: ExecutionContext,
                                        implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController {
@@ -53,7 +51,7 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
       Ok(view(
         mandatedCurrentYear = request.mandationStatus.currentYearStatus.isMandated,
         taxYearSelectionIsNext = taxYearSelectionIsNext,
-        individualUserNameMaybe = IncomeTaxSAUser.fullName,
+        individualUserNameMaybe = request.session.get(ITSASessionKeys.FULLNAME),
         individualUserNino = request.nino,
         preference = preference,
         usingSoftwareStatus = request.usingSoftware,

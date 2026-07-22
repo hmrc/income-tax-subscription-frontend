@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import auth.individual.JourneyState.ResultFunctions
+import common.Constants.ITSASessionKeys
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{BasicIdentifierAction, IdentifierAction}
@@ -45,7 +45,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
       Ok(addmtdit(
         postAction = routes.AddMTDITOverviewController.submit,
         origin = origin
-      )).withJourneyState(ClaimEnrolmentJourney)
+      )).addingToSession(ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
     }
   }
 
