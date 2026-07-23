@@ -18,6 +18,7 @@ package connectors
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigValueFactory}
 import org.apache.pekko.actor.ActorSystem
+import org.scalactic.Prettifier.default
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -48,9 +49,9 @@ class ConnectorRetriesSpec extends AnyWordSpec with Matchers with BeforeAndAfter
     val initialKey: String = "key-1"
     lazy val underTest: TestConnectorRetries = new TestConnectorRetries(config)
 
-    def runRetry[A](nextKey: PartialFunction[(A, String), String])(block: String => Future[A]): A =
+    def runRetry[A](nextKey: PartialFunction[(A, String), String], logError: A => Unit = (_: A) => ())(block: String => Future[A]): A =
       Await.result(
-        underTest.retryWithIdempotency[A](label, initialKey)(nextKey)(block),
+        underTest.retryWithIdempotency[A](label, initialKey, logError)(nextKey)(block),
         2.seconds
       )
   }
@@ -172,6 +173,23 @@ class ConnectorRetriesSpec extends AnyWordSpec with Matchers with BeforeAndAfter
       result shouldBe Left("temporary")
       attempts shouldBe 1
       keysUsed.toList shouldBe List("key-1")
+    }
+
+    "log only one error" in new Setup {
+      override val label: String = "missing-label"
+      var attempts = 0
+      var errors = 0
+
+      val result = runRetry[String] ({
+        case ("retry", currentKey) => currentKey
+      }, _ => errors += 1) { _ =>
+        attempts += 1
+        Future.successful("retry")
+      }
+
+      result shouldBe "retry"
+      attempts shouldBe 3
+      errors shouldBe 1
     }
   }
 }
