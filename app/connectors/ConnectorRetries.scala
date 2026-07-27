@@ -60,7 +60,7 @@ trait ConnectorRetries extends Logging {
     val result = loop(retryIntervals, initialIdempotencyKey)
     result.onComplete {
       case Success(r) => logError(r)
-      case Failure(exception) => throw exception
+      case _ => {}
     }
     result
   }
