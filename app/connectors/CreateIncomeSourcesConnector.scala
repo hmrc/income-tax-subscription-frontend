@@ -23,6 +23,7 @@ import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser.*
 import models.common.subscription.CreateIncomeSourcesModel
 import org.apache.pekko.actor.ActorSystem
+import play.api.Logging
 import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
@@ -32,6 +33,7 @@ import utilities.UUIDProvider
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class CreateIncomeSourcesConnector @Inject()(
@@ -40,12 +42,12 @@ class CreateIncomeSourcesConnector @Inject()(
   val actorSystem: ActorSystem,
   uuidProvider: UUIDProvider,
   http: HttpClientV2
-) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching {
+) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching with Logging {
 
   def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     if (isEnabled(UseIdempotency)) {
-      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey()) {
+      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey(), logError) {
         case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY, Some("003"))), _) => getNewIdempotencyKey(Some(UNPROCESSABLE_ENTITY), Some("003"))
         case (Left(UnexpectedStatus(BAD_GATEWAY, _)), key) => sameIdemPotencyKey(BAD_GATEWAY, key)
         case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE, _)), key) => sameIdemPotencyKey(SERVICE_UNAVAILABLE, key)
@@ -59,7 +61,12 @@ class CreateIncomeSourcesConnector @Inject()(
         )
       }
     } else {
-      updateBackend(mtdbsa, request)
+      val result = updateBackend(mtdbsa, request)
+      result.onComplete {
+        case Success(r) => logError(r)
+        case _ => {}
+      }
+      result
     }
 
   private def updateBackend(mtdbsa: String, request: CreateIncomeSourcesModel)
@@ -76,5 +83,17 @@ class CreateIncomeSourcesConnector @Inject()(
   private def sameIdemPotencyKey(status: Int, key: String) = {
     uuidProvider.noteSameKeyForStatusAndCode(Some(status), None)
     key
+  }
+  
+  private def logError(result: CreateIncomeSourcesResponse): Unit = {
+    result match {
+      case Left(error) =>
+        val message = s"[Create Income Sources] Unexpected response: status = ${error.status}"
+        error.code match {
+          case Some(code) => logger.error(s"$message, code = $code")
+          case None => logger.error(message)
+        }
+      case _ => {}
+    }
   }
 }

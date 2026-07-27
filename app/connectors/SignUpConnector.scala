@@ -22,7 +22,7 @@ import config.featureswitch.FeatureSwitch.UseIdempotency
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.SignUpResponseHttpParser.*
 import models.AccountingYear
-import models.common.subscription.SignUpFailureResponse.{UnexpectedStatus, UnprocessableSignUp}
+import models.common.subscription.SignUpFailureResponse.{InvalidJson, UnexpectedStatus, UnprocessableSignUp}
 import models.common.subscription.SignUpRequestModel
 import org.apache.pekko.actor.ActorSystem
 import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE}
@@ -34,6 +34,7 @@ import utilities.UUIDProvider
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class SignUpConnector @Inject()(http: HttpClientV2,
@@ -49,7 +50,7 @@ class SignUpConnector @Inject()(http: HttpClientV2,
   def signUp(nino: String, utr: String, taxYear: AccountingYear)
             (implicit hc: HeaderCarrier): Future[SignUpResponse] = {
     if (isEnabled(UseIdempotency)) {
-      retryWithIdempotency[SignUpResponse]("sign-up", uuidProvider.getUUID) {
+      retryWithIdempotency[SignUpResponse]("sign-up", uuidProvider.getUUID, logError) {
         case (Left(UnexpectedStatus(status)), currentIdempotencyKey) if retryWithSameIdempotencyStatuses.contains(status) =>
           currentIdempotencyKey
         case (Left(UnprocessableSignUp(code, _)), _) if retryWithNewIdempotencyCodes.contains(code) =>
@@ -58,7 +59,12 @@ class SignUpConnector @Inject()(http: HttpClientV2,
         executeSignUpRequest(nino, utr, taxYear, Some(idempotencyKey))
       }
     } else {
-      executeSignUpRequest(nino, utr, taxYear, None)
+      val result = executeSignUpRequest(nino, utr, taxYear, None)
+      result.onComplete {
+        case Success(r) => logError(r)
+        case _ => {}
+      }
+      result
     }
   }
 
@@ -81,4 +87,16 @@ class SignUpConnector @Inject()(http: HttpClientV2,
     idempotencyKey = idempotencyKey
   ))
 
+  private def logError(result: SignUpResponse): Unit = {
+    val title = "sign-up"
+    result match {
+      case Left(InvalidJson) =>
+        logger.error(s"[$title] Unexpected json returned")
+      case Left(UnexpectedStatus(status)) =>
+        logger.error(s"[$title] Unexpected status returned: $status")
+      case Left(UnprocessableSignUp(code, reason)) =>
+        logger.error(s"[$title] Unprocessable response: code = $code, reason = $reason")
+      case _ => {}
+    }
+  }
 }

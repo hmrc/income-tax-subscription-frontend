@@ -18,12 +18,11 @@ package connectors.httpparser
 
 import models.common.subscription.SignUpFailureResponse.{InvalidJson, UnexpectedStatus, UnprocessableSignUp}
 import models.common.subscription.{SignUpFailureResponse, SignUpSuccessful}
-import play.api.Logging
 import play.api.http.Status.{OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object SignUpResponseHttpParser extends Logging {
+object SignUpResponseHttpParser {
 
   type SignUpResponse = Either[SignUpFailureResponse, SignUpSuccessful]
 
@@ -34,7 +33,6 @@ object SignUpResponseHttpParser extends Logging {
           response.json.validate[SignUpSuccessful] match {
             case JsSuccess(successResponse, _) => Right(successResponse)
             case JsError(errors) =>
-              logger.error(s"[SignUpResponseHttpReads] - Unexpected json returned from sign up API, Status: $OK, Errors: $errors")
               Left(InvalidJson)
           }
         case UNPROCESSABLE_ENTITY =>
@@ -42,11 +40,9 @@ object SignUpResponseHttpParser extends Logging {
             case JsSuccess(unprocessableResponse, _) =>
               Left(unprocessableResponse)
             case JsError(errors) =>
-              logger.error(s"[SignUpResponseHttpReads] - Unexpected json returned from sign up API, Status: $UNPROCESSABLE_ENTITY, Errors: $errors")
               Left(InvalidJson)
           }
         case status =>
-          logger.error(s"[SignUpResponseHttpReads] - Unexpected status returned from sign up: $status")
           Left(UnexpectedStatus(status))
       }
     }
