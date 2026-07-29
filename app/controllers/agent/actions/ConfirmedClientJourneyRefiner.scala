@@ -21,7 +21,6 @@ import controllers.utils.ReferenceRetrieval
 import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import services.UTRService
@@ -37,7 +36,7 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
                                               clientDetailsRetrieval: ClientDetailsRetrieval,
                                               referenceRetrieval: ReferenceRetrieval)
                                              (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, ConfirmedClientRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, ConfirmedClientRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -50,34 +49,31 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
           hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } match {
-      case Some(ConfirmedClient) =>
-        val sessionData = request.sessionData
-        for {
-          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
-          utr <- utrService.getUTR(sessionData)
-          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
-        } yield {
-          sessionData.fetchSubmissionStatus match {
-            case Some(value) =>
-              logger.info("[Agent][ConfirmedClientJourneyRefiner] - User accessing pre-submission journey whilst submission ongoing")
-              Left(Redirect(controllers.agent.routes.LoadingSpinnerController.show))
-            case None =>
-              Right(ConfirmedClientRequest(
-                request = request,
-                clientDetails = clientDetails,
-                utr = utr,
-                reference = reference,
-                sessionData = sessionData
-              ))
+        case Some(ConfirmedClient) =>
+          val sessionData = request.sessionData
+          for {
+            clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+            utr <- utrService.getUTR(sessionData)
+            reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
+          } yield {
+            sessionData.fetchSubmissionStatus match {
+              case Some(value) =>
+                Left(Redirect(controllers.agent.routes.LoadingSpinnerController.show))
+              case None =>
+                Right(ConfirmedClientRequest(
+                  request = request,
+                  clientDetails = clientDetails,
+                  utr = utr,
+                  reference = reference,
+                  sessionData = sessionData
+                ))
+            }
           }
-        }
-      case state@(None | Some(ClientDetails | SignPosted)) =>
-        logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to cannot go back page")
-        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-      case Some(Confirmation) =>
-        logger.info(s"[Agent][ConfirmedClientJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
-        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
-    }
+        case state@(None | Some(ClientDetails | SignPosted)) =>
+          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+        case Some(Confirmation) =>
+          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+      }
   }
 
 }

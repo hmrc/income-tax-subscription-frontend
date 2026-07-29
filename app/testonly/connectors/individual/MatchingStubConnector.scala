@@ -105,11 +105,11 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   private lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
 
   /*
-  *  N.B. This creates a stubbed user via the MatchingStubs service
-  *  In order to make use of this user the request must include a "True-Client-IP" header with the same
-  *  testId specified by the request.
-  *  Currently this is hardcoded in the Request object as "ITSA-AGENT"
-  */
+   *  N.B. This creates a stubbed user via the MatchingStubs service
+   *  In order to make use of this user the request must include a "True-Client-IP" header with the same
+   *  testId specified by the request.
+   *  Currently, this is hardcoded in the Request object as "ITSA-AGENT"
+   */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http
       .post(url"${dynamicStubUrl}")
@@ -119,21 +119,13 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
         response =>
           response.status match {
             case CREATED =>
-              logger.info("MatchingStubConnector.newUser successful")
               Future.successful(true)
             case status =>
-              logger.warn(
-                s"""MatchingStubConnector.newUser failure:
-                   | Request {
-                   |   dynamicStubUrl: $dynamicStubUrl
-                   |   json: ${UserData.format.writes(userData): JsValue}
-                   | }
-                   | Response: status=$status, body=${response.body}""".stripMargin)
+              logger.error(s"[MatchingStubConnector][newUser] Response: status=$status, body=${response.body}")
               Future.successful(false)
           }
       }
   }
-
 }
 
 // $COVERAGE-ON$

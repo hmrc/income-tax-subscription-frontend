@@ -21,7 +21,6 @@ import controllers.utils.ReferenceRetrieval
 import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
                                     (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, SignUpRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, SignUpRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -44,35 +43,31 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
           key = journeyStep
         )
       } match {
-      case Some(SignUp) =>
-        for {
-          reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)
-        } yield {
-          request.sessionData.fetchSubmissionStatus match {
-            case Some(value) =>
-              logger.info(s"[Individual][SignUpJourneyRefiner] - User accessing pre-submission journey whilst submission ongoing")
-              Left(Redirect(controllers.individual.routes.LoadingSpinnerController.show))
-            case None =>
-              Right(SignUpRequest(
-                request = request,
-                reference = reference,
-                nino = request.nino,
-                sessionData = request.sessionData
-              ))
+        case Some(SignUp) =>
+          for {
+            reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)
+          } yield {
+            request.sessionData.fetchSubmissionStatus match {
+              case Some(value) =>
+                Left(Redirect(controllers.individual.routes.LoadingSpinnerController.show))
+              case None =>
+                Right(SignUpRequest(
+                  request = request,
+                  reference = reference,
+                  nino = request.nino,
+                  sessionData = request.sessionData
+                ))
+            }
           }
-        }
-      case Some(Confirmation) =>
-        logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
-        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case Some(ClaimEnrolment) =>
-        logger.info(s"[Individual][SignUpJourneyRefiner] - User is in a ClaimEnrolment state. Sending the user to the start of the claim enrolment journey")
-        Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
-          origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
-        ))))
-      case state@(None | Some(PreSignUp)) =>
-        logger.info(s"[Individual][SignUpJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to home")
-        Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
-    }
+        case Some(Confirmation) =>
+          Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+        case Some(ClaimEnrolment) =>
+          Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
+            origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
+          ))))
+        case state@(None | Some(PreSignUp)) =>
+          Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
+      }
   }
 
 }

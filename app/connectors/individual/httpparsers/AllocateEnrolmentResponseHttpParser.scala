@@ -32,7 +32,8 @@ object AllocateEnrolmentResponseHttpParser extends Logging {
     override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
       response.status match {
         case CREATED => Right(EnrolSuccess)
-        case _ => logger.error(s"[AllocateEnrolmentResponseHttpReads] issue allocating enrolment status: ${response.status} body: ${response.body}")
+        case _ =>
+          logger.error(s"[AllocateEnrolmentResponseHttpReads] issue allocating enrolment status: ${response.status} body: ${response.body}")
           Left(EnrolFailure(response.body))
       }
   }

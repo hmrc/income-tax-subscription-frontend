@@ -16,7 +16,6 @@
 
 package controllers
 
-import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{MessagesControllerComponents, RequestHeader}
@@ -24,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-abstract class SignUpBaseController(implicit cc: MessagesControllerComponents) extends FrontendController(cc) with I18nSupport with Logging {
+abstract class SignUpBaseController(implicit cc: MessagesControllerComponents) extends FrontendController(cc) with I18nSupport {
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
     HeaderCarrierConverter.fromRequestAndSession(rh, rh.session)
@@ -33,5 +32,4 @@ abstract class SignUpBaseController(implicit cc: MessagesControllerComponents) e
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }
-
 }

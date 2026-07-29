@@ -22,7 +22,6 @@ import controllers.individual.resolvers.AlreadyEnrolledResolver
 import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
                                      (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, PreSignUpRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, PreSignUpRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -45,26 +44,23 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
           key = journeyStep
         )
       } match {
-      case Some(PreSignUp | ClaimEnrolment) =>
-        request.mtditid match {
-          case Some(mtditid) =>
-            logger.info("[Individual][PreSignUpJourneyRefiner] - MTDITID present on users cred. Sending to already enrolled page")
-            resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
-              Left(Redirect(call))
-            }
-          case None =>
-            Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
-        }
-      case Some(SignUp) =>
-        Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
-      case Some(Confirmation) =>
-        logger.info(s"[Individual][PreSignUpJourneyRefiner] - User is in a confirmation state. Sending the user to the confirmation page")
-        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case None =>
-        logger.info(s"[Individual][PreSignUpJourneyRefiner] - User has no state. Adding PreSignUp state and sending home.")
-        Future.successful(Left(
-          Redirect(controllers.individual.matching.routes.HomeController.index).addingToSession(JourneyStateKey -> PreSignUp.key)(request)
-        ))
-    }
+        case Some(PreSignUp | ClaimEnrolment) =>
+          request.mtditid match {
+            case Some(mtditid) =>
+              resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
+                Left(Redirect(call))
+              }
+            case None =>
+              Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+          }
+        case Some(SignUp) =>
+          Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+        case Some(Confirmation) =>
+          Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+        case None =>
+          Future.successful(Left(
+            Redirect(controllers.individual.matching.routes.HomeController.index).addingToSession(JourneyStateKey -> PreSignUp.key)(request)
+          ))
+      }
   }
 }

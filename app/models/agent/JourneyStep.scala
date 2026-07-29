@@ -17,14 +17,13 @@
 package models.agent
 
 import auth.agent.{AgentSignUp, AgentUserMatching}
-import play.api.Logging
 import uk.gov.hmrc.http.InternalServerException
 
 sealed trait JourneyStep {
   val key: String
 }
 
-object JourneyStep extends Logging {
+object JourneyStep {
 
   case object ClientDetails extends JourneyStep {
     val key = "ClientDetails"
@@ -48,22 +47,18 @@ object JourneyStep extends Logging {
 
       // if user has old mtditid session key, they are in a confirmation state
       case _ if hasMtditid =>
-        logger.info("[Agent][JourneyStep] - old journey state used in new journey system")
         Confirmation
 
       // if the user is in the old user matching state with client details confirmed, they are sign posted
       case AgentUserMatching.name if clientDetailsConfirmed =>
-        logger.info("[Agent][JourneyStep] - old journey state used in new journey system")
         SignPosted
 
       // if the user is in the old user matching state without client details confirmed, they are in the enter client details section
       case AgentUserMatching.name =>
-        logger.info("[Agent][JourneyStep] - old journey state used in new journey system")
         ClientDetails
 
       // if the user has the old sign up state, treat that as a confirmed client state
       case AgentSignUp.name =>
-        logger.info("[Agent][JourneyStep] - old journey state used in new journey system")
         ConfirmedClient
 
       case ClientDetails.key => ClientDetails

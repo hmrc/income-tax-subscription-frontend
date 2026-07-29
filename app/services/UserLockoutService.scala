@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.usermatching.UserLockoutConnector
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
-import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.net.URLEncoder
@@ -31,12 +30,10 @@ case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 
 @Singleton
 class UserLockoutService @Inject()(appConfig: AppConfig,
-                                   userLockoutConnector: UserLockoutConnector) extends Logging {
+                                   userLockoutConnector: UserLockoutConnector) {
 
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
-
-    logger.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
     userLockoutConnector.getLockoutStatus(encodedToken)
   }
 
@@ -55,5 +52,4 @@ class UserLockoutService @Inject()(appConfig: AppConfig,
   }
 
   private def encodeToken(token: String): String = URLEncoder.encode(token, "UTF-8")
-
 }

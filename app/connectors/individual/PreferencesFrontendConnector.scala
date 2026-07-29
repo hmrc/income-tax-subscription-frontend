@@ -52,7 +52,6 @@ class PreferencesFrontendConnector @Inject()(appConfig: AppConfig, http: HttpCli
             case JsSuccess(optedIn, _) =>
               Some(optedIn)
             case _ =>
-              logger.error("[PreferencesFrontendConnector][getOptedInStatus] - Could not retrieve optedIn value")
               None
           }
           case status =>

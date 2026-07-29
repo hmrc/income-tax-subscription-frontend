@@ -117,7 +117,6 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
       }
   }
 
-
   private def agentClientURL(nino: String): URL = {
     url"${appConfig.agentClientRelationshipsUrl}/itsa-post-signup/create-relationship/$nino"
   }

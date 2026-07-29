@@ -18,6 +18,7 @@ package controllers.errors
 
 import config.AppConfig
 import controllers.SignUpBaseController
+import play.api.Logging
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import services.AuthService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
@@ -30,14 +31,14 @@ import scala.concurrent.{ExecutionContext, Future}
 abstract class ErrorBaseController(authService: AuthService,
                                    appConfig: AppConfig)
                                   (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
-extends SignUpBaseController {
+extends SignUpBaseController with Logging {
   protected final def authenticate[A](request: Request[A])(f: Boolean => Result)(implicit hc: HeaderCarrier): Future[Result] = {
     authService.authorised().retrieve(affinityGroup) {
       case Some(Agent) => Future.successful(f(true)) // Agent user
       case _ => Future.successful(f(false)) // Individual or Organisation user
     } recover {
       case _: AuthorisationException =>
-        logger.error(s"[ContactHMRCController] - Authorisation exception from auth caught. Redirecting user to login.")
+        logger.warn(s"[ContactHMRCController] - Authorisation exception from auth caught. Redirecting user to login.")
         appConfig.redirectToLogin(request.path)
     }
   }

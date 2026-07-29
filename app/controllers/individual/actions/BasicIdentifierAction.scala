@@ -17,7 +17,6 @@
 package controllers.individual.actions
 
 import config.AppConfig
-import play.api.Logging
 import play.api.mvc.*
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,15 +25,13 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class BasicIdentifierAction @Inject()(val authConnector: AuthConnector,
                                       val parser: BodyParsers.Default)
                                      (appConfig: AppConfig)
                                      (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[Request, AnyContent]
     with ActionFunction[Request, Request]
-    with AuthorisedFunctions
-    with Logging {
+    with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -42,7 +39,6 @@ class BasicIdentifierAction @Inject()(val authConnector: AuthConnector,
       block(request)
     } recover {
       case _: AuthorisationException =>
-        logger.info(s"[Individual][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
         appConfig.redirectToLogin(controllers.individual.matching.routes.HomeController.index.url)
     }
   }

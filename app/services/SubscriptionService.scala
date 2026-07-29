@@ -18,18 +18,15 @@ package services
 
 import connectors.SubscriptionConnector
 import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(subscriptionConnector: SubscriptionConnector) extends Logging {
+class SubscriptionService @Inject()(subscriptionConnector: SubscriptionConnector) {
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
-    logger.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
   }
-
 }

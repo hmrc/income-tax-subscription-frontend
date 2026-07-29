@@ -22,7 +22,6 @@ import config.AppConfig
 import models.SessionData
 import models.audits.IVHandoffAuditing.IVHandoffAuditModel
 import models.requests.individual.IdentifierRequest
-import play.api.Logging
 import play.api.mvc.*
 import play.api.mvc.Results.*
 import services.{AuditingService, SessionDataService}
@@ -36,7 +35,6 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-
 class IdentifierAction @Inject()(val authConnector: AuthConnector,
                                  val auditingService: AuditingService,
                                  val parser: BodyParsers.Default)
@@ -45,8 +43,7 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
                                 (implicit val executionContext: ExecutionContext)
   extends ActionBuilder[IdentifierRequest, AnyContent]
     with ActionFunction[Request, IdentifierRequest]
-    with AuthorisedFunctions
-    with Logging {
+    with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -79,16 +76,13 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
           Redirect(appConfig.identityVerificationURL).addingToSession(ITSASessionKeys.IdentityVerificationFlag -> "true")(request)
         }
       case Some(Individual | Organisation) ~ _ ~ _ ~ _ ~ _ ~ _ =>
-        logger.info(s"[Individual][IdentifierAction] - Non 'User' credential role. Redirecting to cannot use service page.")
         Future.successful(Redirect(controllers.individual.matching.routes.CannotUseServiceController.show()))
       case Some(Agent) ~ _ ~ _ ~ _ ~ _ ~ _ =>
-        logger.info(s"[Individual][IdentifierAction] - User with non individual or organisation affinity. Redirecting to affinity group error page.")
         Future.successful(Redirect(controllers.individual.matching.routes.AffinityGroupErrorController.show))
       case _ =>
         throw new InternalServerException("[Individual][IdentifierAction] - Unsupported user due to auth details")
     } recover {
       case _: AuthorisationException =>
-        logger.info(s"[Individual][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
         appConfig.redirectToLogin(controllers.individual.matching.routes.HomeController.index.url)
     }
   }
