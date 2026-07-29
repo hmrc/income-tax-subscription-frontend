@@ -22,7 +22,6 @@ import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.{No, Yes}
-import play.api.Logging
 import play.api.mvc.Results.NotFound
 import play.api.mvc.{ActionRefiner, Result}
 import services.MandationStatusService
@@ -36,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval,
                                            mandationStatusService: MandationStatusService)
                                           (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, ConfirmationRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, ConfirmationRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -73,7 +72,6 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
           ))
         }
       case state@(None | Some(PreSignUp | SignUp | ClaimEnrolment)) =>
-        logger.info(s"[Individual][ConfirmationJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, showing a not found page")
         Future.successful(Left(NotFound))
     }
   }

@@ -82,7 +82,6 @@ class PrePopDataService @Inject()(prePopConnector: PrePopConnector,
       case None => Future.successful(PrePopSuccess)
     }
   }
-
 }
 
 object PrePopDataService {
@@ -94,5 +93,4 @@ object PrePopDataService {
 
     case class PrePopFailure(error: String) extends PrePopResult
   }
-
 }

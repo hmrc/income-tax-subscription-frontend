@@ -46,6 +46,7 @@ class SignUpConnector @Inject()(http: HttpClientV2,
 
   private val retryWithSameIdempotencyStatuses: Set[Int] = Set(BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT)
   private val retryWithNewIdempotencyCodes: Set[String] = Set("003")
+  private val codesAsWarningFor422Status: Set[String] = Set("002", "815", "816")
 
   def signUp(nino: String, utr: String, taxYear: AccountingYear)
             (implicit hc: HeaderCarrier): Future[SignUpResponse] = {
@@ -95,7 +96,12 @@ class SignUpConnector @Inject()(http: HttpClientV2,
       case Left(UnexpectedStatus(status)) =>
         logger.error(s"[$title] Unexpected status returned: $status")
       case Left(UnprocessableSignUp(code, reason)) =>
-        logger.error(s"[$title] Unprocessable response: code = $code, reason = $reason")
+        val message = s"[$title] Unprocessable response: code = $code, reason = $reason"
+        if (codesAsWarningFor422Status.contains(code)) {
+          logger.warn(message)
+        } else {
+          logger.error(message)
+        }
       case _ => {}
     }
   }

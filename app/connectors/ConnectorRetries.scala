@@ -68,9 +68,6 @@ trait ConnectorRetries extends Logging {
   private lazy val retryIntervals: Seq[FiniteDuration] =
     Try(configuration.getDurationList("retries.intervals").asScala.toSeq)
       .toOption.filter(_.nonEmpty)
-      .getOrElse {
-        logger.warn("[ConnectorRetries] - No retry intervals configured under retries.intervals")
-        Seq.empty
-      }
+      .getOrElse {Seq.empty}
       .map(d => FiniteDuration(d.toMillis, TimeUnit.MILLISECONDS))
 }

@@ -56,15 +56,13 @@ class IdentifierAction @Inject()(val authConnector: AuthConnector,
               block(IdentifierRequest(request, arn, sessionData))
             }
           case None =>
-            logger.info(s"[Agent][IdentifierAction] - Agent user without agent reference number. Redirecting to not enrolled in agent services.")
             Future.successful(Redirect(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show))
         }
       case _ =>
-        logger.info(s"[Agent][IdentifierAction] - User with non agent affinity. Redirecting to not enrolled in agent services.")
         Future.successful(Redirect(controllers.agent.matching.routes.NotEnrolledAgentServicesController.show))
     } recover {
       case _: AuthorisationException =>
-        logger.info(s"[Agent][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
+        logger.warn(s"[Agent][IdentifierAction] - Authorisation exception from auth caught. Redirecting user to login.")
         appConfig.redirectToLogin(request.path)
     }
   }

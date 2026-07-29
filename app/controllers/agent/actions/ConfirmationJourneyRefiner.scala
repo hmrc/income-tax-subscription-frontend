@@ -21,7 +21,6 @@ import controllers.utils.ReferenceRetrieval
 import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
-import play.api.Logging
 import play.api.mvc.Results.{NotFound, Redirect}
 import play.api.mvc.{ActionRefiner, Result}
 import services.UTRService
@@ -37,7 +36,7 @@ class ConfirmationJourneyRefiner @Inject()(utrService: UTRService,
                                            clientDetailsRetrieval: ClientDetailsRetrieval,
                                            referenceRetrieval: ReferenceRetrieval)
                                           (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, ConfirmedClientRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, ConfirmedClientRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -50,28 +49,26 @@ class ConfirmationJourneyRefiner @Inject()(utrService: UTRService,
           hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } match {
-      case Some(Confirmation) =>
-        val sessionData = request.sessionData
-        for {
-          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
-          utr <- utrService.getUTR(sessionData)
-          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
-        } yield {
-          Right(ConfirmedClientRequest(
-            request = request,
-            clientDetails = clientDetails,
-            utr = utr,
-            reference = reference,
-            sessionData = sessionData
-          ))
-        }
-      case state@(None | Some(ClientDetails | SignPosted)) =>
-        logger.info(s"[Agent][ConfirmationJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to cannot go back page")
-        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-      case Some(ConfirmedClient) =>
-        logger.info(s"[Agent][ConfirmationJourneyRefiner] - Incorrect user state, current: ${ConfirmedClient.key}, showing a not found page")
-        Future.successful(Left(NotFound))
-    }
+        case Some(Confirmation) =>
+          val sessionData = request.sessionData
+          for {
+            clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+            utr <- utrService.getUTR(sessionData)
+            reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
+          } yield {
+            Right(ConfirmedClientRequest(
+              request = request,
+              clientDetails = clientDetails,
+              utr = utr,
+              reference = reference,
+              sessionData = sessionData
+            ))
+          }
+        case state@(None | Some(ClientDetails | SignPosted)) =>
+          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+        case Some(ConfirmedClient) =>
+          Future.successful(Left(NotFound))
+      }
   }
 
 }

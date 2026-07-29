@@ -32,7 +32,8 @@ object UpsertEnrolmentResponseHttpParser extends Logging {
     override def read(method: String, url: String, response: HttpResponse): UpsertEnrolmentResponse =
       response.status match {
         case NO_CONTENT => Right(KnownFactsSuccess)
-        case _ => logger.error(s"[UpsertEnrolmentResponseHttpReads] issue upserting enrolment status: ${response.status} body: ${response.body}")
+        case _ =>
+          logger.error(s"[UpsertEnrolmentResponseHttpReads] issue upserting enrolment status: ${response.status} body: ${response.body}")
           Left(KnownFactsFailure(response.body))
       }
   }

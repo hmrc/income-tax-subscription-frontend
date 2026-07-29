@@ -20,7 +20,6 @@ import common.Constants.ITSASessionKeys
 import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.{IdentifierRequest, SignPostedRequest}
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import services.agent.ClientDetailsRetrieval
@@ -33,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRetrieval)
                                         (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, SignPostedRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, SignPostedRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignPostedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -55,10 +54,8 @@ class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRe
             ))
           }
         case state@(None | Some(ConfirmedClient | ClientDetails)) =>
-          logger.info(s"[Agent][SignPostedJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to cannot go back page")
           Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
         case Some(Confirmation) =>
-          logger.info(s"[Agent][SignPostedJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
           Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
     }
   }

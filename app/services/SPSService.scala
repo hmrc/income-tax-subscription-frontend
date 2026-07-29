@@ -17,13 +17,12 @@
 package services
 
 import connectors.SPSConnector
-import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class SPSService @Inject()(val spsConnector: SPSConnector) extends Logging {
+class SPSService @Inject()(val spsConnector: SPSConnector) {
 
   def confirmPreferences(itsaId: String, maybeSpsEntityId: Option[String])(implicit hc: HeaderCarrier): Future[Unit] = {
     maybeSpsEntityId match {
@@ -31,5 +30,4 @@ class SPSService @Inject()(val spsConnector: SPSConnector) extends Logging {
       case None => Future.successful(())
     }
   }
-
 }

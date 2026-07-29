@@ -17,7 +17,6 @@
 package connectors.agent
 
 import config.AppConfig
-import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.*
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class IncomeTaxSessionDataConnector @Inject()(appConfig: AppConfig,
                                               http: HttpClientV2)
-                                             (implicit ec: ExecutionContext) extends Logging {
+                                             (implicit ec: ExecutionContext) {
 
   def setupViewAndChangeSessionData(mtdid: String, nino: String, utr: String)
                                    (implicit hc: HeaderCarrier): Future[Boolean] = {
@@ -52,5 +51,4 @@ object IncomeTaxSessionDataConnector {
       response.status
     }
   }
-
 }

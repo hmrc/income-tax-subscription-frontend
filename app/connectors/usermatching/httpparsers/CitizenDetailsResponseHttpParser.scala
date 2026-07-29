@@ -22,22 +22,20 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object CitizenDetailsResponseHttpParser extends Logging {
+
   type GetCitizenDetailsResponse = Either[CitizenDetailsFailureResponse, Option[CitizenDetails]]
 
   implicit object GetCitizenDetailsHttpReads extends HttpReads[GetCitizenDetailsResponse] {
     override def read(method: String, url: String, response: HttpResponse): GetCitizenDetailsResponse = {
       response.status match {
         case OK =>
-          logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $OK")
           Right(Some(response.json.as[CitizenDetails]))
         case NOT_FOUND =>
-          logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $NOT_FOUND")
           Right(None)
         case status =>
-          logger.warn(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] failure, status: $status")
+          logger.error(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] failure, status: $status")
           Left(CitizenDetailsFailureResponse(status))
       }
     }
   }
-
 }

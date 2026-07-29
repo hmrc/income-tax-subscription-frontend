@@ -17,14 +17,13 @@
 package models.individual
 
 import auth.individual.{ClaimEnrolment => OldClaimEnrolment, SignUp => OldSignUp}
-import play.api.Logging
 import uk.gov.hmrc.http.InternalServerException
 
 sealed trait JourneyStep {
   val key: String
 }
 
-object JourneyStep extends Logging {
+object JourneyStep {
 
   case object ClaimEnrolment extends JourneyStep {
     val key: String = "ClaimEnrolment"
@@ -54,5 +53,4 @@ object JourneyStep extends Logging {
       case _ => throw new InternalServerException(s"[Individual][JourneyStep] - Unsupported journey key - $key")
     }
   }
-
 }

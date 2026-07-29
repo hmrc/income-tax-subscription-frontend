@@ -20,7 +20,6 @@ import common.Constants.ITSASessionKeys
 import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{ClaimEnrolmentRequest, IdentifierRequest}
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, ClaimEnrolmentRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, ClaimEnrolmentRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ClaimEnrolmentRequest[A]]] = {
     request.session.get(ITSASessionKeys.JourneyStateKey)
@@ -46,10 +45,8 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
           sessionData = request.sessionData
         )))
       case Some(Confirmation) =>
-        logger.info(s"[Individual][ClaimEnrolmentJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
       case state@(None | Some(PreSignUp | SignUp)) =>
-        logger.info(s"[Individual][ClaimEnrolmentJourneyRefiner] - Incorrect user state, current: ${state.map(_.key)}, sending to home")
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }

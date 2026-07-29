@@ -58,7 +58,6 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
       _ <- allocateEnrolmentWithoutKnownFacts(mtditid = mtditid, groupId = groupId, credentialId = adminUserId, nino = nino, utr = utr)
       _ <- assignEnrolmentToUser(enrolmentUserIDs filterNot (_ == adminUserId), mtditid = mtditid, nino = nino, utr = utr)
     } yield {
-      logger.debug(s"[AutoEnrolmentService][autoClaimEnrolment] - Successful auto enrolment for nino: $nino")
       EnrolmentAssigned
     }
   }.value

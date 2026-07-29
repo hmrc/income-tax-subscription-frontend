@@ -18,7 +18,6 @@ package services
 
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
-import play.api.Logging
 import services.GetCompleteDetailsService.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
@@ -30,7 +29,7 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService)
-                                         (implicit ec: ExecutionContext) extends Logging {
+                                         (implicit ec: ExecutionContext) {
 
   /*
   * Fetches all information about sign up which we display or submit
@@ -124,12 +123,10 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
         )
       } match {
         case Failure(_) =>
-          logger.error("[GetCompleteDetailsService][getCompleteSignUpDetails] - Failure creating complete details model")
           Left(GetCompleteDetailsFailure)
         case Success(completeDetails) => Right(completeDetails)
       }
     } else {
-      logger.error("[GetCompleteDetailsService][getCompleteSignUpDetails] - All income sources not confirmed, failure creating model")
       Left(GetCompleteDetailsFailure)
     }
   }

@@ -20,7 +20,6 @@ import common.Constants.ITSASessionKeys
 import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.IdentifierRequest
-import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, IdentifierRequest] with Logging {
+  extends ActionRefiner[IdentifierRequest, IdentifierRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
     request.session.get(ITSASessionKeys.JourneyStateKey)
@@ -40,15 +39,13 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
           hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } match {
-      case Some(ClientDetails | ConfirmedClient | SignPosted) =>
-        Future.successful(Right(request))
-      case None =>
-        logger.info(s"[Agent][ClientDetailsJourneyRefiner] - Incorrect user state, current: None, sending to add another client")
-        Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
-      case Some(Confirmation) =>
-        logger.info(s"[Agent][ClientDetailsJourneyRefiner] - Incorrect user state, current: ${Confirmation.key}, sending to confirmation page")
-        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
-    }
+        case Some(ClientDetails | ConfirmedClient | SignPosted) =>
+          Future.successful(Right(request))
+        case None =>
+          Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
+        case Some(Confirmation) =>
+          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+      }
   }
 
 }
