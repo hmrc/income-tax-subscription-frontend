@@ -64,6 +64,7 @@
 
         <p class="govuk-body">@messages("agent.your-income-source.paragraph-1", (AccountingPeriodUtil.getCurrentTaxEndYear - 1).toString, AccountingPeriodUtil.getCurrentTaxEndYear.toString)</p>
     }
+
     @selfEmploymentSection
 
     @propertySection
@@ -173,12 +174,16 @@
 
     @incomeSources.selfEmployments.zip(1 to incomeSources.selfEmployments.length).map { case (business, index) =>
         @govukSummaryList(SummaryList(
-            rows = Seq(SummaryListRow(
-                key = Key(
-                    content = Text(messages("agent.your-income-source.self-employed.business-name-para"))
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.your-income-source.self-employed.business-trade-para"))),
+                    value = Value(Text(selfEmploymentTrade(business, index)))
                 ),
-                value = Value(Text(selfEmploymentName(business,index)))
-            )) ++
+                SummaryListRow(
+                    key = Key(content = Text(messages("agent.your-income-source.self-employed.business-name-para"))),
+                    value = Value(Text(selfEmploymentName(business, index)))
+                )
+            ) ++
 
             maybeBusinessDateRow(business)
 
@@ -188,13 +193,12 @@
                 actions = maybeStatusTagAction(
                     isComplete = business.isComplete,
                     isConfirmed = business.confirmed,
-                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                    visuallyHidden = business.businessName.map(_.businessName)
+                    href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true"
                 )
             )),
             card = Some(Card(
                 title = Some(CardTitle(
-                    content = Text(selfEmploymentTrade(business, index)),
+                    content = Text(messages("agent.your-income-source.self-employed.card", index)),
                     headingLevel = Some(3)
                 )),
                 actions = Some(Actions(
@@ -202,14 +206,11 @@
                         maybeIncomeSourceChangeAction(
                             isComplete = business.isComplete,
                             isConfirmed = business.confirmed,
-                            href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true",
-                            visuallyHidden = business.businessName.map(_.businessName)
+                            href = s"${appConfig.agentIncomeTaxSelfEmploymentsFrontendBusinessCheckYourAnswersUrl}?id=${business.id}&isEditMode=true"
                         ) ++
                         Seq(ActionItem(
                             href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show(business.id).url,
-                            content = Text(messages("base.remove")),
-                            visuallyHiddenText = business.businessName.map(_.businessName
-                        )
+                            content = Text(messages("base.remove"))
                     ))
                 ))
             ))

@@ -197,15 +197,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has a first business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
+            title = "Sole trader business 1",
             cardActions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${AgentIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 1)",
+                visuallyHidden = "(Sole trader business 1)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("business trade"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
@@ -216,8 +221,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
                   href = AgentIncomeSource.soleTraderChangeLinkOne,
-                  text = s"${AgentIncomeSource.addDetails} business name (business trade)",
-                  visuallyHidden = s"business name (business trade)"
+                  text = s"${AgentIncomeSource.addDetails} (Sole trader business 1)",
+                  visuallyHidden = "(Sole trader business 1)"
                 ))
               )
             )
@@ -226,15 +231,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a second business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(2))(
-            title = "Business 2",
+            title = "Sole trader business 2",
             cardActions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idTwo").url,
-                text = s"${AgentIncomeSource.remove} business name (Business 2)",
-                visuallyHidden = s"business name (Business 2)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 2)",
+                visuallyHidden = "(Sole trader business 2)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("Business 2"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
@@ -245,8 +255,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
                   href = AgentIncomeSource.soleTraderChangeLinkTwo,
-                  text = s"${AgentIncomeSource.addDetails} business name (Business 2)",
-                  visuallyHidden = s"business name (Business 2)"
+                  text = s"${AgentIncomeSource.addDetails} (Sole trader business 2)",
+                  visuallyHidden = "(Sole trader business 2)"
                 ))
               )
             )
@@ -255,15 +265,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a third business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(3))(
-            title = "business trade",
+            title = "Sole trader business 3",
             cardActions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idThree").url,
-                text = s"${AgentIncomeSource.remove} (business trade)",
-                visuallyHidden = s"(business trade)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 3)",
+                visuallyHidden = "(Sole trader business 3)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("business trade"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 3"),
@@ -274,8 +289,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
                   href = AgentIncomeSource.soleTraderChangeLinkThree,
-                  text = s"${AgentIncomeSource.addDetails} (business trade)",
-                  visuallyHidden = "(business trade)"
+                  text = s"${AgentIncomeSource.addDetails} (Sole trader business 3)",
+                  visuallyHidden = "(Sole trader business 3)"
                 ))
               )
             )
@@ -284,15 +299,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
         "has a forth business card" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(4))(
-            title = "Business 4",
+            title = "Sole trader business 4",
             cardActions = Seq(
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idFour").url,
-                text = s"${AgentIncomeSource.remove} (Business 4)",
-                visuallyHidden = s"(Business 4)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 4)",
+                visuallyHidden = "(Sole trader business 4)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("Business 4"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("Business 4"),
@@ -303,8 +323,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                 value = Some(AgentIncomeSource.incompleteTag),
                 actions = Seq(SummaryListActionValues(
                   href = AgentIncomeSource.soleTraderChangeLinkFour,
-                  text = s"${AgentIncomeSource.addDetails} (Business 4)",
-                  visuallyHidden = "(Business 4)"
+                  text = s"${AgentIncomeSource.addDetails} (Sole trader business 4)",
+                  visuallyHidden = "(Sole trader business 4)"
                 ))
               )
             )
@@ -377,15 +397,20 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         "has a summary card with incomplete status tags and check details action link" when {
           "all details are present and confirmed" in new ViewTest(completeIncomeSources) {
             document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-              title = "business trade",
+              title = "Sole trader business 1",
               cardActions = Seq(
                 SummaryListActionValues(
                   href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                  text = s"${AgentIncomeSource.remove} business name (business trade)",
-                  visuallyHidden = "business name (business trade)"
+                  text = s"${AgentIncomeSource.remove} (Sole trader business 1)",
+                  visuallyHidden = "(Sole trader business 1)"
                 )
               ),
               rows = Seq(
+                SummaryListRowValues(
+                  key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                  value = Some("business trade"),
+                  actions = Seq.empty
+                ),
                 SummaryListRowValues(
                   key = AgentIncomeSource.soleTraderBusinessNameKey,
                   value = Some("business name"),
@@ -401,8 +426,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
                   value = Some(AgentIncomeSource.notConfirmedTag),
                   actions = Seq(SummaryListActionValues(
                     href = AgentIncomeSource.soleTraderChangeLinkOne,
-                    text = s"${AgentIncomeSource.confirmDetails} business name (business trade)",
-                    visuallyHidden = "business name (business trade)"
+                    text = s"${AgentIncomeSource.confirmDetails} (Sole trader business 1)",
+                    visuallyHidden = "(Sole trader business 1)"
                   ))
                 )
               )
@@ -643,20 +668,25 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has a summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
+            title = "Sole trader business 1",
             cardActions = Seq(
               SummaryListActionValues(
                 href = AgentIncomeSource.soleTraderChangeLinkOne,
-                text = s"${AgentIncomeSource.change} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                text = s"${AgentIncomeSource.change} (Sole trader business 1)",
+                visuallyHidden = s"(Sole trader business 1)"
               ),
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${AgentIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 1)",
+                visuallyHidden = "(Sole trader business 1)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("business trade"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
@@ -687,20 +717,25 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
         "has a sole trader summary card" in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.mustHaveSummaryCard(".govuk-summary-card", Some(1))(
-            title = "business trade",
+            title = "Sole trader business 1",
             cardActions = Seq(
               SummaryListActionValues(
                 href = AgentIncomeSource.soleTraderChangeLinkOne,
-                text = s"${AgentIncomeSource.change} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                text = s"${AgentIncomeSource.change} (Sole trader business 1)",
+                visuallyHidden = "(Sole trader business 1)"
               ),
               SummaryListActionValues(
                 href = controllers.agent.tasklist.selfemployment.routes.RemoveSelfEmploymentBusinessController.show("idOne").url,
-                text = s"${AgentIncomeSource.remove} business name (business trade)",
-                visuallyHidden = s"business name (business trade)"
+                text = s"${AgentIncomeSource.remove} (Sole trader business 1)",
+                visuallyHidden = "(Sole trader business 1)"
               )
             ),
             rows = Seq(
+              SummaryListRowValues(
+                key = AgentIncomeSource.soleTraderBusinessTradeKey,
+                value = Some("business trade"),
+                actions = Seq.empty
+              ),
               SummaryListRowValues(
                 key = AgentIncomeSource.soleTraderBusinessNameKey,
                 value = Some("business name"),
@@ -798,6 +833,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val soleTraderParagraph = "Your client is a sole trader if they run their own business as an individual and work for themselves. This is also known as being self employed."
     val soleTrader = "Sole trader businesses"
     val soleTraderLinkText = "Add a sole trader business"
+    val soleTraderBusinessTradeKey = "Trade"
     val soleTraderBusinessNameKey = "Business name"
     val soleTraderBusinessStartDateKey = "Business start date"
     val soleTraderLink: String = appConfig.incomeTaxSelfEmploymentsFrontendClientInitialiseUrl
