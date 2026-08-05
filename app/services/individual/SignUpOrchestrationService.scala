@@ -35,6 +35,18 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                                            spsService: SPSService)
                                           (implicit ec: ExecutionContext) {
 
+  private val UnprocessableCodes = Set(
+    ID_NOT_FOUND,
+    BUSINESS_PARTNER_CATEGORY_ORGANISATION,
+    MULTIPLE_BUSINESS_PARTNERS_FOUND,
+    NFS_CALL_FAILED_1,
+    NFS_CALL_FAILED_2,
+    CREATE_OR_UPDATE_BUSINESS_PARTNER_RELATIONSHIP,
+    CANNOT_REFRESH_FROM_NPS,
+    NSP_REFRESH_UNAVAILABLE,
+    FAILED_TO_ADD_IDS
+  )
+
   def orchestrateSignUp(nino: String,
                         utr: String,
                         taxYear: AccountingYear,
@@ -60,7 +72,6 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
       case Left(failure) =>
         Future.successful(Left(failure))
     }
-
   }
 
   private def signUp(nino: String, utr: String, taxYear: AccountingYear)
@@ -70,7 +81,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
         Right(value)
       case Left(UnprocessableSignUp(ALREADY_SIGNED_UP, _)) =>
         Left(AlreadySignedUp)
-      case Left(UnprocessableSignUp(ID_NOT_FOUND | BUSINESS_PARTNER_CATEGORY_ORGANISATION | MULTIPLE_BUSINESS_PARTNERS_FOUND, _)) =>
+      case Left(UnprocessableSignUp(code, _)) if UnprocessableCodes.contains(code) =>
         Left(HandledUnprocessableSignUp)
       case Left(_) =>
         Left(UnhandledSignUpError)
@@ -88,7 +99,6 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
       case Left(_) => Future.successful(())
     }
   }
-
 }
 
 object SignUpOrchestrationService {
@@ -97,6 +107,12 @@ object SignUpOrchestrationService {
   val BUSINESS_PARTNER_CATEGORY_ORGANISATION = "815"
   val MULTIPLE_BUSINESS_PARTNERS_FOUND = "816"
   val ALREADY_SIGNED_UP = "820"
+  val NFS_CALL_FAILED_1 = "822"
+  val NFS_CALL_FAILED_2 = "822"
+  val CREATE_OR_UPDATE_BUSINESS_PARTNER_RELATIONSHIP = "824"
+  val CANNOT_REFRESH_FROM_NPS = "825"
+  val NSP_REFRESH_UNAVAILABLE = "826"
+  val FAILED_TO_ADD_IDS = "827"
 
   type SignUpOrchestrationResponse = Either[SignUpOrchestrationFailure, SignUpOrchestrationSuccessful.type]
 
