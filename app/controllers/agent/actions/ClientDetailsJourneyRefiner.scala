@@ -31,7 +31,7 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
   extends ActionRefiner[IdentifierRequest, IdentifierRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    request.session.get(ITSASessionKeys.JourneyStateKey)
+    request.sessionData.fetchJourneyState(request)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep,

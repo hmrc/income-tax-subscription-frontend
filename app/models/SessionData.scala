@@ -20,6 +20,7 @@ import _root_.common.Constants.ITSASessionKeys
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
 import play.api.libs.json.*
+import play.api.mvc.Request
 import services.Throttle
 
 import java.time.LocalDate
@@ -89,5 +90,10 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
 
   def fetchSubmissionStatus: Option[SubmissionStatus] = {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
+  }
+
+  def fetchJourneyState[A](request: Request[A]): Option[String] = {
+    data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String])
+      .orElse(request.session.get(ITSASessionKeys.JourneyStateKey))
   }
 }

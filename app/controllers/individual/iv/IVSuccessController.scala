@@ -39,7 +39,7 @@ class IVSuccessController @Inject()(identify: IdentifierAction,
         auditingService.audit(IVOutcomeSuccessAuditModel(nino))
       }
     }
-    if (request.session.get(ITSASessionKeys.JourneyStateKey).contains(ClaimEnrolment.name)) {
+    if (request.sessionData.fetchJourneyState(request).contains(ClaimEnrolment.name)) {
       Future.successful(
         Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
           .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)

@@ -37,7 +37,7 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.session.get(ITSASessionKeys.JourneyStateKey)
+    request.sessionData.fetchJourneyState(request)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep

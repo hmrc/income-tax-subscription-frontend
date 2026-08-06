@@ -31,7 +31,7 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
   extends ActionRefiner[IdentifierRequest, ClaimEnrolmentRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ClaimEnrolmentRequest[A]]] = {
-    request.session.get(ITSASessionKeys.JourneyStateKey)
+    request.sessionData.fetchJourneyState(request)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep

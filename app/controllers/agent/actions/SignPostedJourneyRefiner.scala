@@ -38,7 +38,7 @@ class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRe
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val sessionData = request.sessionData
-    request.session.get(ITSASessionKeys.JourneyStateKey)
+    sessionData.fetchJourneyState(request)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep,
