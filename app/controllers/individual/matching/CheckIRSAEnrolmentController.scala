@@ -26,7 +26,7 @@ import controllers.individual.actions.IdentifierAction
 import models.requests.individual.IdentifierRequest
 import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.{GetEligibilityStatusService, MandationStatusService, UTRService}
+import services.{GetEligibilityStatusService, MandationStatusService, SessionDataService, UTRService}
 import views.html.individual.IRSACredential
 
 import javax.inject.{Inject, Singleton}
@@ -39,6 +39,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
                                              enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
                                              eligibilityStatusService: GetEligibilityStatusService,
                                              mandationStatusService: MandationStatusService,
+                                             sessionDataService: SessionDataService,
                                              irsaCredential: IRSACredential)
                                             (val appConfig: AppConfig)
                                             (implicit mcc: MessagesControllerComponents,
@@ -80,6 +81,8 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
       }
     }
 
-    next.map(_.url).map(url => Redirect(url).addingToSession(ITSASessionKeys.JourneyStateKey -> SignUp.name))
+    sessionDataService.saveJourneyState(SignUp.name).flatMap { _ =>
+      next.map(_.url).map(url => Redirect(url))
+    }
   }
 }
