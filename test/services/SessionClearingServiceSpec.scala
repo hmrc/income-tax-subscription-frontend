@@ -52,6 +52,7 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
         ))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
+        mockSaveJourneyState()
 
         val res = await(service.clearAgentSession(testCall, sessionData))
         res.header.status mustBe SEE_OTHER
@@ -62,6 +63,7 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
         ))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
+        mockSaveJourneyState()
 
         val res = await(service.clearAgentSession(testCall, sessionData))
         res.header.status mustBe SEE_OTHER
