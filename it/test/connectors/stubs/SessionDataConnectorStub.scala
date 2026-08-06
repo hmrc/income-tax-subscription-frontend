@@ -89,4 +89,12 @@ object SessionDataConnectorStub extends WireMockMethods {
       uri = sessionDataUri(ITSASessionKeys.JourneyStateKey)
     ).thenReturn(responseStatus)
   }
+
+  def stubSaveJourneyState(state: String)(responseStatus: Int): Unit = {
+    when(
+      method = POST,
+      uri = sessionDataUri(ITSASessionKeys.JourneyStateKey),
+      body = JsString(state)
+    ).thenReturn(responseStatus)
+  }
 }
