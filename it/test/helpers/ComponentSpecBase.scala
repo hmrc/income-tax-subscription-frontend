@@ -255,9 +255,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
 
-    def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get(
-      uri = "/keep-alive",
-      additionalCookies = sessionKeys
+    def keepAlive(): WSResponse = get(
+      uri = "/keep-alive"
     )
 
     def notAuthorised(): WSResponse = get("/not-authorised")
