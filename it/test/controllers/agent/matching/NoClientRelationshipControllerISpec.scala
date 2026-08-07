@@ -16,11 +16,13 @@
 
 package controllers.agent.matching
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.SignPosted
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -33,7 +35,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     AuthStub.stubAuthSuccess()
 
     SessionDataConnectorStub.stubGetAllSessionData(Map(
-      ITSASessionKeys.NINO -> JsString(testNino)
+      ITSASessionKeys.NINO -> JsString(testNino),
+      ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
@@ -120,6 +123,10 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+      ))
+      
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 

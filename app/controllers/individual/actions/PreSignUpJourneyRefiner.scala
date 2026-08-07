@@ -16,14 +16,13 @@
 
 package controllers.individual.actions
 
-import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import controllers.individual.resolvers.AlreadyEnrolledResolver
 import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
+import services.SessionDataService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -31,14 +30,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
+class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
+                                      sessionDataService: SessionDataService)
                                      (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, PreSignUpRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.session.get(ITSASessionKeys.JourneyStateKey)
+    request.sessionData.fetchJourneyState(request)
       .map { journeyStep =>
         JourneyStep.fromString(
           key = journeyStep
@@ -58,9 +58,9 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver)
         case Some(Confirmation) =>
           Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
         case None =>
-          Future.successful(Left(
-            Redirect(controllers.individual.matching.routes.HomeController.index).addingToSession(JourneyStateKey -> PreSignUp.key)(request)
-          ))
+          sessionDataService.saveJourneyState(PreSignUp.key).map { _ => Left(
+            Redirect(controllers.individual.matching.routes.HomeController.index)
+          )}
       }
   }
 }

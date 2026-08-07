@@ -17,6 +17,7 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
+import auth.agent.AgentUserMatching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
@@ -36,6 +37,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()
 
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ))
+
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
         result must have(
@@ -48,7 +53,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect to the add another client controller" in {
         AuthStub.stubAuthSuccess()
 
-        val result = IncomeTaxSubscriptionFrontend.confirmClient(withJourneyState = false)
+        val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -59,6 +64,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
     "authenticated and in the client details state" should {
       "display the page" in {
         AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
@@ -86,7 +95,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect to the add another client controller" in {
         AuthStub.stubAuthSuccess()
 
-        val result = IncomeTaxSubscriptionFrontend.submitConfirmClient(withJourneyState = false)
+        val result = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -101,6 +110,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFailure()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
+
           // n.b. failure is expected as the additional methods are not mocked
 
           When("I call POST /confirm-client")
@@ -120,6 +133,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchNotFound()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(storedUserDetails = None)
@@ -139,6 +155,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             AuthStub.stubAuthSuccess()
             UserLockoutStub.stubUserIsNotLocked(testARN)
             AuthenticatorStub.stubMatchNotFound()
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ))
 
             When("I call POST /confirm-client")
             val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -162,6 +181,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             UserLockoutStub.stubUserIsNotLocked(testARN)
             UserLockoutStub.stubLockAgent(testARN)
             AuthenticatorStub.stubMatchNotFound()
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ))
 
             When("I call POST /confirm-client")
             val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(previouslyFailedAttempts = 2)
@@ -184,6 +206,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchDeceased()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -212,7 +237,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
           ))
           stubGetITSAStatus(
             Json.toJson(GetITSAStatusRequest(testNino))
@@ -241,7 +267,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
           ))
           stubGetITSAStatus(
             Json.toJson(GetITSAStatusRequest(testNino))
@@ -267,7 +294,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus))
+            ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
           ))
 
           When("I call POST /confirm-client")
@@ -290,6 +318,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -305,7 +336,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         }
       }
 
-
       "the client does not have an SAUTR" should {
         "redirect to the sign up for self assessment page" in {
           Given("I setup the wiremock stubs")
@@ -314,6 +344,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthenticatorStub.stubMatchFound(testNino, None)
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -339,6 +372,9 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           UserLockoutStub.stubUserIsNotLocked(testARN)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

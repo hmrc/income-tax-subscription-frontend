@@ -178,26 +178,26 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         .futureValue
     }
 
-    def callback(): WSResponse = get("/callback")
+    def callback(): WSResponse =
+      get("/callback")
 
-    def indexPage(includeState: Boolean = true): WSResponse = get(
+    def indexPage(): WSResponse = get(
       uri = "/",
       includeSPSEntityId = false,
-      additionalCookies = if (includeState) Map(JourneyStateKey -> PreSignUp.key) else Map.empty[String, String],
       includeState = false
     )
 
-    def spsHandoff(): WSResponse = get("/sps-handoff")
+    def spsHandoff(): WSResponse =
+      get("/sps-handoff")
 
-    def claimEnrolSpsHandoff(sessionKeys: Map[String, String] = Map.empty): WSResponse = {
-
+    def claimEnrolSpsHandoff(sessionKeys: Map[String, String] = Map.empty): WSResponse =
       get("/claim-enrolment/sps-handoff", sessionKeys)
 
-    }
+    def ivFailure(sessionKeys: Map[String, String] = Map.empty): WSResponse =
+      get("/iv-failure", sessionKeys)
 
-    def ivFailure(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/iv-failure", sessionKeys)
-
-    def ivSuccess(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/iv-success", sessionKeys)
+    def ivSuccess(sessionKeys: Map[String, String] = Map.empty): WSResponse =
+      get("/iv-success", sessionKeys)
 
     def spsCallback(hasEntityId: Boolean): WSResponse = {
       if (hasEntityId) {
@@ -215,119 +215,130 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       }
     }
 
-    def income(): WSResponse = get("/income")
+    def income(): WSResponse =
+      get("/income")
 
-    def incomeSource(): WSResponse = get("/details/income-receive")
+    def incomeSource(): WSResponse =
+      get("/details/income-receive")
 
-    def yourIncomeSources(): WSResponse = get("/details/your-income-source")
+    def yourIncomeSources(): WSResponse =
+      get("/details/your-income-source")
 
-    def submitYourIncomeSources(): WSResponse = post("/details/your-income-source")(Map.empty[String, Seq[String]])
+    def submitYourIncomeSources(): WSResponse =
+      post("/details/your-income-source")(Map.empty[String, Seq[String]])
 
-    def businessYourIncomeSource(): WSResponse = get("/details/your-income-source")
+    def businessYourIncomeSource(): WSResponse =
+      get("/details/your-income-source")
 
-    def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
+    def showBusinessAlreadyRemoved(): WSResponse =
+      get("/error/business-already-removed")
 
-    def thankYou(): WSResponse = get("/thank-you")
+    def thankYou(): WSResponse =
+      get("/thank-you")
 
-    def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
+    def cannotSignUp(): WSResponse =
+      get("/error/cannot-sign-up")
 
-    def showUsingSoftware(): WSResponse = get("/using-software")
+    def showUsingSoftware(): WSResponse =
+      get("/using-software")
 
-    def submitUsingSoftware(request: Option[YesNo]): WSResponse = {
+    def submitUsingSoftware(request: Option[YesNo]): WSResponse =
       post("/using-software")(
         request.fold(Map.empty[String, Seq[String]])(
           model => UsingSoftwareForm.usingSoftwareForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
-    }
 
-    def showNoSoftware(): WSResponse = get("/no-compatible-software")
+    def showNoSoftware(): WSResponse =
+      get("/no-compatible-software")
 
-    def cannotUseService(): WSResponse = get("/error/cannot-use-service")
+    def cannotUseService(): WSResponse =
+      get("/error/cannot-use-service")
 
-    def notEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")
+    def notEligibleForIncomeTax(): WSResponse =
+      get("/cannot-use-service-yet")
 
-    def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
+    def cannotReportYet(): WSResponse =
+      get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =
       post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)
 
-    def sessionTimeout(): WSResponse = get("/session-timeout")
+    def sessionTimeout(): WSResponse =
+      get("/session-timeout")
 
-    def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
+    def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse =
+      get("/timeout", sessionKeys)
 
-    def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get(
-      uri = "/keep-alive",
-      additionalCookies = sessionKeys
+    def keepAlive(): WSResponse = get(
+      uri = "/keep-alive"
     )
 
-    def notAuthorised(): WSResponse = get("/not-authorised")
+    def notAuthorised(): WSResponse =
+      get("/not-authorised")
 
-    def signIn(): WSResponse = get("/sign-in")
+    def signIn(): WSResponse =
+      get("/sign-in")
 
-    def signOut: WSResponse = get("/logout")
+    def signOut: WSResponse =
+      get("/logout")
 
-    def alreadyEnrolled(): WSResponse = get("/already-enrolled")
+    def alreadyEnrolled(): WSResponse =
+      get("/already-enrolled")
 
-    def whatYouNeedToDo(session: Map[String, String] = Map.empty): WSResponse = get("/what-you-need-to-do", session)
+    def whatYouNeedToDo(session: Map[String, String] = Map.empty): WSResponse =
+      get("/what-you-need-to-do", session)
 
-    def submitWhatYouNeedToDo(): WSResponse = post("/what-you-need-to-do")(Map.empty)
+    def submitWhatYouNeedToDo(): WSResponse =
+      post("/what-you-need-to-do")(Map.empty)
 
-    def checkYourAnswers(): WSResponse = get("/check-your-answers")
+    def checkYourAnswers(): WSResponse =
+      get("/check-your-answers")
 
-    def submitCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/check-your-answers", sessionData)(Map.empty)
-    }
 
-    def getRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty): WSResponse =
       get("/business/remove-overseas-property-business", sessionData)
-    }
 
-    def submitRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty)(request: Option[YesNo] = None): WSResponse = {
+    def submitRemoveOverseasProperty(sessionData: Map[String, String] = Map.empty)(request: Option[YesNo] = None): WSResponse =
       post("/business/remove-overseas-property-business", sessionData)(
         request.fold(Map.empty[String, Seq[String]])(
           model => RemoveOverseasPropertyForm.removeOverseasPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
-    }
 
-    def getGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       get("/final-check-your-answers", sessionData)
-    }
 
-    def submitGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitGlobalCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/final-check-your-answers", sessionData)(
         Map.empty
       )
-    }
 
-    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       get("/business/uk-property-check-your-answers", sessionData)
-    }
 
-    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
-    }
 
-    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       get("/business/overseas-property-check-your-answers", sessionData)
-    }
 
-    def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
-    }
 
-    def getRemoveBusiness(sessionData: Map[String, String] = Map.empty, id: String = testId): WSResponse = {
+    def getRemoveBusiness(sessionData: Map[String, String] = Map.empty, id: String = testId): WSResponse =
       get(s"/business/remove-sole-trader-business?id=$id", sessionData)
-    }
 
-    def submitRemoveBusiness(request: Option[YesNo]): WSResponse = post(s"/business/remove-sole-trader-business?id=$testId")(
-      request.fold(Map.empty[String, Seq[String]])(
-        model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
+    def submitRemoveBusiness(request: Option[YesNo]): WSResponse =
+      post(s"/business/remove-sole-trader-business?id=$testId")(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => RemoveBusinessForm.removeBusinessForm().fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
       )
-    )
 
-    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = Map.empty): WSResponse =
       get(
         saveAndRetrieveLocation.fold(
           "/business/progress-saved"
@@ -335,37 +346,33 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
           location => s"/business/progress-saved?location=$location"
         ), sessionData
       )
-    }
 
-    def getCheckIncomeSources: WSResponse = get("/hand-offs/check-income-sources")
+    def getCheckIncomeSources: WSResponse =
+      get("/hand-offs/check-income-sources")
 
-    def postCheckIncomeSources: WSResponse = post("/hand-offs/check-income-sources")(Map.empty)
+    def postCheckIncomeSources: WSResponse =
+      post("/hand-offs/check-income-sources")(Map.empty)
 
-    def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
+    def submitMainIncomeError(): WSResponse =
+      post("/error/main-income")(Map.empty)
 
-    def getRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business")
+    def getRemoveUkProperty: WSResponse =
+      get("/business/remove-uk-property-business")
 
-    def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business")(body)
+    def submitRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse =
+      post("/business/remove-uk-property-business")(body)
 
-    def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
+    def maintenance(): WSResponse =
+      get("/error/maintenance")
 
-    def submitBusinessAddress(editMode: Boolean, state: JourneyState): WSResponse =
-      post(s"/business/address${if (editMode) "?editMode=true" else ""}", Map(JourneyStateKey -> state.name))(Map.empty)
+    def noSA(): WSResponse =
+      get("/register-for-SA")
 
-    def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(JourneyStateKey -> state.name))
-
-    def businessAddressCallback(editMode: Boolean, state: JourneyState): WSResponse = {
-      val url = s"/business/address/callback${if (editMode) "/edit" else ""}?id=$testId"
-      get(url, Map(JourneyStateKey -> state.name))
-    }
-
-    def maintenance(): WSResponse = get("/error/maintenance")
-
-    def noSA(): WSResponse = get("/register-for-SA")
-
-    def getRouting: WSResponse = get("/business/routing")
+    def getRouting: WSResponse =
+      get("/business/routing")
     
-    def whenDoYouWantToStart():  WSResponse = get("/tax-year/select-tax-year")
+    def whenDoYouWantToStart(): WSResponse =
+      get("/tax-year/select-tax-year")
 
     def submitWhenDoYouWantToStart(inEditMode: Boolean, request: Option[AccountingYear]): WSResponse = {
       val uri = s"/tax-year/select-tax-year?editMode=$inEditMode"
@@ -375,36 +382,35 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
         ))
     }
 
-    def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
+    def submitMaintenance(): WSResponse =
+      post("/error/maintenance")(Map.empty)
 
-    def submitAddMTDITOverview(): WSResponse = post("/claim-enrolment/overview", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
+    def submitAddMTDITOverview(): WSResponse =
+      post("/claim-enrolment/overview")(Map.empty)
 
-    def confirmation(additionalCookies: Map[String, String] = Map.empty[String, String], includeConfirmationState: Boolean = true): WSResponse = {
-      val confirmationStateSession: Map[String, String] = if (includeConfirmationState) Map(JourneyStateKey -> Confirmation.key) else Map.empty
-      get("/confirmation", additionalCookies ++ confirmationStateSession, includeState = false)
-    }
+    def confirmation(additionalCookies: Map[String, String] = Map.empty[String, String], includeConfirmationState: Boolean = true): WSResponse =
+      get("/confirmation", includeState = false)
 
-    def submitConfirmation(includeConfirmationState: Boolean = true): WSResponse = {
-      val confirmationStateSession: Map[String, String] = if (includeConfirmationState) Map(JourneyStateKey -> Confirmation.key) else Map.empty
-      post("/confirmation", additionalCookies = confirmationStateSession)(Map.empty)
-    }
+    def submitConfirmation(): WSResponse =
+      post("/confirmation")(Map.empty)
 
-    def claimEnrolmentConfirmation(): WSResponse = get("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def claimEnrolmentConfirmation(): WSResponse =
+      get("/claim-enrolment/confirmation")
 
-    def continueClaimEnrolmentJourneyConfirmation(): WSResponse = post("/claim-enrolment/confirmation", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))(Map.empty)
+    def continueClaimEnrolmentJourneyConfirmation(): WSResponse =
+      post("/claim-enrolment/confirmation")(Map.empty)
 
-    def loadingConfirmationStatus(): WSResponse = get("/confirming-please-wait")
-    def loadingConfirmationStatusQuery(): WSResponse = get("/confirming-please-wait/query")
+    def loadingConfirmationStatus(): WSResponse =
+      get("/confirming-please-wait")
 
-    def notSubscribed(): WSResponse = get("/claim-enrolment/not-subscribed", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def loadingConfirmationStatusQuery(): WSResponse =
+      get("/confirming-please-wait/query")
 
-    def alreadySignedUp(): WSResponse = get("/claim-enrolment/already-signed-up", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def youCanSignUp(): WSResponse =
+      get("/you-can-sign-up-now")
 
-    def youCanSignUp(): WSResponse = get("/you-can-sign-up-now")
-
-    def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse = {
+    def ukPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse =
       get(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeState = includeState)
-    }
 
     def submitUKPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeJourneyState: Boolean = true)(request: Option[YesNo]): WSResponse = {
       post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeJourneyState = includeJourneyState)(
@@ -416,9 +422,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def foreignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse = {
+    def foreignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeState: Boolean = true): WSResponse =
       get(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeState = includeState)
-    }
 
     def submitForeignPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, includeJourneyState: Boolean = true)(request: Option[YesNo]): WSResponse = {
       post(s"/business/foreign-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", includeJourneyState = includeJourneyState)(
@@ -430,9 +435,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def propertyStartDate(): WSResponse = get("/business/property-commencement-date")
+    def propertyStartDate(): WSResponse =
+      get("/business/property-commencement-date")
 
-    def getOverseasPropertyStartDate: WSResponse = get("/business/overseas-property-start-date")
+    def getOverseasPropertyStartDate: WSResponse =
+      get("/business/overseas-property-start-date")
 
     def submitPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
 
@@ -459,25 +466,29 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       )
     }
 
-    def showIncomeSourcesIncomplete(includeState: Boolean = true): WSResponse = get("/details/income-sources-incomplete", includeState = includeState)
+    def showIncomeSourcesIncomplete(includeState: Boolean = true): WSResponse =
+      get("/details/income-sources-incomplete", includeState = includeState)
 
-    def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/details/income-sources-incomplete", sessionData)(Map.empty)
-    }
 
-    def iv(): WSResponse = get("/iv")
+    def iv(): WSResponse =
+      get("/iv")
 
-    def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
+    def showAffinityGroupError(): WSResponse =
+      get("/error/affinity-group")
 
     def addMTDITOverview(maybeOrigin: Option[String] = None): WSResponse = get(
       uri = s"/claim-enrolment/overview" + maybeOrigin.map(origin => s"?origin=$origin").getOrElse("")
     )
 
-    def claimEnrolmentResolver(): WSResponse = get("/claim-enrolment/resolve", Map(JourneyStateKey -> ClaimEnrolmentJourney.name))
+    def claimEnrolmentResolver(): WSResponse =
+      get("/claim-enrolment/resolve")
 
-    def claimEnrolmentUseSelfAssessment(): WSResponse = get("/claim-enrolment/use-self-assessment-details")
+    def claimEnrolmentUseSelfAssessment(): WSResponse =
+      get("/claim-enrolment/use-self-assessment-details")
 
-    def submitClaimEnrolmentUseSelfAssessment(request: Option[YesNo]): WSResponse = {
+    def submitClaimEnrolmentUseSelfAssessment(request: Option[YesNo]): WSResponse =
       post("/claim-enrolment/use-self-assessment-details")(
         request.fold(Map.empty[String, Seq[String]]) { model =>
           IRSACredentialForm.irsaCredentialForm.fill(model).data.map {
@@ -485,23 +496,29 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
           }
         }
       )
-    }
 
-    def agentSigningUp(): WSResponse = get("/eligibility/client/signing-up")
+    def agentSigningUp(): WSResponse =
+      get("/eligibility/client/signing-up")
 
-    def individualSigningUp(): WSResponse = get("/eligibility/signing-up")
+    def individualSigningUp(): WSResponse =
+      get("/eligibility/signing-up")
 
-    def agentSigningUpPost(): WSResponse = post("/eligibility/client/signing-up")(Map.empty)
+    def agentSigningUpPost(): WSResponse =
+      post("/eligibility/client/signing-up")(Map.empty)
 
-    def individualSigningUpPost(): WSResponse = post("/eligibility/signing-up")(Map.empty)
+    def individualSigningUpPost(): WSResponse =
+      post("/eligibility/signing-up")(Map.empty)
 
-    def agentIndex(): WSResponse = get("/eligibility/client")
+    def agentIndex(): WSResponse =
+      get("/eligibility/client")
 
-    def individualIndex(): WSResponse = get("/eligibility")
+    def individualIndex(): WSResponse =
+      get("/eligibility")
 
-    def matchingUseSelfAssessment(): WSResponse = get("/use-self-assessment-details")
+    def matchingUseSelfAssessment(): WSResponse =
+      get("/use-self-assessment-details")
 
-    def submitMatchingUseSelfAssessment(request: Option[YesNo]): WSResponse = {
+    def submitMatchingUseSelfAssessment(request: Option[YesNo]): WSResponse =
       post("/use-self-assessment-details")(
         request.fold(Map.empty[String, Seq[String]]) { model =>
           IRSACredentialForm.irsaCredentialForm.fill(model).data.map {
@@ -509,7 +526,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
           }
         }
       )
-    }
     
     def showNonEligibleVoluntary(): WSResponse =
       get("/tax-year/sign-up-next-year-voluntary")

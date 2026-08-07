@@ -47,6 +47,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase with SessionCook
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         val result = IncomeTaxSubscriptionFrontend.getAddAnotherClient
 

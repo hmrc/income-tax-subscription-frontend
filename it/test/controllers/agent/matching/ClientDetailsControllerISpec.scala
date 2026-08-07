@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testARN, testNino, testUtr}
@@ -28,7 +29,6 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.libs.json.{JsBoolean, JsString}
 import play.api.libs.ws.WSResponse
 
-
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
   "GET /client-details" when {
@@ -37,7 +37,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
       ))
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
@@ -139,6 +140,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
@@ -164,6 +166,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = Some(clientDetails))
@@ -190,6 +193,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")

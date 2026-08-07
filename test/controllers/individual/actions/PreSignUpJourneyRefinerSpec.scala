@@ -27,12 +27,13 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
+import services.mocks.MockSessionDataService
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResolver {
+class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResolver with MockSessionDataService {
 
   "PreSignUpJourneyRefiner" when {
     "the user is in a PreSignUp state" should {
@@ -120,6 +121,8 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
     }
     "the user has no state" should {
       "redirect to the index route with the PreSignUp state" in {
+        mockSaveJourneyState()
+
         val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
           identifierRequest(journeyStep = None, Some(testEntityId), Some(testUtr), None), { (_: PreSignUpRequest[_]) =>
             Future.successful(Results.Ok)
@@ -132,7 +135,10 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
     }
   }
 
-  lazy val preSignUpJourneyRefiner: PreSignUpJourneyRefiner = new PreSignUpJourneyRefiner(mockResolver)
+  lazy val preSignUpJourneyRefiner: PreSignUpJourneyRefiner = new PreSignUpJourneyRefiner(
+    mockResolver,
+    mockSessionDataService
+  )
 
   lazy val testNino: String = "AA000000A"
   lazy val testUtr: String = "1234567890"

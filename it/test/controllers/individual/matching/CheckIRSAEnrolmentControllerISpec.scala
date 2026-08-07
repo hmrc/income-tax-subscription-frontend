@@ -56,6 +56,7 @@ class CheckIRSAEnrolmentControllerISpec extends ComponentSpecBase {
       ITSASessionKeys.MANDATION_STATUS,
       MandationStatusModel(currentYearStatus = Voluntary, nextYearStatus = Voluntary)
     )(OK)
+    SessionDataConnectorStub.stubSaveJourneyState()(OK)
   }
 
   override def beforeEach(): Unit = {

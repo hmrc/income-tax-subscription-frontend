@@ -41,11 +41,14 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
 
 
   def show(origin: Option[String] = None): Action[AnyContent] = basicIdentify.async { implicit request =>
-    originFromParameter(origin) map { origin =>
+    for {
+      origin <- originFromParameter(origin)
+      _ <- sessionDataService.saveJourneyState(ClaimEnrolmentJourney.name)
+    } yield {
       Ok(addmtdit(
         postAction = routes.AddMTDITOverviewController.submit,
         origin = origin
-      )).addingToSession(ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name)
+      ))
     }
   }
 
