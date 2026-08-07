@@ -123,6 +123,10 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+      ))
+      
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()
       val expectedRedirect: String = controllers.agent.routes.AddAnotherClientController.addAnother().url
 

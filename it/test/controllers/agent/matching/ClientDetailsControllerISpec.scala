@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testARN, testNino, testUtr}
@@ -36,7 +37,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
       ))
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)

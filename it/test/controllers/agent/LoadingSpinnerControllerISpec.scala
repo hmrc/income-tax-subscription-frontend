@@ -71,6 +71,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           ITSASessionKeys.UTR -> JsString(testUtr),
           ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(Success))
         ))
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         val res = IncomeTaxSubscriptionFrontend.loadingConfirmationStatus()
 
@@ -78,8 +79,6 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmationController.show.url)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(JourneyStep.Confirmation.key)
       }
     }
     "return SEE_OTHER to the contact hmrc page" when {

@@ -45,8 +45,12 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "the agent is in a user matching state" should {
         "redirect to the enter client details page" in {
           AuthStub.stubAuthSuccess()
+          
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ))
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching))
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           res must have(
             httpStatus(SEE_OTHER),
@@ -58,7 +62,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "redirect to the add another client route" in {
           AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(None)
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           res must have(
             httpStatus(SEE_OTHER),
