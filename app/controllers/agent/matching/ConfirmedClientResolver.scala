@@ -18,7 +18,7 @@ package controllers.agent.matching
 
 import auth.agent.AgentSignUp
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
+import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
