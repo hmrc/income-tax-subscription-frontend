@@ -36,7 +36,7 @@ import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
+import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, CANNOT_REFRESH_FROM_NPS, CREATE_OR_UPDATE_BUSINESS_PARTNER_RELATIONSHIP, FAILED_TO_ADD_IDS, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND, NFS_CALL_FAILED_1, NFS_CALL_FAILED_2, NSP_REFRESH_UNAVAILABLE}
 import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatusHelper with SessionCookieCrumbler {
@@ -586,104 +586,52 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
       }
       "redirect to the contact hmrc page" when {
         "signing up for the current tax year" when {
-          s"a unprocessable sign up occurs with a code: $ID_NOT_FOUND" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-            ))
+          val codes = Set(
+            ID_NOT_FOUND,
+            BUSINESS_PARTNER_CATEGORY_ORGANISATION,
+            MULTIPLE_BUSINESS_PARTNERS_FOUND,
+            NFS_CALL_FAILED_1,
+            NFS_CALL_FAILED_2,
+            CREATE_OR_UPDATE_BUSINESS_PARTNER_RELATIONSHIP,
+            CANNOT_REFRESH_FROM_NPS,
+            NSP_REFRESH_UNAVAILABLE,
+            FAILED_TO_ADD_IDS
+          )
 
-            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
-              status = UNPROCESSABLE_ENTITY,
-              json = Json.obj("code" -> ID_NOT_FOUND, "reason" -> "ID not found")
-            )
+          codes.foreach { code =>
+            s"a unprocessable sign up occurs with a code: $code" in {
+              Given("I setup the Wiremock stubs")
+              AuthStub.stubAuthSuccess()
+              IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
+              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+              SessionDataConnectorStub.stubGetAllSessionData(Map(
+                ITSASessionKeys.NINO -> JsString(testNino),
+                ITSASessionKeys.UTR -> JsString(testUtr),
+                ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+                ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+              ))
 
-            When("POST /final-check-your-answers is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+              SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
+                status = UNPROCESSABLE_ENTITY,
+                json = Json.obj("code" -> code, "reason" -> "")
+              )
 
-            Then("Should redirect to the contact hmrc page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.spinnyWheelURI)
-            )
+              When("POST /final-check-your-answers is called")
+              val testEntityId: String = "testEntityId"
+              val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
 
-            waitUntilStatusIs(handledError)
+              Then("Should redirect to the contact hmrc page")
+              res must have(
+                httpStatus(SEE_OTHER),
+                redirectURI(IndividualURI.spinnyWheelURI)
+              )
 
-            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
-          }
-          s"a unprocessable sign up occurs with a code: $BUSINESS_PARTNER_CATEGORY_ORGANISATION" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-            ))
+              waitUntilStatusIs(handledError)
 
-            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
-              status = UNPROCESSABLE_ENTITY,
-              json = Json.obj("code" -> BUSINESS_PARTNER_CATEGORY_ORGANISATION, "reason" -> "ID not found")
-            )
-
-            When("POST /final-check-your-answers is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
-
-            Then("Should redirect to the contact hmrc page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.spinnyWheelURI)
-            )
-
-            waitUntilStatusIs(handledError)
-
-            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
-          }
-          s"a unprocessable sign up occurs with a code: $MULTIPLE_BUSINESS_PARTNERS_FOUND" in {
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
-            SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
-            ))
-
-            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
-              status = UNPROCESSABLE_ENTITY,
-              json = Json.obj("code" -> MULTIPLE_BUSINESS_PARTNERS_FOUND, "reason" -> "ID not found")
-            )
-
-            When("POST /final-check-your-answers is called")
-            val testEntityId: String = "testEntityId"
-            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
-
-            Then("Should redirect to the contact hmrc page")
-            res must have(
-              httpStatus(SEE_OTHER),
-              redirectURI(IndividualURI.spinnyWheelURI)
-            )
-
-            waitUntilStatusIs(handledError)
-
-            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
+              verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(handledError).toString), Some(1))
+            }
           }
         }
       }
