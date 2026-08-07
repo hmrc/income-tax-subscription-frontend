@@ -19,13 +19,14 @@ package models
 import _root_.common.Constants.ITSASessionKeys
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
+import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.Request
 import services.Throttle
 
 import java.time.LocalDate
 
-case class SessionData(data: Map[String, JsValue] = Map()) {
+case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
   implicit class JsObject(value: JsValue) {
     def toObject[T](implicit reads: Reads[T]): T = {
@@ -93,7 +94,9 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
   }
 
   def fetchJourneyState[A](request: Request[A]): Option[String] = {
-    data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String])
-      .orElse(request.session.get(ITSASessionKeys.JourneyStateKey))
+    data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String]).orElse {
+      logger.warn("Using cookie for journey state")
+      request.session.get(ITSASessionKeys.JourneyStateKey)
+    }
   }
 }

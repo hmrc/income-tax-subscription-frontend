@@ -18,6 +18,7 @@ package controllers.individual.claimenrolment
 
 import _root_.common.Constants.ITSASessionKeys
 import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import connectors.stubs.SessionDataConnectorStub.stubSaveJourneyState
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
@@ -26,6 +27,7 @@ import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.*
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.libs.json.JsString
 
 class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -99,12 +101,15 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
     }
   }
 
-
   "POST /claim-enrolment/overview" should {
     "redirect the user to the claim enrolment resolver" when {
       "all calls are successful" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ))
 
         When("POST /claim-enrolment/overview is called")
         val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()

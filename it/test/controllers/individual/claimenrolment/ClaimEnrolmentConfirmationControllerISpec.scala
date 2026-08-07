@@ -16,9 +16,13 @@
 
 package controllers.individual.claimenrolment
 
+import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import common.Constants.ITSASessionKeys.JourneyStateKey
+import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.*
+import play.api.libs.json.JsString
 
 class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -27,6 +31,10 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+      ))
 
       When("GET /claim-enrolment/confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.claimEnrolmentConfirmation()
@@ -44,6 +52,10 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+      ))
 
       When("POST /claim-enrolment/confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.continueClaimEnrolmentJourneyConfirmation()
