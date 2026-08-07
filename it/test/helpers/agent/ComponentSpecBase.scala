@@ -374,15 +374,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
-                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails),
-                            withJourneyState: Boolean = true): WSResponse = {
+                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case _ => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
-      val journeyStateMap: Map[String, String] = if (withJourneyState) Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name) else Map.empty[String, String]
       post("/confirm-client",
-        additionalCookies = failedAttemptCounter ++ journeyStateMap
+        additionalCookies = failedAttemptCounter
           .addUserDetails(storedUserDetails), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)(Map.empty)
     }
 
