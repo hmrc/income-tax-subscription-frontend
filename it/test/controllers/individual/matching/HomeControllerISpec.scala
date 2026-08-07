@@ -66,15 +66,14 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "the user has no journey state" in {
         AuthStub.stubAuthSuccess()
 
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
+
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(IndividualURI.baseURI)
         )
-
-        val session: Map[String, String] = getSessionMap(res)
-        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(PreSignUp.key)
       }
     }
     "redirect to the no self assessment page" when {
