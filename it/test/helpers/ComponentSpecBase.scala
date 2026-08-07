@@ -180,10 +180,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def callback(): WSResponse = get("/callback")
 
-    def indexPage(includeState: Boolean = true): WSResponse = get(
+    def indexPage(): WSResponse = get(
       uri = "/",
       includeSPSEntityId = false,
-      additionalCookies = if (includeState) Map(JourneyStateKey -> PreSignUp.key) else Map.empty[String, String],
       includeState = false
     )
 

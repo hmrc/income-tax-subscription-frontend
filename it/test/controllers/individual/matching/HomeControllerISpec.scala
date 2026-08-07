@@ -17,6 +17,7 @@
 package controllers.individual.matching
 
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
@@ -49,6 +50,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     "redirect to the login page" when {
       "the user is unauthenticated" in {
         AuthStub.stubUnauthorised()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(PreSignUp.key)
+        ))
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
@@ -62,7 +66,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "the user has no journey state" in {
         AuthStub.stubAuthSuccess()
 
-        val res = IncomeTaxSubscriptionFrontend.indexPage(includeState = false)
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -76,7 +80,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
     "redirect to the no self assessment page" when {
       "a utr was not found on the users cred, in session or from citizen details" in {
         AuthStub.stubAuthNoUtr()
-        SessionDataConnectorStub.stubGetAllSessionData(Map())
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(PreSignUp.key)
+        ))
         CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.GET_ITSA_STATUS, testNino)(OK)
 
@@ -94,7 +100,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
-        SessionDataConnectorStub.stubGetAllSessionData(Map())
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(PreSignUp.key)
+        ))
         ThrottlingStub.stubThrottle(StartOfJourneyThrottleId)(throttled = true)
 
         val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -111,7 +119,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "the user is already signed up for MTD ITSA and has no enrolment" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          JourneyStateKey -> JsString(PreSignUp.key)
         ))
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
@@ -140,7 +149,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SubscriptionStub.stubGetNoSubscription()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(ineligibleStatus)
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(ineligibleStatus),
+          ITSASessionKeys.JourneyStateKey -> JsString(PreSignUp.key)
         ))
         EligibilityStub.stubEligibilityResponseBoth(testNino, testUtr)(currentYearResponse = false, nextYearResponse = false, exemptionReason = None)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.ELIGIBILITY_STATUS, ineligibleStatus)(OK)
@@ -162,7 +172,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SubscriptionStub.stubGetNoSubscription()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears),
+          ITSASessionKeys.JourneyStateKey -> JsString(PreSignUp.key)
         ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
@@ -191,7 +202,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SubscriptionStub.stubGetNoSubscription()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleNextYearOnly)
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleNextYearOnly),
+          ITSASessionKeys.JourneyStateKey -> JsString(PreSignUp.key)
         ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))
@@ -208,6 +220,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "there was a problem when checking if the user is already signed up" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(PreSignUp.key)
+        ))
 
         SubscriptionStub.stubGetSubscriptionFail()
 
@@ -228,7 +243,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SubscriptionStub.stubGetNoSubscription()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears),
+          JourneyStateKey -> JsString(PreSignUp.key)
         ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, NO_CONTENT)
@@ -253,7 +269,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         SubscriptionStub.stubGetNoSubscription()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears)
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibleBothYears),
+          ITSASessionKeys.JourneyStateKey -> JsString(PreSignUp.key)
         ))
 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(PrePopFlag, OK, JsBoolean(true))

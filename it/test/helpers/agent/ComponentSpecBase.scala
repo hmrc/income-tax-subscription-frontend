@@ -24,6 +24,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
+import connectors.stubs.SessionDataConnectorStub
 import forms.agent.*
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants.*
@@ -47,7 +48,7 @@ import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{Format, JsArray, Writes}
+import play.api.libs.json.{Format, JsArray, JsString, Writes}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
@@ -348,7 +349,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def getNoClientRelationship(clientDetailsConfirmed: Boolean): WSResponse = {
       get(
         uri = "/error/no-client-relationship",
-        additionalCookies = ClientData.clientName ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name),
+        additionalCookies = ClientData.clientName,
         withClientDetailsConfirmed = clientDetailsConfirmed
       )
     }
