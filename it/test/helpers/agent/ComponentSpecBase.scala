@@ -366,13 +366,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       ClientData.detailedClientData
     )(Map.empty)
 
-    def confirmClient(withJourneyState: Boolean = true): WSResponse = get(
+    def confirmClient(): WSResponse = get(
       uri = "/confirm-client",
-      additionalCookies = if (withJourneyState) {
-        Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(Some(IntegrationTestModels.testClientDetails))
-      } else {
-        Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails))
-      },
+      additionalCookies = Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails)),
       withClientDetailsConfirmed = false,
       withJourneyStateSignUp = false
     )

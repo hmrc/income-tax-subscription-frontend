@@ -17,6 +17,7 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
+import auth.agent.AgentUserMatching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
@@ -36,6 +37,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()
 
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ))
+
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
         result must have(
@@ -48,7 +53,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirect to the add another client controller" in {
         AuthStub.stubAuthSuccess()
 
-        val result = IncomeTaxSubscriptionFrontend.confirmClient(withJourneyState = false)
+        val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -59,6 +64,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
     "authenticated and in the client details state" should {
       "display the page" in {
         AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
 
