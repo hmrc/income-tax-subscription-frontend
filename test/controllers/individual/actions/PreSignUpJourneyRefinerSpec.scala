@@ -24,6 +24,7 @@ import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, S
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -39,7 +40,9 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
     "the user is in a PreSignUp state" should {
       "redirect to the resolver page" when {
         "the user already has an MTDITID on their cred" in {
-          mockAlreadyEnrolledResolver(testNino, SessionData())
+          mockAlreadyEnrolledResolver(testNino, SessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(PreSignUp.key)
+          )))
 
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
             identifierRequest(journeyStep = Some(PreSignUp), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
@@ -69,7 +72,9 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
     "the user is in a ClaimEnrolment state" should {
       "redirect to the resolver page" when {
         "the user already has an MTDITID on their cred" in {
-          mockAlreadyEnrolledResolver(testNino, SessionData())
+          mockAlreadyEnrolledResolver(testNino, SessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
+          )))
 
           val result: Future[Result] = preSignUpJourneyRefiner.invokeBlock(
             identifierRequest(journeyStep = Some(ClaimEnrolment), Some(testEntityId), Some(testUtr), Some(testMTDITID)), { (_: PreSignUpRequest[_]) =>
@@ -145,15 +150,10 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
   lazy val testMTDITID: String = "XAIT0000000001"
   lazy val testEntityId: String = "test-entity-id"
 
-  def requestWithSession(maybeJourneyStep: Option[JourneyStep], maybeEntityId: Option[String]): FakeRequest[_] = {
-    val requestWithJourneyStep: FakeRequest[_] = maybeJourneyStep match {
-      case Some(journeyStep) => FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> journeyStep.key)
-      case None => FakeRequest()
-    }
-
+  def requestWithSession(maybeEntityId: Option[String]): FakeRequest[_] = {
     maybeEntityId match {
-      case Some(entityId) => requestWithJourneyStep.withSession(ITSASessionKeys.SPSEntityId -> entityId)
-      case None => requestWithJourneyStep
+      case Some(entityId) => FakeRequest().withSession(ITSASessionKeys.SPSEntityId -> entityId)
+      case None => FakeRequest()
     }
   }
 
@@ -162,12 +162,19 @@ class PreSignUpJourneyRefinerSpec extends PlaySpec with MockAlreadyEnrolledResol
                         utr: Option[String] = None,
                         mtditid: Option[String] = None): IdentifierRequest[_] = {
     IdentifierRequest(
-      request = requestWithSession(journeyStep, entityId),
+      request = requestWithSession(entityId),
       mtditid = mtditid,
       nino = testNino,
       utr = utr,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = SessionData()
+      sessionData = journeyStep match {
+        case Some(step) =>
+          SessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(step.key)
+          ))
+        case None =>
+          SessionData()
+      }
     )
   }
 }
