@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentUserMatching
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
@@ -33,7 +33,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
       ))
 
       When("GET /error/client-already-subscribed is called")
@@ -66,7 +66,7 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
       ))
 
       When("POST /error/client-already-subscribed is called")

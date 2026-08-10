@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentSignUp
+import models.agent.JourneyStep.SignUp
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
@@ -90,7 +90,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
       handlePrePop(reference, nino) {
-        sessionDataService.saveJourneyState(AgentSignUp.name).flatMap { _ =>
+        sessionDataService.saveJourneyState(SignUp.key).flatMap { _ =>
           goToSignUpClient(eligibilityStatus)
         }
       }

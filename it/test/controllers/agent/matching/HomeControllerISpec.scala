@@ -16,16 +16,13 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{testNino, testUtr}
+import connectors.stubs.SessionDataConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import models.EligibilityStatus
-import play.api.http.Status._
-import play.api.libs.json.{JsBoolean, JsString, Json}
-import utilities.SubscriptionDataKeys
+import play.api.http.Status.*
+import play.api.libs.json.JsString
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -47,7 +44,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
           AuthStub.stubAuthSuccess()
           
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           val res = IncomeTaxSubscriptionFrontend.indexPage()

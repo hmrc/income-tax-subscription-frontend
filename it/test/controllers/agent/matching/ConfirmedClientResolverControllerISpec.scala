@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentUserMatching
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import config.MockConfig.appConfig.ggLoginUrl
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
@@ -40,7 +40,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
     super.beforeEach()
     enable(ThrottlingFeature)
     SessionDataConnectorStub.stubGetAllSessionData(Map(
-      ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
     ))
     SessionDataConnectorStub.stubSaveJourneyState()(OK)
   }

@@ -17,14 +17,12 @@
 package helpers.agent
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import config.AppConfig
 import config.featureswitch.FeatureSwitching
-import connectors.stubs.SessionDataConnectorStub
 import forms.agent.*
 import forms.individual.business.RemoveBusinessForm
 import helpers.IntegrationTestConstants.*
@@ -33,6 +31,7 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models.*
+import models.agent.JourneyStep.{SignUp, UserMatching}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -44,23 +43,22 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.*
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
-import play.api.libs.json.{Format, JsArray, JsString, Writes}
+import play.api.libs.json.{Format, JsArray, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.{UUIDProvider, UserMatchingSessionUtil}
-import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
-import uk.gov.hmrc.crypto.Sensitive.SensitiveString
-import uk.gov.hmrc.crypto.json.JsonEncryption
 
 import java.time.LocalDate
 import java.util.UUID
@@ -84,7 +82,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val detailedClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.JourneyStateKey -> SignUp.key,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
     )
 
@@ -95,7 +93,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val completeClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.JourneyStateKey -> SignUp.key,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
       firstName -> "FirstName",
       lastName -> "LastName"
@@ -216,7 +214,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       else
         Map()
       val stateKvp = if (withJourneyStateSignUp)
-        Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name)
+        Map(ITSASessionKeys.JourneyStateKey -> SignUp.key)
       else
         Map()
       Map[String, String]() ++ utrKvp ++ stateKvp
@@ -248,7 +246,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def startPage(): WSResponse =
       get("/")
 
-    def indexPage(maybeJourneyState: Option[AgentJourneyState] = Some(AgentSignUp)): WSResponse = {
+    def indexPage(): WSResponse = {
       get("/index",
         withClientDetailsConfirmed = false,
         withJourneyStateSignUp = false
@@ -313,17 +311,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/resolve-confirmed-client")
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
+      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key).addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
       )
 
     def showClientDetailsError(): WSResponse =
-      get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+      get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key))
 
     def showClientDetailsLockout(): WSResponse =
-      get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+      get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key))
 
     def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)

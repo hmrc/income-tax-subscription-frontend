@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.agent.AgentUserMatching
+import models.agent.JourneyStep.UserMatching
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
@@ -38,7 +38,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubUnauthorised()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
 
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
@@ -66,7 +66,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
 
         val result = IncomeTaxSubscriptionFrontend.confirmClient()
@@ -111,7 +111,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFailure()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           // n.b. failure is expected as the additional methods are not mocked
@@ -134,7 +134,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchNotFound()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")
@@ -156,7 +156,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             UserLockoutStub.stubUserIsNotLocked(testARN)
             AuthenticatorStub.stubMatchNotFound()
             SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+              ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
             ))
 
             When("I call POST /confirm-client")
@@ -182,7 +182,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             UserLockoutStub.stubLockAgent(testARN)
             AuthenticatorStub.stubMatchNotFound()
             SessionDataConnectorStub.stubGetAllSessionData(Map(
-              ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+              ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
             ))
 
             When("I call POST /confirm-client")
@@ -207,7 +207,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchDeceased()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")
@@ -238,7 +238,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
           stubGetITSAStatus(
             Json.toJson(GetITSAStatusRequest(testNino))
@@ -268,7 +268,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
           stubGetITSAStatus(
             Json.toJson(GetITSAStatusRequest(testNino))
@@ -295,7 +295,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")
@@ -319,7 +319,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           UserLockoutStub.stubUserIsNotLocked(testARN)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")
@@ -345,7 +345,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")
@@ -373,7 +373,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
 
           When("I call POST /confirm-client")

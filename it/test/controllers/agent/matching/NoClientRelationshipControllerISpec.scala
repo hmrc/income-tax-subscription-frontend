@@ -16,15 +16,14 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.agent.JourneyStep.SignPosted
+import models.agent.JourneyStep.UserMatching
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
@@ -36,7 +35,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
@@ -124,7 +123,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        ITSASessionKeys.JourneyStateKey -> JsString(AgentUserMatching.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
       ))
       
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()

@@ -16,14 +16,13 @@
 
 package controllers.agent.eligibility
 
-import auth.agent.AgentUserMatching
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
+import models.agent.JourneyStep.UserMatching
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -32,11 +31,12 @@ import play.api.libs.ws.WSResponse
 
 class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR ++ Map(JourneyStateKey -> AgentUserMatching.name)) {
+  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
     AuthStub.stubAuthSuccess()
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None))
+      ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None)),
+      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
