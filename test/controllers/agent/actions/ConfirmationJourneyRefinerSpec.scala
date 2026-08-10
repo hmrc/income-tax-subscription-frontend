@@ -22,6 +22,7 @@ import models.agent.JourneyStep
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{NOT_FOUND, OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -48,8 +49,12 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec
 
   def identifierRequest(journeyStep: Option[JourneyStep]): IdentifierRequest[_] = {
     journeyStep match {
-      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN, SessionData())
-      case None => IdentifierRequest(FakeRequest(), testARN, SessionData())
+      case Some(step) =>
+        IdentifierRequest(FakeRequest(), testARN, SessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(step.key)
+        )))
+      case None =>
+        IdentifierRequest(FakeRequest(), testARN, SessionData())
     }
   }
 

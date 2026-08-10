@@ -23,7 +23,7 @@ import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
 import models.{SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -50,8 +50,14 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
 
   def identifierRequest(journeyStep: Option[JourneyStep], sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
     journeyStep match {
-      case Some(step) => IdentifierRequest(FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> step.key), testARN, sessionData)
-      case None => IdentifierRequest(FakeRequest(), testARN, sessionData)
+      case Some(step) =>
+        IdentifierRequest(FakeRequest(), testARN, sessionData.copy(
+          data = sessionData.data ++ Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(step.key)
+          )
+        ))
+      case None =>
+        IdentifierRequest(FakeRequest(), testARN, sessionData)
     }
   }
 
