@@ -20,16 +20,17 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.globalCheckYourAnswersURI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestModels.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.EligibilityStatus
+import models.agent.JourneyStep.SignUp
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
@@ -52,7 +53,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
             eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
-          ))
+          )),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -78,7 +80,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
             eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
-          ))
+          )),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -127,7 +130,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         )
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -155,7 +159,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           )
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -176,7 +181,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           )
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -197,7 +203,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           )
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel.copy(confirmed = false)))
@@ -214,5 +221,4 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 }

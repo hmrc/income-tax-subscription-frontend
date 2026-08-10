@@ -25,6 +25,7 @@ import models.common.AccountingYearModel
 import models.{Current, Next}
 import play.api.http.Status.*
 import models.*
+import models.agent.JourneyStep.SignUp
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatus.Mandated
 import models.status.MandationStatusModel
@@ -48,7 +49,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
-          )
+          ),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
@@ -79,7 +81,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
-          )
+          ),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
@@ -111,7 +114,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Mandated, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
-          )
+          ),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
@@ -136,7 +140,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
-          )
+          ),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
@@ -224,7 +229,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
           SelectedTaxYear,
@@ -249,7 +255,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           val result = IncomeTaxSubscriptionFrontend.submitWhenDoYouWantToStart(
@@ -270,7 +277,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
             SelectedTaxYear,
@@ -294,7 +302,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
             SelectedTaxYear,
@@ -319,7 +328,8 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)
 

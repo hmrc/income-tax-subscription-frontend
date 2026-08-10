@@ -21,8 +21,9 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.SignUp
 import models.common.OverseasPropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.{IncomeSourceConfirmation, OverseasProperty}
@@ -49,7 +50,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK,
         Json.toJson(OverseasPropertyModel()))
@@ -69,7 +71,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, NO_CONTENT,
         Json.toJson(OverseasPropertyModel(None)))
@@ -91,7 +94,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
@@ -114,7 +118,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST client/business/remove-overseas-property-business is called")
@@ -136,7 +141,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /business/remove-overseas-property-business is called")
@@ -157,7 +163,8 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(OverseasProperty)
 
@@ -174,11 +181,11 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(OverseasProperty)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(IncomeSourceConfirmation)
-
 
         When("POST /business/remove-uk-property-business is called")
         val res = IncomeTaxSubscriptionFrontend.submitRemoveClientOverseasProperty(Map("yes-no" -> Seq("Yes")))
@@ -191,4 +198,3 @@ class RemoveOverseasPropertyControllerISpec extends ComponentSpecBase {
     }
   }
 }
-

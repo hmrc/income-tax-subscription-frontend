@@ -82,7 +82,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val detailedClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> SignUp.key,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
     )
 
@@ -93,7 +92,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val completeClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> SignUp.key,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
       firstName -> "FirstName",
       lastName -> "LastName"
@@ -213,11 +211,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
       else
         Map()
-      val stateKvp = if (withJourneyStateSignUp)
-        Map(ITSASessionKeys.JourneyStateKey -> SignUp.key)
-      else
-        Map()
-      Map[String, String]() ++ utrKvp ++ stateKvp
+      Map[String, String]() ++ utrKvp
     }
 
     val headers: Seq[(String, String)] = Seq(
@@ -311,17 +305,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/resolve-confirmed-client")
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key).addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
+      post("/client-details", Map().addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
       )
 
     def showClientDetailsError(): WSResponse =
-      get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key))
+      get("/error/client-details")
 
     def showClientDetailsLockout(): WSResponse =
-      get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.key))
+      get("/error/lockout")
 
     def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)

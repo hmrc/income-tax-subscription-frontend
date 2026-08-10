@@ -71,7 +71,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
 
-
       "return a view with appropriate national insurance hint" in {
         val res = fixture(agentLocked = false)
         val label = Jsoup.parse(res.body).selectOptionally("""label[for="clientNino"]""")
@@ -100,6 +99,12 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthStub.stubAuthSuccess()
         AgentLockoutStub.stubAgentIsLocked(testARN)
 
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+        ))
+
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
 
         Then("The result must have a status of SEE_OTHER")
@@ -115,6 +120,12 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+        ))
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -136,7 +147,10 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
@@ -162,7 +176,10 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
@@ -189,7 +206,10 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         AgentLockoutStub.stubAgentIsNotLocked(testARN)
         IncomeTaxSubscriptionConnectorStub.stubSubscriptionDeleteAll()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
+          ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
@@ -206,9 +226,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
 
         res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
-
       }
     }
   }
-
 }

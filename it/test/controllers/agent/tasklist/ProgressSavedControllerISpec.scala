@@ -18,17 +18,18 @@ package controllers.agent.tasklist
 
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.EligibilityStatus
+import models.agent.JourneyStep.SignUp
 import models.common.business.{BusinessStartDate, SelfEmploymentData}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsNumber, JsObject, JsString, Json}
 import play.api.libs.ws.WSResponse
-import utilities.SubscriptionDataKeys._
+import utilities.SubscriptionDataKeys.*
 
 class ProgressSavedControllerISpec extends ComponentSpecBase {
 
@@ -62,7 +63,8 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
-            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
+            ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           When(s"GET ${controllers.agent.tasklist.routes.ProgressSavedController.show(location = Some("test-location")).url} is called")
@@ -82,7 +84,8 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           When(s"GET ${controllers.agent.tasklist.routes.ProgressSavedController.show().url} is called")
@@ -105,7 +108,8 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When(s"GET ${controllers.agent.tasklist.routes.ProgressSavedController.show().url} is called")

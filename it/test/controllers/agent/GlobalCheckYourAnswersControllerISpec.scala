@@ -33,6 +33,7 @@ import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import helpers.servicemocks.{ChannelPreferencesStub, EnrolmentStoreProxyStub}
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
+import models.agent.JourneyStep.SignUp
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.Voluntary
@@ -90,7 +91,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("GET /client/final-check-your-answers is called")
@@ -115,7 +117,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("GET /client/final-check-your-answers is called")
@@ -141,7 +144,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
@@ -198,7 +202,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -268,7 +273,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -346,7 +352,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -419,7 +426,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -501,7 +509,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
-              ITSASessionKeys.UTR -> JsString(testUtr)
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
@@ -560,7 +569,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -595,7 +605,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -628,7 +639,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -661,7 +673,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -708,7 +721,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(INTERNAL_SERVER_ERROR)
@@ -750,7 +764,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
@@ -784,5 +799,4 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
       }
     }
   }
-
 }
