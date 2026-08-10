@@ -16,8 +16,7 @@
 
 package controllers.individual.matching
 
-import auth.individual.SignUp
-import common.Constants.ITSASessionKeys
+import models.individual.JourneyStep.SignUp
 import config.AppConfig
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
@@ -81,7 +80,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
       }
     }
 
-    sessionDataService.saveJourneyState(SignUp.name).flatMap { _ =>
+    sessionDataService.saveJourneyState(SignUp.key).flatMap { _ =>
       next.map(_.url).map(url => Redirect(url))
     }
   }

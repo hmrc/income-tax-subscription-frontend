@@ -16,7 +16,7 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.*
@@ -39,7 +39,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -60,7 +60,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       SubscriptionStub.stubGetNoSubscription()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -81,7 +81,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(OK)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
       
       When("GET /claim-enrolment/resolve is called")
@@ -100,7 +100,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       AuthStub.stubAuthNoNino()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -117,7 +117,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       SubscriptionStub.stubGetSubscriptionFail()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -136,7 +136,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentJsError(testMTDITEnrolmentKey)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -155,7 +155,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       EnrolmentStoreProxyStub.stubGetAllocatedEnrolmentStatus(testMTDITEnrolmentKey)(INTERNAL_SERVER_ERROR)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -175,7 +175,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")
@@ -196,7 +196,7 @@ class ClaimEnrolmentResolverControllerISpec extends ComponentSpecBase with Sessi
       TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/resolve is called")

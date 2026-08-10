@@ -16,36 +16,26 @@
 
 package models.individual
 
-import auth.individual.{ClaimEnrolment, SignUp}
+import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.http.InternalServerException
 
 class JourneyStepSpec extends PlaySpec {
 
   "JourneyStep.fromString" when {
-    s"the key is provided as ${SignUp.name}" should {
-      "return a sign up journey step" in {
-        JourneyStep.fromString(SignUp.name) mustBe JourneyStep.SignUp
-      }
-    }
-    s"the key is provided as ${ClaimEnrolment.name}" should {
-      "return a claim enrolment journey step" in {
-        JourneyStep.fromString(ClaimEnrolment.name) mustBe JourneyStep.ClaimEnrolment
-      }
-    }
-    s"the key is provided as ${JourneyStep.PreSignUp}" should {
-      "return a pre sign up journey step" in {
-        JourneyStep.fromString(JourneyStep.PreSignUp.key) mustBe JourneyStep.PreSignUp
-      }
-    }
-    s"the key is provided as ${JourneyStep.SignUp}" should {
-      "return a sign up journey step" in {
-        JourneyStep.fromString(JourneyStep.SignUp.key) mustBe JourneyStep.SignUp
-      }
-    }
-    s"the key is provided as ${JourneyStep.Confirmation}" should {
-      "return a confirmation journey step" in {
-        JourneyStep.fromString(JourneyStep.Confirmation.key) mustBe JourneyStep.Confirmation
+
+    val data = Map(
+      PreSignUp.key -> PreSignUp,
+      SignUp.key -> SignUp,
+      ClaimEnrolment.key -> ClaimEnrolment,
+      Confirmation.key -> Confirmation
+    )
+
+    data.foreach { case (key, expected) =>
+      s"the key is provided as $key" should {
+        "return a pre sign up journey step" in {
+          JourneyStep.fromString(key) mustBe expected
+        }
       }
     }
     s"the key is provided as anything else" should {
@@ -55,5 +45,4 @@ class JourneyStepSpec extends PlaySpec {
       }
     }
   }
-
 }

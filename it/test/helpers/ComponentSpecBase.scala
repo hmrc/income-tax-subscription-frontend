@@ -16,8 +16,6 @@
 
 package helpers
 
-import auth.individual.{JourneyState, SignUp, ClaimEnrolment as ClaimEnrolmentJourney}
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.*
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
@@ -27,8 +25,7 @@ import forms.individual.business.*
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.*
-import models.common.BusinessAccountingPeriod
-import models.individual.JourneyStep.{Confirmation, PreSignUp}
+import models.individual.JourneyStep.SignUp
 import org.jsoup.nodes.Element
 import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -162,7 +159,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeState: Boolean = true): WSResponse = {
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
-      val stateCookie: Map[String, String] = if (includeState) Map(JourneyStateKey -> SignUp.name) else Map.empty
+      val stateCookie: Map[String, String] = if (includeState) Map(JourneyStateKey -> SignUp.key) else Map.empty
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ stateCookie ++ additionalSPSCookie ++ additionalCookies))
         .get()
@@ -171,7 +168,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeJourneyState: Boolean = true)(body: Map[String, Seq[String]]): WSResponse = {
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
-      val journeyState: Map[String, String] = if (includeJourneyState) Map(JourneyStateKey -> SignUp.name) else Map.empty
+      val journeyState: Map[String, String] = if (includeJourneyState) Map(JourneyStateKey -> SignUp.key) else Map.empty
       buildClient(uri)
         .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ journeyState ++ additionalSPSCookie ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
@@ -457,7 +454,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
-      post(uri, Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"))(
+      post(uri, Map(CLIENT_DETAILS_CONFIRMED -> "true"))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             ForeignPropertyStartDateForm.startDateForm(_.toString)

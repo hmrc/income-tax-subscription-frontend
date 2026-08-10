@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import connectors.stubs.SessionDataConnectorStub.stubSaveJourneyState
@@ -51,7 +51,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
       "a bta origin parameter is provided" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentBTA)(OK)
-        stubSaveJourneyState(ClaimEnrolmentJourney.name)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = Some(ClaimEnrolmentBTA.key))
 
@@ -63,7 +63,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
       "a pta origin parameter is provided" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentPTA)(OK)
-        stubSaveJourneyState(ClaimEnrolmentJourney.name)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = Some(ClaimEnrolmentPTA.key))
 
@@ -75,7 +75,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
       "no origin parameter is provided and the claim enrolment origins feature switch is enabled" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentSignUp)(OK)
-        stubSaveJourneyState(ClaimEnrolmentJourney.name)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = None)
 
@@ -108,7 +108,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
         AuthStub.stubAuthSuccess()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+          JourneyStateKey -> JsString(ClaimEnrolment.key)
         ))
 
         When("POST /claim-enrolment/overview is called")

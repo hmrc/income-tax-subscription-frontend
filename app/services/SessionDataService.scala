@@ -16,7 +16,6 @@
 
 package services
 
-import auth.individual.JourneyState
 import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse

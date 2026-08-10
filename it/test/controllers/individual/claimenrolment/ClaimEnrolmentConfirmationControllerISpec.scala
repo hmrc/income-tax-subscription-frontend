@@ -16,7 +16,7 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
@@ -33,7 +33,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
 
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("GET /claim-enrolment/confirmation is called")
@@ -54,7 +54,7 @@ class ClaimEnrolmentConfirmationControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
 
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        JourneyStateKey -> JsString(ClaimEnrolmentJourney.name)
+        JourneyStateKey -> JsString(ClaimEnrolment.key)
       ))
 
       When("POST /claim-enrolment/confirmation is called")

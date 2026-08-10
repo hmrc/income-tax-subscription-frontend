@@ -17,7 +17,7 @@
 package controllers.individual.claimenrolment.sps
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
+import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
@@ -34,7 +34,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
           sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
           )
         )
 
@@ -53,7 +53,7 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
       val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
         sessionKeys = Map(
-          ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+          ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
         )
       )
 

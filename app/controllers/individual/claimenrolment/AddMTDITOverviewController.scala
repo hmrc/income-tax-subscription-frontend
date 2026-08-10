@@ -16,8 +16,7 @@
 
 package controllers.individual.claimenrolment
 
-import auth.individual.{ClaimEnrolment => ClaimEnrolmentJourney}
-import common.Constants.ITSASessionKeys
+import models.individual.JourneyStep.ClaimEnrolment
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{BasicIdentifierAction, IdentifierAction}
@@ -43,7 +42,7 @@ class AddMTDITOverviewController @Inject()(addmtdit: AddMTDITOverview,
   def show(origin: Option[String] = None): Action[AnyContent] = basicIdentify.async { implicit request =>
     for {
       origin <- originFromParameter(origin)
-      _ <- sessionDataService.saveJourneyState(ClaimEnrolmentJourney.name)
+      _ <- sessionDataService.saveJourneyState(ClaimEnrolment.key)
     } yield {
       Ok(addmtdit(
         postAction = routes.AddMTDITOverviewController.submit,

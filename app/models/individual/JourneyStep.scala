@@ -16,7 +16,6 @@
 
 package models.individual
 
-import auth.individual.{ClaimEnrolment => OldClaimEnrolment, SignUp => OldSignUp}
 import uk.gov.hmrc.http.InternalServerException
 
 sealed trait JourneyStep {
@@ -43,9 +42,6 @@ object JourneyStep {
 
   def fromString(key: String): JourneyStep = {
     key match {
-      // if the user is in the old state, pretend it's the new sign up state
-      case OldSignUp.name => SignUp
-      case OldClaimEnrolment.name => ClaimEnrolment
       case PreSignUp.key => PreSignUp
       case SignUp.key => SignUp
       case ClaimEnrolment.key => ClaimEnrolment

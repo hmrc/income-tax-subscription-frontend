@@ -16,7 +16,7 @@
 
 package controllers.individual.iv
 
-import auth.individual.ClaimEnrolment
+import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
@@ -39,7 +39,7 @@ class IVSuccessController @Inject()(identify: IdentifierAction,
         auditingService.audit(IVOutcomeSuccessAuditModel(nino))
       }
     }
-    if (request.sessionData.fetchJourneyState(request).contains(ClaimEnrolment.name)) {
+    if (request.sessionData.fetchJourneyState(request).contains(ClaimEnrolment.key)) {
       Future.successful(
         Redirect(controllers.individual.claimenrolment.routes.ClaimEnrolmentResolverController.resolve)
           .removingFromSession(ITSASessionKeys.IdentityVerificationFlag)

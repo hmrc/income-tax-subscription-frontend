@@ -16,7 +16,7 @@
 
 package controllers.individual
 
-import auth.individual.{ClaimEnrolment, SignUp}
+import models.individual.JourneyStep.{ClaimEnrolment, SignUp}
 import common.Constants.ITSASessionKeys
 import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito
@@ -72,14 +72,8 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> SignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
     ITSASessionKeys.SPSEntityId -> TestConstants.testSpsEntityId
   ).withMethod("POST")
-
-  lazy val claimEnrolmentRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.name,
-  )
-
 }
