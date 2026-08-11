@@ -40,12 +40,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmationRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep
-        )
-      } match {
+    request.sessionData.fetchJourneyState(request) match {
       case Some(Confirmation) =>
         val sessionData = request.sessionData
         for {
@@ -58,7 +53,6 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
             case Some(No) => false
             case Some(Yes) => true
           }
-
           Right(ConfirmationRequest(
             request = request,
             reference = reference,

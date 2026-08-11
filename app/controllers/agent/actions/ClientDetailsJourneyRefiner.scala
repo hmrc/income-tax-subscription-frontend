@@ -31,21 +31,14 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
   extends ActionRefiner[IdentifierRequest, IdentifierRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep,
-          clientDetailsConfirmed = request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
-          hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
-        )
-      } match {
-        case Some(ClientDetails | ConfirmedClient | SignPosted) =>
-          Future.successful(Right(request))
-        case None =>
-          Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
-        case Some(Confirmation) =>
-          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
-      }
+    request.sessionData.fetchJourneyState(request) match {
+      case Some(ClientDetails | ConfirmedClient | SignPosted) =>
+        Future.successful(Right(request))
+      case None =>
+        Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
+      case Some(Confirmation) =>
+        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+    }
   }
 
 }

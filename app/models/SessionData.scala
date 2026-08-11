@@ -25,6 +25,7 @@ import play.api.mvc.Request
 import services.Throttle
 
 import java.time.LocalDate
+import uk.gov.hmrc.http.InternalServerException
 
 case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
@@ -93,10 +94,23 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
   }
 
-  def fetchJourneyState[A](request: Request[A]): Option[String] = {
+  def fetchJourneyState[A](request: Request[A]): Option[JourneyStep] = {
+    val session = request.session
     data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String]).orElse {
       logger.warn("Using cookie for journey state")
-      request.session.get(ITSASessionKeys.JourneyStateKey)
+      session.get(ITSASessionKeys.JourneyStateKey)
+    }.map { key =>
+      if (key.startsWith(agent.JourneyStep.prefix)) {
+        agent.JourneyStep.fromString(
+          key = key,
+          clientDetailsConfirmed = session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
+          hasMtditid = session.get(ITSASessionKeys.MTDITID).isDefined
+        )
+      } else if (key.startsWith(individual.JourneyStep.prefix)) {
+        individual.JourneyStep.fromString(key)
+      } else {
+        throw new InternalServerException(s"Invalid JourneyStep: $key")
+      }
     }
   }
 }

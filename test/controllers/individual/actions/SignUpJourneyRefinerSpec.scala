@@ -21,7 +21,7 @@ import models.Status.InProgress
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
-import models.{SessionData, SubmissionStatus}
+import models.{JourneyStep, SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.Json

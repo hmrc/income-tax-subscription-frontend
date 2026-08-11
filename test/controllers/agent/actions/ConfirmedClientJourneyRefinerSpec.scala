@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import models.Status.InProgress
 import models.agent.JourneyStep
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
-import models.{SessionData, SubmissionStatus}
+import models.{JourneyStep, SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}

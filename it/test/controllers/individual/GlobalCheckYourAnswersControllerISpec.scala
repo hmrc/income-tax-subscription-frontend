@@ -20,7 +20,7 @@ import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
 import config.featureswitch.FeatureSwitch.UseIdempotency
 import connectors.stubs.CreateIncomeSourcesAPIStub.StubResponse
-import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubGetAllSessionData, stubSaveSubmissionStatus}
+import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
 import helpers.*
 import helpers.IntegrationTestConstants.*
@@ -36,7 +36,7 @@ import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import services.individual.SignUpOrchestrationService.{ALREADY_SIGNED_UP, BUSINESS_PARTNER_CATEGORY_ORGANISATION, CANNOT_REFRESH_FROM_NPS, CREATE_OR_UPDATE_BUSINESS_PARTNER_RELATIONSHIP, FAILED_TO_ADD_IDS, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND, NFS_CALL_FAILED_1, NFS_CALL_FAILED_2, NSP_REFRESH_UNAVAILABLE}
+import services.individual.SignUpOrchestrationService.*
 import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatusHelper with SessionCookieCrumbler {

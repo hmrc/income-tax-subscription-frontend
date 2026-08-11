@@ -17,7 +17,7 @@
 package controllers.agent.actions
 
 import common.Constants.ITSASessionKeys
-import models.SessionData
+import models.{JourneyStep, SessionData}
 import models.agent.JourneyStep
 import models.requests.agent.{IdentifierRequest, SignPostedRequest}
 import org.scalatestplus.play.PlaySpec

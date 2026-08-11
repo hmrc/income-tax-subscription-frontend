@@ -23,7 +23,6 @@ import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.Status.{HandledError, InProgress, OtherError, Success}
 import models.SubmissionStatus
-import models.individual.JourneyStep
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.individual.TestConstants.testUtr

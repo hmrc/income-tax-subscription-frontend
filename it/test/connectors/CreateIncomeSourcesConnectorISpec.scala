@@ -22,7 +22,7 @@ import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.stubs.CreateIncomeSourcesAPIStub
 import connectors.stubs.CreateIncomeSourcesAPIStub.{StubResponse, createIncomeSourcesUri}
 import helpers.{ComponentSpecBase, WiremockHelper}
-import models.{DateModel, ErrorModel}
+import models.DateModel
 import models.common.business.*
 import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
 import play.api.http.Status.*

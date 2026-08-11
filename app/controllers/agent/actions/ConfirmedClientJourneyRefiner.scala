@@ -41,39 +41,32 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep,
-          clientDetailsConfirmed = request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
-          hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
-        )
-      } match {
-        case Some(ConfirmedClient) =>
-          val sessionData = request.sessionData
-          for {
-            clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
-            utr <- utrService.getUTR(sessionData)
-            reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
-          } yield {
-            sessionData.fetchSubmissionStatus match {
-              case Some(value) =>
-                Left(Redirect(controllers.agent.routes.LoadingSpinnerController.show))
-              case None =>
-                Right(ConfirmedClientRequest(
-                  request = request,
-                  clientDetails = clientDetails,
-                  utr = utr,
-                  reference = reference,
-                  sessionData = sessionData
-                ))
-            }
+    request.sessionData.fetchJourneyState(request) match {
+      case Some(ConfirmedClient) =>
+        val sessionData = request.sessionData
+        for {
+          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+          utr <- utrService.getUTR(sessionData)
+          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
+        } yield {
+          sessionData.fetchSubmissionStatus match {
+            case Some(value) =>
+              Left(Redirect(controllers.agent.routes.LoadingSpinnerController.show))
+            case None =>
+              Right(ConfirmedClientRequest(
+                request = request,
+                clientDetails = clientDetails,
+                utr = utr,
+                reference = reference,
+                sessionData = sessionData
+              ))
           }
-        case state@(None | Some(ClientDetails | SignPosted)) =>
-          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-        case Some(Confirmation) =>
-          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
-      }
+        }
+      case state@(None | Some(ClientDetails | SignPosted)) =>
+        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+      case Some(Confirmation) =>
+        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+    }
   }
 
 }

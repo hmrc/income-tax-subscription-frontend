@@ -29,7 +29,6 @@ import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
-import helpers.IntegrationTestConstants.basGatewaySignIn
 
 import java.time.LocalDate
 

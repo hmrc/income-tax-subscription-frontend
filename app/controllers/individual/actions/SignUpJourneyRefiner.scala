@@ -37,37 +37,31 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep
-        )
-      } match {
-        case Some(SignUp) =>
-          for {
-            reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)
-          } yield {
-            request.sessionData.fetchSubmissionStatus match {
-              case Some(value) =>
-                Left(Redirect(controllers.individual.routes.LoadingSpinnerController.show))
-              case None =>
-                Right(SignUpRequest(
-                  request = request,
-                  reference = reference,
-                  nino = request.nino,
-                  sessionData = request.sessionData
-                ))
-            }
+    request.sessionData.fetchJourneyState(request) match {
+      case Some(SignUp) =>
+        for {
+          reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)
+        } yield {
+          request.sessionData.fetchSubmissionStatus match {
+            case Some(value) =>
+              Left(Redirect(controllers.individual.routes.LoadingSpinnerController.show))
+            case None =>
+              Right(SignUpRequest(
+                request = request,
+                reference = reference,
+                nino = request.nino,
+                sessionData = request.sessionData
+              ))
           }
-        case Some(Confirmation) =>
-          Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-        case Some(ClaimEnrolment) =>
-          Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
-            origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
-          ))))
-        case state@(None | Some(PreSignUp)) =>
-          Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
-      }
+        }
+      case Some(Confirmation) =>
+        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+      case Some(ClaimEnrolment) =>
+        Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
+          origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
+        ))))
+      case state@(None | Some(PreSignUp)) =>
+        Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
+    }
   }
-
 }

@@ -16,36 +16,34 @@
 
 package models.agent
 
+import models.JourneyStep
 import uk.gov.hmrc.http.InternalServerException
 
-sealed trait JourneyStep {
-  val key: String
-}
-
 object JourneyStep {
+  val prefix = "A-"
 
   case object ClientDetails extends JourneyStep {
-    val key = "ClientDetails"
+    val key = s"${prefix}ClientDetails"
   }
 
   case object SignPosted extends JourneyStep {
-    val key = "SignPosted"
+    val key = s"${prefix}SignPosted"
   }
 
   case object ConfirmedClient extends JourneyStep {
-    val key = "ConfirmedClient"
+    val key = s"${prefix}ConfirmedClient"
   }
 
   case object Confirmation extends JourneyStep {
-    val key = "Confirmation"
+    val key = s"${prefix}Confirmation"
   }
 
   object UserMatching extends JourneyStep {
-    override val key: String = "userMatching"
+    val key = s"${prefix}userMatching"
   }
 
   object SignUp extends JourneyStep {
-    override val key: String = "signUp"
+    val key = s"${prefix}signUp"
   }
 
   //scalastyle:off

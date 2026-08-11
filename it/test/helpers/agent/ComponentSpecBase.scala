@@ -31,7 +31,6 @@ import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
 import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
 import models.*
-import models.agent.JourneyStep.{SignUp, UserMatching}
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements

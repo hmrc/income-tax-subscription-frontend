@@ -38,29 +38,24 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep
-        )
-      } match {
-        case Some(PreSignUp | ClaimEnrolment) =>
-          request.mtditid match {
-            case Some(mtditid) =>
-              resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
-                Left(Redirect(call))
-              }
-            case None =>
-              Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
-          }
-        case Some(SignUp) =>
-          Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
-        case Some(Confirmation) =>
-          Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-        case None =>
-          sessionDataService.saveJourneyState(PreSignUp.key).map { _ => Left(
-            Redirect(controllers.individual.matching.routes.HomeController.index)
-          )}
-      }
+    request.sessionData.fetchJourneyState(request) match {
+      case Some(PreSignUp | ClaimEnrolment) =>
+        request.mtditid match {
+          case Some(mtditid) =>
+            resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
+              Left(Redirect(call))
+            }
+          case None =>
+            Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+        }
+      case Some(SignUp) =>
+        Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
+      case Some(Confirmation) =>
+        Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
+      case None =>
+        sessionDataService.saveJourneyState(PreSignUp.key).map { _ => Left(
+          Redirect(controllers.individual.matching.routes.HomeController.index)
+        )}
+    }
   }
 }

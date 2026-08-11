@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-package helpers.servicemocks
+package models
 
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.libs.json.JsValue
-
-object GetITSAStatusStub extends WireMockMethods {
-
-  def stubGetITSAStatus(expectedBody: JsValue)(status: Int, body: JsValue): StubMapping = {
-    when(
-      method = POST,
-      uri = "/income-tax-subscription/get-itsa-status",
-      body = expectedBody
-    ).thenReturn(status, body)
-
-  }
-  
+trait JourneyStep {
+  val key: String
 }

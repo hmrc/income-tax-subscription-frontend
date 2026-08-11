@@ -41,34 +41,27 @@ class ConfirmationJourneyRefiner @Inject()(utrService: UTRService,
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep,
-          clientDetailsConfirmed = request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
-          hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
-        )
-      } match {
-        case Some(Confirmation) =>
-          val sessionData = request.sessionData
-          for {
-            clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
-            utr <- utrService.getUTR(sessionData)
-            reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
-          } yield {
-            Right(ConfirmedClientRequest(
-              request = request,
-              clientDetails = clientDetails,
-              utr = utr,
-              reference = reference,
-              sessionData = sessionData
-            ))
-          }
-        case state@(None | Some(ClientDetails | SignPosted)) =>
-          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-        case Some(ConfirmedClient) =>
-          Future.successful(Left(NotFound))
-      }
+    request.sessionData.fetchJourneyState(request) match {
+      case Some(Confirmation) =>
+        val sessionData = request.sessionData
+        for {
+          clientDetails <- clientDetailsRetrieval.getClientDetails(sessionData)(request, hc)
+          utr <- utrService.getUTR(sessionData)
+          reference <- referenceRetrieval.getReference(Some(request.arn), sessionData)(hc, request)
+        } yield {
+          Right(ConfirmedClientRequest(
+            request = request,
+            clientDetails = clientDetails,
+            utr = utr,
+            reference = reference,
+            sessionData = sessionData
+          ))
+        }
+      case state@(None | Some(ClientDetails | SignPosted)) =>
+        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+      case Some(ConfirmedClient) =>
+        Future.successful(Left(NotFound))
+    }
   }
 
 }

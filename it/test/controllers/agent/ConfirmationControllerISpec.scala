@@ -78,7 +78,6 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
     s"There is not ${ITSASessionKeys.MTDITID} in session" should {
       "call subscription on the back end service" in {
-        val testOption: YesNo = Yes
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
 
