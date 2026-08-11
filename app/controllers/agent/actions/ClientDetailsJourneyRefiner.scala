@@ -31,7 +31,7 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
   extends ActionRefiner[IdentifierRequest, IdentifierRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    request.sessionData.fetchJourneyState(request) match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(ClientDetails | ConfirmedClient | SignPosted) =>
         Future.successful(Right(request))
       case None =>

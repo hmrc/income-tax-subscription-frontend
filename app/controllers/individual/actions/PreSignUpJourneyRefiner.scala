@@ -38,7 +38,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, PreSignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request) match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(PreSignUp | ClaimEnrolment) =>
         request.mtditid match {
           case Some(mtditid) =>
@@ -53,7 +53,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
       case None =>
-        sessionDataService.saveJourneyState(PreSignUp.key).map { _ => Left(
+        sessionDataService.saveJourneyStep(PreSignUp).map { _ => Left(
           Redirect(controllers.individual.matching.routes.HomeController.index)
         )}
     }

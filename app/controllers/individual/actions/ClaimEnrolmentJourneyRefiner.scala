@@ -31,7 +31,7 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
   extends ActionRefiner[IdentifierRequest, ClaimEnrolmentRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ClaimEnrolmentRequest[A]]] = {
-    request.sessionData.fetchJourneyState(request) match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(ClaimEnrolment) =>
         Future.successful(Right(ClaimEnrolmentRequest(
           request = request,

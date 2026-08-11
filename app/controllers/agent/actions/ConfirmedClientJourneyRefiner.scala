@@ -41,7 +41,7 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ConfirmedClientRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request) match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(ConfirmedClient) =>
         val sessionData = request.sessionData
         for {

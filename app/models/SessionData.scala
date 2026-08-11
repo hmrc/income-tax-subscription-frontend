@@ -94,10 +94,10 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
   }
 
-  def fetchJourneyState[A](request: Request[A]): Option[JourneyStep] = {
+  def fetchJourneyStep[A](request: Request[A]): Option[JourneyStep] = {
     val session = request.session
     data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String]).orElse {
-      logger.warn("Using cookie for journey state")
+      logger.warn("Using cookie for JourneyStep")
       session.get(ITSASessionKeys.JourneyStateKey)
     }.map { key =>
       if (key.startsWith(agent.JourneyStep.prefix)) {

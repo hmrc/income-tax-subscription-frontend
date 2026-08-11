@@ -37,7 +37,7 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SignUpRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    request.sessionData.fetchJourneyState(request) match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(SignUp) =>
         for {
           reference <- referenceRetrieval.getIndividualReference(request.sessionData)(hc, request)

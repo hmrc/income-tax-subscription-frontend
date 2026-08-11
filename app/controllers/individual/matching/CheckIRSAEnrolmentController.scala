@@ -80,7 +80,7 @@ class CheckIRSAEnrolmentController @Inject()(identify: IdentifierAction,
       }
     }
 
-    sessionDataService.saveJourneyState(SignUp.key).flatMap { _ =>
+    sessionDataService.saveJourneyStep(SignUp).flatMap { _ =>
       next.map(_.url).map(url => Redirect(url))
     }
   }

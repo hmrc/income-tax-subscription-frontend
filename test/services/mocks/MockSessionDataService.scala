@@ -126,7 +126,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockSaveJourneyState(): Unit = {
-    when(mockSessionDataService.saveJourneyState(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(()))
   }
 }

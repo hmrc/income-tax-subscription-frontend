@@ -47,7 +47,7 @@ class LoadingSpinnerController @Inject()(view: LoadingSpinner,
           case InProgress =>
             Future.successful(Ok(view(routes.LoadingSpinnerController.query)))
           case Success =>
-            sessionDataService.saveJourneyState(Confirmation.key).map { _ =>
+            sessionDataService.saveJourneyStep(Confirmation).map { _ =>
               Redirect(routes.ConfirmationController.show)
             }
           case HandledError =>

@@ -16,7 +16,7 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.SignUp
+import models.agent.JourneyStep.{SignPosted, SignUp}
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
@@ -90,7 +90,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
       handlePrePop(reference, nino) {
-        sessionDataService.saveJourneyState(SignUp.key).flatMap { _ =>
+        sessionDataService.saveJourneyStep(SignUp).flatMap { _ =>
           goToSignUpClient(eligibilityStatus)
         }
       }
@@ -109,7 +109,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   }
 
   private def goToCannotTakePart(implicit request: Request[AnyContent]): Future[Result] = {
-    sessionDataService.saveJourneyState(JourneyStep.SignPosted.key).map { _ =>
+    sessionDataService.saveJourneyStep(SignPosted).map { _ =>
       Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
         .removingFromSession(FailedClientMatching)
         .clearUserDetailsExceptName

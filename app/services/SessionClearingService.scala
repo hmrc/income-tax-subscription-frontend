@@ -39,7 +39,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
       emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData
       _ <- saveEmailConsentCaptured(emailConsentCaptured)
-      _ <- sessionDataService.saveJourneyState(UserMatching.key)
+      _ <- sessionDataService.saveJourneyStep(UserMatching)
     } yield {
       Redirect(nextPage)
         .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
