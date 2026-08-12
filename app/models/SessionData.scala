@@ -23,6 +23,8 @@ import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.Request
 import services.Throttle
+import agent.{JourneyStep => AgentJourneyStep}
+import individual.{JourneyStep => IndividualJourneyStep}
 
 import java.time.LocalDate
 import uk.gov.hmrc.http.InternalServerException
@@ -100,14 +102,14 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
       logger.warn("Using cookie for JourneyStep")
       session.get(ITSASessionKeys.JourneyStateKey)
     }.map { key =>
-      if (key.startsWith(agent.JourneyStep.prefix)) {
-        agent.JourneyStep.fromString(
+      if (key.startsWith(AgentJourneyStep.prefix)) {
+        AgentJourneyStep.fromString(
           key = key,
           clientDetailsConfirmed = session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
           hasMtditid = session.get(ITSASessionKeys.MTDITID).isDefined
         )
-      } else if (key.startsWith(individual.JourneyStep.prefix)) {
-        individual.JourneyStep.fromString(key)
+      } else if (key.startsWith(IndividualJourneyStep.prefix)) {
+        IndividualJourneyStep.fromString(key)
       } else {
         throw new InternalServerException(s"Invalid JourneyStep: $key")
       }
