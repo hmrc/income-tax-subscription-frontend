@@ -16,14 +16,12 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
-import common.Constants.ITSASessionKeys
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import config.featureswitch.FeatureSwitchingUtil
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
 import play.api.http.Status
-import play.api.mvc.{AnyContentAsEmpty, Result}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSubscriptionDetailsService, MockThrottlingConnector}
@@ -37,15 +35,6 @@ class HomeControllerSpec extends ControllerSpec
   with FeatureSwitchingUtil
   with MockSubscriptionDetailsService
   with MockIdentifierAction {
-
-  val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
-  )
-
-  val agentSignUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-  )
 
   private def testHomeController() = new HomeController(
     fakeIdentifierAction

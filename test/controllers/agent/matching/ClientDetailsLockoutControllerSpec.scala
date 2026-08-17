@@ -51,7 +51,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   "Calling the 'show' action of the ClientDetailsLockoutController" when {
 
     "the agent is locked out" should withController { controller =>
-      lazy val result = controller.show(userMatchingRequest)
+      lazy val result = controller.show(FakeRequest())
       lazy val document = Jsoup.parse(contentAsString(result))
 
       "return 200" in {
@@ -74,7 +74,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
       s"redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in withController { controller =>
         setupMockNotLockedOut(testARN)
 
-        lazy val result = controller.show(userMatchingRequest)
+        lazy val result = controller.show(FakeRequest())
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
@@ -85,7 +85,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
       "return an internal server exception" in withController { controller =>
         setupMockLockStatusFailureResponse(testARN)
 
-        lazy val result = controller.show(userMatchingRequest)
+        lazy val result = controller.show(FakeRequest())
 
         intercept[InternalServerException](await(result)).getMessage mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
       }

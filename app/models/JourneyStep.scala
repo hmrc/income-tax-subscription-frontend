@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package auth.agent
+package models
 
-sealed trait AgentJourneyState {
-  val name: String
-}
-
-object AgentUserMatching extends AgentJourneyState {
-  override val name: String = "userMatching"
-}
-
-object AgentSignUp extends AgentJourneyState {
-  override val name: String = "signUp"
+trait JourneyStep {
+  val key: String
 }

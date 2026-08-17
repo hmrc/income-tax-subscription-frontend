@@ -17,7 +17,7 @@
 package controllers.individual.iv
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
@@ -46,7 +46,7 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
 
         val res = IncomeTaxSubscriptionFrontend.ivSuccess(
           sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolmentJourney.name
+            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
           )
         )
 

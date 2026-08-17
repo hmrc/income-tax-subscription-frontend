@@ -17,11 +17,13 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, PreferencesFrontendConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.{testAccountingYearCurrent, testAccountingYearNext}
 import helpers.servicemocks.AuthStub
+import models.individual.JourneyStep.Confirmation
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes}
@@ -42,6 +44,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "the user is not authenticated" must {
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()
+        
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(Confirmation.key)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.confirmation()
 
@@ -56,7 +62,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "display a not found page" in {
         AuthStub.stubAuthSuccess()
 
-        val result = IncomeTaxSubscriptionFrontend.confirmation(includeConfirmationState = false)
+        val result = IncomeTaxSubscriptionFrontend.confirmation()
 
         result must have(
           httpStatus(NOT_FOUND)
@@ -76,7 +82,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
             ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString),
-            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
+            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now),
+            JourneyStateKey -> JsString(Confirmation.key)
           ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()
@@ -97,7 +104,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
             ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
             ITSASessionKeys.HAS_SOFTWARE -> JsString(Yes.toString),
-            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
+            ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now),
+            JourneyStateKey -> JsString(Confirmation.key)
           ))
 
           val result = IncomeTaxSubscriptionFrontend.confirmation()
@@ -117,6 +125,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "redirect the user to the login page" in {
         AuthStub.stubUnauthorised()
 
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(Confirmation.key)
+        ))
+
         val result = IncomeTaxSubscriptionFrontend.submitConfirmation()
 
         result must have(
@@ -129,6 +141,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "redirect the user to sign out" in {
         AuthStub.stubAuthSuccess()
 
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(Confirmation.key)
+        ))
+        
         val result = IncomeTaxSubscriptionFrontend.submitConfirmation()
 
         result must have(

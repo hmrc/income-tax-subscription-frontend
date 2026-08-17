@@ -20,12 +20,13 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.IntegrationTestModels
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestModels.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
+import models.agent.JourneyStep.SignUp
 import models.common.OverseasPropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.OverseasProperty
@@ -40,7 +41,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullPropertyModel))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("GET /overseas-property-commencement-date is called")
@@ -62,7 +64,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("GET /overseas-property-commencement-date is called")
@@ -90,7 +93,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           When("POST /overseas-property-start-date is called")
@@ -116,7 +120,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
-            ITSASessionKeys.UTR -> JsString(testUtr)
+            ITSASessionKeys.UTR -> JsString(testUtr),
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
           ))
 
           When("POST /overseas-property-start-date is called")
@@ -126,7 +131,6 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.overseasPropertyCheckYourAnswersURI)
-
           )
         }
       }
@@ -139,7 +143,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -160,7 +165,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -181,7 +187,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -204,7 +211,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /overseas-property-start-date is called")

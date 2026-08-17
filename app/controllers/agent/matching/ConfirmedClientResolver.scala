@@ -16,9 +16,9 @@
 
 package controllers.agent.matching
 
-import auth.agent.AgentSignUp
+import models.agent.JourneyStep.{SignPosted, SignUp}
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{FailedClientMatching, JourneyStateKey}
+import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
@@ -48,6 +48,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         auditingService: AuditingService,
                                         ninoService: NinoService,
                                         utrService: UTRService,
+                                        sessionDataService: SessionDataService,
                                         val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
@@ -89,7 +90,9 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
       handlePrePop(reference, nino) {
-        goToSignUpClient(eligibilityStatus).map(_.addingToSession(JourneyStateKey -> AgentSignUp.name))
+        sessionDataService.saveJourneyStep(SignUp).flatMap { _ =>
+          goToSignUpClient(eligibilityStatus)
+        }
       }
     }
   }
@@ -106,12 +109,11 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
   }
 
   private def goToCannotTakePart(implicit request: Request[AnyContent]): Future[Result] = {
-    Future.successful(
+    sessionDataService.saveJourneyStep(SignPosted).map { _ =>
       Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
-        .addingToSession(ITSASessionKeys.JourneyStateKey -> JourneyStep.SignPosted.key)
         .removingFromSession(FailedClientMatching)
         .clearUserDetailsExceptName
-    )
+    }
   }
 
   private def auditIneligibleResult(nino: String, utr: String, arn: String)(implicit request: Request[_]): Future[AuditResult] = {

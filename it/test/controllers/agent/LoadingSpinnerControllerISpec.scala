@@ -23,7 +23,6 @@ import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.Status.{HandledError, InProgress, OtherError, Success}
 import models.SubmissionStatus
-import models.agent.JourneyStep
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.agent.TestConstants.testUtr
@@ -71,6 +70,7 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           ITSASessionKeys.UTR -> JsString(testUtr),
           ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(Success))
         ))
+        SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
         val res = IncomeTaxSubscriptionFrontend.loadingConfirmationStatus()
 
@@ -78,8 +78,6 @@ class LoadingSpinnerControllerISpec extends ComponentSpecBase with SessionCookie
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmationController.show.url)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(JourneyStep.Confirmation.key)
       }
     }
     "return SEE_OTHER to the contact hmrc page" when {

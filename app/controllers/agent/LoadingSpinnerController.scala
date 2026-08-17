@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import common.Constants.ITSASessionKeys.JourneyStateKey
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
@@ -48,7 +47,9 @@ class LoadingSpinnerController @Inject()(view: LoadingSpinner,
           case InProgress =>
             Future.successful(Ok(view(routes.LoadingSpinnerController.query)))
           case Success =>
-            Future.successful(Redirect(routes.ConfirmationController.show).addingToSession(JourneyStateKey -> Confirmation.key))
+            sessionDataService.saveJourneyStep(Confirmation).map { _ =>
+              Redirect(routes.ConfirmationController.show)
+            }
           case HandledError =>
             Future.successful(Redirect(controllers.errors.routes.ContactHMRCController.show))
           case OtherError =>

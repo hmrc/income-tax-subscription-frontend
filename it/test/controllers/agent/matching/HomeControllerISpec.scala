@@ -16,16 +16,13 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
-import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants.{testNino, testUtr}
+import connectors.stubs.SessionDataConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
-import models.EligibilityStatus
-import play.api.http.Status._
-import play.api.libs.json.{JsBoolean, JsString, Json}
-import utilities.SubscriptionDataKeys
+import play.api.http.Status.*
+import play.api.libs.json.JsString
 
 class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -45,8 +42,12 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "the agent is in a user matching state" should {
         "redirect to the enter client details page" in {
           AuthStub.stubAuthSuccess()
+          
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+          ))
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching))
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           res must have(
             httpStatus(SEE_OTHER),
@@ -58,7 +59,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         "redirect to the add another client route" in {
           AuthStub.stubAuthSuccess()
 
-          val res = IncomeTaxSubscriptionFrontend.indexPage(None)
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
           res must have(
             httpStatus(SEE_OTHER),

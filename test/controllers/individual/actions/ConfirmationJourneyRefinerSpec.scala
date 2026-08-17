@@ -18,7 +18,7 @@ package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
 import models.No.NO
-import models.SessionData
+import models.{JourneyStep, SessionData}
 import models.Yes.YES
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
@@ -172,21 +172,21 @@ class ConfirmationJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieva
   lazy val utr: String = "1234567890"
   lazy val mandationStatus: MandationStatusModel = MandationStatusModel(Voluntary, Voluntary)
 
-  def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
-    maybeJourneyStep match {
-      case Some(journeyStep) => FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> journeyStep.key)
-      case None => FakeRequest()
-    }
-  }
-
   def identifierRequest(journeyStep: Option[JourneyStep] = None, maybeUtr: Option[String] = Some(utr), sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
     IdentifierRequest(
-      request = requestWithSession(journeyStep),
+      request = FakeRequest(),
       mtditid = None,
       nino = nino,
       utr = maybeUtr,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = sessionData
+      sessionData = journeyStep match {
+        case Some(step) =>
+          sessionData.copy(data = sessionData.data ++ Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(step.key)
+          ))
+        case None =>
+          sessionData
+      }
     )
   }
 }

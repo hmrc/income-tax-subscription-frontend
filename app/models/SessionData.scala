@@ -19,12 +19,17 @@ package models
 import _root_.common.Constants.ITSASessionKeys
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
+import play.api.Logging
 import play.api.libs.json.*
+import play.api.mvc.Request
 import services.Throttle
+import agent.{JourneyStep => AgentJourneyStep}
+import individual.{JourneyStep => IndividualJourneyStep}
 
 import java.time.LocalDate
+import uk.gov.hmrc.http.InternalServerException
 
-case class SessionData(data: Map[String, JsValue] = Map()) {
+case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
   implicit class JsObject(value: JsValue) {
     def toObject[T](implicit reads: Reads[T]): T = {
@@ -89,5 +94,25 @@ case class SessionData(data: Map[String, JsValue] = Map()) {
 
   def fetchSubmissionStatus: Option[SubmissionStatus] = {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
+  }
+
+  def fetchJourneyStep[A](request: Request[A]): Option[JourneyStep] = {
+    val session = request.session
+    data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String]).orElse {
+      logger.warn("Using cookie for JourneyStep")
+      session.get(ITSASessionKeys.JourneyStateKey)
+    }.map { key =>
+      if (key.startsWith(AgentJourneyStep.prefix)) {
+        AgentJourneyStep.fromString(
+          key = key,
+          clientDetailsConfirmed = session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
+          hasMtditid = session.get(ITSASessionKeys.MTDITID).isDefined
+        )
+      } else if (key.startsWith(IndividualJourneyStep.prefix)) {
+        IndividualJourneyStep.fromString(key)
+      } else {
+        throw new InternalServerException(s"Invalid JourneyStep: $key")
+      }
+    }
   }
 }

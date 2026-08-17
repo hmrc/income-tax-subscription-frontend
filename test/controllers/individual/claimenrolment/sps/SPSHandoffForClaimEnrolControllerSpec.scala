@@ -44,7 +44,7 @@ class SPSHandoffForClaimEnrolControllerSpec extends ControllerBaseSpec
   )
 
   "Calling the redirectToSPS action of the SPSController with an authorised user" when {
-    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = claimEnrolmentRequest
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
     def result: Future[Result] = TestSPSHandoffForClaimEnrolController.redirectToSPS(request)
 

@@ -21,13 +21,15 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.SignUp
 import models.common.PropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up/client/business/remove-uk-property-business" should {
     "redirect to the login page" when {
       "user is unauthenticated" in {
@@ -47,7 +49,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
         Json.toJson(PropertyModel()))
@@ -67,7 +70,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
         Json.toJson(PropertyModel()))
@@ -102,7 +106,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
@@ -125,7 +130,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST client/business/remove-uk-property-business is called")
@@ -147,7 +153,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST /business/remove-uk-property-business is called")
@@ -168,7 +175,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(Property)
 

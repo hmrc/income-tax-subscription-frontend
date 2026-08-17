@@ -16,36 +16,30 @@
 
 package models.individual
 
-import auth.individual.{ClaimEnrolment => OldClaimEnrolment, SignUp => OldSignUp}
+import models.JourneyStep
 import uk.gov.hmrc.http.InternalServerException
 
-sealed trait JourneyStep {
-  val key: String
-}
-
 object JourneyStep {
+  val prefix = "I-"
 
   case object ClaimEnrolment extends JourneyStep {
-    val key: String = "ClaimEnrolment"
+    val key = s"${prefix}ClaimEnrolment"
   }
 
   case object PreSignUp extends JourneyStep {
-    val key: String = "PreSignUp"
+    val key = s"${prefix}PreSignUp"
   }
 
   case object SignUp extends JourneyStep {
-    val key: String = "SignUp"
+    val key = s"${prefix}SignUp"
   }
 
   case object Confirmation extends JourneyStep {
-    val key: String = "Confirmation"
+    val key = s"${prefix}Confirmation"
   }
 
   def fromString(key: String): JourneyStep = {
     key match {
-      // if the user is in the old state, pretend it's the new sign up state
-      case OldSignUp.name => SignUp
-      case OldClaimEnrolment.name => ClaimEnrolment
       case PreSignUp.key => PreSignUp
       case SignUp.key => SignUp
       case ClaimEnrolment.key => ClaimEnrolment

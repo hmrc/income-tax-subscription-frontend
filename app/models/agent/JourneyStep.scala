@@ -16,29 +16,34 @@
 
 package models.agent
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
+import models.JourneyStep
 import uk.gov.hmrc.http.InternalServerException
 
-sealed trait JourneyStep {
-  val key: String
-}
-
 object JourneyStep {
+  val prefix = "A-"
 
   case object ClientDetails extends JourneyStep {
-    val key = "ClientDetails"
+    val key = s"${prefix}ClientDetails"
   }
 
   case object SignPosted extends JourneyStep {
-    val key = "SignPosted"
+    val key = s"${prefix}SignPosted"
   }
 
   case object ConfirmedClient extends JourneyStep {
-    val key = "ConfirmedClient"
+    val key = s"${prefix}ConfirmedClient"
   }
 
   case object Confirmation extends JourneyStep {
-    val key = "Confirmation"
+    val key = s"${prefix}Confirmation"
+  }
+
+  object UserMatching extends JourneyStep {
+    val key = s"${prefix}userMatching"
+  }
+
+  object SignUp extends JourneyStep {
+    val key = s"${prefix}signUp"
   }
 
   //scalastyle:off
@@ -50,15 +55,15 @@ object JourneyStep {
         Confirmation
 
       // if the user is in the old user matching state with client details confirmed, they are sign posted
-      case AgentUserMatching.name if clientDetailsConfirmed =>
+      case UserMatching.key if clientDetailsConfirmed =>
         SignPosted
 
       // if the user is in the old user matching state without client details confirmed, they are in the enter client details section
-      case AgentUserMatching.name =>
+      case UserMatching.key =>
         ClientDetails
 
       // if the user has the old sign up state, treat that as a confirmed client state
-      case AgentSignUp.name =>
+      case SignUp.key =>
         ConfirmedClient
 
       case ClientDetails.key => ClientDetails

@@ -21,11 +21,8 @@ import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.status.MandationStatus.{Mandated, Voluntary}
-import models.status.MandationStatusModel
-import models.{EligibilityStatus, No, Yes, YesNo}
-import play.api.http.Status._
-import play.api.libs.json.{JsString, Json}
+import play.api.http.Status.*
+import play.api.libs.json.JsString
 import play.api.libs.ws.WSResponse
 import utilities.agent.TestConstants.testUtr
 

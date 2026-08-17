@@ -16,10 +16,14 @@
 
 package controllers.agent.matching
 
+import models.agent.JourneyStep.UserMatching
+import common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 
 class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
 
@@ -27,6 +31,10 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
     "show the already subscribed page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+      ))
 
       When("GET /error/client-already-subscribed is called")
       val res = IncomeTaxSubscriptionFrontend.clientAlreadySubscribed()
@@ -56,6 +64,10 @@ class ClientAlreadySubscribedControllerISpec extends ComponentSpecBase {
     "show the already subscribed page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+      ))
 
       When("POST /error/client-already-subscribed is called")
       val res = IncomeTaxSubscriptionFrontend.submitClientAlreadySubscribed()

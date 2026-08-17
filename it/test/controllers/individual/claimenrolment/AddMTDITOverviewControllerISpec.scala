@@ -17,14 +17,17 @@
 package controllers.individual.claimenrolment
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.individual.ClaimEnrolment as ClaimEnrolmentJourney
+import models.individual.JourneyStep.ClaimEnrolment
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
+import connectors.stubs.SessionDataConnectorStub.stubSaveJourneyState
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.*
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.libs.json.JsString
 
 class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
@@ -34,6 +37,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
     "redirect the user to log in" when {
       "the user is unauthenticated" in {
         AuthStub.stubUnauthorised()
+        stubSaveJourneyState()(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview()
 
@@ -47,6 +51,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
       "a bta origin parameter is provided" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentBTA)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = Some(ClaimEnrolmentBTA.key))
 
@@ -54,12 +59,11 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
           httpStatus(OK),
           pageTitle(messages("mtdit-overview.heading", "business tax account") + serviceNameGovUk)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) must be(Some(ClaimEnrolmentJourney.name))
       }
       "a pta origin parameter is provided" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentPTA)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = Some(ClaimEnrolmentPTA.key))
 
@@ -67,12 +71,11 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
           httpStatus(OK),
           pageTitle(messages("mtdit-overview.heading", "personal tax account") + serviceNameGovUk)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) must be(Some(ClaimEnrolmentJourney.name))
       }
       "no origin parameter is provided and the claim enrolment origins feature switch is enabled" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentSignUp)(OK)
+        stubSaveJourneyState(ClaimEnrolment.key)(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = None)
 
@@ -80,8 +83,6 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
           httpStatus(OK),
           pageTitle(messages("mtdit-overview.heading", "online services account") + serviceNameGovUk)
         )
-
-        getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) must be(Some(ClaimEnrolmentJourney.name))
       }
     }
 
@@ -89,6 +90,7 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
       "there was a failure saving the origin to session" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubSaveSessionData[ClaimEnrolmentOrigin](ITSASessionKeys.CLAIM_ENROLMENT_ORIGIN, ClaimEnrolmentBTA)(INTERNAL_SERVER_ERROR)
+        stubSaveJourneyState()(OK)
 
         val res = IncomeTaxSubscriptionFrontend.addMTDITOverview(maybeOrigin = None)
 
@@ -99,12 +101,15 @@ class AddMTDITOverviewControllerISpec extends ComponentSpecBase with SessionCook
     }
   }
 
-
   "POST /claim-enrolment/overview" should {
     "redirect the user to the claim enrolment resolver" when {
       "all calls are successful" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(ClaimEnrolment.key)
+        ))
 
         When("POST /claim-enrolment/overview is called")
         val res = IncomeTaxSubscriptionFrontend.submitAddMTDITOverview()

@@ -16,7 +16,7 @@
 
 package services
 
-import auth.agent.AgentUserMatching
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccess
@@ -39,9 +39,9 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
       emailConsentCaptured <- fetchEmailConsentCaptured(sessionData)
       _ <- deleteSessionData
       _ <- saveEmailConsentCaptured(emailConsentCaptured)
+      _ <- sessionDataService.saveJourneyStep(UserMatching)
     } yield {
       Redirect(nextPage)
-        .addingToSession(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
         .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
         .clearAllUserDetails(request)
     }

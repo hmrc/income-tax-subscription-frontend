@@ -20,6 +20,7 @@ import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockClaimEnrolmentJourneyRefiner, MockIdentifierAction}
 import models.audits.ClaimEnrolAddToIndivCredAuditing.ClaimEnrolAddToIndivCredAuditingModel
 import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.individual.claimenrolment.ClaimEnrolmentService.{AlreadySignedUp, ClaimEnrolmentError, ClaimEnrolmentSuccess}
 import services.mocks.{MockAuditingService, MockClaimEnrolmentService}
@@ -50,7 +51,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
     "redirect the user to the SPS preference capture journey" in {
       mockClaimEnrolment(response = Right(ClaimEnrolmentSuccess(TestConstants.testNino, "mtditid")))
 
-      val result = await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest))
+      val result = await(TestClaimEnrolmentResolverController.resolve()(FakeRequest()))
 
       verifyAudit(ClaimEnrolAddToIndivCredAuditingModel(TestConstants.testNino, "mtditid"))
       status(result) mustBe SEE_OTHER
@@ -63,7 +64,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
 
       mockClaimEnrolment(response = Left(ClaimEnrolmentError(msg = "User was not subscribed")))
 
-      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
+      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(FakeRequest())))
         .message mustBe "User was not subscribed"
     }
   }
@@ -71,7 +72,7 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
     "redirect the user to the already signed up page" in {
       mockClaimEnrolment(response = Left(AlreadySignedUp))
 
-      val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)
+      val result: Future[Result] = TestClaimEnrolmentResolverController.resolve()(FakeRequest())
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.ClaimEnrolmentAlreadySignedUpController.show.url)
@@ -83,9 +84,8 @@ class ClaimEnrolmentResolverControllerSpec extends ControllerBaseSpec
 
       mockClaimEnrolment(response = Left(ClaimEnrolmentError(msg = "claim enrolment service error")))
 
-      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(claimEnrolmentRequest)))
+      intercept[InternalServerException](await(TestClaimEnrolmentResolverController.resolve()(FakeRequest())))
         .message mustBe "claim enrolment service error"
     }
   }
-
 }

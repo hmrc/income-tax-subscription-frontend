@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
+import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import config.MockConfig.appConfig.ggLoginUrl
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
+import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.PrePopStub
 import models.EligibilityStatus
 import models.common.business.*
@@ -34,15 +34,15 @@ import services.AgentStartOfJourneyThrottle
 import utilities.SubscriptionDataKeys
 import utilities.agent.TestConstants.{testNino, testUtr}
 
-class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
-
-  val session: Map[String, String] = Map(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
-  )
+class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(ThrottlingFeature)
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+    ))
+    SessionDataConnectorStub.stubSaveJourneyState()(OK)
   }
 
   s"GET ${routes.ConfirmedClientResolver.resolve.url}" when {
@@ -50,7 +50,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
       "redirect to login" in {
         AuthStub.stubUnauthorised()
 
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -59,14 +59,14 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
       }
     }
 
-    "the agent has no nino in session" should {
+    "the agent has no nino in " should {
       "return an internal server error" in {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.throttlePassed(AgentStartOfJourneyThrottle) -> JsBoolean(true)
         ))
 
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)
@@ -81,7 +81,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
         AuthStub.stubAuthSuccess()
         stubFullSession(eligibleCurrent = false, eligibleNext = false)
 
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -98,14 +98,12 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           stubFullPrePop()
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
           )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
       }
       "CY is eligible and voluntary, CY+1 is eligible and mandated" should {
@@ -116,14 +114,12 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           stubFullPrePop()
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show().url)
           )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
       }
 
@@ -135,14 +131,12 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           stubFullPrePop()
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show.url)
           )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
       }
 
@@ -154,18 +148,16 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           stubFullPrePop()
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show.url)
           )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
       }
 
-      "CY is ineligible, CY+1 is eligible and mandted" should {
+      "CY is ineligible, CY+1 is eligible and mandated" should {
         "redirect to the NonEligibleMandatedController page" in {
 
           AuthStub.stubAuthSuccess()
@@ -173,14 +165,12 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
           stubFullPrePop()
 
-          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
           res must have(
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show.url)
           )
-
-          getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }
       }
     }
@@ -196,7 +186,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase with Sess
           body = Json.obj()
         )
 
-        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver(session)
+        val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
 
         res must have(
           httpStatus(INTERNAL_SERVER_ERROR)

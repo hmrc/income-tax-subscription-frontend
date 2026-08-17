@@ -17,12 +17,13 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
-import models.SessionData
+import models.{JourneyStep, SessionData}
 import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ClaimEnrolmentRequest, IdentifierRequest}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.libs.json.JsString
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -104,23 +105,23 @@ class ClaimEnrolmentJourneyRefinerSpec extends PlaySpec with MockSessionDataServ
 
   lazy val claimEnrolmentJourneyRefiner: ClaimEnrolmentJourneyRefiner = new ClaimEnrolmentJourneyRefiner
 
-  def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
-    maybeJourneyStep match {
-      case Some(journeyStep) => FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> journeyStep.key)
-      case None => FakeRequest()
-    }
-  }
-
   lazy val nino: String = "AA000000A"
 
   def identifierRequest(journeyStep: Option[JourneyStep] = None): IdentifierRequest[_] = {
     IdentifierRequest(
-      request = requestWithSession(journeyStep),
+      request = FakeRequest(),
       mtditid = None,
       utr = None,
       nino = nino,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = SessionData()
+      sessionData = journeyStep match {
+        case Some(step) =>
+          SessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(step.key)
+          ))
+        case None =>
+          SessionData()
+      }
     )
   }
 }

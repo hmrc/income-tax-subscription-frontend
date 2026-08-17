@@ -21,6 +21,7 @@ import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.SignUp
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 import utilities.agent.TestConstants.testUtr
@@ -60,7 +61,8 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         val result = IncomeTaxSubscriptionFrontend.showIncomeSourcesIncomplete()
@@ -103,7 +105,8 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         val result = IncomeTaxSubscriptionFrontend.submitIncomeSourcesIncomplete()
@@ -115,5 +118,4 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 }

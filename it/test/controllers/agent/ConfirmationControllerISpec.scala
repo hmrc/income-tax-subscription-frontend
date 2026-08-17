@@ -22,11 +22,13 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.ComponentSpecBase.reference
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.{Confirmation, ConfirmedClient}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
+import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.*
 import utilities.agent.TestConstants.testUtr
 
@@ -60,7 +62,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now)
+          ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now),
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
         ))
 
         When("I call GET /confirmation")
@@ -77,6 +80,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(ConfirmedClient.key)
+        ))
 
         When("I call GET /confirmation")
         val res = IncomeTaxSubscriptionFrontend.showConfirmation(hasSubmitted = false, "Test", "User", "A111111AA")
@@ -107,7 +114,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(OK)
 
@@ -124,7 +132,8 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(INTERNAL_SERVER_ERROR)
 
@@ -136,5 +145,4 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       }
     }
   }
-
 }

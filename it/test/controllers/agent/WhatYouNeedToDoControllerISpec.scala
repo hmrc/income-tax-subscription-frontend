@@ -22,9 +22,10 @@ import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.EligibilityStatus
+import models.agent.JourneyStep.SignUp
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
-import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
@@ -54,7 +55,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
         ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
         ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
@@ -88,7 +90,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")

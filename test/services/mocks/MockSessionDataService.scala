@@ -20,7 +20,7 @@ import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataRespon
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
-import models.status.{MandationStatusModel, GetITSAStatusModel}
+import models.status.{GetITSAStatusModel, MandationStatusModel}
 import models.{EligibilityStatus, SessionData, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +29,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
@@ -44,6 +44,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
+  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   override def beforeEach(): Unit = {
     reset(mockSessionDataService)
@@ -122,5 +123,10 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
     when(mockSessionDataService.getAllSessionData()(any(), any())).thenReturn(
       Future.successful(sessionData)
     )
+  }
+
+  def mockSaveJourneyState(): Unit = {
+    when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(()))
   }
 }

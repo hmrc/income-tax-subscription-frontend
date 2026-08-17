@@ -67,11 +67,13 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
     "the user is in confirmation journey state" should {
       "redirect to the confirmation page" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
+        ))
 
         val result = IncomeTaxSubscriptionFrontend.get(
           uri = "/using-software",
-          includeState = false,
-          additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> Confirmation.key)
+          includeState = false
         )
 
         result must have(

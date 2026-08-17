@@ -19,6 +19,7 @@ package controllers.individual.claimenrolment
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.{MockClaimEnrolmentJourneyRefiner, MockIdentifierAction}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.mocks.MockAuditingService
 import views.individual.mocks.MockAlreadySignedUp
@@ -45,7 +46,7 @@ class AlreadySignedUpControllerSpec extends ControllerBaseSpec
   "show" should {
     "return an OK status with the already signed up page" in {
         mockAlreadySignedUp()
-        val result: Future[Result] = TestAlreadySignedUpController.show()(claimEnrolmentRequest)
+        val result: Future[Result] = TestAlreadySignedUpController.show()(FakeRequest())
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)

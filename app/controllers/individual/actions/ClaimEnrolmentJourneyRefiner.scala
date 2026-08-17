@@ -31,12 +31,7 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
   extends ActionRefiner[IdentifierRequest, ClaimEnrolmentRequest] {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, ClaimEnrolmentRequest[A]]] = {
-    request.session.get(ITSASessionKeys.JourneyStateKey)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep
-        )
-      } match {
+    request.sessionData.fetchJourneyStep(request) match {
       case Some(ClaimEnrolment) =>
         Future.successful(Right(ClaimEnrolmentRequest(
           request = request,
@@ -50,5 +45,4 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }
-
 }

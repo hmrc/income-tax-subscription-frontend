@@ -17,7 +17,6 @@
 package helpers.agent
 
 import _root_.common.Constants.ITSASessionKeys
-import auth.agent.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
@@ -43,23 +42,22 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.*
 import play.api.data.Form
 import play.api.http.HeaderNames
-import play.api.http.Status.OK
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.json.{Format, JsArray, Writes}
+import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.{Headers, Session}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utilities.UserMatchingSessionUtil.{firstName, lastName}
 import utilities.{UUIDProvider, UserMatchingSessionUtil}
-import play.api.libs.ws.WSBodyWritables.writeableOf_urlEncodedForm
-import uk.gov.hmrc.crypto.Sensitive.SensitiveString
-import uk.gov.hmrc.crypto.json.JsonEncryption
 
 import java.time.LocalDate
 import java.util.UUID
@@ -83,7 +81,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val detailedClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
     )
 
@@ -94,7 +91,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
 
     val completeClientData: Map[String, String] = Map(
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
       ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
       firstName -> "FirstName",
       lastName -> "LastName"
@@ -120,11 +116,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     WireMock.configureFor(wiremockHost, wiremockPort)
   }
 
-  def stopWiremock(): Unit = wireMockServer.stop()
+  def stopWiremock(): Unit =
+    wireMockServer.stop()
 
-  def resetWiremock(): Unit = WireMock.reset()
+  def resetWiremock(): Unit =
+    WireMock.reset()
 
-  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port${AgentURI.baseURI}$path").withFollowRedirects(false)
+  def buildClient(path: String): WSRequest =
+    ws.url(s"http://localhost:$port${AgentURI.baseURI}$path").withFollowRedirects(false)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
@@ -211,18 +210,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
       else
         Map()
-      val stateKvp = if (withJourneyStateSignUp)
-        Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name)
-      else
-        Map()
-      Map[String, String]() ++ utrKvp ++ stateKvp
+      Map[String, String]() ++ utrKvp
     }
 
     val headers: Seq[(String, String)] = Seq(
       HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies()),
       "Csrf-Token" -> "nocheck"
     )
-
 
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(
       FakeRequest().withHeaders(Headers(headers: _*)),
@@ -242,25 +236,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         .post(body)
         .futureValue
 
-    def startPage(): WSResponse = get("/")
+    def startPage(): WSResponse =
+      get("/")
 
-    def indexPage(maybeJourneyState: Option[AgentJourneyState] = Some(AgentSignUp), sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
+    def indexPage(): WSResponse = {
       get("/index",
-        sessionMap ++ maybeJourneyState.map(state => ITSASessionKeys.JourneyStateKey -> state.name),
         withClientDetailsConfirmed = false,
         withJourneyStateSignUp = false
       )
     }
 
-
-    def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def getAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/final-check-your-answers", sessionData)
-    }
 
-    def submitAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
-      post("/final-check-your-answers", sessionData)(Map.empty
-      )
-    }
+    def submitAgentGlobalCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      post("/final-check-your-answers", sessionData)(Map.empty)
 
     def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/error/cannot-sign-up", sessionData, withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
@@ -268,52 +258,63 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse =
       get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
 
-    def submitCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty)
+    def showBusinessAlreadyRemoved(): WSResponse =
+      get("/error/business-already-removed")
 
-    def showBusinessAlreadyRemoved(): WSResponse = get("/error/business-already-removed")
+    def handOffVAndC(): WSResponse =
+      get("/hand-offs/view-and-change", ClientData.basicClientData)
 
-    def handOffVAndC(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/hand-offs/view-and-change", sessionData)
+    def showUsingSoftware(): WSResponse =
+      get("/using-software", ClientData.basicClientData)
 
-    def showUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/using-software", sessionData)
+    def submitUsingSoftware(): WSResponse =
+      post("/using-software", ClientData.basicClientData)(Map.empty)
 
-    def submitUsingSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/using-software", sessionData)(Map.empty)
+    def showIncomeSourcesIncomplete(hasJourneyState: Boolean = true): WSResponse =
+      get("/income-sources-incomplete", ClientData.basicClientData, withJourneyStateSignUp = hasJourneyState)
 
-    def showNoSoftware(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/no-compatible-software", sessionData)
+    def submitIncomeSourcesIncomplete(hasJourneyState: Boolean = true): WSResponse =
+      post("/income-sources-incomplete", ClientData.basicClientData, withJourneyStateSignUp = hasJourneyState)(Map.empty[String, Seq[String]])
 
-    def showIncomeSourcesIncomplete(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = get("/income-sources-incomplete", sessionData, withJourneyStateSignUp = hasJourneyState)
+    def whatYouNeedToDo(): WSResponse =
+      get("/what-you-need-to-do", ClientData.basicClientData)
 
-    def submitIncomeSourcesIncomplete(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse = post("/income-sources-incomplete", sessionData, withJourneyStateSignUp = hasJourneyState)(Map.empty[String, Seq[String]])
+    def submitWhatYouNeedToDo(): WSResponse =
+      post("/what-you-need-to-do", ClientData.basicClientData)(Map.empty)
 
-    def whatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/what-you-need-to-do", sessionData)
+    def income(): WSResponse =
+      get("/income")
 
-    def submitWhatYouNeedToDo(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = post("/what-you-need-to-do", sessionData)(Map.empty)
+    def mainIncomeError(): WSResponse =
+      get("/error/main-income")
 
-    def income(): WSResponse = get("/income")
+    def sessionTimeout(): WSResponse =
+      get("/session-timeout")
 
-    def mainIncomeError(): WSResponse = get("/error/main-income")
+    def keepAlive(): WSResponse =
+      get("/keep-alive")
 
-    def sessionTimeout(): WSResponse = get("/session-timeout")
+    def timeout(): WSResponse =
+      get("/timeout")
 
-    def keepAlive(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/keep-alive", sessionKeys)
+    def showClientDetails(): WSResponse =
+      get("/client-details", withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
 
-    def timeout(sessionKeys: Map[String, String] = Map.empty): WSResponse = get("/timeout", sessionKeys)
-
-    def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
-
-    def getConfirmedClientResolver(sessionData: Map[String, String] = Map.empty): WSResponse = {
-      get("/resolve-confirmed-client", sessionData)
-    }
+    def getConfirmedClientResolver(): WSResponse =
+      get("/resolve-confirmed-client")
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
+      post("/client-details", Map().addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
       )
 
-    def showClientDetailsError(): WSResponse = get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def showClientDetailsError(): WSResponse =
+      get("/error/client-details")
 
-    def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def showClientDetailsLockout(): WSResponse =
+      get("/error/lockout")
 
     def showConfirmation(hasSubmitted: Boolean, firstName: String, lastName: String, nino: String): WSResponse =
       if (hasSubmitted)
@@ -323,10 +324,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         get("/confirmation", Map[String, String](UserMatchingSessionUtil.firstName -> firstName,
           UserMatchingSessionUtil.lastName -> lastName))
 
-    def loadingConfirmationStatus(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/confirming-please-wait", sessionData)
-    def loadingConfirmationStatusQuery(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/confirming-please-wait/query", sessionData)
+    def loadingConfirmationStatus(): WSResponse =
+      get("/confirming-please-wait", ClientData.basicClientData)
 
-    def submitConfirmation(): WSResponse = {
+    def loadingConfirmationStatusQuery(): WSResponse =
+      get("/confirming-please-wait/query", ClientData.basicClientData)
+
+    def submitConfirmation(): WSResponse =
       post(
         "/confirmation",
         Map(
@@ -335,74 +339,76 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
           UserMatchingSessionUtil.lastName -> lastName
         )
       )(Map.empty)
-    }
 
-    def feedback(): WSResponse = get("/feedback-submitted")
+    def feedback(): WSResponse =
+      get("/feedback-submitted")
 
-    def signIn(): WSResponse = get("/sign-in")
+    def signIn(): WSResponse =
+      get("/sign-in")
 
-    def signOut(): WSResponse = get("/logout")
+    def signOut(): WSResponse =
+      get("/logout")
 
-    def notEnrolledAgentServices(): WSResponse = get("/not-enrolled-agent-services")
+    def notEnrolledAgentServices(): WSResponse =
+      get("/not-enrolled-agent-services")
 
-    def getNoClientRelationship(clientDetailsConfirmed: Boolean): WSResponse = {
+    def getNoClientRelationship(clientDetailsConfirmed: Boolean): WSResponse =
       get(
         uri = "/error/no-client-relationship",
-        additionalCookies = ClientData.clientName ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name),
+        additionalCookies = ClientData.clientName,
         withClientDetailsConfirmed = clientDetailsConfirmed
       )
-    }
 
-    def postNoClientRelationship(): WSResponse = post("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
+    def postNoClientRelationship(): WSResponse =
+      post("/error/no-client-relationship")(Map.empty)
 
-    def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+    def clientAlreadySubscribed(): WSResponse =
+      get("/error/client-already-subscribed")
 
-    def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
+    def submitClientAlreadySubscribed(): WSResponse =
+      post("/error/client-already-subscribed")(Map.empty)
 
-    def checkYourAnswers(): WSResponse = get("/check-your-answers", ClientData.detailedClientData)
+    def checkYourAnswers(): WSResponse =
+      get("/check-your-answers", ClientData.detailedClientData)
 
-    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers",
-      ClientData.detailedClientData
-    )(Map.empty)
+    def submitCheckYourAnswers(): WSResponse =
+      post("/check-your-answers",
+        ClientData.detailedClientData
+      )(Map.empty)
 
-    def confirmClient(withJourneyState: Boolean = true): WSResponse = get(
-      uri = "/confirm-client",
-      additionalCookies = if (withJourneyState) {
-        Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(Some(IntegrationTestModels.testClientDetails))
-      } else {
-        Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails))
-      },
-      withClientDetailsConfirmed = false,
-      withJourneyStateSignUp = false
-    )
+    def confirmClient(): WSResponse =
+      get(
+        uri = "/confirm-client",
+        additionalCookies = Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails)),
+        withClientDetailsConfirmed = false,
+        withJourneyStateSignUp = false
+      )
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
-                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails),
-                            withJourneyState: Boolean = true): WSResponse = {
+                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case _ => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
-      val journeyStateMap: Map[String, String] = if (withJourneyState) Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name) else Map.empty[String, String]
       post("/confirm-client",
-        additionalCookies = failedAttemptCounter ++ journeyStateMap
+        additionalCookies = failedAttemptCounter
           .addUserDetails(storedUserDetails), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)(Map.empty)
     }
 
-    def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse =
       get("/income-source", sessionData)
-    }
 
-    def yourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/your-income-source", sessionData)
+    def yourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/your-income-source", sessionData)
 
-
-    def submitYourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitYourIncomeSourcesAgent(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       post("/your-income-source", sessionData)(Map.empty)
-    }
 
-    def whenDoYouWantToStart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/tax-year/select-tax-year", sessionData)
+    def whenDoYouWantToStart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/tax-year/select-tax-year", sessionData)
 
-    def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/property-commencement-date", sessionData)
+    def ukPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/business/property-commencement-date", sessionData)
 
     def submitUkPropertyStartDate(isEditMode: Boolean = false, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
@@ -418,15 +424,14 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def getPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/business/uk-property-check-your-answers", sessionData)
-    }
 
-    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitPropertyCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       post("/business/uk-property-check-your-answers", sessionData)(Map.empty)
-    }
 
-    def overseasPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/overseas-commencement-date", sessionData)
+    def overseasPropertyStartDate(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/business/overseas-commencement-date", sessionData)
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
       val testValidMaxStartDate = LocalDate.now.minusYears(1)
@@ -441,9 +446,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def overseasPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def overseasPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/business/overseas-property-start-date-before-limit", sessionData)
-    }
 
     def submitOverseasPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse = {
       post(s"/business/overseas-property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", sessionData)(
@@ -453,30 +457,26 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def getClientRemoveUkProperty: WSResponse = get("/business/remove-uk-property-business", ClientData.basicClientData)
+    def getClientRemoveUkProperty: WSResponse =
+      get("/business/remove-uk-property-business", ClientData.basicClientData)
 
+    def submitClientRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse =
+      post("/business/remove-uk-property-business", ClientData.basicClientData)(body)
 
-    def submitClientRemoveUkProperty(body: Map[String, Seq[String]]): WSResponse = post("/business/remove-uk-property-business", ClientData.basicClientData)(body)
+    def getRemoveClientOverseasProperty(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+      get("/business/remove-overseas-property-business", sessionData)
 
-
-    def getRemoveClientOverseasProperty(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = get("/business/remove-overseas-property-business", sessionData)
-
-
-    def submitRemoveClientOverseasProperty(body: Map[String, Seq[String]],
-                                           sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
+    def submitRemoveClientOverseasProperty(body: Map[String, Seq[String]], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       post("/business/remove-overseas-property-business", sessionData)(body)
 
-    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map()): WSResponse = {
+    def getOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map()): WSResponse =
       get("/business/overseas-property-check-your-answers", sessionData)
-    }
 
-    def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse = {
+    def submitOverseasPropertyCheckYourAnswers(sessionData: Map[String, String] = Map.empty): WSResponse =
       post("/business/overseas-property-check-your-answers", sessionData)(Map.empty)
-    }
 
-    def getRemoveBusiness(sessionData: Map[String, String] = ClientData.basicClientData, id: String = testId): WSResponse = {
+    def getRemoveBusiness(sessionData: Map[String, String] = ClientData.basicClientData, id: String = testId): WSResponse =
       get(s"/business/remove-sole-trader-business?id=$id", sessionData)
-    }
 
     def submitRemoveBusiness(request: Option[YesNo], sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       post(s"/business/remove-sole-trader-business?id=$testId", sessionData)(
@@ -485,17 +485,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         )
       )
 
-    def getTaskList(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def getTaskList(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/business/task-list", sessionData)
-    }
 
-    def submitTaskList(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR): WSResponse = {
+    def submitTaskList(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR): WSResponse =
       post("/business/task-list", sessionData)(Map.empty)
-    }
 
-    def getAddAnotherClient: WSResponse = get("/add-another")
+    def getAddAnotherClient: WSResponse =
+      get("/add-another")
 
-    def confirmation(): WSResponse = get("/confirmation")
+    def confirmation(): WSResponse =
+      get("/confirmation")
 
     def submitWhenDoYouWantToStart(inEditMode: Boolean, sessionData: Map[String, String] = ClientData.basicClientData, request: Option[AccountingYear], withJourneyState: Boolean = true): WSResponse = {
       val uri = s"/tax-year/select-tax-year?editMode=$inEditMode"
@@ -506,25 +506,21 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def ukPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def ukPropertyStartDateBeforeLimit(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/business/property-start-date-before-limit", sessionData)
-    }
 
-    def submitUkPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse = {
+    def submitUkPropertyStartDateBeforeLimit(isEditMode: Boolean = false, isGlobalEdit: Boolean = false, sessionData: Map[String, String] = ClientData.basicClientData)(request: Option[YesNo]): WSResponse =
       post(s"/business/property-start-date-before-limit?editMode=$isEditMode&isGlobalEdit=$isGlobalEdit", sessionData)(
         request.fold(Map.empty[String, Seq[String]])(yesNo =>
           UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm.fill(yesNo).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
-    }
 
-    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def getTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       get("/business/tax-year-check-your-answers", sessionData)
-    }
 
-    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse = {
+    def submitTaxYearCheckYourAnswers(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
       post("/business/tax-year-check-your-answers", sessionData)(Map.empty)
-    }
 
     def getProgressSaved(saveAndRetrieveLocation: Option[String] = None, sessionData: Map[String, String] = ClientData.completeClientData): WSResponse = {
       get(
@@ -536,13 +532,17 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       )
     }
 
-    def showCannotGoBackToPreviousClient(): WSResponse = get("/cannot-go-back-to-previous-client")
+    def showCannotGoBackToPreviousClient(): WSResponse =
+      get("/cannot-go-back-to-previous-client")
 
-    def noSA(): WSResponse = get("/register-for-SA")
+    def noSA(): WSResponse =
+      get("/register-for-SA")
 
-    def getRouting(editMode: Boolean = false): WSResponse = get(s"/business/routing?editMode=$editMode")
+    def getRouting(editMode: Boolean = false): WSResponse =
+      get(s"/business/routing?editMode=$editMode")
 
-    def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
+    def cannotReportYet(): WSResponse =
+      get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =
       post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)

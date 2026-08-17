@@ -38,26 +38,18 @@ class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRe
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val sessionData = request.sessionData
-    request.session.get(ITSASessionKeys.JourneyStateKey)
-      .map { journeyStep =>
-        JourneyStep.fromString(
-          key = journeyStep,
-          clientDetailsConfirmed = request.session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
-          hasMtditid = request.session.get(ITSASessionKeys.MTDITID).isDefined
-        )
-      } match {
-        case Some(SignPosted) =>
-          clientDetailsRetrieval.getClientDetails(sessionData)(request, hc) map { clientDetails =>
-            Right(SignPostedRequest(
-              request = request,
-              clientDetails = clientDetails
-            ))
-          }
-        case state@(None | Some(ConfirmedClient | ClientDetails)) =>
-          Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
-        case Some(Confirmation) =>
-          Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+    sessionData.fetchJourneyStep(request) match {
+      case Some(SignPosted) =>
+        clientDetailsRetrieval.getClientDetails(sessionData)(request, hc) map { clientDetails =>
+          Right(SignPostedRequest(
+            request = request,
+            clientDetails = clientDetails
+          ))
+        }
+      case state@(None | Some(ConfirmedClient | ClientDetails)) =>
+        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
+      case Some(Confirmation) =>
+        Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
     }
   }
-
 }

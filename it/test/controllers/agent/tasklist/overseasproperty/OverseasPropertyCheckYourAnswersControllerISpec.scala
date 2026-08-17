@@ -19,13 +19,14 @@ package controllers.agent.tasklist.overseasproperty
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
+import models.agent.JourneyStep.SignUp
 import models.common.OverseasPropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.OverseasProperty
 import utilities.UserMatchingSessionUtil
@@ -39,7 +40,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
 
       When("GET business/overseas-property-check-your-answers is called")
@@ -74,7 +76,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST business/overseas-property-check-your-answers is called")
@@ -99,7 +102,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(OverseasPropertyModel()))
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST business/overseas-property-check-your-answers is called")
@@ -127,7 +131,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST business/overseas-property-check-your-answers is called")
@@ -152,7 +157,8 @@ class OverseasPropertyCheckYourAnswersControllerISpec extends ComponentSpecBase 
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
 
         When("POST business/overseas-property-check-your-answers is called")

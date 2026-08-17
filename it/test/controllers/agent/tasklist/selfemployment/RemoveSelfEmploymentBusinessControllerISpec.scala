@@ -22,8 +22,9 @@ import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, t
 import helpers.IntegrationTestModels.testBusinesses
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.SignUp
 import models.{No, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.JsString
 import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
@@ -47,7 +48,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
-        ITSASessionKeys.UTR -> JsString(testUtr)
+        ITSASessionKeys.UTR -> JsString(testUtr),
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
       ))
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
@@ -68,7 +70,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
@@ -91,7 +94,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)
@@ -113,7 +117,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -135,7 +140,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
 
@@ -155,7 +161,8 @@ class RemoveSelfEmploymentBusinessControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
         ))
         IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
         IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(Seq.empty)

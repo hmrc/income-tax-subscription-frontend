@@ -16,7 +16,7 @@
 
 package controllers.agent
 
-import auth.agent.{AgentSignUp, AgentUserMatching}
+import models.agent.JourneyStep.{SignUp, UserMatching}
 import common.Constants.ITSASessionKeys
 import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito
@@ -80,37 +80,13 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
-  )
-
-  lazy val agentSignUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-  )
-
-  lazy val unauthorisedUserMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-  )
-
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   ).withMethod("POST")
 
   lazy val subscriptionRequestWithName: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
     UserMatchingSessionUtil.firstName -> "FirstName",
     UserMatchingSessionUtil.lastName -> "LastName",
     ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
   )
-
-  lazy val subscriptionRequestWithNameNextYearOnly: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-    UserMatchingSessionUtil.firstName -> "FirstName",
-    UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-  )
-
 }
