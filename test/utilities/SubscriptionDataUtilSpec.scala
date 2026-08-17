@@ -18,8 +18,8 @@ package utilities
 
 import models.common.AccountingYearModel
 import models.common.business.*
-import models.common.subscription.CreateIncomeSourcesModel.createIncomeSources
-import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.common.subscription.IncomeSourcesModel.createIncomeSources
+import models.common.subscription.{IncomeSourcesModel, Property, SoleTraderBusinesses}
 import models.{Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import services.GetCompleteDetailsService
@@ -33,7 +33,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
   "createIncomeSources(nino, completeDetails)" must {
     "produce a create income sources model" which {
       "have a start date limit" in {
-        createIncomeSources(testNino, completeDetails(false)) mustBe CreateIncomeSourcesModel(
+        createIncomeSources(testNino, completeDetails(false)) mustBe IncomeSourcesModel(
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
@@ -49,12 +49,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
               )
             )
           )),
-          ukProperty = Some(UkProperty(
+          ukProperty = Some(Property(
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
           )),
-          overseasProperty = Some(OverseasProperty(
+          overseasProperty = Some(Property(
             startDateBeforeLimit = Some(true),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
@@ -62,7 +62,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
         )
       }
       "do not have a start date limit" in {
-        createIncomeSources(testNino, completeDetails(true)) mustBe CreateIncomeSourcesModel(
+        createIncomeSources(testNino, completeDetails(true)) mustBe IncomeSourcesModel(
           nino = testNino,
           soleTraderBusinesses = Some(SoleTraderBusinesses(
             accountingPeriod = getCurrentTaxYear,
@@ -78,12 +78,12 @@ class SubscriptionDataUtilSpec extends PlaySpec {
               )
             )
           )),
-          ukProperty = Some(UkProperty(
+          ukProperty = Some(Property(
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now)
           )),
-          overseasProperty = Some(OverseasProperty(
+          overseasProperty = Some(Property(
             startDateBeforeLimit = Some(false),
             accountingPeriod = getCurrentTaxYear,
             tradingStartDate = DateModel.dateConvert(LocalDate.now)

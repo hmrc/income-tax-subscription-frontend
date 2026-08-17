@@ -24,7 +24,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.SubmissionStatus.{handledError, inProgress, otherError, success}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.IncomeSourcesModel
 import models.requests.agent.ConfirmedClientRequest
 import play.api.mvc.*
 import services.*
@@ -106,7 +106,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
       nino = request.clientDetails.nino,
       utr = request.utr,
       taxYear = completeDetails.taxYear.accountingYear,
-      incomeSources = CreateIncomeSourcesModel.createIncomeSources(request.clientDetails.nino, completeDetails)
+      incomeSources = IncomeSourcesModel.createIncomeSources(request.clientDetails.nino, completeDetails)
     )(headerCarrier)
   }
 

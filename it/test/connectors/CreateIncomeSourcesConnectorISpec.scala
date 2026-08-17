@@ -24,7 +24,7 @@ import connectors.stubs.CreateIncomeSourcesAPIStub.{StubResponse, createIncomeSo
 import helpers.{ComponentSpecBase, WiremockHelper}
 import models.DateModel
 import models.common.business.*
-import models.common.subscription.{CreateIncomeSourcesModel, OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.common.subscription.{IncomeSourcesModel, SoleTraderBusinesses, Property}
 import play.api.http.Status.*
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -191,7 +191,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
   lazy val connector: CreateIncomeSourcesConnector = app.injector.instanceOf[CreateIncomeSourcesConnector]
   lazy val mtdbsa: String = "test-mtdbsa"
 
-  def createIncomeSourcesModel(withIdempotency: Boolean = false): CreateIncomeSourcesModel = CreateIncomeSourcesModel(
+  def createIncomeSourcesModel(withIdempotency: Boolean = false): IncomeSourcesModel = IncomeSourcesModel(
     nino = "test-nino",
     soleTraderBusinesses = Some(SoleTraderBusinesses(
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
@@ -210,12 +210,12 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
         )
       )
     )),
-    ukProperty = Some(UkProperty(
+    ukProperty = Some(Property(
       startDateBeforeLimit = Some(false),
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
       tradingStartDate = DateModel("1", "1", "1980")
     )),
-    overseasProperty = Some(OverseasProperty(
+    overseasProperty = Some(Property(
       startDateBeforeLimit = Some(false),
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
       tradingStartDate = DateModel("1", "1", "1980")

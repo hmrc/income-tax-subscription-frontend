@@ -19,7 +19,7 @@ package helpers
 import models.*
 import models.common.AccountingPeriodModel
 import models.common.business.*
-import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.common.subscription.{SoleTraderBusinesses, Property}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.*
 import utilities.AccountingPeriodUtil
@@ -82,13 +82,13 @@ object IntegrationTestConstants {
     testSelfEmploymentData
   )
 
-  def testUkProperty(accountingYear: AccountingYear = Current): UkProperty = UkProperty(
+  def testUkProperty(accountingYear: AccountingYear = Current): Property = Property(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate
   )
 
-  def testOverseasProperty(accountingYear: AccountingYear = Current): OverseasProperty = OverseasProperty(
+  def testOverseasProperty(accountingYear: AccountingYear = Current): Property = Property(
     startDateBeforeLimit = None,
     if (accountingYear == Current) AccountingPeriodUtil.getCurrentTaxYear else AccountingPeriodUtil.getNextTaxYear,
     tradingStartDate

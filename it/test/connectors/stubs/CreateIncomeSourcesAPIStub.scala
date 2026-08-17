@@ -19,14 +19,14 @@ package connectors.stubs
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.{Scenario, StubMapping}
 import helpers.servicemocks.WireMockMethods
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.IncomeSourcesModel
 import play.api.libs.json.{JsValue, Json}
 
 object CreateIncomeSourcesAPIStub extends WireMockMethods {
 
   def createIncomeSourcesUri(mtdbsa: String): String = s"/income-tax-subscription/mis/create/$mtdbsa"
 
-  def stubCreateIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
+  def stubCreateIncomeSources(mtdbsa: String, request: IncomeSourcesModel)
                              (status: Int, json: JsValue = Json.obj()): StubMapping = {
     when(
       method = POST,
@@ -40,7 +40,7 @@ object CreateIncomeSourcesAPIStub extends WireMockMethods {
   
   case class StubResponse(status: Int, code: Option[String] = None)
 
-  def stubCreateIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
+  def stubCreateIncomeSources(mtdbsa: String, request: IncomeSourcesModel)
                              (responses: Seq[StubResponse]): Unit = {
     val url = createIncomeSourcesUri(mtdbsa)
     responses.zipWithIndex.foreach {

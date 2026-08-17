@@ -21,7 +21,7 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.UseIdempotency
 import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser.*
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.IncomeSourcesModel
 import org.apache.pekko.actor.ActorSystem
 import play.api.Logging
 import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
@@ -44,7 +44,7 @@ class CreateIncomeSourcesConnector @Inject()(
   http: HttpClientV2
 ) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching with Logging {
 
-  def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
+  def createIncomeSources(mtdbsa: String, request: IncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     if (isEnabled(UseIdempotency)) {
       retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey(), logError) {
@@ -69,7 +69,7 @@ class CreateIncomeSourcesConnector @Inject()(
       result
     }
 
-  private def updateBackend(mtdbsa: String, request: CreateIncomeSourcesModel)
+  private def updateBackend(mtdbsa: String, request: IncomeSourcesModel)
                            (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
     http
       .post(url"${s"${appConfig.createIncomeSourcesUrl}/$mtdbsa"}")

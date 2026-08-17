@@ -18,7 +18,7 @@ package connectors.mocks
 
 import connectors.CreateIncomeSourcesConnector
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesResponse
-import models.common.subscription.CreateIncomeSourcesModel
+import models.common.subscription.IncomeSourcesModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
@@ -36,7 +36,7 @@ trait MockCreateIncomeSourcesConnector extends MockitoSugar with BeforeAndAfterE
     reset(mockCreateIncomeSourcesConnector)
   }
 
-  def mockCreateIncomeSources(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel)(result: CreateIncomeSourcesResponse): Unit = {
+  def mockCreateIncomeSources(mtdbsa: String, createIncomeSourcesModel: IncomeSourcesModel)(result: CreateIncomeSourcesResponse): Unit = {
     when(mockCreateIncomeSourcesConnector.createIncomeSources(
       ArgumentMatchers.eq(mtdbsa),
       ArgumentMatchers.eq(createIncomeSourcesModel)
@@ -44,7 +44,7 @@ trait MockCreateIncomeSourcesConnector extends MockitoSugar with BeforeAndAfterE
       .thenReturn(Future.successful(result))
   }
 
-  def verifyCreateIncomeSources(mtdbsa: String, createIncomeSourcesModel: CreateIncomeSourcesModel, count: Int = 1): Unit = {
+  def verifyCreateIncomeSources(mtdbsa: String, createIncomeSourcesModel: IncomeSourcesModel, count: Int = 1): Unit = {
     verify(mockCreateIncomeSourcesConnector, times(count)).createIncomeSources(
       ArgumentMatchers.eq(mtdbsa),
       ArgumentMatchers.eq(createIncomeSourcesModel),

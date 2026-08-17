@@ -36,10 +36,10 @@ object TestConstants {
   lazy val testARN: String = new AtedUtrGenerator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
   val testSoleTraderBusinessesThisYear = SoleTraderBusinesses(testAccountingPeriodThisYear, testSelfEmploymentData)
-  val testUkPropertyThisYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
-  val testUkPropertyNextYear = UkProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate)
-  val testOverseasPropertyThisYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
-  val testOverseasPropertyNextYear = OverseasProperty(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate)
+  val testUkPropertyThisYear = Property(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
+  val testUkPropertyNextYear = Property(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate)
+  val testOverseasPropertyThisYear = Property(startDateBeforeLimit = None, testAccountingPeriodThisYear, testValidStartDate)
+  val testOverseasPropertyNextYear = Property(startDateBeforeLimit = None, testAccountingPeriodNextYear, testValidStartDate)
   lazy val businessStartDate = BusinessStartDate(DateModel("05", "04", "2017"))
 
   val testErrorMessage = "This is an error"
@@ -51,8 +51,8 @@ object TestConstants {
 
   val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
-  lazy val testCreateIncomeSourcesThisYear: CreateIncomeSourcesModel =
-    CreateIncomeSourcesModel(
+  lazy val testCreateIncomeSourcesThisYear: IncomeSourcesModel =
+    IncomeSourcesModel(
       testNino,
       Some(testSoleTraderBusinessesThisYear),
       Some(testUkPropertyThisYear),

@@ -30,7 +30,7 @@ import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
 import models.common.BusinessAccountingPeriod
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
+import models.common.subscription.{IncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -174,7 +174,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
             CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
               mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
+              request = IncomeSourcesModel(
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                   businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -247,7 +247,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
 
             CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
               mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
+              request = IncomeSourcesModel(
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                   businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -311,7 +311,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ))
 
             SignUpAPIStub.stubSignUp(testSignUpModel(Current, true))(OK, Json.obj("mtdbsa" -> testMtdId))
-            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, CreateIncomeSourcesModel(
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, IncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                 businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -387,7 +387,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               successBody = Json.obj("mtdbsa" -> testMtdId)
             )
 
-            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, CreateIncomeSourcesModel(
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, IncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                 businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -504,7 +504,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             SignUpAPIStub.stubSignUp(testSignUpModel(Next))(OK, Json.obj("mtdbsa" -> testMtdId))
             CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
               mtdbsa = testMtdId,
-              request = CreateIncomeSourcesModel(
+              request = IncomeSourcesModel(
                 nino = testNino,
                 soleTraderBusinesses = Some(testSoleTraderBusinesses(Next).copy(
                   businesses = testSoleTraderBusinesses(Next).businesses.map(business =>
@@ -694,7 +694,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
             mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
+            request = IncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                 businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -742,7 +742,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
             mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
+            request = IncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                 businesses = testSoleTraderBusinesses().businesses.map(business =>
@@ -792,7 +792,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
             mtdbsa = testMtdId,
-            request = CreateIncomeSourcesModel(
+            request = IncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
                 businesses = testSoleTraderBusinesses().businesses.map(business =>

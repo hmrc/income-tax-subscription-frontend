@@ -50,7 +50,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
   def orchestrateSignUp(nino: String,
                         utr: String,
                         taxYear: AccountingYear,
-                        incomeSources: CreateIncomeSourcesModel,
+                        incomeSources: IncomeSourcesModel,
                         maybeEntityId: Option[String])
                        (implicit hc: HeaderCarrier): Future[SignUpOrchestrationResponse] = {
 

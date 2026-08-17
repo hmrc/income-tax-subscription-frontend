@@ -24,12 +24,12 @@ import services.GetCompleteDetailsService.CompleteDetails
 import utilities.AccountingPeriodUtil
 import utilities.AccountingPeriodUtil.{getCurrentTaxYear, getNextTaxYear}
 
-case class CreateIncomeSourcesModel(
-  nino: String,
-  soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
-  ukProperty: Option[UkProperty] = None,
-  overseasProperty: Option[OverseasProperty] = None,
-  idempotencyKey: Option[String] = None
+case class IncomeSourcesModel(
+                                     nino: String,
+                                     soleTraderBusinesses: Option[SoleTraderBusinesses] = None,
+                                     ukProperty: Option[Property] = None,
+                                     overseasProperty: Option[Property] = None,
+                                     idempotencyKey: Option[String] = None
 ) {
   require(soleTraderBusinesses.isDefined || ukProperty.isDefined || overseasProperty.isDefined, "at least one income source is required")
 }
@@ -41,26 +41,18 @@ object SoleTraderBusinesses {
   implicit val format: OFormat[SoleTraderBusinesses] = Json.format[SoleTraderBusinesses]
 }
 
-case class UkProperty(startDateBeforeLimit: Option[Boolean] = None,
-                      accountingPeriod: AccountingPeriodModel,
-                      tradingStartDate: DateModel)
+case class Property(startDateBeforeLimit: Option[Boolean] = None,
+                    accountingPeriod: AccountingPeriodModel,
+                    tradingStartDate: DateModel)
 
-object UkProperty {
-  implicit val format: OFormat[UkProperty] = Json.format[UkProperty]
+object Property {
+  implicit val format: OFormat[Property] = Json.format[Property]
 }
 
-case class OverseasProperty(startDateBeforeLimit: Option[Boolean] = None,
-                            accountingPeriod: AccountingPeriodModel,
-                            tradingStartDate: DateModel)
+object IncomeSourcesModel {
+  implicit val format: OFormat[IncomeSourcesModel] = Json.format[IncomeSourcesModel]
 
-object OverseasProperty {
-  implicit val format: OFormat[OverseasProperty] = Json.format[OverseasProperty]
-}
-
-object CreateIncomeSourcesModel {
-  implicit val format: OFormat[CreateIncomeSourcesModel] = Json.format[CreateIncomeSourcesModel]
-
-  def createIncomeSources(nino: String, completeDetails: CompleteDetails): CreateIncomeSourcesModel = {
+  def createIncomeSources(nino: String, completeDetails: CompleteDetails): IncomeSourcesModel = {
     val accountingPeriod: AccountingPeriodModel = {
       completeDetails.taxYear match {
         case AccountingYearModel(Next, _, _) => getNextTaxYear
@@ -86,10 +78,10 @@ object CreateIncomeSourcesModel {
       }
     }
 
-    val ukProperty: Option[UkProperty] = {
+    val ukProperty: Option[Property] = {
       completeDetails.incomeSources.ukProperty map { property =>
         val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
-        UkProperty(
+        Property(
           startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate
@@ -97,10 +89,10 @@ object CreateIncomeSourcesModel {
       }
     }
 
-    val foreignProperty: Option[OverseasProperty] = {
+    val foreignProperty: Option[Property] = {
       completeDetails.incomeSources.foreignProperty map { property =>
         val startDate: DateModel = DateModel.dateConvert(property.startDate.getOrElse(AccountingPeriodUtil.getStartDateLimit))
-        OverseasProperty(
+        Property(
           startDateBeforeLimit = if (property.startDate.isEmpty) Some(true) else Some(false),
           accountingPeriod = accountingPeriod,
           tradingStartDate = startDate
@@ -108,7 +100,7 @@ object CreateIncomeSourcesModel {
       }
     }
 
-    CreateIncomeSourcesModel(
+    IncomeSourcesModel(
       nino = nino,
       soleTraderBusinesses = soleTraderBusinesses,
       ukProperty = ukProperty,

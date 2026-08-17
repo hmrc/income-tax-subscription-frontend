@@ -23,7 +23,7 @@ import connectors.agent.AgentSPSConnector
 import connectors.{CreateIncomeSourcesConnector, SignUpConnector}
 import models.AccountingYear
 import models.common.subscription.SignUpFailureResponse.UnprocessableSignUp
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpSuccessful}
+import models.common.subscription.{IncomeSourcesModel, SignUpSuccessful}
 import services.agent.AutoEnrolmentService.AutoClaimEnrolmentResponse
 import services.agent.SignUpOrchestrationService.*
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,7 @@ class SignUpOrchestrationService @Inject()(signUpConnector: SignUpConnector,
                         nino: String,
                         utr: String,
                         taxYear: AccountingYear,
-                        incomeSources: CreateIncomeSourcesModel)
+                        incomeSources: IncomeSourcesModel)
                        (implicit hc: HeaderCarrier): Future[SignUpOrchestrationResponse] = {
 
     signUp(nino = nino, utr = utr, taxYear = taxYear) flatMap {

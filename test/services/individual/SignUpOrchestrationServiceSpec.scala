@@ -19,7 +19,7 @@ package services.individual
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.mocks.{MockCreateIncomeSourcesConnector, MockSignUpConnector}
 import models.common.subscription.SignUpFailureResponse.UnprocessableSignUp
-import models.common.subscription.{CreateIncomeSourcesModel, SignUpFailureResponse, SignUpSuccessful, UkProperty}
+import models.common.subscription.{IncomeSourcesModel, SignUpFailureResponse, SignUpSuccessful, Property}
 import models.{AccountingYear, Current, DateModel}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
@@ -186,9 +186,9 @@ class SignUpOrchestrationServiceSpec extends PlaySpec
   lazy val utr: String = "test-utr"
   lazy val mtditid: String = "test-mtditid"
   lazy val taxYear: AccountingYear = Current
-  lazy val createIncomeSourcesModel: CreateIncomeSourcesModel = CreateIncomeSourcesModel(
+  lazy val createIncomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
     nino = nino,
-    ukProperty = Some(UkProperty(
+    ukProperty = Some(Property(
       startDateBeforeLimit = Some(true),
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
       tradingStartDate = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)

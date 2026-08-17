@@ -27,7 +27,7 @@ import utilities.individual.TestConstants.testNino
 import java.time.LocalDate
 import scala.language.implicitConversions
 
-class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
+class IncomeSourcesModelSpec extends PlaySpec with MustMatchers {
 
   val now: LocalDate = LocalDate.now
 
@@ -49,17 +49,17 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
     )
   )
 
-  val fullUkProperty: UkProperty = UkProperty(
+  val fullUkProperty: Property = Property(
     accountingPeriod = AccountingPeriodModel(now, now),
     tradingStartDate = LocalDate.now
   )
 
-  val fullOverseasProperty: OverseasProperty = OverseasProperty(
+  val fullOverseasProperty: Property = Property(
     accountingPeriod = AccountingPeriodModel(now, now),
     tradingStartDate = LocalDate.now
   )
 
-  val fullCreateIncomeSourcesModel: CreateIncomeSourcesModel = CreateIncomeSourcesModel(
+  val fullCreateIncomeSourcesModel: IncomeSourcesModel = IncomeSourcesModel(
     nino = testNino,
     soleTraderBusinesses = Some(fullSoleTraderBusinesses),
     ukProperty = Some(fullUkProperty),
@@ -163,16 +163,16 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
   "CreateIncomeSourcesModel" must {
     "throw an IllegalArgumentException" when {
       "no businesses are provided to the model" in {
-        intercept[IllegalArgumentException](CreateIncomeSourcesModel(testNino))
+        intercept[IllegalArgumentException](IncomeSourcesModel(testNino))
       }
     }
 
     "read from json successfully" when {
       "the json is complete and valid" in {
-        Json.fromJson[CreateIncomeSourcesModel](fullCreateIncomeSourcesModelJson) mustBe JsSuccess(fullCreateIncomeSourcesModel)
+        Json.fromJson[IncomeSourcesModel](fullCreateIncomeSourcesModelJson) mustBe JsSuccess(fullCreateIncomeSourcesModel)
       }
       "there is only sole trader businesses" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
+        val readModel = Json.fromJson[IncomeSourcesModel](
           fullCreateIncomeSourcesModelJson - "ukProperty" - "overseasProperty"
         )
         val expectedModel = fullCreateIncomeSourcesModel.copy(ukProperty = None, overseasProperty = None)
@@ -180,7 +180,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
         readModel mustBe JsSuccess(expectedModel)
       }
       "there is only a uk property business" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
+        val readModel = Json.fromJson[IncomeSourcesModel](
           fullCreateIncomeSourcesModelJson - "soleTraderBusinesses" - "overseasProperty"
         )
         val expectedModel = fullCreateIncomeSourcesModel.copy(soleTraderBusinesses = None, overseasProperty = None)
@@ -188,7 +188,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
         readModel mustBe JsSuccess(expectedModel)
       }
       "there is only an overseas property business" in {
-        val readModel = Json.fromJson[CreateIncomeSourcesModel](
+        val readModel = Json.fromJson[IncomeSourcesModel](
           fullCreateIncomeSourcesModelJson - "soleTraderBusinesses" - "ukProperty"
         )
         val expectedModel = fullCreateIncomeSourcesModel.copy(soleTraderBusinesses = None, ukProperty = None)
@@ -198,7 +198,7 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
     }
     "return a read error" when {
       "nino is missing from the json" in {
-        Json.fromJson[CreateIncomeSourcesModel](fullCreateIncomeSourcesModelJson - "nino") mustBe JsError(JsPath \ "nino", "error.path.missing")
+        Json.fromJson[IncomeSourcesModel](fullCreateIncomeSourcesModelJson - "nino") mustBe JsError(JsPath \ "nino", "error.path.missing")
       }
     }
 
@@ -249,15 +249,15 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
   "UkProperty" must {
     "read the json successfully" when {
       "the json is complete and valid" in {
-        Json.fromJson[UkProperty](fullUkPropertyJson) mustBe JsSuccess(fullUkProperty)
+        Json.fromJson[Property](fullUkPropertyJson) mustBe JsSuccess(fullUkProperty)
       }
     }
     "return a read error" when {
       "accountingPeriod is missing from the json" in {
-        Json.fromJson[UkProperty](fullUkPropertyJson - "accountingPeriod") mustBe JsError(JsPath \ "accountingPeriod", "error.path.missing")
+        Json.fromJson[Property](fullUkPropertyJson - "accountingPeriod") mustBe JsError(JsPath \ "accountingPeriod", "error.path.missing")
       }
       "tradingStartDate is missing from the json" in {
-        Json.fromJson[UkProperty](fullUkPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
+        Json.fromJson[Property](fullUkPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
       }
     }
   }
@@ -265,15 +265,15 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
   "OverseasProperty" must {
     "read the json successfully" when {
       "the json is complete and valid" in {
-        Json.fromJson[OverseasProperty](fullOverseasPropertyJson) mustBe JsSuccess(fullOverseasProperty)
+        Json.fromJson[Property](fullOverseasPropertyJson) mustBe JsSuccess(fullOverseasProperty)
       }
     }
     "return a read error" when {
       "accountingPeriod is missing from the json" in {
-        Json.fromJson[OverseasProperty](fullOverseasPropertyJson - "accountingPeriod") mustBe JsError(JsPath \ "accountingPeriod", "error.path.missing")
+        Json.fromJson[Property](fullOverseasPropertyJson - "accountingPeriod") mustBe JsError(JsPath \ "accountingPeriod", "error.path.missing")
       }
       "tradingStartDate is missing from the json" in {
-        Json.fromJson[OverseasProperty](fullOverseasPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
+        Json.fromJson[Property](fullOverseasPropertyJson - "tradingStartDate") mustBe JsError(JsPath \ "tradingStartDate", "error.path.missing")
       }
     }
   }
