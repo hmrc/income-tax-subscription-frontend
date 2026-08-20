@@ -72,8 +72,8 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
           cardActions = Seq(
             SummaryListActionValues(
               href = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url,
-              text = s"${ConfirmClient.change} Change (Your client’s details)",
-              visuallyHidden = s"Change (Your client’s details)"
+              text = s"${ConfirmClient.change} (Your client’s details)",
+              visuallyHidden = s"(Your client’s details)"
             )
           ),
           rows = Seq(
