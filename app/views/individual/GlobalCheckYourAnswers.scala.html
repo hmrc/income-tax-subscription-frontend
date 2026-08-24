@@ -172,7 +172,14 @@
                                 ActionItem(
                                     href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                     content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                    visuallyHiddenText = Some(messages(
+                                        key = "individual.global-check-your-answers.income-sources.self-employment.hidden-text",
+                                        args = Seq(
+                                            messages("individual.global-check-your-answers.income-sources.self-employment.trade"),
+                                            business.trade,
+                                            business.name
+                                        ): _*
+                                    ))
                                 )
                             )
                         ))
@@ -185,7 +192,14 @@
                                 ActionItem(
                                     href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                     content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                    visuallyHiddenText = Some(messages(
+                                        key = "individual.global-check-your-answers.income-sources.self-employment.hidden-text",
+                                        args = Seq(
+                                            messages("individual.global-check-your-answers.income-sources.self-employment.name"),
+                                            business.trade,
+                                            business.name
+                                        ): _*
+                                    ))
                                 )
                             )
                         ))
@@ -202,7 +216,14 @@
                                 ActionItem(
                                     href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                     content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                    visuallyHiddenText = Some(messages(
+                                        key = "individual.global-check-your-answers.income-sources.self-employment.hidden-text",
+                                        args = Seq(
+                                            messages("individual.global-check-your-answers.income-sources.self-employment.start-date"),
+                                            business.trade,
+                                            business.name
+                                        ): _*
+                                    ))
                                 )
                             )
                         ))
@@ -215,7 +236,14 @@
                                 ActionItem(
                                     href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=${business.id}&isEditMode=true&isGlobalEdit=true",
                                     content = Text(messages("base.change")),
-                                    visuallyHiddenText = Some(messages("individual.global-check-your-answers.income-sources.self-employment.hidden-text", business.trade, business.name))
+                                    visuallyHiddenText = Some(messages(
+                                        key = "individual.global-check-your-answers.income-sources.self-employment.hidden-text",
+                                        args = Seq(
+                                            messages("individual.global-check-your-answers.income-sources.self-employment.address"),
+                                            business.trade,
+                                            business.name
+                                        ): _*
+                                    ))
                                 )
                             )
                         ))

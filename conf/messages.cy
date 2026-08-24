@@ -1105,7 +1105,7 @@ individual.global-check-your-answers.tax.year.current                           
 individual.global-check-your-answers.tax.year.next                                              = Flwyddyn dreth nesaf
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Busnesau unig fasnachwr {0}
 individual.global-check-your-answers.income-sources.self-employment.change                      = Newid
-individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = busnesau unig fasnachwr {0}, {1}
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = {0} busnesau unig fasnachwr {1}, {2}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
