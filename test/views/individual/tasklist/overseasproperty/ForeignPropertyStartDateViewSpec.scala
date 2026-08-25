@@ -21,7 +21,6 @@ import models.DateModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.{Form, FormError}
-import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.individual.tasklist.overseasproperty.ForeignPropertyStartDate
@@ -145,7 +144,7 @@ class ForeignPropertyStartDateViewSpec extends ViewSpec {
     foreignPropertyStartDate(
       startDateForm,
       testCall
-    )(FakeRequest(), implicitly)
+    )
   }
 
   private lazy val baseForm: Form[DateModel] = ForeignPropertyStartDateForm.startDateForm(_.toString)

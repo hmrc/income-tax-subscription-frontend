@@ -298,7 +298,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val surveyText = "What did you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
-    val surveyLink = appConfig.feedbackFrontendRedirectUrl
+    val surveyLink = appConfig.feedbackFrontendAgentRedirectUrl
 
     val signUpAnotherClient = "Sign up another client"
   }

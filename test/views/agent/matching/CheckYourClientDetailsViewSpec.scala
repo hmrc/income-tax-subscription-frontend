@@ -21,7 +21,6 @@ import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
-import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.{TestModels, ViewSpec}
 import views.html.agent.matching.CheckYourClientDetails
@@ -36,7 +35,8 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
     testFirstName,
     testLastName,
     testNino,
-    testDob)
+    testDob
+  )
 
   lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
 
@@ -45,11 +45,11 @@ class CheckYourClientDetailsViewSpec extends ViewSpec {
   def page(): HtmlFormat.Appendable = checkYourClientDetails(
     userDetailsModel = testClientDetails,
     postAction = postAction
-  )(FakeRequest(), implicitly)
+  )
 
   def document(): Document = Jsoup.parse(page().body)
 
-  "YourClientDetailsCheckYourAnswers" must {
+  "CheckYourClientDetails" must {
     "have the correct template" in new TemplateViewTest(
       view = page(),
       title = ConfirmClient.title,

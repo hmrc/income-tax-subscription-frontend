@@ -31,7 +31,6 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override val haveSaUtr: String = ""
   override val btaBaseUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
-  override val contactFormServiceIdentifier: String = "MTDIT"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
   override val throttlingUrl: String = "/income-tax-subscription/throttled"
   override val mandationStatusUrl: String = "/income-tax-subscription/itsa-status"
@@ -83,8 +82,6 @@ trait MockConfig extends UnitTestTrait with AppConfig {
   override def upsertEnrolmentUrl(enrolmentKey: String): String = "tax-enrolments/"
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "tax-enrolments/"
-
-  override val betaFeedbackUnauthenticatedUrl: String = "/feedback"
 
   override val incomeTaxEligibilityUrl: String = "/income-tax-subscription-incometax.eligibility"
 

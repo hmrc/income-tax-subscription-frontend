@@ -39,6 +39,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
+import java.net.URLEncoder
 import java.time.LocalDate
 import scala.jdk.CollectionConverters.*
 import scala.language.implicitConversions
@@ -55,7 +56,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
 
   val testCall: Call = Call("POST", "/test-url")
 
-  implicit val request: Request[_] = FakeRequest()
+  implicit val request: Request[_] = FakeRequest("POST", "/test-url")
 
   class TemplateViewTest(view: Html,
                          title: String,
@@ -83,6 +84,19 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
       document.selectOptionally(".hmrc-sign-out-nav__link") mustBe None
     }
 
+    val serviceNameLink: Element = document.selectHead(".govuk-service-navigation__service-name").selectHead("a")
+    if (isAgent) {
+      serviceNameLink.text mustBe "Sign up your clients for Making Tax Digital for Income Tax"
+      serviceNameLink.attr("href") mustBe appConfig.govukGuidanceITSASignUpAgentLink
+    } else {
+      serviceNameLink.text mustBe "Sign up for Making Tax Digital for Income Tax"
+      serviceNameLink.attr("href") mustBe appConfig.govukGuidanceITSASignUpIndivLink
+    }
+
+    val betaBannerElement: Element = document.selectHead(".govuk-phase-banner__content")
+    betaBannerElement.selectHead(".govuk-tag").text mustBe "Beta"
+    betaBannerElement.selectHead(".govuk-link").attr("href") mustBe s"http://localhost:9250/contact/beta-feedback?service=MTDIT&referrerUrl=${URLEncoder.encode(request.path, "UTF-8")}&useServiceNavigation"
+
     if (hasBackLink) {
       val backLink = document.selectHead(".govuk-back-link")
       backLink.text mustBe "Back"
@@ -99,6 +113,8 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
       errorLink.text mustBe wrappedMessages(formError.message, formError.args: _*)
       errorLink.attr("href") mustBe s"#${formError.key}"
     }
+
+    document.selectHead(".hmrc-report-technical-issue").attr("href") mustBe s"http://localhost:9250/contact/report-technical-problem?service=MTDIT&referrerUrl=${URLEncoder.encode(request.path, "UTF-8")}&useServiceNavigation"
 
   }
 

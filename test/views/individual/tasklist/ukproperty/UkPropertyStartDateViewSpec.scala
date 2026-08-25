@@ -163,7 +163,7 @@ class UkPropertyStartDateViewSpec extends ViewSpec {
     propertyStartDate(
       propertyStartDateForm,
       testCall
-    )(FakeRequest(), implicitly)
+    )
   }
 
   private lazy val baseForm: Form[DateModel] = PropertyStartDateForm.propertyStartDateForm(LocalDate.now, LocalDate.now, _.toString)

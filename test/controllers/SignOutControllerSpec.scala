@@ -37,9 +37,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe (
-          appConfig.ggSignOutUrl(appConfig.feedbackFrontendAgentRedirectUrl)
-        )
+        redirectLocation(result).get mustBe appConfig.ggSignOutUrl(appConfig.feedbackFrontendAgentRedirectUrl)
       }
     }
     "with an individual affinity group" should {
@@ -48,9 +46,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe (
-          appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
-        )
+        redirectLocation(result).get mustBe appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
       }
     }
     "with an org affinity group" should {
@@ -59,9 +55,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe (
-          appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
-        )
+        redirectLocation(result).get mustBe appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
       }
     }
 
@@ -71,9 +65,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(subscriptionRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe (
-          appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
-        )
+        redirectLocation(result).get mustBe appConfig.ggSignOutUrl(appConfig.feedbackFrontendRedirectUrl)
       }
     }
   }
