@@ -1127,7 +1127,7 @@ individual.global-check-your-answers.tax.year.current                           
 individual.global-check-your-answers.tax.year.next                                              = Next tax year
 individual.global-check-your-answers.income-sources.self-employment.heading                     = Sole trader businesses {0}
 individual.global-check-your-answers.income-sources.self-employment.change                      = Change details
-individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = of sole trader business {0}, {1}
+individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = {0} of sole trader business {1}, {2}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Trade
 individual.global-check-your-answers.income-sources.self-employment.name                        = Business name
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Business start date
