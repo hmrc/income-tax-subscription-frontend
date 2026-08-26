@@ -365,7 +365,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       val key: String = "Selected tax year"
       val current: String = s"6 April ${AccountingPeriodUtil.getCurrentTaxStartYear} to 5 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
       val next: String = s"6 April ${AccountingPeriodUtil.getNextTaxStartYear} to 5 April ${AccountingPeriodUtil.getNextTaxEndYear}"
-      val change: String = "selected tax year"
+      val change: String = "Selected tax year"
     }
 
     object IncomeSources {
@@ -392,14 +392,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val heading: String = "UK property"
         val value: String = "UK property"
         val link: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
-        val changeHiddenText: String = "start date"
+        val changeHiddenText: String = "Start date"
       }
 
       object ForeignProperty {
         val heading: String = "Foreign property"
         val value: String = "Foreign property"
         val link: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
-        val changeHiddenText: String = "start date"
+        val changeHiddenText: String = "Start date"
       }
 
       object StartDate {
