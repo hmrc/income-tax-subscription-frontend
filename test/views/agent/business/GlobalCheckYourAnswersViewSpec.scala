@@ -392,14 +392,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val heading: String = "UK property"
         val value: String = "UK property"
         val link: String = controllers.agent.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
-        val changeHiddenText: String = "Start date for UK property"
+        val changeHiddenText: String = "start date – UK property"
       }
 
       object ForeignProperty {
         val heading: String = "Foreign property"
         val value: String = "Foreign property"
         val link: String = controllers.agent.tasklist.overseasproperty.routes.OverseasPropertyStartDateBeforeLimitController.show(editMode = true, isGlobalEdit = true).url
-        val changeHiddenText: String = "Start date for foreign property"
+        val changeHiddenText: String = "start date – foreign property"
       }
 
       object StartDate {
