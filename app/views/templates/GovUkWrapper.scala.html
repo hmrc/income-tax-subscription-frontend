@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
@@ -27,6 +28,8 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcStandardPage: HmrcStandardPage
+)(
+    implicit contactFrontendConfig: ContactFrontendConfig
 )
 
 @(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, timeoutUrl: Option[String], userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
@@ -37,7 +40,7 @@
         signOutUrl = if(showSignOutLink) Some(controllers.routes.SignOutController.signOut.url) else None
     ),
     banners = Banners(
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl)),
+        phaseBanner = Some(standardBetaBanner()),
         userResearchBanner = userResearchUrl.map(url => UserResearchBanner(url = url))
     ),
     templateOverrides = TemplateOverrides(

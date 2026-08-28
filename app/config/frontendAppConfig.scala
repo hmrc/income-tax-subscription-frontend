@@ -32,8 +32,6 @@ trait AppConfig {
 
   def appName: String
 
-  def contactFormServiceIdentifier: String
-
   def ggSignInContinueUrl: String
 
   def subscriptionUrl: String
@@ -162,8 +160,6 @@ trait AppConfig {
 
   def eligibilityFeatureSwitchUrl: String
 
-  def betaFeedbackUnauthenticatedUrl: String
-
   def feedbackFrontendRedirectUrl: String
 
   def feedbackFrontendAgentRedirectUrl: String
@@ -229,9 +225,6 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val btaUrl: String = config.getString(s"bta.url")
 
   //Contact Frontend Config
-  private lazy val contactHost: String = config.getString("contact-frontend.host")
-  override lazy val contactFormServiceIdentifier = "MTDIT"
-
   // protected microservice
   override lazy val microServiceUrl: String = config.baseUrl("income-tax-subscription")
   override lazy val subscriptionUrl = s"$microServiceUrl/income-tax-subscription/subscription"
@@ -384,12 +377,9 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
     s"$taxEnrolments/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
 
-  override lazy val betaFeedbackUnauthenticatedUrl: String =
-    s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  val feedbackFrontendRedirectUrl: String = s"${config.getString("feedback-frontend.url")}?useServiceNavigation"
 
-  val feedbackFrontendRedirectUrl: String = config.getString("feedback-frontend.url")
-
-  val feedbackFrontendAgentRedirectUrl: String = config.getString("feedback-frontend-A.url")
+  val feedbackFrontendAgentRedirectUrl: String = s"${config.getString("feedback-frontend-A.url")}?useServiceNavigation"
 
   val urBannerUrl: String = config.getString("urBannerUrl.url")
 

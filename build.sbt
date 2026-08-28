@@ -33,7 +33,7 @@ lazy val scoverageSettings = {
 }
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "3.3.6"
+ThisBuild / scalaVersion := "3.3.7"
 lazy val microservice = Project(AppDependencies.appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
