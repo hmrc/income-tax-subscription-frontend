@@ -57,7 +57,7 @@
     @form(action = postAction) {
         @radioHelper(
             field = accountingYearForm(AccountingYearForm.accountingYear),
-            legend = messages("agent.business.next-year-mandatory-sign-up.heading", endYearOfCurrentTaxPeriod.toString, (endYearOfCurrentTaxPeriod + 1).toString),
+            legend = messages("agent.business.next-year-mandatory-sign-up.subheading"),
             isPageHeading = false,
             headingClasses = "govuk-visually-hidden",
             radioItems = Seq(
