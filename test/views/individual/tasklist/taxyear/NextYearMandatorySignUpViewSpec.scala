@@ -89,7 +89,7 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
       "has the correct radio inputs" in {
         document().mustHaveRadioInput(selector = "fieldset")(
           name = AccountingYearForm.accountingYear,
-          legend = NextYearMandatorySignUp.heading,
+          legend = NextYearMandatorySignUp.subheading,
           isHeading = false,
           isLegendHidden = true,
           hint = None,
