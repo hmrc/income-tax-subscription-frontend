@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+// HO04B / HO06B
+
 package controllers.individual.handoffs
 
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.handoffs.OptedOut
 
@@ -40,7 +41,9 @@ class OptedOutController @Inject()(
   }
 
   def submit: Action[AnyContent] = identity { implicit request =>
-    Redirect(appConfig.getVAndCUrl)
+    request.mtditid match {
+      case Some(_) => Redirect(appConfig.getVAndCUrl) // HO04B
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl)) // HO06B
+    }
   }
-
 }
