@@ -23,6 +23,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import controllers.agent.resolvers.AlreadySignedUpResolver
 import models.Channel
+import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.audits.EnterDetailsAuditing.EnterDetailsAuditModel
 import models.requests.agent.IdentifierRequest
@@ -192,11 +193,17 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
       eligibility = "ineligible",
       failureReason = Some("no-agent-client-relationship")
     ))
-    sessionDataService.saveNino(nino) map {
-      case Right(_) => Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show)
-        .addingToSession(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
-        .removingFromSession(FailedClientMatching)
-      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
+    sessionDataService.saveNino(nino) flatMap {
+      case Right(_) =>
+        sessionDataService.saveJourneyStep(JourneyStep.SignPosted) map {
+          case Right(value) =>
+            Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show)
+              .removingFromSession(FailedClientMatching)
+          case Left(_) =>
+            throw new InternalServerException("failure when saving journey step to session")
+        }
+      case Left(_) =>
+        throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
     }
   }
 
@@ -222,11 +229,12 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
         sessionDataService.saveUTR(utr) map {
           case Right(_) =>
             Redirect(routes.ConfirmedClientResolver.resolve)
-              .addingToSession(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
               .removingFromSession(FailedClientMatching)
-          case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
+          case Left(_) =>
+            throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
         }
-      case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+      case Left(_) =>
+        throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
     }
   }
 }

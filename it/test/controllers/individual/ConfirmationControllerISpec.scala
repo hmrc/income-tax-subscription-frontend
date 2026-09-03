@@ -61,6 +61,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
     "the user does not have the confirmation journey state" must {
       "display a not found page" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map.empty)
 
         val result = IncomeTaxSubscriptionFrontend.confirmation()
 

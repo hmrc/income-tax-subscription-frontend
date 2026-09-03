@@ -17,11 +17,13 @@
 package controllers.individual.iv
 
 import _root_.common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.*
+import play.api.libs.json.JsString
 
 class IVSuccessControllerISpec extends ComponentSpecBase {
 
@@ -43,12 +45,11 @@ class IVSuccessControllerISpec extends ComponentSpecBase {
     "the user is in a claim enrolment journey" should {
       "redirect the user to the claim enrolment resolver" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
+        ))
 
-        val res = IncomeTaxSubscriptionFrontend.ivSuccess(
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-          )
-        )
+        val res = IncomeTaxSubscriptionFrontend.ivSuccess()
 
         res must have(
           httpStatus(SEE_OTHER),

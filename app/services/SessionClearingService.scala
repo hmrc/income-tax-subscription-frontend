@@ -16,14 +16,13 @@
 
 package services
 
-import models.agent.JourneyStep.UserMatching
-import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.{CLIENT_DETAILS_CONFIRMED, MTDITID}
+import common.Constants.ITSASessionKeys.MTDITID
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccess
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccess, SaveSessionDataSuccessResponse}
+import models.agent.JourneyStep.UserMatching
 import models.{SessionData, YesNo}
+import play.api.mvc.*
 import play.api.mvc.Results.Redirect
-import play.api.mvc._
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
@@ -42,7 +41,7 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
       _ <- sessionDataService.saveJourneyStep(UserMatching)
     } yield {
       Redirect(nextPage)
-        .removingFromSession(MTDITID, CLIENT_DETAILS_CONFIRMED)
+        .removingFromSession(MTDITID)
         .clearAllUserDetails(request)
     }
   }

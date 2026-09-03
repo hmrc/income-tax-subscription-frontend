@@ -80,18 +80,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       UserMatchingSessionUtil.lastName -> testLastName,
     )
 
-    val detailedClientData: Map[String, String] = Map(
-      ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-    )
+    val detailedClientData: Map[String, String] = basicClientData
 
-    val clientDataWithNinoAndUTR: Map[String, String] = Map(
-      UserMatchingSessionUtil.firstName -> testFirstName,
-      UserMatchingSessionUtil.lastName -> testLastName,
-      ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-    )
+    val clientDataWithNinoAndUTR: Map[String, String] = basicClientData
 
     val completeClientData: Map[String, String] = Map(
-      ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true",
       firstName -> "FirstName",
       lastName -> "LastName"
     )
@@ -205,13 +198,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken: String = UUID.randomUUID().toString
 
-    def defaultCookies(withClientDetailsConfirmed: Boolean = true, withJourneyStateSignUp: Boolean = true): Map[String, String] = {
-      val utrKvp = if (withClientDetailsConfirmed)
-        Map(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true")
-      else
-        Map()
-      Map[String, String]() ++ utrKvp
-    }
+    def defaultCookies(withJourneyStateSignUp: Boolean = true): Map[String, String] = Map.empty
 
     val headers: Seq[(String, String)] = Seq(
       HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies()),
@@ -223,16 +210,16 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       Session()
     )
 
-    // TODO: Remove the withUTR and withJourneyStateSignUp boolean parameters, they make diagnosing session data issues difficult
-    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withClientDetailsConfirmed: Boolean = true, withJourneyStateSignUp: Boolean = true): WSResponse =
+    // TODO: Remove the withJourneyStateSignUp boolean parameter, it makes diagnosing session data issues difficult
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty, withJourneyStateSignUp: Boolean = true): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withClientDetailsConfirmed, withJourneyStateSignUp) ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie((defaultCookies(withJourneyStateSignUp) ++ additionalCookies) - ITSASessionKeys.JourneyStateKey))
         .get()
         .futureValue
 
-    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, withClientDetailsConfirmed: Boolean = true, withJourneyStateSignUp: Boolean = true)(body: Map[String, Seq[String]]): WSResponse =
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty, withJourneyStateSignUp: Boolean = true)(body: Map[String, Seq[String]]): WSResponse =
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies(withClientDetailsConfirmed, withJourneyStateSignUp) ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie((defaultCookies(withJourneyStateSignUp) ++ additionalCookies) - ITSASessionKeys.JourneyStateKey), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
 
@@ -241,7 +228,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
 
     def indexPage(): WSResponse = {
       get("/index",
-        withClientDetailsConfirmed = false,
         withJourneyStateSignUp = false
       )
     }
@@ -253,7 +239,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       post("/final-check-your-answers", sessionData)(Map.empty)
 
     def showCannotTakePart(sessionData: Map[String, String] = ClientData.basicClientData): WSResponse =
-      get("/error/cannot-sign-up", sessionData, withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
+      get("/error/cannot-sign-up", sessionData, withJourneyStateSignUp = false)
 
     def showCanSignUp(sessionData: Map[String, String] = ClientData.basicClientData, hasJourneyState: Boolean = true): WSResponse =
       get("/can-sign-up", sessionData, withJourneyStateSignUp = hasJourneyState)
@@ -298,13 +284,13 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/timeout")
 
     def showClientDetails(): WSResponse =
-      get("/client-details", withClientDetailsConfirmed = false, withJourneyStateSignUp = false)
+      get("/client-details", withJourneyStateSignUp = false)
 
     def getConfirmedClientResolver(): WSResponse =
       get("/resolve-confirmed-client")
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map().addUserDetails(storedSubmission), withClientDetailsConfirmed = false)(
+      post("/client-details", Map().addUserDetails(storedSubmission))(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
@@ -352,11 +338,10 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def notEnrolledAgentServices(): WSResponse =
       get("/not-enrolled-agent-services")
 
-    def getNoClientRelationship(clientDetailsConfirmed: Boolean): WSResponse =
+    def getNoClientRelationship(): WSResponse =
       get(
         uri = "/error/no-client-relationship",
-        additionalCookies = ClientData.clientName,
-        withClientDetailsConfirmed = clientDetailsConfirmed
+        additionalCookies = ClientData.clientName
       )
 
     def postNoClientRelationship(): WSResponse =
@@ -380,7 +365,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get(
         uri = "/confirm-client",
         additionalCookies = Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails)),
-        withClientDetailsConfirmed = false,
         withJourneyStateSignUp = false
       )
 
@@ -392,7 +376,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       }
       post("/confirm-client",
         additionalCookies = failedAttemptCounter
-          .addUserDetails(storedUserDetails), withClientDetailsConfirmed = false, withJourneyStateSignUp = false)(Map.empty)
+          .addUserDetails(storedUserDetails), withJourneyStateSignUp = false)(Map.empty)
     }
 
     def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse =

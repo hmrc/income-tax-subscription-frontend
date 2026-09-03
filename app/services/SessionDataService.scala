@@ -20,11 +20,11 @@ import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import models.*
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
-import models.{EligibilityStatus, JourneyStep, SessionData, SubmissionStatus, YesNo}
 import play.api.libs.json.*
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -108,10 +108,8 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)
   }
 
-  def saveJourneyStep(state: JourneyStep)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-    sessionDataConnector.saveSessionData(ITSASessionKeys.JourneyStateKey, state.key).map {
-      case Right(_) => {}
-      case _ => throw new InternalServerException("Cannot save Journey state")
-    }
+  def saveJourneyStep(state: JourneyStep)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.JourneyStateKey, state.key)
   }
+
 }

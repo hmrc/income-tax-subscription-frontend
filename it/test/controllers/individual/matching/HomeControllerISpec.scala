@@ -67,7 +67,11 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
         SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
+        val res = IncomeTaxSubscriptionFrontend.get(
+          uri = "/",
+          includeSPSEntityId = false,
+          includeState = false
+        )
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -234,7 +238,8 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         AuthStub.stubAuthSuccess()
 
         SessionDataConnectorStub.stubGetAllSessionData(Map(
-          ITSASessionKeys.UTR -> JsString(testUtr)
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          JourneyStateKey -> JsString(PreSignUp.key)
         ))
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
 
@@ -259,7 +264,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
       "fetched from citizen details during the utr lookup" in {
         AuthStub.stubAuthNoUtr()
 
-        SessionDataConnectorStub.stubGetAllSessionData(Map())
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(PreSignUp.key)
+        ))
         CitizenDetailsStub.stubCIDUserWithNinoAndUtrAndName(testNino, testUtr, testFirstName, testLastName)
 
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)

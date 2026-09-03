@@ -17,17 +17,17 @@
 package models
 
 import _root_.common.Constants.ITSASessionKeys
+import models.agent.{JourneyStep => AgentJourneyStep}
+import models.individual.{JourneyStep => IndividualJourneyStep}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
 import play.api.Logging
 import play.api.libs.json.*
 import play.api.mvc.Request
 import services.Throttle
-import agent.{JourneyStep => AgentJourneyStep}
-import individual.{JourneyStep => IndividualJourneyStep}
+import uk.gov.hmrc.http.InternalServerException
 
 import java.time.LocalDate
-import uk.gov.hmrc.http.InternalServerException
 
 case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
@@ -98,16 +98,12 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
   def fetchJourneyStep[A](request: Request[A]): Option[JourneyStep] = {
     val session = request.session
-    data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String]).orElse {
-      session.get(ITSASessionKeys.JourneyStateKey) map { result =>
-        logger.warn("Retrieved journey step from cookie session")
-        result
-      }
-    }.map { key =>
+    val journeyState: Option[String] = data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String])
+
+    journeyState.map { key =>
       if (key.startsWith(AgentJourneyStep.prefix)) {
         AgentJourneyStep.fromString(
           key = key,
-          clientDetailsConfirmed = session.get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED).isDefined,
           hasMtditid = session.get(ITSASessionKeys.MTDITID).isDefined
         )
       } else if (key.startsWith(IndividualJourneyStep.prefix)) {

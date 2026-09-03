@@ -16,8 +16,6 @@
 
 package controllers.agent
 
-import models.agent.JourneyStep.{SignUp, UserMatching}
-import common.Constants.ITSASessionKeys
 import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito
 import play.api.data.Form
@@ -80,13 +78,10 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
-  ).withMethod("POST")
+  lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withMethod("POST")
 
   lazy val subscriptionRequestWithName: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     UserMatchingSessionUtil.firstName -> "FirstName",
-    UserMatchingSessionUtil.lastName -> "LastName",
-    ITSASessionKeys.CLIENT_DETAILS_CONFIRMED -> "true"
+    UserMatchingSessionUtil.lastName -> "LastName"
   )
 }

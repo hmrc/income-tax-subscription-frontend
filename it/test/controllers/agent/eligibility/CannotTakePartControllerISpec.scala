@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
-import models.agent.JourneyStep.UserMatching
+import models.agent.JourneyStep.{SignPosted, UserMatching}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -31,12 +31,13 @@ import play.api.libs.ws.WSResponse
 
 class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR) {
+  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR,
+              journeyState: String = SignPosted.key) {
     AuthStub.stubAuthSuccess()
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
       ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None)),
-      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+      ITSASessionKeys.JourneyStateKey -> JsString(journeyState)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
@@ -77,7 +78,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookie
     }
 
     "when the back button is pressed from 'enter client details' page" should {
-      "redirect the client to 'you cannot go back to previous client' page" in new Setup(ClientData.basicClientData) {
+      "redirect the client to 'you cannot go back to previous client' page" in new Setup(ClientData.basicClientData, UserMatching.key) {
 
         result must have(
           httpStatus(SEE_OTHER),

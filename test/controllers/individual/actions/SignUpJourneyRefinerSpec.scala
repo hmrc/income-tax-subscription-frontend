@@ -18,13 +18,12 @@ package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
 import models.Status.InProgress
-import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import models.{JourneyStep, SessionData, SubmissionStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -122,23 +121,25 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
   lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval)
 
   def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
-    maybeJourneyStep match {
-      case Some(journeyStep) => FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> journeyStep.key)
-      case None => FakeRequest()
-    }
+    FakeRequest()
   }
 
   lazy val nino: String = "AA000000A"
   lazy val utr: String = "1234567890"
 
   def identifierRequest(journeyStep: Option[JourneyStep] = None, mtditid: Option[String] = None, sessionData: SessionData = SessionData()): IdentifierRequest[_] = {
+    val journeySessionData = journeyStep match {
+      case Some(step) => sessionData.copy(data = sessionData.data + (ITSASessionKeys.JourneyStateKey -> JsString(step.key)))
+      case None => sessionData
+    }
+
     IdentifierRequest(
       request = requestWithSession(journeyStep),
       mtditid = mtditid,
       nino = nino,
       utr = None,
       credentials = Credentials("testProviderId", "testProviderType"),
-      sessionData = sessionData
+      sessionData = journeySessionData
     )
   }
 }
