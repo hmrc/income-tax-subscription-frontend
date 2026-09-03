@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.individual.matching
+package controllers.individual.handoffs
 
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.{basGatewaySignIn, basGatewaySignOut}
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 
 class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
-
     "the Subscription Details Connector is not applicable" should {
       "show the already enrolled page" in {
         Given("I setup the Wiremock stubs")
@@ -36,6 +36,24 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
         res must have(
           httpStatus(OK),
           pageTitle(messages("already-enrolled.title") + serviceNameGovUk)
+        )
+      }
+    }
+  }
+
+  "POST /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
+    "the Subscription Details Connector is not applicable" should {
+      "show the already enrolled page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubEnrolled()
+
+        When("POST /already-enrolled is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAlreadyEnrolled()
+
+        Then("Should log user out and redirect to BTA/PTA")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(basGatewaySignOut("http://localhost:9280/account"))
         )
       }
     }

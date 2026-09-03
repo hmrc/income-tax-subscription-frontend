@@ -84,7 +84,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
           val result = resolver.resolve(sessionData, testMTDITID, Some(channel))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+          redirectLocation(result) mustBe Some(controllers.individual.handoffs.routes.AlreadyEnrolledController.show.url)
           verify(mockGetITSAStatusService, times(1)).getITSAStatus(
             ArgumentMatchers.eq(sessionData)
           )(ArgumentMatchers.any())
@@ -107,7 +107,7 @@ class AlreadySignedUpResolverSpec extends ControllerSpec
       val result = resolver.resolve(sessionData, testMTDITID, None)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.individual.matching.routes.AlreadyEnrolledController.show.url)
+      redirectLocation(result) mustBe Some(controllers.individual.handoffs.routes.AlreadyEnrolledController.show.url)
       verify(mockGetITSAStatusService, times(1)).getITSAStatus(
         ArgumentMatchers.eq(sessionData)
       )(ArgumentMatchers.any())

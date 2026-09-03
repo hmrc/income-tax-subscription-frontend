@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.matching
+package controllers.individual.handoffs
 
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.MockIdentifierAction
@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadyEnrolled
 
 import scala.concurrent.Future
 
@@ -42,7 +42,8 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
 
   override val controllerName: String = "AlreadyEnrolledController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "enrolled" -> TestAlreadyEnrolledController.show()
+    "show" -> TestAlreadyEnrolledController.show(),
+    "submit" -> TestAlreadyEnrolledController.submit()
   )
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
@@ -60,13 +61,13 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditing
       charset(result) must be(Some("utf-8"))
     }
 
-    "redirect to tax account" in {
+    "redirect to tax account after log-out" in { // HO06C
       mockAuthEnrolled()
 
       lazy val result = submit(subscriptionRequest)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result) must be(Some(appConfig.getAccountUrl))
+      redirectLocation(result) must be(Some(appConfig.ggSignOutUrl(appConfig.getAccountUrl)))
     }
   }
 }

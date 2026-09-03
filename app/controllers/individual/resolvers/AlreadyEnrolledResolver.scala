@@ -41,7 +41,7 @@ class AlreadyEnrolledResolver @Inject()(subscriptionConnector: SubscriptionConne
       case Right(_) =>
         getITSAStatusService.getITSAStatus(sessionData).map(_.map(_.status)) map {
           case Some(GetITSAStatus.Annual) => controllers.individual.handoffs.routes.OptedOutController.show
-          case _ => controllers.individual.matching.routes.AlreadyEnrolledController.show
+          case _ => controllers.individual.handoffs.routes.AlreadyEnrolledController.show
         }
       case Left(_) => throw new InternalServerException("[AlreadyEnrolledResolver][resolve] - Unable to fetch the business details.")
     }

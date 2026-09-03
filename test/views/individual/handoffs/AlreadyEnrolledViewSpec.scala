@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.individual.matching
+package views.individual.handoffs
 
 import controllers.SignOutController
 import messagelookup.agent.MessageLookup.Base
@@ -26,7 +26,7 @@ import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadyEnrolled
 
 class AlreadyEnrolledViewSpec extends ViewSpec {
 
