@@ -44,12 +44,18 @@ class OptedOutControllerSpec extends ControllerBaseSpec with MockIdentifierActio
       charset(result) must be(Some("utf-8"))
     }
   }
-  
-  "submit redirects to V&C" in {
-    Seq(false, true).foreach { noEnrolment =>
-      val result = new TestController(noEnrolment).submit()(fakeRequest)
+
+  "submit redirects to" should {
+    "V&C (has enrolment)" in { // HO04B
+      val result = new TestController(false).submit()(fakeRequest)
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result) must be(Some(appConfig.getVAndCUrl))
+    }
+
+    "login page continuing to BTA/PTA (no enrolment)" in { // HO06B
+      val result = new TestController(true).submit()(fakeRequest)
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result) must be(Some(appConfig.ggSignOutUrl(appConfig.getAccountUrl)))
     }
   }
 }
