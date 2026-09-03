@@ -280,8 +280,11 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     def signOut: WSResponse =
       get("/logout")
 
-    def alreadyEnrolled(): WSResponse =
-      get("/already-enrolled")
+    def alreadySignedUp(): WSResponse =
+      get("/already-signed-up")
+
+    def submitAlreadySignedUp(): WSResponse =
+      post("/already-signed-up")(Map.empty)
 
     def whatYouNeedToDo(session: Map[String, String] = Map.empty): WSResponse =
       get("/what-you-need-to-do", session)

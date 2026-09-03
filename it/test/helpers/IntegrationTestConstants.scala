@@ -180,6 +180,9 @@ object IntegrationTestConstants {
     s"http://localhost:9553/gg/sign-in?continue=%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up$updatedContinue&origin=income-tax-subscription-frontend"
   }
 
+  def basGatewaySignOut(continueTo: String = ""): String = {
+    s"http://localhost:9553/bas-gateway/sign-out-without-state?continue=$continueTo"
+  }
 
   val wrongAffinityURI = s"${IndividualURI.baseURI}/error/affinity-group"
   val ivURI = s"${IndividualURI.baseURI}/iv"

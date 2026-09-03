@@ -52,21 +52,21 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
         mockGetITSAStatusSuccess(testNino)(None)
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
-          controllers.individual.matching.routes.AlreadyEnrolledController.show.url
+          controllers.individual.handoffs.routes.AlreadySignedUpController.show.url
       }
       "the user is already signed up with a channel of confirmed triggered migrated with a non annual status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
         mockGetITSAStatusSuccess(testNino)(Some(MTDMandated))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
-          controllers.individual.matching.routes.AlreadyEnrolledController.show.url
+          controllers.individual.handoffs.routes.AlreadySignedUpController.show.url
       }
       "the user is already signed up with a channel of customer sign up with a non annual status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(CustomerLed))))))
         mockGetITSAStatusSuccess(testNino)(Some(MTDVoluntary))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
-          controllers.individual.matching.routes.AlreadyEnrolledController.show.url
+          controllers.individual.handoffs.routes.AlreadySignedUpController.show.url
       }
     }
   }

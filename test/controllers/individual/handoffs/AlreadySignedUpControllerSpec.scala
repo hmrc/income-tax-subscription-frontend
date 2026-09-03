@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.individual.matching
+package controllers.individual.handoffs
 
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.MockIdentifierAction
@@ -25,48 +25,53 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadyEnrolled
 
 import scala.concurrent.Future
 
-class AlreadyEnrolledControllerSpec extends ControllerBaseSpec with MockAuditingService with MockIdentifierAction {
+class AlreadySignedUpControllerSpec extends ControllerBaseSpec with MockAuditingService with MockIdentifierAction {
 
   val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
   when(mockAlreadyEnrolledView(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 
-  object TestAlreadyEnrolledController extends AlreadyEnrolledController(
-    fakeIdentifierAction,
+  class testAlreadyEnrolledController(noEnrolment: Boolean) extends AlreadySignedUpController(
+    fakeIdentifierAction(noEnrolment),
     mockAlreadyEnrolledView
   )
 
   override val controllerName: String = "AlreadyEnrolledController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "enrolled" -> TestAlreadyEnrolledController.show()
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
 
-    def show(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.show(request)
-    def submit(request: Request[AnyContent]): Future[Result] = TestAlreadyEnrolledController.submit(request)
+    def show(noEnrolment: Boolean): Future[Result] = new testAlreadyEnrolledController(noEnrolment).show(fakeRequest)
+    def submit(noEnrolment: Boolean): Future[Result] = new testAlreadyEnrolledController(noEnrolment).submit(fakeRequest)
 
     "return an OK with the error page" in {
-      mockAuthEnrolled()
+      Seq(false, true).foreach { noEnrolment =>
+        lazy val result = show(noEnrolment)
 
-      lazy val result = show(subscriptionRequest)
-
-      status(result) must be(Status.OK)
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
+        status(result) must be(Status.OK)
+        contentType(result) must be(Some("text/html"))
+        charset(result) must be(Some("utf-8"))
+      }
     }
 
-    "redirect to tax account" in {
-      mockAuthEnrolled()
+    "redirect to" should {
+      "V&C" in { // HO04C
+        lazy val result = submit(false)
 
-      lazy val result = submit(subscriptionRequest)
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) must be(Some(appConfig.getVAndCUrl))
+      }
 
-      status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result) must be(Some(appConfig.getAccountUrl))
+      "tax account after log-out" in { // HO06C
+        lazy val result = submit(true)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) must be(Some(appConfig.ggSignOutUrl(appConfig.getAccountUrl)))
+      }
     }
   }
 }

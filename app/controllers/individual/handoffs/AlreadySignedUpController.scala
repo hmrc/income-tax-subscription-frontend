@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.individual.matching
+// HO06C / HO04C
 
-import controllers.SignUpBaseController
+package controllers.individual.handoffs
+
 import config.AppConfig
+import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AuditingService, AuthService}
-import views.html.individual.matching.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadyEnrolled
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AlreadyEnrolledController @Inject()(val identify: IdentifierAction,
+class AlreadySignedUpController @Inject()(val identify: IdentifierAction,
                                           val alreadyEnrolledView: AlreadyEnrolled)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
@@ -35,13 +36,15 @@ class AlreadyEnrolledController @Inject()(val identify: IdentifierAction,
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(alreadyEnrolledView(
-      postAction = controllers.individual.matching.routes.AlreadyEnrolledController.submit,
+      postAction = controllers.individual.handoffs.routes.AlreadySignedUpController.submit,
       noEnrolment = request.mtditid.isEmpty
     ))
   }
 
   def submit: Action[AnyContent] = identify { implicit request =>
-    Redirect(appConfig.getAccountUrl)
+    request.mtditid match {
+      case Some(_) => Redirect(appConfig.getVAndCUrl) // HO04C
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl)) // Ho06C
+    }
   }
-
 }
