@@ -22,8 +22,8 @@ POST        /confirmation                                        controllers.ind
 GET         /session-timeout                                     controllers.individual.SessionTimeoutController.show
 
 # Already enrolled
-GET         /already-enrolled                                    controllers.individual.handoffs.AlreadyEnrolledController.show
-POST        /already-enrolled                                    controllers.individual.handoffs.AlreadyEnrolledController.submit
+GET         /already-signed-up                                   controllers.individual.handoffs.AlreadySignedUpController.show
+POST        /already-signed-up                                   controllers.individual.handoffs.AlreadySignedUpController.submit
 
 # No NINO Routes
 GET         /register-for-SA                                     controllers.individual.matching.NoSAController.show

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// HO06C
+// HO06C / HO04C
 
 package controllers.individual.handoffs
 
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AlreadyEnrolledController @Inject()(val identify: IdentifierAction,
+class AlreadySignedUpController @Inject()(val identify: IdentifierAction,
                                           val alreadyEnrolledView: AlreadyEnrolled)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
@@ -36,12 +36,15 @@ class AlreadyEnrolledController @Inject()(val identify: IdentifierAction,
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(alreadyEnrolledView(
-      postAction = controllers.individual.handoffs.routes.AlreadyEnrolledController.submit,
+      postAction = controllers.individual.handoffs.routes.AlreadySignedUpController.submit,
       noEnrolment = request.mtditid.isEmpty
     ))
   }
 
   def submit: Action[AnyContent] = identify { implicit request =>
-    Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl))
+    request.mtditid match {
+      case Some(_) => Redirect(appConfig.getVAndCUrl) // HO04C
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl)) // Ho06C
+    }
   }
 }

@@ -51,9 +51,13 @@ object AuthStub extends WireMockMethods {
       .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, ninoEnrolment))
   }
 
-  def stubEnrolled(): StubMapping = {
+  def stubEnrolled(withMtdEnrolment: Boolean = true): StubMapping = {
+    val enroloments = withMtdEnrolment match {
+      case true => Array(ninoEnrolment, utrEnrolment, mtdidEnrolment)
+      case false => Array(ninoEnrolment, utrEnrolment)
+    }
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, ninoEnrolment, utrEnrolment, mtdidEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, enroloments:_*))
   }
 
   def stubUnauthorised(): StubMapping = {

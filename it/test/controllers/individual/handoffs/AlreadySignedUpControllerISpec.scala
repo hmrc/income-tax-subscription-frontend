@@ -17,20 +17,20 @@
 package controllers.individual.handoffs
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{basGatewaySignIn, basGatewaySignOut}
+import helpers.IntegrationTestConstants.basGatewaySignOut
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 
-class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
+class AlreadySignedUpControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/already-signed-up" when {
     "the Subscription Details Connector is not applicable" should {
       "show the already enrolled page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubEnrolled()
 
-        When("GET /already-enrolled is called")
-        val res = IncomeTaxSubscriptionFrontend.alreadyEnrolled()
+        When("GET /already-signed-up is called")
+        val res = IncomeTaxSubscriptionFrontend.alreadySignedUp()
         val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
         Then("Should return a OK with the already enrolled page")
         res must have(
@@ -41,14 +41,28 @@ class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
-    "the Subscription Details Connector is not applicable" should {
-      "show the already enrolled page" in {
+  "POST /report-quarterly/income-and-expenses/sign-up/already-signed-up" when {
+    "redirect to" should {
+      "V&C" in {
         Given("I setup the Wiremock stubs")
-        AuthStub.stubEnrolled()
+        AuthStub.stubEnrolled(true)
 
-        When("POST /already-enrolled is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAlreadyEnrolled()
+        When("POST /already-signed-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAlreadySignedUp()
+
+        Then("Should log user out and redirect to BTA/PTA")
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI("http://localhost:9081/report-quarterly/income-and-expenses/view")
+        )
+      }
+
+      "tax account after logout" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubEnrolled(false)
+
+        When("POST /already-signed-up is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAlreadySignedUp()
 
         Then("Should log user out and redirect to BTA/PTA")
         res must have(
