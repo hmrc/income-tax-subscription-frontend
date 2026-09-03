@@ -61,6 +61,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, Json.toJson(Some(true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
         ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -88,6 +89,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, Json.toJson(Some(true)))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -120,6 +122,9 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         )
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+        ))
 
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true)
 
@@ -139,6 +144,9 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
       "redirect to the incomplete income sources page" when {
         "a sole trader business is incomplete" in {
           AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+          ))
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
             OK, Seq(testBusiness("12345"))
           )
@@ -156,6 +164,9 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         }
         "a uk property business is incomplete" in {
           AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+          ))
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
             OK, Seq(testBusiness("12345", confirmed = true))
           )
@@ -173,6 +184,9 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         }
         "a foreign property business is incomplete" in {
           AuthStub.stubAuthSuccess()
+          SessionDataConnectorStub.stubGetAllSessionData(Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+          ))
           IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(
             OK, Seq(testBusiness("12345", confirmed = true))
           )

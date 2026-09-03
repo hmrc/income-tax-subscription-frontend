@@ -47,16 +47,12 @@ object JourneyStep {
   }
 
   //scalastyle:off
-  def fromString(key: String, clientDetailsConfirmed: Boolean, hasMtditid: Boolean): JourneyStep = {
+  def fromString(key: String, hasMtditid: Boolean): JourneyStep = {
     key match {
 
       // if user has old mtditid session key, they are in a confirmation state
       case _ if hasMtditid =>
         Confirmation
-
-      // if the user is in the old user matching state with client details confirmed, they are sign posted
-      case UserMatching.key if clientDetailsConfirmed =>
-        SignPosted
 
       // if the user is in the old user matching state without client details confirmed, they are in the enter client details section
       case UserMatching.key =>

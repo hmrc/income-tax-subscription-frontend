@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataSuccessResponse
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import controllers.agent.resolvers.MockAlreadySignedUpResolver
+import models.agent.JourneyStep
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
@@ -225,13 +225,14 @@ class ConfirmClientControllerSpec extends ControllerSpec
 
             when(mockSessionDataService.saveNino(ArgumentMatchers.anyString())(ArgumentMatchers.any()))
               .thenReturn(Future.successful(Right(SaveSessionDataSuccessResponse)))
+            mockSaveJourneyState()
 
             val result: Future[Result] = controller.submit()(builtRequest)
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(routes.NoClientRelationshipController.show.url)
 
-            session(result).get(ITSASessionKeys.CLIENT_DETAILS_CONFIRMED) mustBe Some("true")
+            verify(mockSessionDataService).saveJourneyStep(ArgumentMatchers.eq(JourneyStep.SignPosted))(any(), any())
           }
         }
         "the client is not signed up for self assessment as they have no utr" should {

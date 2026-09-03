@@ -16,41 +16,37 @@
 
 package models.agent
 
-import models.agent.JourneyStep._
+import models.agent.JourneyStep.*
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.http.InternalServerException
 
 class JourneyStepSpec extends PlaySpec {
 
   "JourneyStep.fromString" when {
-    
+
     val data = Map(
-      UserMatching.key -> SignPosted,
+      UserMatching.key -> ClientDetails,
       SignUp.key -> ConfirmedClient,
       ClientDetails.key -> ClientDetails,
       SignPosted.key -> SignPosted,
       ConfirmedClient.key -> ConfirmedClient,
       Confirmation.key -> Confirmation,
     )
-    
+
     "hasMtditid is provided as true" should {
       "return a Confirmation journey step" in {
-        JourneyStep.fromString("", clientDetailsConfirmed = false, hasMtditid = true) mustBe JourneyStep.Confirmation
+        JourneyStep.fromString("", hasMtditid = true) mustBe JourneyStep.Confirmation
       }
     }
-    
+
     data.foreach { case (key, expected) =>
-      s"the key is provided as $key and clientDetailsConfirmed is set to true" should {
-        "return a SignPosted journey step" in {
-          JourneyStep.fromString(key, clientDetailsConfirmed = true, hasMtditid = false) mustBe expected
-        }
+      s"return $expected when the key is $key and hasMtditid is false" in {
+        JourneyStep.fromString(key, hasMtditid = false) mustBe expected
       }
     }
-    s"the key is provided as anything else and hasMtditid is provided as false" should {
-      "throw an InternalServerException" in {
-        intercept[InternalServerException](JourneyStep.fromString("other", clientDetailsConfirmed = false, hasMtditid = false))
-          .message mustBe "[Agent][JourneyStep] - Unsupported journey key - other"
-      }
+    "throw an InternalServerException" in {
+      intercept[InternalServerException](JourneyStep.fromString("other", hasMtditid = false))
+        .message mustBe "[Agent][JourneyStep] - Unsupported journey key - other"
     }
   }
 

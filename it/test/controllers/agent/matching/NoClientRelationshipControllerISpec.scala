@@ -21,7 +21,7 @@ import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.agent.JourneyStep.UserMatching
+import models.agent.JourneyStep.{SignPosted, UserMatching}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -30,15 +30,15 @@ import play.api.libs.ws.WSResponse
 
 class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
-  class Setup(clientDetailsConfirmed: Boolean = true) {
+  class Setup(journeyState: String = SignPosted.key) {
     AuthStub.stubAuthSuccess()
 
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+      ITSASessionKeys.JourneyStateKey -> JsString(journeyState)
     ))
 
-    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(clientDetailsConfirmed)
+    val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship()
 
     val doc: Document = Jsoup.parse(result.body)
   }
@@ -58,14 +58,14 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
       "the user is not authenticated" in {
         AuthStub.stubUnauthorised()
 
-        val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship(true)
+        val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship()
 
         result must have(
           httpStatus(SEE_OTHER),
           redirectURI(basGatewaySignIn("/client/error/no-client-relationship"))
         )
       }
-      "the client details haven't been confirmed" in new Setup(false) {
+      "the user is still in the user matching journey state" in new Setup(UserMatching.key) {
         result must have(
           httpStatus(SEE_OTHER),
           redirectURI(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show.url)
@@ -123,7 +123,7 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
     "return SEE_OTHER when selecting clicking sign up another client" in new Setup() {
 
       SessionDataConnectorStub.stubGetAllSessionData(Map(
-        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignPosted.key)
       ))
       
       private val res = IncomeTaxSubscriptionFrontend.postNoClientRelationship()

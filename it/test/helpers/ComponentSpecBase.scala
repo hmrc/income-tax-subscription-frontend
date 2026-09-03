@@ -132,8 +132,9 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     AuditStub.stubAuditing()
 
     stubGetAllSessionData(Map(
-      REFERENCE -> JsString(reference)
-    ))
+      REFERENCE -> JsString(reference),
+      JourneyStateKey -> JsString(SignUp.key)
+    ), addReference = false)
   }
 
   override def beforeAll(): Unit = {
@@ -158,19 +159,29 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     val csrfToken: String = UUID.randomUUID().toString
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeState: Boolean = true): WSResponse = {
+      if (!includeState) {
+        stubGetAllSessionData(Map(
+          REFERENCE -> JsString(reference)
+        ), addReference = false)
+      }
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
-      val stateCookie: Map[String, String] = if (includeState) Map(JourneyStateKey -> SignUp.key) else Map.empty
+      val sanitizedCookies = additionalCookies - JourneyStateKey
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ stateCookie ++ additionalSPSCookie ++ additionalCookies))
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ additionalSPSCookie ++ sanitizedCookies))
         .get()
         .futureValue
     }
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeJourneyState: Boolean = true)(body: Map[String, Seq[String]]): WSResponse = {
+      if (!includeJourneyState) {
+        stubGetAllSessionData(Map(
+          REFERENCE -> JsString(reference)
+        ), addReference = false)
+      }
       val additionalSPSCookie: Map[String, String] = if (includeSPSEntityId) Map(SPSEntityId -> "test-id") else Map.empty
-      val journeyState: Map[String, String] = if (includeJourneyState) Map(JourneyStateKey -> SignUp.key) else Map.empty
+      val sanitizedCookies = additionalCookies - JourneyStateKey
       buildClient(uri)
-        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ journeyState ++ additionalSPSCookie ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHttpHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(REFERENCE -> "test-reference") ++ additionalSPSCookie ++ sanitizedCookies), "Csrf-Token" -> "nocheck")
         .post(body)
         .futureValue
     }
@@ -180,8 +191,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def indexPage(): WSResponse = get(
       uri = "/",
-      includeSPSEntityId = false,
-      includeState = false
+      includeSPSEntityId = false
     )
 
     def spsHandoff(): WSResponse =
@@ -389,7 +399,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       post("/claim-enrolment/overview")(Map.empty)
 
     def confirmation(additionalCookies: Map[String, String] = Map.empty[String, String], includeConfirmationState: Boolean = true): WSResponse =
-      get("/confirmation", includeState = false)
+      get("/confirmation")
 
     def submitConfirmation(): WSResponse =
       post("/confirmation")(Map.empty)
@@ -457,7 +467,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
 
     def submitOverseasPropertyStartDate(inEditMode: Boolean, request: Option[DateModel]): WSResponse = {
       val uri = s"/business/overseas-property-start-date?editMode=$inEditMode"
-      post(uri, Map(CLIENT_DETAILS_CONFIRMED -> "true"))(
+      post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             ForeignPropertyStartDateForm.startDateForm(_.toString)

@@ -22,7 +22,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.IntegrationTestModels.testAccountingYearCurrent
 import helpers.servicemocks.AuthStub
-import models.individual.JourneyStep.Confirmation
+import models.individual.JourneyStep.{Confirmation, SignUp}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models.{EligibilityStatus, Yes, YesNo}
@@ -71,10 +71,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
         ))
 
-        val result = IncomeTaxSubscriptionFrontend.get(
-          uri = "/using-software",
-          includeState = false
-        )
+        val result = IncomeTaxSubscriptionFrontend.get(uri = "/using-software")
 
         result must have(
           httpStatus(SEE_OTHER),
@@ -89,6 +86,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption)
@@ -159,6 +157,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None))
         ))
@@ -183,6 +182,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino)
@@ -208,6 +208,7 @@ class UsingSoftwareControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Mandated)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino)

@@ -21,12 +21,13 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
+import models.individual.JourneyStep.SignUp
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models.{Current, EligibilityStatus, Next}
 import play.api.http.Status.*
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
 
@@ -47,6 +48,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           Json.toJson(Some(AccountingYearModel(Current, confirmed = false, editable = true)))
         )
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
@@ -78,6 +80,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
           Json.toJson(Some(AccountingYearModel(Next, confirmed = false, editable = true)))
         )
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
@@ -132,6 +135,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
@@ -157,6 +161,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Mandated, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(
             EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)
@@ -183,6 +188,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
@@ -206,6 +212,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
@@ -230,6 +237,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubUnauthorised()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
@@ -238,7 +246,12 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         )
 
         When("POST /tax-year/select-tax-year is called")
-        val result = IncomeTaxSubscriptionFrontend.submitWhenDoYouWantToStart(inEditMode = false, request = Some(userInput))
+        val result = IncomeTaxSubscriptionFrontend.post(
+          uri = "/tax-year/select-tax-year?editMode=false",
+          includeJourneyState = false
+        )(
+          forms.individual.business.AccountingYearForm.accountingYearForm.fill(userInput).data.map { case (k, v) => (k, Seq(v)) }
+        )
 
         Then("Should return a SEE_OTHER redirecting to sign in")
         result must have(
@@ -254,6 +267,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(
@@ -277,6 +291,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
 
@@ -297,6 +312,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary))
         ))
         IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(SelectedTaxYear)

@@ -17,6 +17,7 @@
 package controllers.individual.tasklist
 
 import common.Constants.ITSASessionKeys
+import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
@@ -36,6 +37,9 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
       "the location is not provided" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+        ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(lastUpdatedTimestamp, OK, JsObject(Seq(("$date", JsNumber(1)))))
 
         When("GET /business/progress-saved is called")
@@ -60,6 +64,7 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, NO_CONTENT)
         SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
           ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
           ITSASessionKeys.NINO -> JsString(testNino),
@@ -82,6 +87,9 @@ class ProgressSavedControllerISpec extends ComponentSpecBase {
     "user is unauthorised" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+      ))
 
       When("GET /business/progress-saved is called")
       val res = IncomeTaxSubscriptionFrontend.getProgressSaved(saveAndRetrieveLocation = Some("test-location"))

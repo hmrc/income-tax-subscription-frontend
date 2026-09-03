@@ -46,13 +46,11 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
     "the user is not in the claim enrolment journey state" should {
       "redirect the user out of the claim enrolment journey" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ))
 
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
-          hasEntityId = true,
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> SignUp.key
-          )
-        )
+        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true)
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -67,16 +65,12 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetSubscriptionFound()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.NINO -> JsString(testNino)
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
           ))
           ChannelPreferencesStub.stubChannelPreferenceConfirm()
 
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
-            hasEntityId = true,
-            sessionKeys = Map(
-              ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-            )
-          )
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true)
 
           verifyPost("/channel-preferences/confirm", count = Some(1))
 
@@ -92,15 +86,11 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           SubscriptionStub.stubGetNoSubscription()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
-            ITSASessionKeys.NINO -> JsString(testNino)
+            ITSASessionKeys.NINO -> JsString(testNino),
+            ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
           ))
 
-          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(
-            hasEntityId = true,
-            sessionKeys = Map(
-              ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-            )
-          )
+          val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = true)
 
           res must have(
             httpStatus(INTERNAL_SERVER_ERROR)
@@ -111,12 +101,11 @@ class SPSCallbackForClaimEnrolControllerISpec extends ComponentSpecBase {
     "there is no entityId" should {
       "redirect the user to the Claim Enrolment Confirmation page" in {
         AuthStub.stubAuthSuccess()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
+        ))
 
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = false,
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-          )
-        )
+        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsCallback(hasEntityId = false)
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(IndividualURI.claimEnrolmentConfirmationURI)

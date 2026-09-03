@@ -17,7 +17,7 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import models.agent.JourneyStep.UserMatching
+import models.agent.JourneyStep.{SignPosted, UserMatching}
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
@@ -292,6 +292,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = false)
           AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = false)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubSaveJourneyState(SignPosted.key)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.GET_ITSA_STATUS -> Json.toJson(GetITSAStatusModel(NoStatus)),
@@ -318,6 +319,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
+          SessionDataConnectorStub.stubSaveJourneyState(SignPosted.key)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))

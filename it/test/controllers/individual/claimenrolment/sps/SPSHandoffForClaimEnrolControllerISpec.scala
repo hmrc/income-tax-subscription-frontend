@@ -17,11 +17,13 @@
 package controllers.individual.claimenrolment.sps
 
 import _root_.common.Constants.ITSASessionKeys
+import connectors.stubs.SessionDataConnectorStub
 import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status._
+import play.api.libs.json.JsString
 
 class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
 
@@ -31,12 +33,11 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
     "the user is not authorised" should {
       "redirect the user to login" in {
         AuthStub.stubUnauthorised()
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
+        ))
 
-        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
-          sessionKeys = Map(
-            ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-          )
-        )
+        val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff()
 
         res must have(
           httpStatus(SEE_OTHER),
@@ -48,14 +49,13 @@ class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {
     "the feature switch SPSEnabled and claim enrolment both set to true" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      SessionDataConnectorStub.stubGetAllSessionData(Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(ClaimEnrolment.key)
+      ))
 
       When("GET /claim-enrolment/sps-handoff is called")
 
-      val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff(
-        sessionKeys = Map(
-          ITSASessionKeys.JourneyStateKey -> ClaimEnrolment.key
-        )
-      )
+      val res = IncomeTaxSubscriptionFrontend.claimEnrolSpsHandoff()
 
 
       Then("Should return a SEE_OTHER and redirect to SPS")

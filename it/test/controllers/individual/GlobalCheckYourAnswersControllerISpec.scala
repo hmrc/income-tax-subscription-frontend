@@ -46,6 +46,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
     stubSaveSubmissionStatus()(OK)
     SessionDataConnectorStub.stubGetAllSessionData(
       Map(
+        ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
         ITSASessionKeys.MANDATION_STATUS ->
@@ -98,6 +99,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
         SessionDataConnectorStub.stubGetAllSessionData(
           Map(
+            ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
             ITSASessionKeys.MANDATION_STATUS ->
@@ -165,6 +167,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -231,6 +234,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -304,6 +308,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -373,6 +378,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -446,6 +452,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -495,6 +502,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -557,6 +565,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             )
             IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
               ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
@@ -607,6 +616,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
               IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
               SessionDataConnectorStub.stubGetAllSessionData(Map(
+                ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
                 ITSASessionKeys.NINO -> JsString(testNino),
                 ITSASessionKeys.UTR -> JsString(testUtr),
                 ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
