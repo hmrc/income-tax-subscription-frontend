@@ -25,13 +25,13 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import services.mocks.MockAuditingService
-import views.html.individual.handoffs.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadySignedUp
 
 import scala.concurrent.Future
 
 class AlreadySignedUpControllerSpec extends ControllerBaseSpec with MockAuditingService with MockIdentifierAction {
 
-  val mockAlreadyEnrolledView: AlreadyEnrolled = mock[AlreadyEnrolled]
+  val mockAlreadyEnrolledView: AlreadySignedUp = mock[AlreadySignedUp]
   when(mockAlreadyEnrolledView(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
     .thenReturn(HtmlFormat.empty)
 

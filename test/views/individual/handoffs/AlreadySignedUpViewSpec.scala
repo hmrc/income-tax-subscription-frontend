@@ -26,16 +26,16 @@ import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.html.individual.handoffs.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadySignedUp
 
-class AlreadyEnrolledViewSpec extends ViewSpec {
+class AlreadySignedUpViewSpec extends ViewSpec {
 
   val submissionDateValue: DateModel = DateModel("1", "1", "2016")
 
-  val alreadyEnrolled: AlreadyEnrolled = app.injector.instanceOf[AlreadyEnrolled]
+  val alreadySignedUp: AlreadySignedUp = app.injector.instanceOf[AlreadySignedUp]
 
   def page(noEnrolment: Boolean): HtmlFormat.Appendable =
-    alreadyEnrolled(Call("", ""), noEnrolment)(request, implicitly)
+    alreadySignedUp(Call("", ""), noEnrolment)(request, implicitly)
 
   def document(noEnrolment: Boolean): Document =
     Jsoup.parse(page(noEnrolment).body)

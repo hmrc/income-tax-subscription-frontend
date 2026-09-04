@@ -22,20 +22,20 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.individual.handoffs.AlreadyEnrolled
+import views.html.individual.handoffs.AlreadySignedUp
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class AlreadySignedUpController @Inject()(val identify: IdentifierAction,
-                                          val alreadyEnrolledView: AlreadyEnrolled)
+class AlreadySignedUpController @Inject()(identify: IdentifierAction,
+                                          view: AlreadySignedUp)
                                          (implicit val ec: ExecutionContext,
                                           val appConfig: AppConfig,
                                           mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identify { implicit request =>
-    Ok(alreadyEnrolledView(
+    Ok(view(
       postAction = controllers.individual.handoffs.routes.AlreadySignedUpController.submit,
       noEnrolment = request.mtditid.isEmpty
     ))
