@@ -31,7 +31,6 @@ class ResetUserController @Inject()(identify: IdentifierAction)
 
   val resetUser: Action[AnyContent] = identify.async { implicit request =>
       Future.successful(
-        Ok("User reset successfully")
-          .removingFromSession(ITSASessionKeys.MTDITID))
+        Ok("User reset successfully"))
   }
 }

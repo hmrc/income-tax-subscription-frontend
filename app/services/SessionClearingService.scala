@@ -16,7 +16,6 @@
 
 package services
 
-import common.Constants.ITSASessionKeys.MTDITID
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataSuccess
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataSuccess, SaveSessionDataSuccessResponse}
 import models.agent.JourneyStep.UserMatching
@@ -41,7 +40,6 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
       _ <- sessionDataService.saveJourneyStep(UserMatching)
     } yield {
       Redirect(nextPage)
-        .removingFromSession(MTDITID)
         .clearAllUserDetails(request)
     }
   }

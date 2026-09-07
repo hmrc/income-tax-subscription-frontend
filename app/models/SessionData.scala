@@ -96,15 +96,14 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
   }
 
-  def fetchJourneyStep[A](request: Request[A]): Option[JourneyStep] = {
-    val session = request.session
+  def fetchJourneyStep: Option[JourneyStep] = {
     val journeyState: Option[String] = data.get(ITSASessionKeys.JourneyStateKey).map(_.toObject[String])
 
     journeyState.map { key =>
       if (key.startsWith(AgentJourneyStep.prefix)) {
         AgentJourneyStep.fromString(
           key = key,
-          hasMtditid = session.get(ITSASessionKeys.MTDITID).isDefined
+          hasMtditid = fetchMtditid.isDefined
         )
       } else if (key.startsWith(IndividualJourneyStep.prefix)) {
         IndividualJourneyStep.fromString(key)
