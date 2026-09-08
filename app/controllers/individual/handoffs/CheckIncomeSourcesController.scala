@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// HO04A / HO06A
+
 package controllers.individual.handoffs
 
 import config.AppConfig
@@ -39,8 +41,8 @@ class CheckIncomeSourcesController @Inject()(identify: IdentifierAction,
 
   val submit: Action[AnyContent] = identify { implicit request =>
     request.mtditid match {
-      case Some(_) => Redirect(appConfig.getVAndCUrl)
-      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getVAndCUrl))
+      case Some(_) => Redirect(appConfig.getVAndCUrl) // HO04A
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl)) // HO06A
     }
   }
 
