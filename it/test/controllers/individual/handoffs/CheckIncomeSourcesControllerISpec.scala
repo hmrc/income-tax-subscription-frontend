@@ -62,7 +62,7 @@ class CheckIncomeSourcesControllerISpec extends ComponentSpecBase {
         )
       }
     }
-    "redirect to the sign out route with a continue url of the view and change home page" when {
+    "redirect to the sign out route with and continue to PTA/BTA" when {
       "the user does not have the MTDITID enrolment" in {
         AuthStub.stubAuthSuccess()
 
@@ -70,7 +70,7 @@ class CheckIncomeSourcesControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(appConfig.ggSignOutUrl(appConfig.getVAndCUrl))
+          redirectURI(appConfig.ggSignOutUrl(appConfig.getAccountUrl))
         )
       }
     }

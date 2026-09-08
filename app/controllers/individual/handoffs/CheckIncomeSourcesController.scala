@@ -40,7 +40,7 @@ class CheckIncomeSourcesController @Inject()(identify: IdentifierAction,
   val submit: Action[AnyContent] = identify { implicit request =>
     request.mtditid match {
       case Some(_) => Redirect(appConfig.getVAndCUrl)
-      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getVAndCUrl))
+      case None => Redirect(appConfig.ggSignOutUrl(appConfig.getAccountUrl))
     }
   }
 
