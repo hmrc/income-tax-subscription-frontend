@@ -16,21 +16,23 @@
 
 package testonly.controllers.agent
 
-import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionDataService
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class ResetUserController @Inject()(identify: IdentifierAction)
+class ResetUserController @Inject()(identify: IdentifierAction,
+                                    sessionDataService: SessionDataService)
                                    (implicit val ec: ExecutionContext,
                                     mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   val resetUser: Action[AnyContent] = identify.async { implicit request =>
-      Future.successful(
-        Ok("User reset successfully"))
+    sessionDataService.deleteMRDITID.map { _ =>
+      Ok("User reset successfully")
+    }
   }
 }
