@@ -38,7 +38,7 @@ class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRe
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val sessionData = request.sessionData
-    sessionData.fetchJourneyStep(request) match {
+    sessionData.fetchJourneyStep match {
       case Some(SignPosted) =>
         clientDetailsRetrieval.getClientDetails(sessionData)(request, hc) map { clientDetails =>
           Right(SignPostedRequest(

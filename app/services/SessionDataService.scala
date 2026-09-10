@@ -112,4 +112,7 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.JourneyStateKey, state.key)
   }
 
+  def deleteMRDITID(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.MTDITID)
+  }
 }
