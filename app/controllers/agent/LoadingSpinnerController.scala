@@ -35,7 +35,7 @@ class LoadingSpinnerController @Inject()(
   identify: IdentifierAction,
   appConfig: AppConfig,
   sessionDataService: SessionDataService
-)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends LoadingSpinnerBaseController(
+)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends LoadingSpinnerBaseController (
   isAgent = true,
   view = view,
   serviceError = serviceError,
