@@ -17,63 +17,44 @@
 package controllers.agent
 
 import config.AppConfig
-import controllers.SignUpBaseController
+import controllers.LoadingSpinnerBaseController
 import controllers.agent.actions.IdentifierAction
-import models.Status.*
-import models.SubmissionStatus
 import models.agent.JourneyStep.Confirmation
 import play.api.mvc.*
 import services.SessionDataService
-import views.html.agent.LoadingSpinner
+import views.html.LoadingSpinner
 import views.html.errors.ServiceError
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class LoadingSpinnerController @Inject()(view: LoadingSpinner,
-                                         serviceError: ServiceError,
-                                         identify: IdentifierAction,
-                                         appConfig: AppConfig,
-                                         sessionDataService: SessionDataService)
-                                        (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+class LoadingSpinnerController @Inject()(
+  view: LoadingSpinner,
+  serviceError: ServiceError,
+  identify: IdentifierAction,
+  appConfig: AppConfig,
+  sessionDataService: SessionDataService
+)(implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends LoadingSpinnerBaseController(
+  isAgent = true,
+  view = view,
+  serviceError = serviceError,
+  appConfig = appConfig,
+  sessionDataService = sessionDataService,
+  confirmation = Confirmation
+) {
 
   def show: Action[AnyContent] = identify.async { implicit request =>
-    request.sessionData.fetchSubmissionStatus match {
-      case Some(status@SubmissionStatus(InProgress, _)) if status.hasExpired(appConfig.confirmingSubmissionMaxWaitTimeSeconds) =>
-        displayServiceError()
-      case Some(SubmissionStatus(status, _)) =>
-        status match {
-          case InProgress =>
-            Future.successful(Ok(view(routes.LoadingSpinnerController.query)))
-          case Success =>
-            sessionDataService.saveJourneyStep(Confirmation).map { _ =>
-              Redirect(routes.ConfirmationController.show)
-            }
-          case HandledError =>
-            Future.successful(Redirect(controllers.errors.routes.ContactHMRCController.show))
-          case OtherError =>
-            displayServiceError()
-        }
-      case None => Future.successful(Redirect(routes.GlobalCheckYourAnswersController.show))
-    }
+    super.show(
+      sessionData = request.sessionData,
+      queryAction = routes.LoadingSpinnerController.query,
+      onwardAction = routes.ConfirmationController.show,
+      returnAction = routes.GlobalCheckYourAnswersController.show,
+      errorAction = routes.GlobalCheckYourAnswersController.submit
+    )
   }
-
-  private def displayServiceError()(implicit request: Request[_]): Future[Result] = {
-    sessionDataService.deleteSubmissionStatus map { _ =>
-      InternalServerError(serviceError(
-        postAction = routes.GlobalCheckYourAnswersController.submit,
-        isAgent = true
-      ))
-    }
-  }
-
 
   def query: Action[AnyContent] = identify { implicit request =>
-    request.sessionData.fetchSubmissionStatus match {
-      case Some(status@SubmissionStatus(InProgress, _)) if !status.hasExpired(appConfig.confirmingSubmissionMaxWaitTimeSeconds) => NoContent
-      case _ => Ok
-    }
+    super.query(request.sessionData)
   }
-
 }
