@@ -16,17 +16,27 @@
 
 @import config.AppConfig
 @import views.html.helpers.scripts.PollConfirmationRefresh
+@import views.html.templates.PrincipalMainTemplate
 @import views.html.templates.AgentMainTemplate
 
 @this(
-    mainTemplate: AgentMainTemplate,
+    individualTemplate: PrincipalMainTemplate,
+    agentTemplate: AgentMainTemplate,
     pollConfirmationRefresh: PollConfirmationRefresh,
     appConfig: AppConfig
 )
 
-@(queryRoute: Call)(implicit request: Request[_], messages: Messages)
+@(isAgent: Boolean, queryRoute: Call)(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(title = messages("loading-spinner.heading"), hasBackLink = false, additionalScripts = Some(pollConfirmationRefresh(queryRoute))) {
+@mainTemplate(title: String)(block: Html) = @{
+    if(isAgent) {
+        agentTemplate(title = title, hasBackLink = false, additionalScripts = Some(pollConfirmationRefresh(queryRoute)))(block)
+    } else {
+        individualTemplate(title = title, hasBackLink = false, additionalScripts = Some(pollConfirmationRefresh(queryRoute)))(block)
+    }
+}
+
+@mainTemplate(title = messages("loading-spinner.heading")) {
 
     <noscript>
         <meta http-equiv="refresh" content="@{appConfig.confirmingSubmissionAutoRefreshTimeSeconds}"/>

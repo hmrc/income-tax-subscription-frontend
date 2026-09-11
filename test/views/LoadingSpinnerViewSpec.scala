@@ -14,31 +14,36 @@
  * limitations under the License.
  */
 
-package views.individual
+package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import utilities.ViewSpec
-import views.html.individual.LoadingSpinner
+import views.html.LoadingSpinner
 
 class LoadingSpinnerViewSpec extends ViewSpec {
 
   private val loadingSpinner: LoadingSpinner = app.injector.instanceOf[LoadingSpinner]
 
-  "LoadingSpinner" must {
-    "have the correct template details" in new TemplateViewTest(
-      view = page,
-      isAgent = false,
-      hasBackLink = false,
-      title = LoadingSpinner.heading
-    )
+  "ClientLoadingSpinner" must {
+    "have the correct template details" in {
+      Seq(false, true).foreach { isAgent => new TemplateViewTest(
+        view = page(isAgent),
+        isAgent = isAgent,
+        hasBackLink = false,
+        title = LoadingSpinner.heading
+      )
+    }}
+
     "have the correct heading" in {
       document.mainContent.selectHead("h1").text mustBe LoadingSpinner.heading
     }
+    
     "have the correct first paragraph" in {
       document.mainContent.selectNth("p", 1).text mustBe LoadingSpinner.paragraphOne
     }
+    
     "have a script for automatically querying to refresh" in {
       val script = document.selectHead("head").selectHead(s"""script[src="${controllers.routes.Assets.versioned("javascripts/pollConfirmationRefresh.js")}"]""")
       script.attr("data-url") mustBe testCall.url
@@ -51,11 +56,10 @@ class LoadingSpinnerViewSpec extends ViewSpec {
     val paragraphOne = "Do not refresh this page."
   }
 
-  private def page: Html = {
-    loadingSpinner(testCall)
+  private def page(isAgent: Boolean): Html = {
+    loadingSpinner(isAgent, testCall)
   }
 
   private def document: Document =
-    Jsoup.parse(page.body)
-
+    Jsoup.parse(page(false).body)
 }
