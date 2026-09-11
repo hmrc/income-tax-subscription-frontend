@@ -27,7 +27,7 @@ import views.html.errors.ServiceError
 
 import scala.concurrent.{ExecutionContext, Future}
 
-abstract class LoadingSpinnerBaseController(
+abstract class LoadingSpinnerBaseController (
   isAgent: Boolean,
   view: LoadingSpinner,
   serviceError: ServiceError,
