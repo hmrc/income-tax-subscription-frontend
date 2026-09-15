@@ -18,12 +18,13 @@
 @import views.html.helpers.{ContinueButton, PageHeadingHelper,UnorderedList}
 @import views.html.templates.AgentMainTemplate
 @import utilities.UserMatchingSessionUtil.ClientDetails
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
     continueButton: ContinueButton,
     pageHeadingHelper: PageHeadingHelper,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     ul: UnorderedList
 )
 

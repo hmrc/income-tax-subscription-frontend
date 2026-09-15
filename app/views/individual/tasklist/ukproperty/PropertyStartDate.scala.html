@@ -18,13 +18,14 @@
 @import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import utilities.AccountingPeriodUtil
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
-        mainTemplate: PrincipalMainTemplate,
-        form: FormWithCSRF,
-        dateHelper: DateHelper,
-        pageHeadingHelper: PageHeadingHelper,
-        saveAndContinueButtonHelper: SaveAndContinueButtonHelper
+    mainTemplate: PrincipalMainTemplate,
+    form: FormWithCSRFAndNoAutoComplete,
+    dateHelper: DateHelper,
+    pageHeadingHelper: PageHeadingHelper,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper
 )
 
 @(propertyStartDateForm: Form[DateModel], postAction: Call)(implicit request: Request[_], messages: Messages)

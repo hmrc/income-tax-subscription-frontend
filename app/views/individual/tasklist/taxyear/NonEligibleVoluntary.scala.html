@@ -18,11 +18,12 @@
 @import views.html.helpers.ContinueButton
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import utilities.AccountingPeriodUtil
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF
+    form: FormWithCSRFAndNoAutoComplete
 )
 
 @(postAction: Call, startYear: Int, endYear: Int)(implicit request: Request[_], messages: Messages)

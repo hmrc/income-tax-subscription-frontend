@@ -19,10 +19,11 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import utilities.AccountingPeriodUtil
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
         mainTemplate: AgentMainTemplate,
-        form: FormWithCSRF,
+        form: FormWithCSRFAndNoAutoComplete,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper

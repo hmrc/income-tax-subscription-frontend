@@ -18,10 +18,11 @@
 @import forms.submapping.YesNoMapping
 @import views.html.helpers.{ContinueButton, RadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     radioHelper: RadioHelper,
     continueButton: ContinueButton
 )

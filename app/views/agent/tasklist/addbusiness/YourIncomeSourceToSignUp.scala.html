@@ -24,11 +24,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
 @import java.time.LocalDate
 @import utilities.ImplicitDateFormatter
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     agentMainTemplate: AgentMainTemplate,
     appConfig: AppConfig,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList : GovukSummaryList,

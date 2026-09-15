@@ -20,10 +20,11 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.helpers.{PageHeadingHelper, SaveAndContinueButtonHelper, YesNoRadioHelper}
 @import views.html.templates.AgentMainTemplate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     yesNoRadioHelper: YesNoRadioHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     pageHeadingHelper: PageHeadingHelper

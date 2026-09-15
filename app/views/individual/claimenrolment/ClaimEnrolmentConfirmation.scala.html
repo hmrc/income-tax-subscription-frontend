@@ -21,13 +21,14 @@
 @import models.individual.claimenrolment.ClaimEnrolmentOrigin._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcNewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
-        principalMainTemplate: PrincipalMainTemplate,
-        buttonHelper: ButtonHelper,
-        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-        form: FormWithCSRF,
-        ul: UnorderedList
+    principalMainTemplate: PrincipalMainTemplate,
+    buttonHelper: ButtonHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    form: FormWithCSRFAndNoAutoComplete,
+    ul: UnorderedList
 )
 
 @(postAction: Call, origin: ClaimEnrolmentOrigin)(implicit request: Request[_], messages: Messages)

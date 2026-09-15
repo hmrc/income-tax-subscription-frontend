@@ -16,12 +16,12 @@
 
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{ContinueButton, UnorderedList}
-
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     ul: UnorderedList
 )
 

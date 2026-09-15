@@ -18,10 +18,11 @@
 @import views.html.templates.PrincipalMainTemplate
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper}
 @import utilities.AccountingPeriodUtil
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     govukSummaryList: GovukSummaryList,
     pageHeadingHelper: PageHeadingHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper

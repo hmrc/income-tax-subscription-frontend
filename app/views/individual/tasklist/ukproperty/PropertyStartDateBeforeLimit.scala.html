@@ -20,10 +20,11 @@
 @import utilities.AccountingPeriodUtil
 @import views.html.helpers.{DetailsHelper, SaveAndContinueButtonHelper, YesNoRadioHelper, CaptionHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     yesNoRadioHelper: YesNoRadioHelper,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     captionHelper: CaptionHelper

@@ -18,10 +18,11 @@
 @import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import utilities.AccountingPeriodUtil
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     continueButton: ContinueButton,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     pageHeadingHelper: PageHeadingHelper
