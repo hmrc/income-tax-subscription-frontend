@@ -28,13 +28,12 @@
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("business.progress-saved.title")) {
-    @govukNotificationBanner(NotificationBanner(
-        title = Text(messages("business.progress-saved.banner-title")),
-        content = Text(messages("business.progress-saved.content.summary", expirationDate)),
-        bannerType = Some("success")
-))
 
-  <h1 class="govuk-heading-l">@messages("business.progress-saved.content.subheading")</h1>
+  <h1 class="govuk-heading-l">@messages("business.progress-saved.title")</h1>
+
+  <p class="govuk-body"> @messages("business.progress-saved.content.summary", expirationDate) </p>
+
+  <h2 class="govuk-heading-m">@messages("business.progress-saved.content.subheading")</h2>
 
   <p class="govuk-body">
     @messages("business.progress-saved.content.paragraph1")

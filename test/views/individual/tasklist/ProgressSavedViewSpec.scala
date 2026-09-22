@@ -26,13 +26,13 @@ class ProgressSavedViewSpec extends ViewSpec {
 
   object ProgressSaved {
     val title = "Progress saved - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-    val bannerTitle = "Progress saved"
+    val heading = "Progress saved"
 
     def contentSummary(expirationDate: String) = s"We’ll save your data until $expirationDate."
 
     val subheading = "What you can do next"
-    val paragraph1 = "If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment."
-    val paragraph2 = "Or you can continue signing up"
+    val paragraph2 = "If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment."
+    val paragraph3 = "Or you can continue signing up"
   }
 
   "Progress saved view" must {
@@ -40,20 +40,24 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().title mustBe ProgressSaved.title
     }
 
-    "have a summary" in {
-      document().select(".govuk-notification-banner__heading").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
+    "have a summary in the first paragraph" in {
+      document().select("p.govuk-body").get(0).text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
+    }
+
+    "have a heading" in {
+      document().select("h1.govuk-heading-l").text mustBe ProgressSaved.heading
     }
 
     "have a subheading" in {
-      document().select("h1.govuk-heading-l").text mustBe ProgressSaved.subheading
-    }
-
-    "have a paragraph 1" in {
-      document().select("p.govuk-body").get(0).text mustBe ProgressSaved.paragraph1
+      document().select("h2.govuk-heading-m").get(0).text mustBe ProgressSaved.subheading
     }
 
     "have a paragraph 2" in {
       document().select("p.govuk-body").get(1).text mustBe ProgressSaved.paragraph2
+    }
+
+    "have a paragraph 3" in {
+      document().select("p.govuk-body").get(2).text mustBe ProgressSaved.paragraph3
     }
 
     "sign up link" in {
