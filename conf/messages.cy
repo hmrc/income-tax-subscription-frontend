@@ -386,31 +386,25 @@ sign-up-complete.what-now.no-penalty                            = Does dim cosb 
 sign-up-complete.what-now.submit-annual                         = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
 ## Agent Sign Up Confirmation Page ##
-agent.sign-up-confirmation.heading                                                  = Rydych wedi gorffen cofrestru
-agent.sign-up-confirmation.heading.panel.current                                    = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} ymlaen
-agent.sign-up-confirmation.heading.panel.next                                       = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm o {0} ymlaen
+agent.sign-up-confirmation.heading                                                  = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
+agent.sign-up-confirmation.client-details                                           = Manylion y cleient:
 agent.sign-up-confirmation.date                                                     = Dyddiad:
 
-agent.sign-up-confirmation.what-must-do.heading                                     = Yr hyn sy’n digwydd nesaf
+agent.sign-up-confirmation.what-must-do.heading                                     = Eich camau nesaf
 
-agent.sign-up-confirmation.you-must-use.para                                        = Mae’n rhaid i chi ddefnyddio {0} i gyflwyno Ffurflen Dreth Hunanasesiad eich cleient.
-agent.sign-up-confirmation.you-must-use.para.link-text                              = meddalwedd sy’n gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.you-must-use.para.link-href                              = https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax.cy
+agent.sign-up-confirmation.you-must-use.current                                     = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
+agent.sign-up-confirmation.you-must-use.next                                        = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
 
-agent.sign-up-confirmation.mtd.heading                                              = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.mtd.para                                                 = Darllenwch {0}  i gael rhagor o wybodaeth am y canlynol:
+agent.sign-up-confirmation.you-must-use.para                                        = I wneud yn siŵr eich bod chi a’ch cleient yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
+agent.sign-up-confirmation.you-must-use.bullet1                                     = cael meddalwedd sy’n gweithio ar gyfer anghenion unigol eich cleient, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
+agent.sign-up-confirmation.you-must-use.bullet2                                     = gwirio bod awdurdodiadau eich cleient wedi’u hychwanegu at eich <a class="govuk-link" id="agent-service" href="{0}">cyfrif gwasanaethau asiant</a>
+agent.sign-up-confirmation.you-must-use.bullet3                                     = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+
+agent.sign-up-confirmation.quarterly.updates.para                                   = Mae angen i chi anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient o fod yn unig fasnachwr a ffynonellau incwm eich cleient o eiddo. Y dyddiadau cau yw:
+agent.sign-up-confirmation.mtd.para                                                 = Darllenwch {0} i gael gwybod sut i wneud y camau gofynnol nesaf.
 agent.sign-up-confirmation.mtd.para.link-text                                       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
-agent.sign-up-confirmation.mtd.bullet1                                              = sut i gyflwyno Ffurflen Dreth Hunanasesiad eich cleient
-agent.sign-up-confirmation.mtd.bullet2                                              = yr hyn i’w ddisgwyl ar ôl i chi gofrestru eich cleient
-agent.sign-up-confirmation.mtd.bullet3                                              = y gwahanol gamau y bydd angen i chi eu cymryd yn ystod y flwyddyn dreth
-agent.sign-up-confirmation.mtd.bullet4                                              = help a chymorth
-agent.sign-up-confirmation.mtd.para2                                                = Bydd y feddalwedd rydych wedi’i dewis yn esbonio’r hyn y bydd angen i chi ei wneud nesaf.
-
-agent.sign-up-confirmation.manage-client-account.heading                            = Rheoli cyfrifon eich cleient
-agent.sign-up-confirmation.manage-client-account.para1                              = Ewch i’ch {0}
-agent.sign-up-confirmation.manage-client-account.link.text                          = cyfrif gwasanaethau asiant
 
 agent.sign-up-confirmation.feedback.link                                            = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation_Clients
 
