@@ -999,7 +999,6 @@ agent.error.remove-sole-trader-business.invalid                     = Dewiswch o
 
 ## Agent progress saved
 agent.business.progress-saved.title                                   = Cynnydd wedi’i gadw
-agent.business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
 agent.business.progress-saved.content.summary                         = Byddwn yn cadw data’ch cleient hyd at {0}.
 agent.business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 agent.business.progress-saved.content.paragraph1                      = Gallwch wneud y canlynol:
@@ -1041,7 +1040,6 @@ error.remove-sole-trader-business.invalid         = Dewiswch os ydych am ddileu�
 
 ## Progress saved
 business.progress-saved.title                                   = Cynnydd wedi’i gadw
-business.progress-saved.banner-title                            = Cynnydd wedi’i gadw
 business.progress-saved.content.summary                         = Byddwn yn cadw’ch data tan {0}.
 business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich Hunanasesiad.

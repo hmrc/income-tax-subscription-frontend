@@ -43,20 +43,16 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().title mustBe ProgressSaved.title
     }
 
-    "have a banner title" in {
-      document().select(".govuk-notification-banner__title").text mustBe ProgressSaved.bannerTitle
-    }
-
-    "have a summary" in {
-      document().select(".govuk-notification-banner__heading").text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
+    "have a summary in first paragraph" in {
+      document().mainContent.selectNth("p.govuk-body", 1).text mustBe ProgressSaved.contentSummary("Monday, 20 October 2021")
     }
 
     "have a subheading" in {
-      document().mainContent.select("h1").text mustBe ProgressSaved.subheading
+      document().mainContent.select("h2").text mustBe ProgressSaved.subheading
     }
 
-    "have a paragraph 1" in {
-      document().mainContent.selectNth("p.govuk-body", 1).text mustBe ProgressSaved.paragraph1
+    "have a paragraph 2" in {
+      document().mainContent.selectNth("p.govuk-body", 2).text mustBe ProgressSaved.paragraph1
     }
 
     "have a bullet 1" in {
@@ -67,8 +63,8 @@ class ProgressSavedViewSpec extends ViewSpec {
       document().select(".govuk-list--bullet").select("li:nth-of-type(2)").text mustBe ProgressSaved.bullet2
     }
 
-    "have a paragraph 2" in {
-      document().mainContent.selectNth("p.govuk-body", 2).text mustBe ProgressSaved.paragraph2
+    "have a paragraph 3" in {
+      document().mainContent.selectNth("p.govuk-body", 3).text mustBe ProgressSaved.paragraph2
     }
 
     "have a sign up link" which {
