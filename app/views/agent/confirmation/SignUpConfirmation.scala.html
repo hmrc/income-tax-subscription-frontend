@@ -74,7 +74,9 @@
         leadIn=messages("agent.sign-up-confirmation.you-must-use.para"),
         Seq(
             HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet1")),
-            HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet2", appConfig.agentServicesAccountHomeUrl)),
+            HtmlContent(messages(key = "agent.sign-up-confirmation.you-must-use.bullet2",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(text = messages("agent.sign-up-confirmation.you-must-use.bullet2.link-text"),
+            href = Some(appConfig.agentServicesAccountHomeUrl))))),
             HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet3"))
         )
     )

@@ -209,8 +209,8 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val nextStepsHeading = "Your next steps"
     val paraOne = "To make sure that you and your client are ready to use Making Tax Digital for Income Tax, you must now:"
     val nextStepsOne = "get software that works for your client’s individual needs, if you have not already got this"
-    val nextStepsTwo = "check your client authorisations have been added to your agent services account"
-    val nextStepsTwoLink = "agent services account"
+    val nextStepsTwo = "check your client authorisations have been added to your agent services account (opens in new tab)"
+    val nextStepsTwoLink = "agent services account (opens in new tab)"
     val nextStepsThree = "authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax"
 
     val paraTwo = "You need to send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:"

@@ -398,7 +398,8 @@ agent.sign-up-confirmation.you-must-use.next                                    
 
 agent.sign-up-confirmation.you-must-use.para                                        = I wneud yn siŵr eich bod chi a’ch cleient yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = cael meddalwedd sy’n gweithio ar gyfer anghenion unigol eich cleient, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
-agent.sign-up-confirmation.you-must-use.bullet2                                     = gwirio bod awdurdodiadau eich cleient wedi’u hychwanegu at eich <a class="govuk-link" id="agent-service" href="{0}">cyfrif gwasanaethau asiant</a>
+agent.sign-up-confirmation.you-must-use.bullet2                                     = gwirio bod awdurdodiadau eich cleient wedi’u hychwanegu at eich {0}
+agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = cyfrif gwasanaethau asiant
 agent.sign-up-confirmation.you-must-use.bullet3                                     = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
 agent.sign-up-confirmation.quarterly.updates.para                                   = Mae angen i chi anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient o fod yn unig fasnachwr a ffynonellau incwm eich cleient o eiddo. Y dyddiadau cau yw:

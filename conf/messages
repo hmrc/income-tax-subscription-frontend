@@ -407,7 +407,8 @@ agent.sign-up-confirmation.you-must-use.next                                    
 
 agent.sign-up-confirmation.you-must-use.para                                        = To make sure that you and your client are ready to use Making Tax Digital for Income Tax, you must now:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = get software that works for your client’s individual needs, if you have not already got this
-agent.sign-up-confirmation.you-must-use.bullet2                                     = check your client authorisations have been added to your <a class="govuk-link" id="agent-service" href="{0}">agent services account</a>
+agent.sign-up-confirmation.you-must-use.bullet2                                     = check your client authorisations have been added to your {0}
+agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = agent services account
 agent.sign-up-confirmation.you-must-use.bullet3                                     = authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax
 
 agent.sign-up-confirmation.quarterly.updates.para                                   = You need to send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:
