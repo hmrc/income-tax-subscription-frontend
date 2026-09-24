@@ -18,15 +18,15 @@ package views.individual
 
 import forms.individual.IRSACredentialForm
 import messagelookup.individual.MessageLookup
+import models.individual.ObfuscatedIdentifier
+import models.individual.ObfuscatedIdentifier.{ObfuscatedUserId, UserEmail}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.FormError
 import play.twirl.api.Html
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import utilities.ViewSpec
 import views.html.individual.IRSACredential
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import models.individual.ObfuscatedIdentifier
-import models.individual.ObfuscatedIdentifier.{ObfuscatedUserId, UserEmail}
 
 class IRSACredentialViewSpec extends ViewSpec {
 
@@ -53,11 +53,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"$ggParagraph1 ${testCurrentGGCredential.id.grouped(2).mkString(" ")}"
+        mainContent.selectNth("p", 1).text mustBe ggParagraph1(testCurrentGGCredential.formatted)
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"$ggParagraph2 ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}"
+        mainContent.selectNth("p", 2).text mustBe ggParagraph2(testSAGGCredential.formatted)
       }
 
       "have the correct third paragraph" in {
@@ -80,7 +80,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}")),
+            yesHint = Some(Text(ggHintText(testSAGGCredential.formatted))),
             inline = false
           )
         }
@@ -102,11 +102,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"$olParagraph1 ${testCurrentOLCredential.email}"
+        mainContent.selectNth("p", 1).text mustBe olParagraph1(testCurrentOLCredential.email)
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"$ggParagraph2 ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}"
+        mainContent.selectNth("p", 2).text mustBe ggParagraph2(testSAGGCredential.formatted)
       }
 
       "have the correct third paragraph" in {
@@ -129,7 +129,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.ggHintText} ${testSAGGCredential.id.replace("*", "").grouped(2).mkString(" ")}")),
+            yesHint = Some(Text(ggHintText(testSAGGCredential.formatted))),
             inline = false
           )
         }
@@ -151,11 +151,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"$ggParagraph1 ${testCurrentGGCredential.id.grouped(2).mkString(" ")}"
+        mainContent.selectNth("p", 1).text mustBe ggParagraph1(testCurrentGGCredential.formatted)
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"$olParagraph2 ${testSAOLCredential.obfuscatedEmail}"
+        mainContent.selectNth("p", 2).text mustBe olParagraph2(testSAOLCredential.obfuscatedEmail)
       }
 
       "have the correct third paragraph" in {
@@ -178,7 +178,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
+            yesHint = Some(Text(olHintText(testSAOLCredential.obfuscatedEmail))),
             inline = false
           )
         }
@@ -200,11 +200,11 @@ class IRSACredentialViewSpec extends ViewSpec {
       }
 
       "have the correct first paragraph" in {
-        mainContent.selectNth("p", 1).text mustBe s"${olParagraph1} ${testCurrentOLCredential.email}"
+        mainContent.selectNth("p", 1).text mustBe olParagraph1(testCurrentOLCredential.email)
       }
 
       "have the correct second paragraph" in {
-        mainContent.selectNth("p", 2).text mustBe s"${olParagraph2} ${testSAOLCredential.obfuscatedEmail}"
+        mainContent.selectNth("p", 2).text mustBe olParagraph2(testSAOLCredential.obfuscatedEmail)
       }
 
       "have the correct third paragraph" in {
@@ -227,7 +227,7 @@ class IRSACredentialViewSpec extends ViewSpec {
             isLegendHidden = false,
             hint = None,
             errorMessage = None,
-            yesHint = Some(Text(s"${IRSACredentialMessages.olHintText} ${testSAOLCredential.obfuscatedEmail}")),
+            yesHint = Some(Text(olHintText(testSAOLCredential.obfuscatedEmail))),
             inline = false
           )
         }
@@ -263,13 +263,17 @@ class IRSACredentialViewSpec extends ViewSpec {
     val title: String = "You’re not using your Self Assessment sign in details"
     val heading: String = "You’re not using your Self Assessment sign in details"
 
-    val ggParagraph1: String = "You’re signed in with Government Gateway user ID"
-    val ggParagraph2: String = "The Government Gateway user ID details you use for Self Assessment ends in"
-    val ggHintText: String = "You’ll have to sign in again using Government Gateway user ID ending in"
+    def ggParagraph1(id: String): String = s"You’re signed in with Government Gateway user ID that ends in $id."
 
-    val olParagraph1: String = "You’re signed in with GOV.UK One Login details"
-    val olParagraph2: String = "The GOV.UK One Login details you use for Self Assessment are:"
-    val olHintText: String = "You’ll have to sign in again using GOV.UK One Login details:"
+    def ggParagraph2(id: String): String = s"The details that you use for Self Assessment are Government Gateway user ID ending in: $id."
+
+    def ggHintText(id: String): String = s"You’ll have to sign in again using Government Gateway user ID ending in $id"
+
+    def olParagraph1(id: String): String = s"You’re signed in with GOV.UK One Login details: $id."
+
+    def olParagraph2(id: String): String = s"The GOV.UK One Login details you use for Self Assessment are: $id."
+
+    def olHintText(id: String): String = s"You’ll have to sign in again using GOV.UK One Login details: $id"
 
     val paragraph3: String = "We recommend you use the same sign in details that you use for your Self Assessment to sign up to Making Tax Digital for Income Tax."
     val heading2: String = "Do you want to use the same sign in details to access Making Tax Digital for Income Tax and Self Assessment?"

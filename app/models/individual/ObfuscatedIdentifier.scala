@@ -28,7 +28,9 @@ object ObfuscatedIdentifier {
   private lazy val EmailRegex: Regex = """^(.+)@(.+)$""".r
   private lazy val SplitMailbox: Regex = """^(.)(.*)(.)$""".r
 
-  case class ObfuscatedUserId(id: String) extends ObfuscatedIdentifier
+  case class ObfuscatedUserId(id: String) extends ObfuscatedIdentifier {
+    val formatted: String = id.replace("*", "").grouped(2).mkString(" ")
+  }
 
   case class UserEmail(email: String) extends ObfuscatedIdentifier {
     lazy val obfuscatedEmail: String = email match {
