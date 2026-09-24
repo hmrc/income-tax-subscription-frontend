@@ -225,7 +225,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val usingMtdLink = "use Making Tax Digital for Income Tax (opens in new tab)"
     val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
 
-    val surveyText = "What did you think of this service (opens in new tab)"
+    val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
     val surveyLink = appConfig.feedbackFrontendAgentRedirectUrl
 
