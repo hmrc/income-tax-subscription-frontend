@@ -18,10 +18,11 @@
 @import play.api.data.Form
 @import views.html.helpers.{ContinueButton, YesNoRadioHelper}
 @import views.html.templates.PrincipalMainTemplate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton
 )

@@ -20,10 +20,11 @@
 @import views.html.helpers.{ContinueButton,TextInputHelper, DateHelper}
 
 
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     continueButton: ContinueButton,
     inputHelper: TextInputHelper,
     dateHelper: DateHelper

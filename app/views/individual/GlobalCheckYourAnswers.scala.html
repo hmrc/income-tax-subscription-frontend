@@ -26,13 +26,14 @@
 @import config.AppConfig
 @import utilities.AccountingPeriodUtil
 @import models.common.BusinessAccountingPeriod._
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     govukInsetText: GovukInsetText,
     appConfig: AppConfig
 )

@@ -24,6 +24,7 @@
 @import utilities.UserMatchingSessionUtil.ClientDetails
 @import views.html.helpers.{InsetText, PageHeadingHelper, PrintLink, SaveAndContinueButtonHelper}
 @import views.html.templates.AgentMainTemplate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
@@ -32,7 +33,7 @@
     pageHeadingHelper: PageHeadingHelper,
     govukSummaryList : GovukSummaryList,
     implicitDateFormatter: ImplicitDateFormatterImpl,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     insetText: InsetText,
     printLink: PrintLink
 )

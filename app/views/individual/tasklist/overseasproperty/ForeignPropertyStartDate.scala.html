@@ -18,10 +18,11 @@
 @import views.html.helpers.{DateHelper, SaveAndContinueButtonHelper, PageHeadingHelper}
 @import views.html.templates.PrincipalMainTemplate
 @import utilities.AccountingPeriodUtil
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
         mainTemplate: PrincipalMainTemplate,
-        form: FormWithCSRF,
+        form: FormWithCSRFAndNoAutoComplete,
         dateHelper: DateHelper,
         pageHeadingHelper: PageHeadingHelper,
         saveAndContinueButtonHelper: SaveAndContinueButtonHelper

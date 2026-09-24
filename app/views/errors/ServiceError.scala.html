@@ -16,11 +16,12 @@
 
 @import views.html.helpers.ButtonHelper
 @import views.html.templates.{PrincipalMainTemplate, AgentMainTemplate}
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     individualMainTemplate: PrincipalMainTemplate,
     agentMainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     buttonHelper: ButtonHelper
 )
 

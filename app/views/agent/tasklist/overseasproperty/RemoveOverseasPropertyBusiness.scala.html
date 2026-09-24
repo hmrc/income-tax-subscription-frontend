@@ -19,10 +19,11 @@
 @import views.html.helpers.{ContinueButton, YesNoRadioHelper}
 @import forms.agent.RemoveClientOverseasPropertyForm
 @import forms.agent.RemoveClientOverseasPropertyForm.yesNo
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton,
 

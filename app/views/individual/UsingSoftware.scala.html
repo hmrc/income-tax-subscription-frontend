@@ -18,12 +18,13 @@
 @import views.html.templates.PrincipalMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import forms.individual.UsingSoftwareForm.fieldName
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     yesNoRadioHelper: YesNoRadioHelper,
     continueButton: ContinueButton,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper
 )
 

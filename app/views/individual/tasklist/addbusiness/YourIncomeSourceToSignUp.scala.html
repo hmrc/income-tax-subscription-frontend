@@ -24,11 +24,12 @@
 @import utilities.AccountingPeriodUtil
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
 @import java.time.LocalDate
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: PrincipalMainTemplate,
     appConfig: AppConfig,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
     govukSummaryList: GovukSummaryList,
     govukTag : GovukTag,

@@ -17,11 +17,12 @@
 @import views.html.helpers.{ContinueButton, PageHeadingHelper}
 @import views.html.templates.AgentMainTemplate
 @import services.AccountingPeriodService
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
     mainTemplate: AgentMainTemplate,
     continueButton: ContinueButton,
-    form: FormWithCSRF,
+    form: FormWithCSRFAndNoAutoComplete,
     pageHeadingHelper: PageHeadingHelper
 )
 

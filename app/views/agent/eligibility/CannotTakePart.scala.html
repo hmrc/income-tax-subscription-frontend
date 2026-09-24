@@ -20,15 +20,16 @@
 @import views.html.templates.AgentMainTemplate
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.newtablinkhelper.NewTabLinkHelper
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
-        mainTemplate: AgentMainTemplate,
-        form: FormWithCSRF,
-        continueButton: ContinueButton,
-        pageHeadingHelper: PageHeadingHelper,
-        hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
-        ul: UnorderedList,
-        govukInsetText: GovukInsetText
+    mainTemplate: AgentMainTemplate,
+    form: FormWithCSRFAndNoAutoComplete,
+    continueButton: ContinueButton,
+    pageHeadingHelper: PageHeadingHelper,
+    hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
+    ul: UnorderedList,
+    govukInsetText: GovukInsetText
 )
 
 @(clientName: String, clientNino: String, exemptionReason: Option[String])(implicit request: Request[_], messages: Messages)

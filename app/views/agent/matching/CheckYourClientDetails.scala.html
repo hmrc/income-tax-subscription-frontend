@@ -17,10 +17,11 @@
 @import models.usermatching.UserDetailsModel
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{ContinueButton, PageHeadingHelper}
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
 
 @this(
         agentMainTemplate: AgentMainTemplate,
-        form: FormWithCSRF,
+        form: FormWithCSRFAndNoAutoComplete,
         govukSummaryList: GovukSummaryList,
         pageHeadingHelper: PageHeadingHelper,
         continueButton: ContinueButton
