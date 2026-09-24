@@ -386,6 +386,7 @@ sign-up-complete.what-now.no-penalty                            = Does dim cosb 
 sign-up-complete.what-now.submit-annual                         = Cyflwynwch eich diweddariadau blynyddol a gwnewch ddatganiad ar gyfer y flwyddyn dreth erbyn 31 Ionawr {0}.
 
 ## Agent Sign Up Confirmation Page ##
+agent.sign-up-confirmation.title                                                    = Cadarnhad - Cofrestriad wedi’i gwblhau
 agent.sign-up-confirmation.heading                                                  = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
 agent.sign-up-confirmation.client-details                                           = Manylion y cleient:

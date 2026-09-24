@@ -72,7 +72,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
       view = page(true, true, true, None, true, LocalDate.now),
-      title = SignUpConfirmationMessages.panelHeading,
+      title = SignUpConfirmationMessages.title,
       isAgent = true,
       hasBackLink = false
     )
@@ -184,6 +184,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   }
 
   private object SignUpConfirmationMessages {
+    val title = "Confirmation - Sign up complete"
     val whatToDoHeading = "Your next steps"
     val panelHeading = "Your client is signed up for Making Tax Digital for Income Tax"
     val userDetails = s"Client details: $testName – $testNino"

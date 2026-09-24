@@ -395,6 +395,7 @@ sign-up-complete.what-now.no-penalty                            = There is no pe
 sign-up-complete.what-now.submit-annual                         = Submit your annual updates and declare for the tax year by 31 January {0}.
 
 ## Agent Sign Up Confirmation Page ##
+agent.sign-up-confirmation.title                                                    = Confirmation - Sign up complete
 agent.sign-up-confirmation.heading                                                  = Your client is signed up for Making Tax Digital for Income Tax
 
 agent.sign-up-confirmation.client-details                                           = Client details:
