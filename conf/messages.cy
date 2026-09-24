@@ -1043,7 +1043,7 @@ business.progress-saved.title                                   = Cynnydd wedi�
 business.progress-saved.content.summary                         = Byddwn yn cadw’ch data tan {0}.
 business.progress-saved.content.subheading                      = Yr hyn y gallwch ei wneud nesaf
 business.progress-saved.content.paragraph1                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich Hunanasesiad.
-business.progress-saved.content.paragraph2                      = Fel arall, gallwch {0}.
+business.progress-saved.content.paragraph2                      = Fel arall, gallwch <a href="{0}" class="govuk-link" id="sign-up-link">parhau i gofrestru</a>.
 business.progress-saved.content.sign-up-link                    = parhau i gofrestru
 
 ## Remove UK property business

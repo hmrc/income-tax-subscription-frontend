@@ -32,7 +32,7 @@ class ProgressSavedViewSpec extends ViewSpec {
 
     val subheading = "What you can do next"
     val paragraph2 = "If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment."
-    val paragraph3 = "Or you can continue signing up ."
+    val paragraph3 = "Or you can continue signing up."
   }
 
   "Progress saved view" must {
@@ -61,7 +61,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     }
 
     "sign up link" in {
-      document().select("a.sign-up-link").attr("href") mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
+      document().select("#sign-up-link").attr("href") mustBe controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
     }
   }
 
