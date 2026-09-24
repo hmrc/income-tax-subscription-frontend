@@ -1066,7 +1066,7 @@ business.progress-saved.title                                   = Progress saved
 business.progress-saved.content.summary                         = We’ll save your data until {0}.
 business.progress-saved.content.subheading                      = What you can do next
 business.progress-saved.content.paragraph1                      = If you sign out, you’ll need to sign in again using the user ID and password you use for your Self Assessment.
-business.progress-saved.content.paragraph2                      = Or you can
+business.progress-saved.content.paragraph2                      = Or you can <a href="{0}" class="govuk-link" id="sign-up-link">continue signing up</a>.
 business.progress-saved.content.sign-up-link                    = continue signing up
 
 ## Remove UK property business
