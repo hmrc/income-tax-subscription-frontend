@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests.individual
+package models.requests
 
 import models.SessionData
-import models.requests.BaseIdentifierRequest
 import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-case class IdentifierRequest[A](
+abstract class BaseIdentifierRequest[A](
   request: Request[A],
-  mtditid: Option[String],
-  nino: String,
-  utr: Option[String],
-  credentials: Credentials,
   sessionData: SessionData
-) extends BaseIdentifierRequest[A](request, sessionData)
+) extends WrappedRequest[A](request)
