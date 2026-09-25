@@ -56,28 +56,20 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
       view = page(true, true, None, None, true, LocalDate.now),
-      title = SignUpConfirmationMessages.panelHeading,
+      title = SignUpConfirmationMessages.title,
       isAgent = false,
       hasBackLink = false
     )
   }
 
   "The sign up confirmation view" when {
-    "the user has software and eligible for current year" should {
+    "the user has software and for current year. Content identical across all scenarios" should {
       def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
 
       "has a header panel" which {
         "contains the panel heading" in {
           mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
         }
-
-        "contains the description" in {
-          mainContent().select(".govuk-panel")
-            .select(".govuk-panel__body")
-            .select("p")
-            .get(0)
-            .text() mustBe SignUpConfirmationMessages.panelDescription(false)
-        }
       }
 
       "have a print link" in {
@@ -87,8 +79,12 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         link.attr("href") mustBe "#"
       }
 
+      "contains first paragraph" in {
+        mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.paragraphDescription(false)
+      }
+
       "contains date field" in {
-        mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
+        mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.dateField
       }
 
       "contains what you must do heading" in {
@@ -96,33 +92,54 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       }
 
       "contains a first paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
+        mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.paraOne
+      }
+
+      "contains bullet list for next steps" which {
+        def bulletList: Element = mainContent().selectNth("ul", 1)
+
+        "has a first item" in {
+          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.nextStepsOne
+        }
+        "has a second item" in {
+          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.nextStepsTwo
+        }
+        "has a third item" in {
+          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.nextStepsThree
+        }
+      }
+
+      "have the correct third bullet point with text and link" in {
+        val thirdBullet = mainContent().selectNth("ul", 1).selectNth("li", 3)
+        val link = thirdBullet.selectHead("a")
+
+        link.text mustBe SignUpConfirmationMessages.nextStepsThreeLink
+        link.attr("href") mustBe appConfig.getAccountUrl
       }
 
       "contains a second paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
+        mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraTwo
       }
 
-      "contains bullets for cannot use HMRC reminders" which {
-        def bulletList() = mainContent().selectNth("ul", 1)
+      "contains bullet list for dealines" which {
+        def bulletList: Element = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
+          bulletList.selectNth("li", 1).text mustBe SignUpConfirmationMessages.deadline1
         }
-
         "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
-
+          bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.deadline2
         }
-      }
-
-      "contains a third paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
+        "has a third item" in {
+          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.deadline3
+        }
+        "has a fourth item" in {
+          bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.deadline4
+        }
       }
 
       "contains a mtd paragraph with a link" in {
-
-        def usingMtdPara() = mainContent().selectNth("p", 7)
+        def usingMtdPara() = mainContent().selectNth("p", 6)
 
         val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
 
@@ -130,596 +147,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         val link = usingMtdPara().select("a")
         link.text() mustBe SignUpConfirmationMessages.usingMtdLink
         link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-      }
-
-      "contains a bullet list for mtd" which {
-        def bulletList() = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-        }
-      }
-
-      "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection() = mainContent().selectNth("div", 6)
-
-        "have the correct heading" in {
-          quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-        }
-
-        "have the correct intro paragraph" in {
-          quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-        }
-
-        "have the correct table" which {
-          "has the correct headers" in {
-            val tableHeaders = quarterlyUpdatesSection().select("th")
-            tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
-            tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
-            tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-          }
-
-          "has the correct first row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
-            tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
-            tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-          }
-
-          "has the correct second row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
-            tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
-            tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-          }
-
-          "has the correct third row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
-            tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
-            tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-          }
-
-          "has the correct fourth row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
-            tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
-            tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-          }
-        }
-
-        "have the correct read more paragraph" in {
-          val readMorePara = quarterlyUpdatesSection().select("p").last()
-          readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
-          readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-        }
-      }
-
-      "contains a preference section" which {
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
-
-        "has no retrieved preference content when no preference was provided to the view" in {
-          preferenceSection().selectOptionalNth("p", 1) mustBe None
-        }
-
-        "has an online preference when their opt in preference was true" in {
-          preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-        }
-      }
-
-      "contains survey link" which {
-        "has a link for survey" in {
-          val (l, p) = (4, 10)
-          mainContent().selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-        }
-      }
-    }
-
-    "the user has software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
-
-      "have a header panel" which {
-        "contains the panel heading" in {
-          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-        }
-
-        "contains the description" in {
-          mainContent().select(".govuk-panel")
-            .select(".govuk-panel__body")
-            .select("p")
-            .get(0)
-            .text() mustBe SignUpConfirmationMessages.panelDescription(true)
-        }
-      }
-
-      "have a print link" in {
-        val link = mainContent().selectNth(".govuk-link", 1)
-        link.text mustBe SignUpConfirmationMessages.printLink
-        link.attr("data-module") mustBe "hmrc-print-link"
-        link.attr("href") mustBe "#"
-      }
-
-      "contains date field" in {
-        mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-      }
-
-      "contains what you must do heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-      }
-
-      "contains a first paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(2).text() mustBe SignUpConfirmationMessages.paraOne
-      }
-
-      "contains a mtd paragraph with a link" in {
-
-        def usingMtdPara() = mainContent().selectNth("p", 5)
-
-        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        usingMtdPara().text() mustBe expectedText
-        val link = usingMtdPara().select("a")
-        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
-        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-      }
-
-      "contains a bullet list for mtd" which {
-        def bulletList() = mainContent().selectNth("ul", 1)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-        }
-      }
-
-      "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection() = mainContent().selectNth("div", 6)
-
-        "have the correct heading" in {
-          quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-        }
-
-        "have the correct intro paragraph" in {
-          quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-        }
-
-        "have the correct table" which {
-          "has the correct headers" in {
-            val tableHeaders = quarterlyUpdatesSection().select("th")
-            tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
-            tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
-            tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-          }
-
-          "has the correct first row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
-            tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
-            tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-          }
-
-          "has the correct second row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
-            tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
-            tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-          }
-
-          "has the correct third row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
-            tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
-            tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-          }
-
-          "has the correct fourth row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
-            tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
-            tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-          }
-        }
-
-        "have the correct read more paragraph" in {
-          val readMorePara = quarterlyUpdatesSection().select("p").last()
-          readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
-          readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-        }
-      }
-
-      "contains a preference section" which {
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
-
-        "has no retrieved preference content when no preference was provided to the view" in {
-          preferenceSection().selectOptionalNth("p", 1) mustBe None
-        }
-
-        "has an online preference when their opt in preference was true" in {
-          preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-        }
       }
 
       "contains survey link" which {
         "has a link for survey" in {
           mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
           mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", 8).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-        }
-      }
-    }
-
-    "the user has no software and for this year" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
-
-      "have a header panel" which {
-        "contains the panel heading" in {
-          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-        }
-
-        "contains the description" in {
-          mainContent().select(".govuk-panel")
-            .select(".govuk-panel__body")
-            .select("p")
-            .get(0)
-            .text() mustBe SignUpConfirmationMessages.panelDescription(false)
-        }
-      }
-
-      "have a print link" in {
-        val link = mainContent().selectNth(".govuk-link", 1)
-        link.text mustBe SignUpConfirmationMessages.printLink
-        link.attr("data-module") mustBe "hmrc-print-link"
-        link.attr("href") mustBe "#"
-      }
-
-      "contains date field" in {
-        mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-      }
-
-      "contains what you must do heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-      }
-
-      "contains a first paragraph with a link" in {
-        def firstPara() = mainContent().select(".govuk-body").select("p").get(2)
-
-        val expectedText = s"${SignUpConfirmationMessages.getSoftware} ${SignUpConfirmationMessages.getSoftwareLink}"
-        firstPara().text() mustBe expectedText
-        val link = mainContent().selectNth(".govuk-link", 2)
-        link.text mustBe SignUpConfirmationMessages.getSoftwareLink
-        link.attr("href") mustBe SignUpConfirmationMessages.getSoftwareLinkHref
-      }
-
-      "contains second paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
-      }
-
-      "contains a bullet list of what software will tell you to do" which {
-        def bulletList() = mainContent().selectNth("ul", 1)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
-        }
-      }
-
-      "contains a third paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYear
-      }
-
-      "contains bullets for cannot use HMRC reminders" which {
-        def bulletList() = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearBullet2
-        }
-      }
-
-      "contains a fourth paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.whatYouMustDoYesAndCurrentYearEnd
-      }
-
-      "contains mtd heading" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
-      }
-
-      "contains a mtd paragraph with a link" in {
-
-        def usingMtdPara() = mainContent().selectNth("p", 8)
-
-        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        usingMtdPara().text() mustBe expectedText
-        val link = usingMtdPara().select("a")
-        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
-        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-      }
-
-      "contains a bullet list for mtd" which {
-        def bulletList() = mainContent().selectNth("ul", 3)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-        }
-      }
-
-      "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection() = mainContent().selectNth("div", 6)
-
-        "have the correct heading" in {
-          quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-        }
-
-        "have the correct intro paragraph" in {
-          quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-        }
-
-        "have the correct table" which {
-          "has the correct headers" in {
-            val tableHeaders = quarterlyUpdatesSection().select("th")
-            tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
-            tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
-            tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-          }
-
-          "has the correct first row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
-            tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
-            tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-          }
-
-          "has the correct second row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
-            tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
-            tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-          }
-
-          "has the correct third row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
-            tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
-            tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-          }
-
-          "has the correct fourth row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
-            tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
-            tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-          }
-        }
-
-        "have the correct read more paragraph" in {
-          val readMorePara = quarterlyUpdatesSection().select("p").last()
-          readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
-          readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-        }
-      }
-
-      "contains a preference section" which {
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
-
-        "has no retrieved preference content when no preference was provided to the view" in {
-          preferenceSection().selectOptionalNth("p", 1) mustBe None
-        }
-
-        "has an online preference when their opt in preference was true" in {
-          preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-        }
-      }
-
-      "contains survey link" which {
-        "has a link for survey" in {
-          val (l, p) = (5, 11)
-          mainContent().selectNth(".govuk-link", l).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", l).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", p).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
-        }
-      }
-    }
-
-    "the user has no software and for next year only" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = true, preference = preference, usingSoftwareStatus = false, signedUpDate = LocalDate.now()).mainContent
-
-      "have a header panel" which {
-        "contains the panel heading" in {
-          mainContent().select(".govuk-panel").select("h1").text() mustBe SignUpConfirmationMessages.panelHeading
-        }
-
-        "contains the description" in {
-          mainContent().select(".govuk-panel")
-            .select(".govuk-panel__body")
-            .select("p")
-            .get(0)
-            .text() mustBe SignUpConfirmationMessages.panelDescription(true)
-        }
-      }
-
-      "have a print link" in {
-        val link = mainContent().selectNth(".govuk-link", 1)
-        link.text mustBe SignUpConfirmationMessages.printLink
-        link.attr("data-module") mustBe "hmrc-print-link"
-        link.attr("href") mustBe "#"
-      }
-
-      "contains date field" in {
-        mainContent().select(".govuk-body").select("p").get(1).text() mustBe SignUpConfirmationMessages.dateField
-      }
-
-      "contains what you must do heading" in {
-        mainContent().selectNth("h2", 1).text() mustBe SignUpConfirmationMessages.whatYouMustDoHeading
-      }
-
-      "contains a first paragraph with a link" in {
-        val firstPara = mainContent().select(".govuk-body").select("p").get(2)
-        val expectedText = s"${SignUpConfirmationMessages.getSoftware} ${SignUpConfirmationMessages.getSoftwareLink}"
-        firstPara.text() mustBe expectedText
-        val link = mainContent().selectNth(".govuk-link", 2)
-        link.text mustBe SignUpConfirmationMessages.getSoftwareLink
-        link.attr("href") mustBe SignUpConfirmationMessages.getSoftwareLinkHref
-      }
-
-      "contains second paragraph" in {
-        mainContent().select(".govuk-body").select("p").get(3).text() mustBe SignUpConfirmationMessages.softwareUsagePara
-      }
-
-      "contains a bullet list of what software will tell you to do" which {
-        def bulletList() = mainContent().selectNth("ul", 1)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.softwareUsageBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.softwareUsageBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.softwareUsageBullet3
-        }
-      }
-
-      "contains mtd heading" in {
-        mainContent().selectNth("h2", 2).text() mustBe SignUpConfirmationMessages.usingMtdHeading
-      }
-
-      "contains a mtd paragraph with a link" in {
-        val usingMtdPara = mainContent().selectNth("p", 6)
-        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        usingMtdPara.text() mustBe expectedText
-        val link = usingMtdPara.select("a")
-        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
-        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-      }
-
-      "contains a bullet list for mtd" which {
-        def bulletList() = mainContent().selectNth("ul", 2)
-
-        "has a first item" in {
-          bulletList().selectNth("li", 1).text mustBe SignUpConfirmationMessages.usingMtdBullet1
-        }
-
-        "has a second item" in {
-          bulletList().selectNth("li", 2).text mustBe SignUpConfirmationMessages.usingMtdBullet2
-        }
-
-        "has a third item" in {
-          bulletList().selectNth("li", 3).text mustBe SignUpConfirmationMessages.usingMtdBullet3
-        }
-      }
-
-      "contains the quarterly updates section correctly" must {
-        def quarterlyUpdatesSection() = mainContent().selectNth("div", 6)
-
-        "have the correct heading" in {
-          quarterlyUpdatesSection().select("h3").text() mustBe SignUpConfirmationMessages.quarterlyUpdatesHeading
-        }
-
-        "have the correct intro paragraph" in {
-          quarterlyUpdatesSection().select("p").first().text() mustBe SignUpConfirmationMessages.quarterlyUpdatesPara1
-        }
-
-        "have the correct table" which {
-          "has the correct headers" in {
-            val tableHeaders = quarterlyUpdatesSection().select("th")
-            tableHeaders.get(0).text() mustBe SignUpConfirmationMessages.updateDeadline
-            tableHeaders.get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod
-            tableHeaders.get(2).text() mustBe SignUpConfirmationMessages.standardPeriod
-          }
-
-          "has the correct first row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(0).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline1
-            tableRows.get(0).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod1
-            tableRows.get(0).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod1
-          }
-
-          "has the correct second row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(1).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline2
-            tableRows.get(1).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod2
-            tableRows.get(1).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod2
-          }
-
-          "has the correct third row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(2).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline3
-            tableRows.get(2).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod3
-            tableRows.get(2).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod3
-          }
-
-          "has the correct fourth row" in {
-            val tableRows = quarterlyUpdatesSection().select("tbody tr")
-            tableRows.get(3).select("td").get(0).text() mustBe SignUpConfirmationMessages.deadline4
-            tableRows.get(3).select("td").get(1).text() mustBe SignUpConfirmationMessages.calendarPeriod4
-            tableRows.get(3).select("td").get(2).text() mustBe SignUpConfirmationMessages.standardPeriod4
-          }
-        }
-
-        "have the correct read more paragraph" in {
-          val readMorePara = quarterlyUpdatesSection().select("p").last()
-          readMorePara.text() must include(SignUpConfirmationMessages.quarterlyUpdatesPara2)
-          readMorePara.select("a").attr("href") mustBe SignUpConfirmationMessages.quarterlyUpdatesPara2Link
-        }
-      }
-
-      "contains a preference section" which {
-        def preferenceSection(preference: Option[Boolean] = None): Element = mainContent(preference).selectNth("div", 7)
-
-        "has no retrieved preference content when no preference was provided to the view" in {
-          preferenceSection().selectOptionalNth("p", 1) mustBe None
-        }
-
-        "has an online preference when their opt in preference was true" in {
-          preferenceSection(preference = Some(false)).selectNth("h2", 1).text mustBe SignUpConfirmationMessages.postalPreferenceHeading
-          preferenceSection(preference = Some(false)).selectNth("p", 1).text mustBe SignUpConfirmationMessages.postalPreferenceParaOne
-        }
-      }
-
-      "contains survey link" which {
-        "has a link for survey" in {
-          mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
-          mainContent().selectNth("p.govuk-body", 9).text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
+          mainContent().select("p.govuk-body").last().text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
     }
@@ -727,101 +161,53 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   private object SignUpConfirmationMessages {
     val currentTaxYearStartYear: Int = AccountingPeriodUtil.getCurrentTaxStartYear
-    val currentTaxYearEndYear: Int = AccountingPeriodUtil.getCurrentTaxEndYear
     val nextTaxYearStartYear: Int = AccountingPeriodUtil.getNextTaxStartYear
-    val nextTaxYearEndYear: Int = AccountingPeriodUtil.getNextTaxEndYear
 
-    val whatYouMustDoHeading = "What happens next"
-    val panelHeading = "Sign up complete"
+    val title = "Confirmation - Sign up complete"
+    val whatYouMustDoHeading = "Your next steps"
+    val panelHeading = "You’re signed up for Making Tax Digital for Income Tax"
     val panelUserDetails = s"$testName | $testNino"
-    private val panelDescriptionThis: String = {
-      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $currentTaxYearStartYear to 5 April $currentTaxYearEndYear) onwards"
+    private val paraCurrent: String = {
+      s"This means that from 6 April $currentTaxYearStartYear you need to send your quarterly updates and submit your tax return using your chosen software."
     }
-    private val panelDescriptionNext: String = {
-      s"You’re signed up for Making Tax Digital for Income Tax from (6 April $nextTaxYearStartYear to 5 April $nextTaxYearEndYear) onwards"
+    private val paraNext: String = {
+      s"This means that from 6 April $nextTaxYearStartYear you need to send your quarterly updates and submit your tax return using your chosen software."
     }
 
-    def panelDescription(yearIsNext: Boolean): String = if (yearIsNext)
-      SignUpConfirmationMessages.panelDescriptionNext
+    def paragraphDescription(yearIsNext: Boolean): String = if (yearIsNext)
+      SignUpConfirmationMessages.paraNext
     else
-      SignUpConfirmationMessages.panelDescriptionThis
+      SignUpConfirmationMessages.paraCurrent
 
     val printLink = "Print this page"
 
-    val paraOne = s"You must submit your Self Assessment tax return using software that works with Making Tax Digital for Income Tax."
-
     val dateField: String = {
       val date = implicitDateFormatter.LongDate(LocalDate.now()).toLongDate
-      s"Date: $date"
+      s"Today’s date: $date"
     }
 
-    val whatYouMustDoYesAndCurrentYear = "You cannot use your HMRC online services to submit your other income sources for:"
-    val whatYouMustDoYesAndCurrentYearBullet1 = s"the remainder of the $currentTaxYearStartYear to $currentTaxYearEndYear tax year"
-    val whatYouMustDoYesAndCurrentYearBullet2 = s"the upcoming $nextTaxYearStartYear to $nextTaxYearEndYear tax year"
-    val whatYouMustDoYesAndCurrentYearEnd = s"But you must submit your Self Assessment tax returns for the tax years up to 5 April $currentTaxYearStartYear as normal."
+    val paraOne = "To make sure that you’re ready to use Making Tax Digital for Income Tax, you must now:"
+    val nextStepsOne = "get software that works for your individual needs, if you have not already got this"
+    val nextStepsTwo = "authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax"
+    val nextStepsThree = "check that Making Tax Digital for Income Tax has been added to your HMRC online account (opens in new tab)"
+    val nextStepsThreeLink = "your HMRC online account (opens in new tab)"
 
-    val whatYouMustDoNoAndCurrentYear = s"You must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
-    val linkTextNoAndCurrentYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
+    val paraTwo = "You need to send your quarterly updates for each of your sole trader and property income sources. The deadlines are:"
 
-    val whatYouMustDoYesAndNextYear = s"From 6 April $nextTaxYearStartYear, you must use your software that works with Making Tax Digital for Income Tax."
-    val whatYouMustDoNoAndNextYear = s"From 6 April $nextTaxYearStartYear, you must find and use software that works with Making Tax Digital for Income Tax (opens in new tab)"
-    val linkTextNoAndNextYear = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
-
-    val paraTwo = "Your chosen software will tell you what else you need to do, including:"
-    val bullet1 = "how to authorise and connect the software to the Government Gateway user ID you use for your Self Assessment"
-    val bullet2 = "how to keep digital records"
-    val bullet3 = "when and how to send quarterly updates"
-    val bullet4NoThisYear = "if you need to send any missed or backdated updates for the current tax year - and how to send them"
-    val bullet5 = "when and how to make your tax return after the end of the tax year"
-    val paraThree = "And you will need to pay the tax you owe."
-
-    val getSoftware = "You must get"
-    val getSoftwareLink = "software that works with Making Tax Digital for Income Tax (opens in new tab)"
-    val getSoftwareLinkHref = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
-
-    val softwareUsagePara = "You must then use the software to:"
-    val softwareUsageBullet1 = "create, store and correct digital records of your self-employment and property income and expenses"
-    val softwareUsageBullet2 = "send your quarterly updates to HMRC"
-    val softwareUsageBullet3 = "submit your tax return and pay tax due by 31 January the following year"
-
-    val usingMtdHeading = "Using Making Tax Digital for Income Tax"
-    val usingMtdPara = "Read"
-    val usingMtdParaEnd = "to find out more information about:"
-    val usingMtdLink = "use Making Tax Digital for Income Tax (opens in new tab)"
-    val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
-    val usingMtdBullet1 = "what to expect after you sign up"
-    val usingMtdBullet2 = "the different steps you will need to take during the tax year"
-    val usingMtdBullet3 = "help and support"
-
-    val quarterlyUpdatesHeading = "Sending your quarterly updates"
-    val quarterlyUpdatesPara1 = "You need to send your quarterly updates for each of your sole trader and property income sources by:"
-    val quarterlyUpdatesPara2 = "You can read more about quarterly updates"
-    val quarterlyUpdatesPara2Link = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates"
-
-    val updateDeadline = "Update deadline"
     val deadline1 = "7 August"
     val deadline2 = "7 November"
     val deadline3 = "7 February"
     val deadline4 = "7 May"
 
-    val calendarPeriod = "Calendar period"
-    val calendarPeriod1 = "1 April to 30 June"
-    val calendarPeriod2 = "1 April to 30 September"
-    val calendarPeriod3 = "1 April to 31 December"
-    val calendarPeriod4 = "1 April to 31 March"
+    val usingMtdPara = "Read the"
+    val usingMtdParaEnd = "– this explains how to do the required next steps listed above."
+    val usingMtdLink = "Use Making Tax Digital for Income Tax guide (opens in new tab)"
+    val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
 
-    val standardPeriod = "Standard period"
-    val standardPeriod1 = "6 April to 5 July"
-    val standardPeriod2 = "6 April to 5 October"
-    val standardPeriod3 = "6 April to 5 January"
-    val standardPeriod4 = "6 April to 5 April"
-
-    val surveyText = "What did you think of this service (opens in new tab)"
+    val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
     val surveyLink = appConfig.feedbackFrontendRedirectUrl
 
-    val postalPreferenceHeading = "Deadline reminders"
-    val postalPreferenceParaOne = "To receive deadline reminders, you need to opt in for online communications. You can update your communication preferences at any time in your online tax account settings."
   }
 
 }

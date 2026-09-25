@@ -37,8 +37,6 @@ import java.time.LocalDate
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
-  val currentTaxYearRange = s"6 April ${AccountingPeriodUtil.getCurrentTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getCurrentTaxEndYear}"
-  val nextTaxYearRange = s"6 April ${AccountingPeriodUtil.getNextTaxEndYear - 1} to 5 April ${AccountingPeriodUtil.getNextTaxEndYear}"
 
   s"GET ${routes.ConfirmationController.show.url}" when {
     "the user is not authenticated" must {
@@ -91,8 +89,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
           result must have(
             httpStatus(OK),
-            pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk),
-            elementTextBySelector(".govuk-panel__body--secondary")(messages("sign-up-confirmation.heading.panel.current", currentTaxYearRange))
+            pageTitle(messages("sign-up-confirmation.title") + serviceNameGovUk)
           )
         }
         "the user is signed up for the next tax year" in {
@@ -113,8 +110,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
 
           result must have(
             httpStatus(OK),
-            pageTitle(messages("sign-up-confirmation.heading") + serviceNameGovUk),
-            elementTextBySelector(".govuk-panel__body--secondary")(messages("sign-up-confirmation.heading.panel.next", nextTaxYearRange))
+            pageTitle(messages("sign-up-confirmation.title") + serviceNameGovUk)
           )
         }
       }
