@@ -42,14 +42,14 @@
     @printLink
 
     <p class="govuk-body">
-        @{
-        val signUpTaxYear = implicitDateFormatter.LongDate(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext).startDate.toLocalDate).toLongDate
+    @{
+      val signUpTaxYear = implicitDateFormatter.LongDate(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext).startDate.toLocalDate).toLongDate
         if(taxYearSelectionIsNext) {
-        messages("sign-up-confirmation.para.next", signUpTaxYear)
+            messages("sign-up-confirmation.para.next", signUpTaxYear)
         } else {
-        messages("sign-up-confirmation.para.current", signUpTaxYear)
+            messages("sign-up-confirmation.para.current", signUpTaxYear)
         }
-        }
+    }
     </p>
 
     @signUpConfirmationDate
