@@ -40,7 +40,7 @@
 
 @(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel, usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
-@agentMainTemplate(title = messages("agent.sign-up-confirmation.heading"), hasBackLink = false, userResearchUrl = Some(messages("agent.sign-up-confirmation.feedback.link"))) {
+@agentMainTemplate(title = messages("agent.sign-up-confirmation.title"), hasBackLink = false, userResearchUrl = Some(messages("agent.sign-up-confirmation.feedback.link"))) {
 
     @headingPanel
 
@@ -51,28 +51,51 @@
     </div>
 
     <p class="govuk-body">
+        @if(taxYearSelectionIsNext) {
+            @messages("agent.sign-up-confirmation.you-must-use.next", languageUtils.Dates.formatDate(accountingPeriodModel.startDate.toLocalDate))
+        } else {
+            @messages("agent.sign-up-confirmation.you-must-use.current", languageUtils.Dates.formatDate(accountingPeriodModel.startDate.toLocalDate))
+        }
+    </p>
+
+    <p class="govuk-body">
+        <strong class="govuk-!-font-weight-bold">@messages("agent.sign-up-confirmation.client-details")</strong>
+        @userDetails
+    </p>
+
+    <p class="govuk-body">
         <strong class="govuk-!-font-weight-bold">@messages("agent.sign-up-confirmation.date")</strong>
         @implicitDateFormatter.LongDate(signedUpDate).toLongDate
     </p>
 
     <h2 class="govuk-heading-m">@messages("agent.sign-up-confirmation.what-must-do.heading")</h2>
 
-    <p class="govuk-body">@Html(messages(
-        key = "agent.sign-up-confirmation.you-must-use.para",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-confirmation.you-must-use.para.link-text"), Some(messages("agent.sign-up-confirmation.you-must-use.para.link-href"))))))
+    @ul(
+        leadIn=messages("agent.sign-up-confirmation.you-must-use.para"),
+        Seq(
+            HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet1")),
+            HtmlContent(messages(key = "agent.sign-up-confirmation.you-must-use.bullet2",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(text = messages("agent.sign-up-confirmation.you-must-use.bullet2.link-text"),
+            href = Some(appConfig.agentServicesAccountHomeUrl))))),
+            HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet3"))
+        )
+    )
+
+    @ul(
+        leadIn=messages("agent.sign-up-confirmation.quarterly.updates.para"),
+        Seq(
+            HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.1")),
+            HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.2")),
+            HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.3")),
+            HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
+        )
+    )
+
+    <p class="govuk-body">
+        @Html(messages(
+        key = "agent.sign-up-confirmation.mtd.para",
+        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-confirmation.mtd.para.link-text"), Some(messages("agent.sign-up-confirmation.mtd.para.link-href"))))))
     </p>
-
-    <div>
-        <h3 class="govuk-heading-s">@messages("sign-up-confirmation.quarterly.updates.heading")</h3>
-        <p class="govuk-body">@messages("sign-up-confirmation.quarterly.updates.para1")</p>
-        @QuaterlyUpdatesHtml
-        <p class="govuk-body">@Html(messages(
-            key = "sign-up-confirmation.quarterly.updates.para2.start",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation.quarterly.updates.para2"), Some(messages("sign-up-confirmation.quarterly.updates.para2.link"))))))
-        </p>
-    </div>
-
-    @mtd
 
     <div class = "govuk-!-display-none-print">
         @buttonHelper(
@@ -95,113 +118,13 @@
 @headingPanel = {
     @govukPanel(Panel(
         title = Text(messages("agent.sign-up-confirmation.heading")),
-        content = HtmlContent(headingPanelContent),
         classes = "govuk-!-margin-bottom-6"
     ))
 }
 
-@headingPanelContent = {
-    <p>
-        <strong>@userDetails</strong>
-    </p>
-    <p class="govuk-panel__body--secondary">
-        @if(taxYearSelectionIsNext) {
-            @messages("agent.sign-up-confirmation.heading.panel.next", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
-        } else {
-            @messages("agent.sign-up-confirmation.heading.panel.current", languageUtils.Dates.formatDateRange(accountingPeriodModel.startDate.toLocalDate, accountingPeriodModel.endDate.toLocalDate))
-        }
-    </p>
-}
-
 @userDetails = @{
     userNameMaybe match {
-        case Some(name) => s"$name | $individualUserNino"
+        case Some(name) => s"$name – $individualUserNino"
         case None => individualUserNino
     }
-}
-
-@QuaterlyUpdatesHtml = {
-    @govukTable(Table(
-        rows = Seq(
-            Seq(
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.1"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.1"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.1"))
-                )
-            ),
-            Seq(
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.2"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.2"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.2"))
-                )
-            ),
-            Seq(
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.3"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.3"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.3"))
-                )
-            ),
-            Seq(
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar.4"))
-                ),
-                TableRow(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard.4"))
-                )
-                )
-            ),
-            head = Some(Seq(
-                HeadCell(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.deadline"))
-                ),
-                HeadCell(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.calendar"))
-                ),
-                HeadCell(
-                    content = Text(messages("sign-up-confirmation.quarterly.updates.standard"))
-                )
-            )),
-            caption = Some(messages("sign-up-confirmation.quarterly.updates.table-caption")),
-            captionClasses = " govuk-visually-hidden"
-        ))
-}
-
-@mtd = {
-
-    <h2 class="govuk-heading-m">@messages("agent.sign-up-confirmation.mtd.heading")</h2>
-
-    <p class="govuk-body">@Html(messages(
-        key = "agent.sign-up-confirmation.mtd.para",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-confirmation.mtd.para.link-text"), Some(messages("agent.sign-up-confirmation.mtd.para.link-href"))))))
-    </p>
-
-    @ul(
-    leadIn = "",
-    Seq(
-    Text(messages("agent.sign-up-confirmation.mtd.bullet1")),
-    Text(messages("agent.sign-up-confirmation.mtd.bullet2")),
-    Text(messages("agent.sign-up-confirmation.mtd.bullet3")),
-    Text(messages("agent.sign-up-confirmation.mtd.bullet4"))
-    )
-    )
-
-    <p class="govuk-body">@messages("agent.sign-up-confirmation.mtd.para2")</p>
 }
