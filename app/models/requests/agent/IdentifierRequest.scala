@@ -20,8 +20,8 @@ import models.SessionData
 import models.requests.BaseIdentifierRequest
 import play.api.mvc.{Request, WrappedRequest}
 
-case class IdentifierRequest[A](
+class IdentifierRequest[A](
   request: Request[A],
-  arn: String,
+  val arn: String,
   sessionData: SessionData
 ) extends BaseIdentifierRequest[A](request, sessionData)

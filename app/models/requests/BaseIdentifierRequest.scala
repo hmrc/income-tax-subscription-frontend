@@ -21,5 +21,5 @@ import play.api.mvc.{Request, WrappedRequest}
 
 abstract class BaseIdentifierRequest[A](
   request: Request[A],
-  sessionData: SessionData
+  val sessionData: SessionData
 ) extends WrappedRequest[A](request)

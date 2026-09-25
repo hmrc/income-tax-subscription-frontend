@@ -21,11 +21,11 @@ import models.requests.BaseIdentifierRequest
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-case class IdentifierRequest[A](
+class IdentifierRequest[A](
   request: Request[A],
-  mtditid: Option[String],
-  nino: String,
-  utr: Option[String],
-  credentials: Credentials,
+  val mtditid: Option[String],
+  val nino: String,
+  val utr: Option[String],
+  val credentials: Credentials,
   sessionData: SessionData
 ) extends BaseIdentifierRequest[A](request, sessionData)
