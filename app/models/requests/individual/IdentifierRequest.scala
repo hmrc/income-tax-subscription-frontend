@@ -18,7 +18,7 @@ package models.requests.individual
 
 import models.SessionData
 import models.requests.BaseIdentifierRequest
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.Request
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 class IdentifierRequest[A](

@@ -18,7 +18,7 @@ package models.requests.agent
 
 import models.SessionData
 import models.requests.BaseIdentifierRequest
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.Request
 
 class IdentifierRequest[A](
   request: Request[A],
