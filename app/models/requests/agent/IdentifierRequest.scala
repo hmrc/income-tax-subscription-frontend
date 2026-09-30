@@ -17,10 +17,11 @@
 package models.requests.agent
 
 import models.SessionData
-import play.api.mvc.{Request, WrappedRequest}
+import models.requests.BaseIdentifierRequest
+import play.api.mvc.Request
 
-case class IdentifierRequest[A](
+class IdentifierRequest[A](
   request: Request[A],
-  arn: String,
+  val arn: String,
   sessionData: SessionData
-) extends WrappedRequest[A](request)
+) extends BaseIdentifierRequest[A](request, sessionData)
