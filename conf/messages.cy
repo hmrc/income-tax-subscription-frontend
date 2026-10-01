@@ -394,8 +394,7 @@ agent.sign-up-confirmation.date                                                 
 
 agent.sign-up-confirmation.what-must-do.heading                                     = Eich camau nesaf
 
-agent.sign-up-confirmation.you-must-use.current                                     = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
-agent.sign-up-confirmation.you-must-use.next                                        = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
+agent.sign-up-confirmation.you-must-use                                             = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
 
 agent.sign-up-confirmation.you-must-use.para                                        = I wneud yn siŵr eich bod chi a’ch cleient yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = cael meddalwedd sy’n gweithio ar gyfer anghenion unigol eich cleient, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
@@ -403,7 +402,7 @@ agent.sign-up-confirmation.you-must-use.bullet2                                 
 agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = cyfrif gwasanaethau asiant
 agent.sign-up-confirmation.you-must-use.bullet3                                     = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
-agent.sign-up-confirmation.quarterly.updates.para                                   = Mae angen i chi anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient o fod yn unig fasnachwr a ffynonellau incwm eich cleient o eiddo. Y dyddiadau cau yw:
+agent.sign-up-confirmation.quarterly.updates.para                                   = Mae angen i chi greu cofnodion digidol ac anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient fel unig fasnachwr a phob ffynhonnell incwm o eiddo. Y dyddiadau cau yw:
 agent.sign-up-confirmation.mtd.para                                                 = Darllenwch {0} i gael gwybod sut i wneud y camau gofynnol nesaf.
 agent.sign-up-confirmation.mtd.para.link-text                                       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
@@ -481,8 +480,7 @@ individual.capture-consent.form-error               = Dewiswch ‘Iawn’ os gal
 ## Sign Up Confirmation page ##
 sign-up-confirmation.title                                           = Cadarnhad - Cofrestriad wedi’i gwblhau
 sign-up-confirmation.heading                                         = Rydych wedi cofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.para.current                                    = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon eich diweddariadau chwarterol a chyflwyno’ch Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
-sign-up-confirmation.para.next                                       = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon eich diweddariadau chwarterol a chyflwyno’ch Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
+sign-up-confirmation.para                                            = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon eich diweddariadau chwarterol a chyflwyno’ch Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
 
 sign-up-confirmation.date                                            = Dyddiad heddiw:
 
@@ -491,10 +489,11 @@ sign-up-confirmation.what-you-must-do.heading                        = Eich cama
 sign-up-confirmation.you-must-use.para                               = I wneud yn siŵr eich bod yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
 sign-up-confirmation.you-must-use.bullet1                            = cael meddalwedd sy’n gweithio ar gyfer eich anghenion unigol, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
 sign-up-confirmation.you-must-use.bullet2                            = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.you-must-use.bullet3                            = gwirio bod Troi Treth yn Ddigidol ar gyfer Treth Incwm wedi’i ychwanegu at {0}
-sign-up-confirmation.you-must-use.bullet3.link-text                  = eich cyfrif ar-lein CThEF
+sign-up-confirmation.you-must-use.bullet3                            = gwirio bod eich cyfnod cyfrifyddu yn gywir yn eich meddalwedd
+sign-up-confirmation.you-must-use.bullet4                            = gwirio bod Troi Treth yn Ddigidol ar gyfer Treth Incwm wedi’i ychwanegu at {0}
+sign-up-confirmation.you-must-use.bullet4.link-text                  = eich cyfrif ar-lein CThEF
 
-sign-up-confirmation.quarterly.updates.para                          = Mae angen i chi anfon diweddariadau chwarterol ar gyfer pob un o’ch ffynonellau incwm o fod yn unig fasnachwr a’ch ffynonellau incwm o eiddo. Y dyddiadau cau yw:
+sign-up-confirmation.quarterly.updates.para                          = Mae angen i chi greu cofnodion digidol ac anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient fel unig fasnachwr a phob ffynhonnell incwm o eiddo. Y dyddiadau cau yw:
 
 sign-up-confirmation-what-you-must-do.para                           = Darllenwch y canllaw {0} – mae hwn yn esbonio sut i wneud y camau gofynnol nesaf a restrir uchod.
 sign-up-confirmation-what-you-must-do.para.link-text                 = Troi Treth yn Ddigidol ar gyfer Treth Incwm

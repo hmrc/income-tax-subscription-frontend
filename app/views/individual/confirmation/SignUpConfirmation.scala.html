@@ -42,14 +42,7 @@
     @printLink
 
     <p class="govuk-body">
-    @{
-      val signUpTaxYear = implicitDateFormatter.LongDate(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext).startDate.toLocalDate).toLongDate
-        if(taxYearSelectionIsNext) {
-            messages("sign-up-confirmation.para.next", signUpTaxYear)
-        } else {
-            messages("sign-up-confirmation.para.current", signUpTaxYear)
-        }
-    }
+        @messages("sign-up-confirmation.para", implicitDateFormatter.LongDate(AccountingPeriodUtil.getTaxYear(taxYearSelectionIsNext).startDate.toLocalDate).toLongDate)
     </p>
 
     @signUpConfirmationDate
@@ -62,9 +55,14 @@
         Seq(
             HtmlContent(messages("sign-up-confirmation.you-must-use.bullet1")),
             HtmlContent(messages("sign-up-confirmation.you-must-use.bullet2")),
-            HtmlContent(messages(key = "sign-up-confirmation.you-must-use.bullet3",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(text = messages("sign-up-confirmation.you-must-use.bullet3.link-text"),
-            href = Some(appConfig.getAccountUrl)))))
+            HtmlContent(messages("sign-up-confirmation.you-must-use.bullet3")),
+            HtmlContent(messages(
+                key = "sign-up-confirmation.you-must-use.bullet4",
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                    text = messages("sign-up-confirmation.you-must-use.bullet4.link-text"),
+                    href = Some(appConfig.getAccountUrl)
+                ))
+            ))
         )
     )
 

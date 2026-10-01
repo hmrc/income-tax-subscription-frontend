@@ -107,11 +107,14 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "has a third item" in {
           bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.nextStepsThree
         }
+        "has a forth item" in {
+          bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.nextStepsFour
+        }
       }
 
-      "have the correct third bullet point with text and link" in {
-        val thirdBullet = mainContent().selectNth("ul", 1).selectNth("li", 3)
-        val link = thirdBullet.selectHead("a")
+      "have the correct forth bullet point with text and link" in {
+        val forthBullet = mainContent().selectNth("ul", 1).selectNth("li", 4)
+        val link = forthBullet.selectHead("a")
 
         link.text mustBe SignUpConfirmationMessages.nextStepsThreeLink
         link.attr("href") mustBe appConfig.getAccountUrl
@@ -189,10 +192,11 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val paraOne = "To make sure that you’re ready to use Making Tax Digital for Income Tax, you must now:"
     val nextStepsOne = "get software that works for your individual needs, if you have not already got this"
     val nextStepsTwo = "authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax"
-    val nextStepsThree = "check that Making Tax Digital for Income Tax has been added to your HMRC online account (opens in new tab)"
+    val nextStepsThree = "check your accounting period is correct in your software"
+    val nextStepsFour = "check that Making Tax Digital for Income Tax has been added to your HMRC online account (opens in new tab)"
     val nextStepsThreeLink = "your HMRC online account (opens in new tab)"
 
-    val paraTwo = "You need to send your quarterly updates for each of your sole trader and property income sources. The deadlines are:"
+    val paraTwo = "You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The deadlines are:"
 
     val deadline1 = "7 August"
     val deadline2 = "7 November"

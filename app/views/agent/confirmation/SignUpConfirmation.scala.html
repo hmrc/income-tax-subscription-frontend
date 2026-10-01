@@ -51,11 +51,7 @@
     </div>
 
     <p class="govuk-body">
-        @if(taxYearSelectionIsNext) {
-            @messages("agent.sign-up-confirmation.you-must-use.next", languageUtils.Dates.formatDate(accountingPeriodModel.startDate.toLocalDate))
-        } else {
-            @messages("agent.sign-up-confirmation.you-must-use.current", languageUtils.Dates.formatDate(accountingPeriodModel.startDate.toLocalDate))
-        }
+        @messages("agent.sign-up-confirmation.you-must-use", languageUtils.Dates.formatDate(accountingPeriodModel.startDate.toLocalDate))
     </p>
 
     <p class="govuk-body">
@@ -74,9 +70,13 @@
         leadIn=messages("agent.sign-up-confirmation.you-must-use.para"),
         Seq(
             HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet1")),
-            HtmlContent(messages(key = "agent.sign-up-confirmation.you-must-use.bullet2",
-            args = hmrcNewTabLinkHelper(NewTabLinkHelper(text = messages("agent.sign-up-confirmation.you-must-use.bullet2.link-text"),
-            href = Some(appConfig.agentServicesAccountHomeUrl))))),
+            HtmlContent(messages(
+                key = "agent.sign-up-confirmation.you-must-use.bullet2",
+                args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                    text = messages("agent.sign-up-confirmation.you-must-use.bullet2.link-text"),
+                    href = Some(appConfig.agentServicesAccountHomeUrl)
+                ))
+            )),
             HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet3"))
         )
     )

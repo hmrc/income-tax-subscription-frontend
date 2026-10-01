@@ -403,8 +403,7 @@ agent.sign-up-confirmation.date                                                 
 
 agent.sign-up-confirmation.what-must-do.heading                                     = Your next steps
 
-agent.sign-up-confirmation.you-must-use.current                                     = This means that from {0} you need to send your client’s quarterly updates and submit their tax return using your chosen software.
-agent.sign-up-confirmation.you-must-use.next                                        = This means that from {0} you need to send your client’s quarterly updates and submit their tax return using your chosen software.
+agent.sign-up-confirmation.you-must-use                                             = This means that from {0} you need to send your client’s quarterly updates and submit their tax return using your chosen software.
 
 agent.sign-up-confirmation.you-must-use.para                                        = To make sure that you and your client are ready to use Making Tax Digital for Income Tax, you must now:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = get software that works for your client’s individual needs, if you have not already got this
@@ -412,7 +411,7 @@ agent.sign-up-confirmation.you-must-use.bullet2                                 
 agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = agent services account
 agent.sign-up-confirmation.you-must-use.bullet3                                     = authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax
 
-agent.sign-up-confirmation.quarterly.updates.para                                   = You need to send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:
+agent.sign-up-confirmation.quarterly.updates.para                                   = You need to create digital records and send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:
 
 agent.sign-up-confirmation.mtd.para                                                 = Read {0} to find out how to do the required next steps.
 agent.sign-up-confirmation.mtd.para.link-text                                       = use Making Tax Digital for Income Tax
@@ -491,8 +490,7 @@ individual.capture-consent.form-error               = Select yes if we can conta
 ## Sign Up Confirmation page ##
 sign-up-confirmation.title                                           = Confirmation - Sign up complete
 sign-up-confirmation.heading                                         = You’re signed up for Making Tax Digital for Income Tax
-sign-up-confirmation.para.current                                    = This means that from {0} you need to send your quarterly updates and submit your tax return using your chosen software.
-sign-up-confirmation.para.next                                       = This means that from {0} you need to send your quarterly updates and submit your tax return using your chosen software.
+sign-up-confirmation.para                                            = This means that from {0} you need to send your quarterly updates and submit your tax return using your chosen software.
 
 sign-up-confirmation.date                                            = Today’s date:
 
@@ -501,10 +499,11 @@ sign-up-confirmation.what-you-must-do.heading                        = Your next
 sign-up-confirmation.you-must-use.para                               = To make sure that you’re ready to use Making Tax Digital for Income Tax, you must now:
 sign-up-confirmation.you-must-use.bullet1                            = get software that works for your individual needs, if you have not already got this
 sign-up-confirmation.you-must-use.bullet2                            = authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax
-sign-up-confirmation.you-must-use.bullet3                            = check that Making Tax Digital for Income Tax has been added to {0}
-sign-up-confirmation.you-must-use.bullet3.link-text                  = your HMRC online account
+sign-up-confirmation.you-must-use.bullet3                            = check your accounting period is correct in your software
+sign-up-confirmation.you-must-use.bullet4                            = check that Making Tax Digital for Income Tax has been added to {0}
+sign-up-confirmation.you-must-use.bullet4.link-text                  = your HMRC online account
 
-sign-up-confirmation.quarterly.updates.para                          = You need to send your quarterly updates for each of your sole trader and property income sources. The deadlines are:
+sign-up-confirmation.quarterly.updates.para                          = You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The deadlines are:
 
 sign-up-confirmation-what-you-must-do.para                           = Read the {0} – this explains how to do the required next steps listed above.
 sign-up-confirmation-what-you-must-do.para.link-text                 = Use Making Tax Digital for Income Tax guide
