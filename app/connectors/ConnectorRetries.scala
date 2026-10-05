@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.*
 import scala.concurrent.{ExecutionContext, Future}
 import scala.jdk.CollectionConverters.*
-import scala.util.{Try, Success, Failure}
+import scala.util.Try
 
 trait ConnectorRetries extends Logging {
 
@@ -34,7 +34,7 @@ trait ConnectorRetries extends Logging {
 
   protected def configuration: Config
 
-  def retryWithIdempotency[A](label: String, initialIdempotencyKey: String, logError: A => Unit = (_: A) => ())
+  def retryWithIdempotency[A](label: String, initialIdempotencyKey: String)
                              (nextKey: PartialFunction[(A, String), String])
                              (block: String => Future[A])
                              (implicit ec: ExecutionContext): Future[A] = {
@@ -57,17 +57,11 @@ trait ConnectorRetries extends Logging {
       }
     }
 
-    val result = loop(retryIntervals, initialIdempotencyKey)
-    result.onComplete {
-      case Success(r) => logError(r)
-      case _ => {}
-    }
-    result
+    loop(retryIntervals, initialIdempotencyKey)
   }
 
   private lazy val retryIntervals: Seq[FiniteDuration] =
     Try(configuration.getDurationList("retries.intervals").asScala.toSeq)
-      .toOption.filter(_.nonEmpty)
-      .getOrElse {Seq.empty}
+      .getOrElse(Seq.empty)
       .map(d => FiniteDuration(d.toMillis, TimeUnit.MILLISECONDS))
 }

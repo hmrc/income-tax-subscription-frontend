@@ -17,12 +17,11 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import config.featureswitch.FeatureSwitch.UseIdempotency
 import connectors.stubs.SignUpAPIStub
+import connectors.stubs.SignUpAPIStub.StubAttempt
 import helpers.ComponentSpecBase
 import models.common.subscription.{SignUpFailureResponse, SignUpRequestModel, SignUpSuccessful}
 import models.{Current, Next}
-import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.*
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,7 +33,20 @@ import utilities.UUIDProvider
 
 import scala.collection.mutable
 
-class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
+class SignUpConnectorISpec extends ComponentSpecBase {
+
+  private val testIdempotencyKey = "test-uuid"
+
+  private class TestUUIDProvider extends UUIDProvider {
+    private val keys: mutable.Queue[String] = mutable.Queue.empty
+
+    def setKeys(values: Seq[String]): Unit = {
+      keys.clear()
+      keys.addAll(values)
+    }
+
+    override def getUUID: String = if (keys.nonEmpty) keys.dequeue() else testIdempotencyKey
+  }
 
   private lazy val testUUIDProvider = new TestUUIDProvider
 
@@ -44,17 +56,15 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     .overrides(bind[UUIDProvider].to(testUUIDProvider))
     .build()
 
-  override protected def afterEach(): Unit = {
-    testUUIDProvider.setKeys(Seq("test-uuid"))
-    disable(UseIdempotency)
-    super.afterEach()
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    testUUIDProvider.setKeys(Seq(testIdempotencyKey))
   }
 
-  "signUp when UseIdempotency feature switch is disabled" should {
-    "return a sign up success response for the current year without idempotency key" in {
-      disable(UseIdempotency)
+  "signUp responses" should {
+    "return a sign up success response for the current year with an idempotency key" in {
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = OK,
         json = Json.obj("mtdbsa" -> mtdbsa)
       )
@@ -64,10 +74,9 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
       await(result) mustBe Right(SignUpSuccessful(mtdbsa))
     }
 
-    "return a sign up success response for the next year without idempotency key" in {
-      disable(UseIdempotency)
+    "return a sign up success response for the next year with an idempotency key" in {
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Next))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Next, idempotencyKey = Some(testIdempotencyKey)))(
         status = OK,
         json = Json.obj("mtdbsa" -> mtdbsa)
       )
@@ -78,9 +87,8 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "return InvalidJson when an OK response body cannot be parsed" in {
-      disable(UseIdempotency)
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = OK
       )
 
@@ -90,9 +98,8 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "return UnprocessableSignUp when a 422 response has a code and reason" in {
-      disable(UseIdempotency)
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = UNPROCESSABLE_ENTITY,
         json = Json.obj(
           "code" -> "500",
@@ -106,9 +113,8 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "return InvalidJson when a 422 response body cannot be parsed" in {
-      disable(UseIdempotency)
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = UNPROCESSABLE_ENTITY
       )
 
@@ -118,9 +124,8 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "return UnexpectedStatus for an unhandled upstream status" in {
-      disable(UseIdempotency)
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = INTERNAL_SERVER_ERROR
       )
 
@@ -130,11 +135,10 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
   }
 
-  "signUp when UseIdempotency feature switch is enabled" should {
+  "signUp retries" should {
     "return a sign up success response with idempotency key in the request" in {
-      enable(UseIdempotency)
 
-      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some("test-uuid")))(
+      SignUpAPIStub.stubSignUp(SignUpRequestModel(nino, utr, Current, idempotencyKey = Some(testIdempotencyKey)))(
         status = OK,
         json = successJson
       )
@@ -145,7 +149,6 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "retry with the same idempotency key when SERVICE_UNAVAILABLE (503) is returned" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1"))
 
       SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
@@ -163,7 +166,6 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "retry with the same idempotency key when BAD_GATEWAY (502) is returned" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1"))
 
       SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
@@ -181,7 +183,6 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "retry with the same idempotency key when GATEWAY_TIMEOUT (504) is returned" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1"))
 
       SignUpAPIStub.stubIdempotencyRetrySameKeyScenario(
@@ -199,14 +200,13 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
     }
 
     "retry with a new idempotency key when 422 code 003 is returned" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1", "key-2"))
 
-      SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+      SignUpAPIStub.stubUnprocessableThenSuccessScenario(
         scenarioName = "retry-different-key",
         firstAttemptKey = "key-1",
         secondAttemptKey = "key-2",
-        retryableCode = "003",
+        code = "003",
         successBody = successJson
       )
 
@@ -218,8 +218,41 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
       SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 1, idempotencyKey = "key-2")
     }
 
+    "retry with the same idempotency key when 422 code 830 is returned" in {
+      testUUIDProvider.setKeys(Seq("key-1"))
+
+      SignUpAPIStub.stubUnprocessableThenSuccessScenario(
+        scenarioName = "retry-830",
+        firstAttemptKey = "key-1",
+        secondAttemptKey = "key-1",
+        code = "830",
+        successBody = successJson
+      )
+
+      await(connector.signUp(nino, utr, Current)) mustBe Right(SignUpSuccessful(mtdbsa))
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "key-1")
+    }
+
+    "keep the new idempotency key when 422 code 003 is followed by 422 code 830" in {
+      testUUIDProvider.setKeys(Seq("key-1", "key-2", "key-3"))
+
+      SignUpAPIStub.stubIdempotencyAttemptsScenario(
+        scenarioName = "retry-003-then-830",
+        attempts = Seq(
+          StubAttempt("key-1", UNPROCESSABLE_ENTITY, Json.obj("code" -> "003", "reason" -> "retry")),
+          StubAttempt("key-2", UNPROCESSABLE_ENTITY, Json.obj("code" -> "830", "reason" -> "retry")),
+          StubAttempt("key-2", OK, successJson)
+        )
+      )
+
+      await(connector.signUp(nino, utr, Current)) mustBe Right(SignUpSuccessful(mtdbsa))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 1, idempotencyKey = "key-1")
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 2, idempotencyKey = "key-2")
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 0, idempotencyKey = "key-3")
+    }
+
     "return the final error when retries are exhausted for a retryable status" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1"))
 
       SignUpAPIStub.stubIdempotencyAlwaysFailWithSameKey(SERVICE_UNAVAILABLE, "key-1")
@@ -231,8 +264,24 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
       SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 4, idempotencyKey = "key-1")
     }
 
+    "return the final error when retries are exhausted for 422 code 830" in {
+      testUUIDProvider.setKeys(Seq("key-1", "key-2"))
+
+      SignUpAPIStub.stubIdempotencyAlwaysFailWithSameKey(
+        status = UNPROCESSABLE_ENTITY,
+        idempotencyKey = "key-1",
+        body = Json.obj("code" -> "830", "reason" -> "retry")
+      )
+
+      val result = connector.signUp(nino, utr, Current)
+
+      await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("830", "retry"))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 4, idempotencyKey = "key-1")
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 0, idempotencyKey = "key-2")
+    }
+
     "not retry when 422 has a non-retryable code" in {
-      enable(UseIdempotency)
       testUUIDProvider.setKeys(Seq("key-1"))
 
       stubFor(
@@ -249,18 +298,9 @@ class SignUpConnectorISpec extends ComponentSpecBase with BeforeAndAfterEach {
       val result = connector.signUp(nino, utr, Current)
 
       await(result) mustBe Left(SignUpFailureResponse.UnprocessableSignUp("500", "not retryable"))
+
+      SignUpAPIStub.verifyIdempotencyKeyRequestCount(expectedCount = 1, idempotencyKey = "key-1")
     }
-  }
-
-  private class TestUUIDProvider extends UUIDProvider {
-    private val remaining: mutable.Queue[String] = mutable.Queue("test-uuid")
-
-    def setKeys(keys: Seq[String]): Unit = {
-      remaining.clear()
-      remaining.addAll(keys)
-    }
-
-    override def getUUID: String = if (remaining.nonEmpty) remaining.dequeue() else "test-uuid"
   }
 
   private lazy val successJson: play.api.libs.json.JsObject = Json.obj("mtdbsa" -> mtdbsa)
