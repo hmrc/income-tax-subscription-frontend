@@ -16,7 +16,8 @@
 
 package connectors.stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor, urlMatching}
+import com.github.tomakehurst.wiremock.client.WireMock as WireMockClient
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, matchingJsonPath, post, postRequestedFor, stubFor, urlEqualTo, urlMatching}
 import com.github.tomakehurst.wiremock.stubbing.{Scenario, StubMapping}
 import helpers.servicemocks.WireMockMethods
 import models.common.subscription.CreateIncomeSourcesModel
@@ -53,5 +54,13 @@ object CreateIncomeSourcesAPIStub extends WireMockMethods {
             .willSetStateTo(s"State #${index + 1}")
         )
     }
+  }
+
+  def verifyIdempotencyKeyRequestCount(mtdbsa: String, expectedCount: Int, idempotencyKey: String): Unit = {
+    WireMockClient.verify(
+      expectedCount,
+      postRequestedFor(urlEqualTo(createIncomeSourcesUri(mtdbsa)))
+        .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
+    )
   }
 }

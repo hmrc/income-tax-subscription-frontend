@@ -18,8 +18,6 @@ package connectors
 
 import com.typesafe.config.Config
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.UseIdempotency
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.SignUpResponseHttpParser.*
 import models.AccountingYear
 import models.common.subscription.SignUpFailureResponse.{InvalidJson, UnexpectedStatus, UnprocessableSignUp}
@@ -34,39 +32,33 @@ import utilities.UUIDProvider
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Success, Try}
 
 @Singleton
 class SignUpConnector @Inject()(http: HttpClientV2,
                                 uuidProvider: UUIDProvider,
-                                override val appConfig: AppConfig,
+                                appConfig: AppConfig,
                                 override protected val actorSystem: ActorSystem,
                                 override protected val configuration: Config)
-                               (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching {
+                               (implicit ec: ExecutionContext) extends ConnectorRetries {
 
   private val retryWithSameIdempotencyStatuses: Set[Int] = Set(BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT)
   private val retryWithNewIdempotencyCodes: Set[String] = Set("003")
+  private val retryWithSameIdempotencyCodes: Set[String] = Set("830")
   private val codesAsWarningFor422Status: Set[String] = Set("002", "815", "816")
 
   def signUp(nino: String, utr: String, taxYear: AccountingYear)
             (implicit hc: HeaderCarrier): Future[SignUpResponse] = {
-    if (isEnabled(UseIdempotency)) {
-      retryWithIdempotency[SignUpResponse]("sign-up", uuidProvider.getUUID, logError) {
-        case (Left(UnexpectedStatus(status)), currentIdempotencyKey) if retryWithSameIdempotencyStatuses.contains(status) =>
-          currentIdempotencyKey
-        case (Left(UnprocessableSignUp(code, _)), _) if retryWithNewIdempotencyCodes.contains(code) =>
-          uuidProvider.getUUID
-      } { (idempotencyKey: String) =>
-        executeSignUpRequest(nino, utr, taxYear, Some(idempotencyKey))
-      }
-    } else {
-      val result = executeSignUpRequest(nino, utr, taxYear, None)
-      result.onComplete {
-        case Success(r) => logError(r)
-        case _ => {}
-      }
-      result
-    }
+    retryWithIdempotency[SignUpResponse]("sign-up", uuidProvider.getUUID) {
+      case (Left(UnexpectedStatus(status)), currentIdempotencyKey) if retryWithSameIdempotencyStatuses.contains(status) =>
+        currentIdempotencyKey
+      case (Left(UnprocessableSignUp(code, _)), currentIdempotencyKey) if retryWithSameIdempotencyCodes.contains(code) =>
+        currentIdempotencyKey
+      case (Left(UnprocessableSignUp(code, _)), _) if retryWithNewIdempotencyCodes.contains(code) =>
+        uuidProvider.getUUID
+    } { (idempotencyKey: String) =>
+      executeSignUpRequest(nino, utr, taxYear, Some(idempotencyKey))
+    }.andThen(logFailure)
   }
 
   private def signUpUrl = url"${appConfig.signUpUrl}"
@@ -88,21 +80,17 @@ class SignUpConnector @Inject()(http: HttpClientV2,
     idempotencyKey = idempotencyKey
   ))
 
-  private def logError(result: SignUpResponse): Unit = {
-    val title = "sign-up"
-    result match {
-      case Left(InvalidJson) =>
-        logger.error(s"[$title] Unexpected json returned")
-      case Left(UnexpectedStatus(status)) =>
-        logger.error(s"[$title] Unexpected status returned: $status")
-      case Left(UnprocessableSignUp(code, reason)) =>
-        val message = s"[$title] Unprocessable response: code = $code, reason = $reason"
-        if (codesAsWarningFor422Status.contains(code)) {
-          logger.warn(message)
-        } else {
-          logger.error(message)
-        }
-      case _ => {}
-    }
+  private def logFailure: PartialFunction[Try[SignUpResponse], Unit] = {
+    case Success(Left(InvalidJson)) =>
+      logger.error("[sign-up] Unexpected json returned")
+    case Success(Left(UnexpectedStatus(status))) =>
+      logger.error(s"[sign-up] Unexpected status returned: $status")
+    case Success(Left(UnprocessableSignUp(code, reason))) =>
+      val message = s"[sign-up] Unprocessable response: code = $code, reason = $reason"
+      if (codesAsWarningFor422Status.contains(code)) {
+        logger.warn(message)
+      } else {
+        logger.error(message)
+      }
   }
 }

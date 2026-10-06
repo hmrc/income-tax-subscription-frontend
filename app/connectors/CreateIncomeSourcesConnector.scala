@@ -18,12 +18,9 @@ package connectors
 
 import com.typesafe.config.Config
 import config.AppConfig
-import config.featureswitch.FeatureSwitch.UseIdempotency
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser.*
 import models.common.subscription.CreateIncomeSourcesModel
 import org.apache.pekko.actor.ActorSystem
-import play.api.Logging
 import play.api.http.Status.{BAD_GATEWAY, GATEWAY_TIMEOUT, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
@@ -33,41 +30,37 @@ import utilities.UUIDProvider
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
+import scala.util.{Success, Try}
 
 @Singleton
-class CreateIncomeSourcesConnector @Inject()(
-  val appConfig: AppConfig,
-  val configuration: Config,
-  val actorSystem: ActorSystem,
-  uuidProvider: UUIDProvider,
-  http: HttpClientV2
-) (implicit ec: ExecutionContext) extends ConnectorRetries with FeatureSwitching with Logging {
+class CreateIncomeSourcesConnector @Inject()(http: HttpClientV2,
+                                             uuidProvider: UUIDProvider,
+                                             appConfig: AppConfig,
+                                             override protected val actorSystem: ActorSystem,
+                                             override protected val configuration: Config)
+                                            (implicit ec: ExecutionContext) extends ConnectorRetries {
+
+  private val retryWithSameIdempotencyStatuses: Set[Int] = Set(BAD_GATEWAY, SERVICE_UNAVAILABLE, GATEWAY_TIMEOUT)
+  private val retryWithNewIdempotencyCodes: Set[String] = Set("003")
+  private val retryWithSameIdempotencyCodes: Set[String] = Set("830")
 
   def createIncomeSources(mtdbsa: String, request: CreateIncomeSourcesModel)
                          (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
-    if (isEnabled(UseIdempotency)) {
-      retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", getNewIdempotencyKey(), logError) {
-        case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY, Some("003"))), _) => getNewIdempotencyKey(Some(UNPROCESSABLE_ENTITY), Some("003"))
-        case (Left(UnexpectedStatus(BAD_GATEWAY, _)), key) => sameIdemPotencyKey(BAD_GATEWAY, key)
-        case (Left(UnexpectedStatus(SERVICE_UNAVAILABLE, _)), key) => sameIdemPotencyKey(SERVICE_UNAVAILABLE, key)
-        case (Left(UnexpectedStatus(GATEWAY_TIMEOUT, _)), key) => sameIdemPotencyKey(GATEWAY_TIMEOUT, key)
-      } { key =>
-        updateBackend(
-          mtdbsa = mtdbsa,
-          request = request.copy(
-            idempotencyKey = Some(key)
-          )
+    retryWithIdempotency[CreateIncomeSourcesResponse]("Create Income Sources", uuidProvider.getUUID) {
+      case (Left(UnexpectedStatus(status, _)), currentIdempotencyKey) if retryWithSameIdempotencyStatuses.contains(status) =>
+        currentIdempotencyKey
+      case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY, Some(code))), currentIdempotencyKey) if retryWithSameIdempotencyCodes.contains(code) =>
+        currentIdempotencyKey
+      case (Left(UnexpectedStatus(UNPROCESSABLE_ENTITY, Some(code))), _) if retryWithNewIdempotencyCodes.contains(code) =>
+        uuidProvider.getUUID
+    } { key =>
+      updateBackend(
+        mtdbsa = mtdbsa,
+        request = request.copy(
+          idempotencyKey = Some(key)
         )
-      }
-    } else {
-      val result = updateBackend(mtdbsa, request)
-      result.onComplete {
-        case Success(r) => logError(r)
-        case _ => {}
-      }
-      result
-    }
+      )
+    }.andThen(logFailure)
 
   private def updateBackend(mtdbsa: String, request: CreateIncomeSourcesModel)
                            (implicit hc: HeaderCarrier): Future[CreateIncomeSourcesResponse] =
@@ -75,25 +68,10 @@ class CreateIncomeSourcesConnector @Inject()(
       .post(url"${s"${appConfig.createIncomeSourcesUrl}/$mtdbsa"}")
       .withBody(Json.toJson(request))
       .execute[CreateIncomeSourcesResponse]
-      
-  private def getNewIdempotencyKey(status: Option[Int] = None, code: Option[String] = None) = {
-    uuidProvider.getAndNoteNewKeyForStatusAndCode(status, code)
-  }
-  
-  private def sameIdemPotencyKey(status: Int, key: String) = {
-    uuidProvider.noteSameKeyForStatusAndCode(Some(status), None)
-    key
-  }
-  
-  private def logError(result: CreateIncomeSourcesResponse): Unit = {
-    result match {
-      case Left(error) =>
-        val message = s"[Create Income Sources] Unexpected response: status = ${error.status}"
-        error.code match {
-          case Some(code) => logger.error(s"$message, code = $code")
-          case None => logger.error(message)
-        }
-      case _ => {}
-    }
+
+  private def logFailure: PartialFunction[Try[CreateIncomeSourcesResponse], Unit] = {
+    case Success(Left(error)) =>
+      val message = s"[Create Income Sources] Unexpected response: status = ${error.status}"
+      logger.error(error.code.fold(message)(code => s"$message, code = $code"))
   }
 }

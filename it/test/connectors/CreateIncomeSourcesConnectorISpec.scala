@@ -16,8 +16,6 @@
 
 package connectors
 
-import config.featureswitch.FeatureSwitch.UseIdempotency
-import config.featureswitch.FeatureSwitching
 import connectors.httpparser.CreateIncomeSourcesResponseHttpParser
 import connectors.stubs.CreateIncomeSourcesAPIStub
 import connectors.stubs.CreateIncomeSourcesAPIStub.{StubResponse, createIncomeSourcesUri}
@@ -35,30 +33,19 @@ import utilities.{AccountingPeriodUtil, UUIDProvider}
 
 import scala.collection.mutable
 
-class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSwitching {
+class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase {
 
   private val testIdempotencyKey = "test-uuid"
 
-  private case class Item(
-    status: Option[Int] = None,
-    code: Option[String] = None,
-    isNewKey: Boolean
-  )
-
   private class TestUUIDProvider extends UUIDProvider {
-    var data: mutable.Seq[Item] = mutable.Seq()
+    private val keys: mutable.Queue[String] = mutable.Queue.empty
 
-    override def getAndNoteNewKeyForStatusAndCode(status: Option[Int], code: Option[String]): String = {
-      data = data ++ mutable.Seq(Item(status, code, isNewKey = true))
-      testIdempotencyKey
+    def setKeys(values: Seq[String]): Unit = {
+      keys.clear()
+      keys.addAll(values)
     }
 
-    override def noteSameKeyForStatusAndCode(status: Option[Int], code: Option[String]): Unit = {
-      data = data ++ mutable.Seq(Item(status, code, isNewKey = false))
-    }
-
-    def reset(): Unit =
-      data = mutable.Seq()
+    override def getUUID: String = if (keys.nonEmpty) keys.dequeue() else testIdempotencyKey
   }
 
   private lazy val testUUIDProvider = new TestUUIDProvider
@@ -69,28 +56,22 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
     .overrides(bind[UUIDProvider].to(testUUIDProvider))
     .build()
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    testUUIDProvider.setKeys(Seq(testIdempotencyKey))
+  }
+
   "createIncomeSources" when {
     s"a $NO_CONTENT status response is received" must {
-      "return a create income sources success response" in {
-        Seq(false, true).foreach { withIdempotency =>
-          if (withIdempotency) {
-            enable(UseIdempotency)
-          } else {
-            disable(UseIdempotency)
-          }
-          CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(withIdempotency))(
-            status = NO_CONTENT
-          )
+      "return a success response with an idempotency key" in {
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(status = NO_CONTENT)
 
-          val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(withIdempotency))
-
-          await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
-        }
+        await(connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())) mustBe
+          Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
       }
     }
     "an unhandled status response is received" must {
       "return an unexpected status failure response" in {
-        disable(UseIdempotency)
         CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
           status = INTERNAL_SERVER_ERROR
         )
@@ -102,9 +83,8 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
     }
     "retry 3 times when using [idempotencyKey]" must {
       s"status = ($UNPROCESSABLE_ENTITY, $BAD_GATEWAY)" in {
-        enable(UseIdempotency)
-        testUUIDProvider.reset()
-        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey, "replacement-key"))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
           responses = Seq(
             StubResponse(UNPROCESSABLE_ENTITY, Some("003")),
             StubResponse(BAD_GATEWAY),
@@ -112,27 +92,19 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
           )
         )
 
-        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
 
         await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
         WiremockHelper.verifyPost(
           uri = createIncomeSourcesUri(mtdbsa),
           count = Some(3)
         )
-        // An [IdempotencyKey] is generated twice
-        // -  Once for the initial post
-        // -  A second d time for first retry (UNPROCESSABLE_ENTITY, "003")
-        // The same key is used again for BAD_GATEWAY
-        testUUIDProvider.data mustBe mutable.Seq(
-          Item(isNewKey = true),
-          Item(Some(UNPROCESSABLE_ENTITY), Some("003"), isNewKey = true),
-          Item(Some(BAD_GATEWAY), isNewKey = false)
-        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 1, idempotencyKey = testIdempotencyKey)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 2, idempotencyKey = "replacement-key")
       }
       s"status = ($SERVICE_UNAVAILABLE, $GATEWAY_TIMEOUT)" in {
-        enable(UseIdempotency)
-        testUUIDProvider.reset()
-        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
           responses = Seq(
             StubResponse(SERVICE_UNAVAILABLE),
             StubResponse(GATEWAY_TIMEOUT),
@@ -140,26 +112,79 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
           )
         )
 
-        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
 
         await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
         WiremockHelper.verifyPost(
           uri = createIncomeSourcesUri(mtdbsa),
           count = Some(3)
         )
-        // An [IdempotencyKey] is only generated for the initial post
-        // And the same key is used for both retries
-        testUUIDProvider.data mustBe mutable.Seq(
-          Item(isNewKey =  true),
-          Item(Some(SERVICE_UNAVAILABLE), isNewKey = false),
-          Item(Some(GATEWAY_TIMEOUT), isNewKey = false)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 3, idempotencyKey = testIdempotencyKey)
+      }
+      s"status = $UNPROCESSABLE_ENTITY and code = 830" in {
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey, "replacement-key"))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
+          responses = Seq(
+            StubResponse(UNPROCESSABLE_ENTITY, Some("830")),
+            StubResponse(NO_CONTENT)
+          )
         )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
+
+        await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(2)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 2, idempotencyKey = testIdempotencyKey)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 0, idempotencyKey = "replacement-key")
+      }
+      s"status = ($UNPROCESSABLE_ENTITY with code 830, $BAD_GATEWAY)" in {
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey, "replacement-key"))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
+          responses = Seq(
+            StubResponse(UNPROCESSABLE_ENTITY, Some("830")),
+            StubResponse(BAD_GATEWAY),
+            StubResponse(NO_CONTENT)
+          )
+        )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
+
+        await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(3)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 3, idempotencyKey = testIdempotencyKey)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 0, idempotencyKey = "replacement-key")
+      }
+      s"status = ($UNPROCESSABLE_ENTITY with code 003, $UNPROCESSABLE_ENTITY with code 830)" in {
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey, "replacement-key", "unused-key"))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
+          responses = Seq(
+            StubResponse(UNPROCESSABLE_ENTITY, Some("003")),
+            StubResponse(UNPROCESSABLE_ENTITY, Some("830")),
+            StubResponse(NO_CONTENT)
+          )
+        )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
+
+        await(result) mustBe Right(CreateIncomeSourcesResponseHttpParser.CreateIncomeSourcesSuccess)
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(3)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 1, idempotencyKey = testIdempotencyKey)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 2, idempotencyKey = "replacement-key")
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 0, idempotencyKey = "unused-key")
       }
     }
     "return an error when using [idempotencyKey]" must {
       "run-out of retries" in {
-        enable(UseIdempotency)
-        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
           responses = Seq(
             StubResponse(BAD_GATEWAY),
             StubResponse(BAD_GATEWAY),
@@ -168,22 +193,47 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
           )
         )
 
-        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
 
         await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(BAD_GATEWAY))
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(4)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 4, idempotencyKey = testIdempotencyKey)
+      }
+      s"run-out of retries when status = $UNPROCESSABLE_ENTITY and code = 830" in {
+        testUUIDProvider.setKeys(Seq(testIdempotencyKey, "replacement-key"))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
+          responses = Seq.fill(4)(StubResponse(UNPROCESSABLE_ENTITY, Some("830")))
+        )
+
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
+
+        await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(UNPROCESSABLE_ENTITY, Some("830")))
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(4)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 4, idempotencyKey = testIdempotencyKey)
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 0, idempotencyKey = "replacement-key")
       }
       s"when return status = $UNPROCESSABLE_ENTITY and code is not 003" in {
         val code = "999"
-        enable(UseIdempotency)
-        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel(true))(
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(mtdbsa, createIncomeSourcesModel())(
           responses = Seq(
             StubResponse(UNPROCESSABLE_ENTITY, Some(code))
           )
         )
 
-        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel(true))
+        val result = connector.createIncomeSources(mtdbsa, createIncomeSourcesModel())
 
         await(result) mustBe Left(CreateIncomeSourcesResponseHttpParser.UnexpectedStatus(UNPROCESSABLE_ENTITY, Some(code)))
+        WiremockHelper.verifyPost(
+          uri = createIncomeSourcesUri(mtdbsa),
+          count = Some(1)
+        )
+        CreateIncomeSourcesAPIStub.verifyIdempotencyKeyRequestCount(mtdbsa, expectedCount = 1, idempotencyKey = testIdempotencyKey)
       }
     }
   }
@@ -191,7 +241,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
   lazy val connector: CreateIncomeSourcesConnector = app.injector.instanceOf[CreateIncomeSourcesConnector]
   lazy val mtdbsa: String = "test-mtdbsa"
 
-  def createIncomeSourcesModel(withIdempotency: Boolean = false): CreateIncomeSourcesModel = CreateIncomeSourcesModel(
+  def createIncomeSourcesModel(): CreateIncomeSourcesModel = CreateIncomeSourcesModel(
     nino = "test-nino",
     soleTraderBusinesses = Some(SoleTraderBusinesses(
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
@@ -220,7 +270,7 @@ class CreateIncomeSourcesConnectorISpec extends ComponentSpecBase with FeatureSw
       accountingPeriod = AccountingPeriodUtil.getCurrentTaxYear,
       tradingStartDate = DateModel("1", "1", "1980")
     )),
-    idempotencyKey = if (withIdempotency) Some(testIdempotencyKey) else None
+    idempotencyKey = Some(testIdempotencyKey)
   )
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()

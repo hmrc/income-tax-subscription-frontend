@@ -49,9 +49,9 @@ class ConnectorRetriesSpec extends AnyWordSpec with Matchers with BeforeAndAfter
     val initialKey: String = "key-1"
     lazy val underTest: TestConnectorRetries = new TestConnectorRetries(config)
 
-    def runRetry[A](nextKey: PartialFunction[(A, String), String], logError: A => Unit = (_: A) => ())(block: String => Future[A]): A =
+    def runRetry[A](nextKey: PartialFunction[(A, String), String])(block: String => Future[A]): A =
       Await.result(
-        underTest.retryWithIdempotency[A](label, initialKey, logError)(nextKey)(block),
+        underTest.retryWithIdempotency[A](label, initialKey)(nextKey)(block),
         2.seconds
       )
   }
@@ -101,21 +101,6 @@ class ConnectorRetriesSpec extends AnyWordSpec with Matchers with BeforeAndAfter
       }
 
       result shouldBe "retry"
-      attempts shouldBe 3
-    }
-
-    "use global intervals even when the label is different" in new Setup {
-      override val label: String = "missing-label"
-      var attempts = 0
-
-      val result = runRetry[String] {
-        case ("retry", currentKey) => currentKey
-      } { _ =>
-        attempts += 1
-        Future.successful(if (attempts < 3) "retry" else "done")
-      }
-
-      result shouldBe "done"
       attempts shouldBe 3
     }
 
@@ -175,21 +160,45 @@ class ConnectorRetriesSpec extends AnyWordSpec with Matchers with BeforeAndAfter
       keysUsed.toList shouldBe List("key-1")
     }
 
-    "log only one error" in new Setup {
-      override val label: String = "missing-label"
-      var attempts = 0
-      var errors = 0
+    "evaluate the retry policy on the final attempt without scheduling another retry" in new Setup {
+      var decisions = 0
+      val result = runRetry[String] {
+        case ("retry", currentKey) =>
+          decisions += 1
+          currentKey
+      } { _ => Future.successful("retry") }
 
-      val result = runRetry[String] ({
+      result shouldBe "retry"
+      decisions shouldBe 3
+    }
+
+    "propagate failed requests without retrying" in new Setup {
+      val failure = new IllegalStateException("request failed")
+      var attempts = 0
+      val result = underTest.retryWithIdempotency[String](label, initialKey) {
+        case (_, currentKey) => currentKey
+      } { _ =>
+        attempts += 1
+        Future.failed(failure)
+      }
+
+      intercept[IllegalStateException](Await.result(result, 2.seconds)) shouldBe failure
+      attempts shouldBe 1
+    }
+
+    "not retry when the configured intervals are invalid" in new Setup {
+      override val config: Config = ConfigFactory.parseString("""retries.intervals = ["not a duration"]""")
+      var attempts = 0
+
+      val result = runRetry[String] {
         case ("retry", currentKey) => currentKey
-      }, _ => errors += 1) { _ =>
+      } { _ =>
         attempts += 1
         Future.successful("retry")
       }
 
       result shouldBe "retry"
-      attempts shouldBe 3
-      errors shouldBe 1
+      attempts shouldBe 1
     }
   }
 }

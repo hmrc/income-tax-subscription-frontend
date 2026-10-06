@@ -75,11 +75,11 @@ object SignUpAPIStub extends WireMockMethods {
     )
   }
 
-  def stubIdempotencyRetryNewKeyScenario(scenarioName: String,
-                                         firstAttemptKey: String,
-                                         secondAttemptKey: String,
-                                         retryableCode: String,
-                                         successBody: JsValue): Unit = {
+  def stubUnprocessableThenSuccessScenario(scenarioName: String,
+                                           firstAttemptKey: String,
+                                           secondAttemptKey: String,
+                                           code: String,
+                                           successBody: JsValue): Unit = {
     val secondState = s"$scenarioName-second-attempt"
 
     stubFor(
@@ -92,7 +92,7 @@ object SignUpAPIStub extends WireMockMethods {
           aResponse()
             .withStatus(UNPROCESSABLE_ENTITY)
             .withHeader("Content-Type", ContentTypes.JSON)
-            .withBody(Json.obj("code" -> retryableCode, "reason" -> "retry").toString())
+            .withBody(Json.obj("code" -> code, "reason" -> "retry").toString())
         )
     )
 
@@ -110,7 +110,28 @@ object SignUpAPIStub extends WireMockMethods {
     )
   }
 
-  def stubIdempotencyAlwaysFailWithSameKey(status: Int, idempotencyKey: String): Unit = {
+  case class StubAttempt(idempotencyKey: String, status: Int, body: JsValue = Json.obj())
+
+  def stubIdempotencyAttemptsScenario(scenarioName: String, attempts: Seq[StubAttempt]): Unit = {
+    attempts.zipWithIndex.foreach { case (attempt, index) =>
+      val currentState = if (index == 0) STARTED else s"$scenarioName-attempt-$index"
+      stubFor(
+        post(urlEqualTo(signUpUri))
+          .inScenario(scenarioName)
+          .whenScenarioStateIs(currentState)
+          .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(attempt.idempotencyKey)))
+          .willSetStateTo(s"$scenarioName-attempt-${index + 1}")
+          .willReturn(
+            aResponse()
+              .withStatus(attempt.status)
+              .withHeader("Content-Type", ContentTypes.JSON)
+              .withBody(attempt.body.toString())
+          )
+      )
+    }
+  }
+
+  def stubIdempotencyAlwaysFailWithSameKey(status: Int, idempotencyKey: String, body: JsValue = Json.obj()): Unit = {
     stubFor(
       post(urlEqualTo(signUpUri))
         .withRequestBody(matchingJsonPath("$.idempotencyKey", equalTo(idempotencyKey)))
@@ -118,7 +139,7 @@ object SignUpAPIStub extends WireMockMethods {
           aResponse()
             .withStatus(status)
             .withHeader("Content-Type", ContentTypes.JSON)
-            .withBody("{}")
+            .withBody(body.toString())
         )
     )
   }

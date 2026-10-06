@@ -18,7 +18,6 @@ package controllers.individual
 
 import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.SPSEntityId
-import config.featureswitch.FeatureSwitch.UseIdempotency
 import connectors.stubs.CreateIncomeSourcesAPIStub.StubResponse
 import connectors.stubs.SessionDataConnectorStub.{sessionDataUri, stubSaveSubmissionStatus}
 import connectors.stubs.{CreateIncomeSourcesAPIStub, IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub, SignUpAPIStub}
@@ -63,16 +62,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
     )
   }
 
-  override def afterEach(): Unit = {
-    disable(UseIdempotency)
-    super.afterEach()
-  }
-
-  def testSignUpModel(taxYear: AccountingYear, withIdempotencyKey: Boolean = false): SignUpRequestModel = SignUpRequestModel(
+  def testSignUpModel(taxYear: AccountingYear): SignUpRequestModel = SignUpRequestModel(
     nino = testNino,
     utr = testUtr,
     taxYear = taxYear,
-    idempotencyKey = if (withIdempotencyKey) Some("test-uuid") else None
+    idempotencyKey = Some("test-uuid")
   )
 
   "GET /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
@@ -185,7 +179,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                   )
                 )),
                 ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
-                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                idempotencyKey = Some("test-uuid")
               )
             )(NO_CONTENT)
 
@@ -210,9 +205,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
             verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
           }
-          "sign up initially returns retryable 422 code 003 and then succeeds when UseIdempotency is enabled" in {
+          "sign up initially returns retryable 422 code 003 and then succeeds" in {
             Given("I setup the Wiremock stubs")
-            enable(UseIdempotency)
 
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
@@ -241,11 +235,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
-            SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+            SignUpAPIStub.stubUnprocessableThenSuccessScenario(
               scenarioName = "global-cya-idempotency-retry-success",
               firstAttemptKey = "test-uuid",
               secondAttemptKey = "test-uuid",
-              retryableCode = "003",
+              code = "003",
               successBody = Json.obj("mtdbsa" -> testMtdId)
             )
 
@@ -286,7 +280,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           }
           "create income sources initially returns a retry status amd then succeeds" in {
             Given("I setup the Wiremock stubs")
-            enable(UseIdempotency)
 
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
@@ -315,7 +308,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
-            SignUpAPIStub.stubSignUp(testSignUpModel(Current, true))(OK, Json.obj("mtdbsa" -> testMtdId))
+            SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
             CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, CreateIncomeSourcesModel(
               nino = testNino,
               soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
@@ -356,7 +349,6 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           }
           "sign up and create income sources fail with a retry status on the first attempt and then succeed" in {
             Given("I setup the Wiremock stubs")
-            enable(UseIdempotency)
 
             AuthStub.stubAuthSuccess()
             IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
@@ -385,11 +377,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
             ))
 
-            SignUpAPIStub.stubIdempotencyRetryNewKeyScenario(
+            SignUpAPIStub.stubUnprocessableThenSuccessScenario(
               scenarioName = "global-cya-idempotency-retry-success",
               firstAttemptKey = "test-uuid",
               secondAttemptKey = "test-uuid",
-              retryableCode = "003",
+              code = "003",
               successBody = Json.obj("mtdbsa" -> testMtdId)
             )
 
@@ -520,7 +512,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                   )
                 )),
                 ukProperty = Some(testUkProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testUkProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
-                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true)))
+                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                idempotencyKey = Some("test-uuid")
               )
             )(NO_CONTENT)
 
@@ -712,7 +705,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                 )
               )),
               ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate))),
+              idempotencyKey = Some("test-uuid")
             )
           )(INTERNAL_SERVER_ERROR)
 
@@ -760,7 +754,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                 )
               )),
               ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate))),
+              idempotencyKey = Some("test-uuid")
             )
           )(NO_CONTENT)
 
@@ -810,7 +805,8 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
                 )
               )),
               ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate))),
-              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate)))
+              overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate))),
+              idempotencyKey = Some("test-uuid")
             )
           )(NO_CONTENT)
 
