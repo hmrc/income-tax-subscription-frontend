@@ -386,11 +386,13 @@ class FrontendAppConfig @Inject()(config: ServicesConfig, val configuration: Con
   override lazy val timeoutWarningInSeconds: String = config.getString("session-timeout.warning")
   override lazy val timeoutInSeconds: String = config.getString("session-timeout.seconds")
 
-  override def getVAndCUrl: String = config.getString("income-tax-view-change-frontend.url")
-
   override def getIncomeTaxSessionDataHost: String = config.baseUrl("income-tax-session-data")
 
   override def getAccountUrl: String = config.getString("tax-account-router-frontend.url")
+
+  override def getVAndCUrl: String = {
+    s"${config.getString("income-tax-view-change-frontend.url")}/income-tax"
+  }
 
   def getClientUTRUrl: String = {
     s"${config.getString("income-tax-view-change-frontend.url")}/agents/client-utr"
