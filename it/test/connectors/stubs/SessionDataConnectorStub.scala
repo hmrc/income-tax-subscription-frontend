@@ -28,7 +28,7 @@ object SessionDataConnectorStub extends WireMockMethods {
     s"/income-tax-subscription/session-data/id/$id"
 
   def sessionIdDataUri(): String =
-    s"/income-tax-subscription/session-data/id"
+    "/income-tax-subscription/session-data/id"
 
   def allSessionDataUri: String =
     "/income-tax-subscription/session-data/all"
@@ -45,6 +45,23 @@ object SessionDataConnectorStub extends WireMockMethods {
       if (data.nonEmpty) OK else NO_CONTENT,
       Json.toJson(map)
     )
+  }
+
+  def stubGetSessionData[T](id: String, data: T)(responseStatus: Int)(implicit writes: Writes[T]): Unit = {
+    when(
+      method = GET,
+      uri = sessionDataUri(id)
+    ).thenReturn(
+      responseStatus,
+      Json.toJson(data)
+    )
+  }
+
+  def stubGetMissingSessionData(id: String): Unit = {
+    when(
+      method = GET,
+      uri = sessionDataUri(id)
+    ).thenReturn(NO_CONTENT)
   }
 
   def stubSaveSessionData[T](id: String, data: T)(responseStatus: Int)(implicit writes: Writes[T]): Unit = {

@@ -17,8 +17,8 @@
 package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
-import common.Constants.ITSASessionKeys.FailedClientMatching
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataResponse, SaveSessionDataSuccessResponse}
+import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import controllers.agent.resolvers.AlreadySignedUpResolver
@@ -67,9 +67,9 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
         agentQualificationService.orchestrateAgentQualification(clientDetails, request.arn) flatMap {
           case Left(NoClientMatched) => handleFailedClientMatch(clientDetails)
           case Left(ClientAlreadySubscribed(channel, utr, mtditid)) => handleClientAlreadySubscribed(clientDetails, channel, utr, mtditid)
-          case Left(UnexpectedFailure) => Future.successful(handleUnexpectedFailure(clientDetails))
+          case Left(UnexpectedFailure) => handleUnexpectedFailure(clientDetails)
           case Left(UnApprovedAgent(nino, _)) => handleUnapprovedAgent(nino, clientDetails)
-          case Right(ApprovedAgent(nino, None)) => Future.successful(handleApprovedAgentWithoutClientUTR(nino, clientDetails))
+          case Right(ApprovedAgent(nino, None)) => handleApprovedAgentWithoutClientUTR(nino, clientDetails)
           case Right(ApprovedAgent(nino, Some(utr))) => handleApprovedAgent(nino, utr, clientDetails)
         }
       }
@@ -93,8 +93,8 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
     ))
   }
 
-  private def getCurrentFailureCount()(implicit request: IdentifierRequest[_]): Int = {
-    request.session.get(FailedClientMatching).fold(0)(_.toInt)
+  private def getCurrentFailureCount()(implicit request: IdentifierRequest[_]): Future[Int] = {
+    sessionDataService.fetchFailedClientMatching().map(_.getOrElse(0))
   }
 
   private def withLockOutCheck(f: => Future[Result])
@@ -116,125 +116,175 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
 
   private def handleFailedClientMatch(clientDetails: UserDetailsModel)
                                      (implicit request: IdentifierRequest[_]): Future[Result] = {
-    val currentFailureCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
 
-    lockOutService.incrementLockout(request.arn, currentFailureCount) map {
-      case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
-        auditDetailsEntered(clientDetails, newCount, lockedOut = false)
-        auditingService.audit(EligibilityAuditModel(
-          agentReferenceNumber = Some(request.arn),
-          utr = None,
-          nino = None,
-          eligibility = "ineligible",
-          failureReason = Some("failed-client-match-no-lock-out")
-        ))
-        Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
-          .addingToSession(FailedClientMatching -> newCount.toString)
-      case Right(LockoutUpdate(_: LockedOut, None)) =>
-        auditDetailsEntered(clientDetails, 0, lockedOut = true)
-        auditingService.audit(EligibilityAuditModel(
-          agentReferenceNumber = Some(request.arn),
-          utr = None,
-          nino = None,
-          eligibility = "ineligible",
-          failureReason = Some("failed-client-match-locked-out")
-        ))
-        Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
-          .removingFromSession(FailedClientMatching)
-          .clearAllUserDetails
-      case _ => throw new InternalServerException("ConfirmClientController.lockUser failure")
+    getCurrentFailureCount().flatMap { currentFailureCount =>
+
+      lockOutService.incrementLockout(request.arn, currentFailureCount).flatMap {
+
+        case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+          auditDetailsEntered(clientDetails, newCount, lockedOut = false)
+
+          auditingService.audit(EligibilityAuditModel(
+            agentReferenceNumber = Some(request.arn),
+            utr = None,
+            nino = None,
+            eligibility = "ineligible",
+            failureReason = Some("failed-client-match-no-lock-out")
+          ))
+
+
+          sessionDataService.saveFailedClientMatching(newCount).map {
+            case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
+            case Left(_) => throw new InternalServerException("handleFailedClientMatch - failure when saving failed client matching")
+          }
+
+        case Right(LockoutUpdate(_: LockedOut, None)) =>
+          auditDetailsEntered(clientDetails, 0, lockedOut = true)
+
+          auditingService.audit(EligibilityAuditModel(
+            agentReferenceNumber = Some(request.arn),
+            utr = None,
+            nino = None,
+            eligibility = "ineligible",
+            failureReason = Some("failed-client-match-locked-out")
+          ))
+
+          sessionDataService.deleteFailedClientMatching().map {
+            case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show).clearAllUserDetails
+            case Left(_) => throw new InternalServerException("handleFailedClientMatch - failure when deleting failed client matching")
+          }
+        case _ => throw new InternalServerException("ConfirmClientController.lockUser failure")
+      }
     }
   }
 
   private def handleClientAlreadySubscribed(clientDetails: UserDetailsModel, reason: Option[Channel], utr: Option[String], mtditid: String)
                                            (implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
-    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
-    auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(request.arn),
-      utr = None,
-      nino = Some(clientDetails.nino),
-      eligibility = "ineligible",
-      failureReason = Some("client-already-signed-up")
-    ))
-    sessionDataService.saveNino(clientDetails.nino) flatMap {
-      case Right(_) =>
-        utr.fold[Future[SaveSessionDataResponse]](Future.successful(Right(SaveSessionDataSuccessResponse)))(sessionDataService.saveUTR) flatMap {
-          case Right(_) =>
-            sessionDataService.saveMTDITID(mtditid) flatMap {
-              case Right(_) =>
-                resolver.resolve(
-                  sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
-                  channel = reason
-                ).map(_.removingFromSession(FailedClientMatching))
-              case Left(_) =>
-                throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving mtditid to session")
-            }
-          case Left(_) =>
-            throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving utr to session")
-        }
-      case Left(_) =>
-        throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving nino to session")
+    getCurrentFailureCount().flatMap { currentFailureCount =>
+      auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = Some(request.arn),
+        utr = None,
+        nino = Some(clientDetails.nino),
+        eligibility = "ineligible",
+        failureReason = Some("client-already-signed-up")
+      ))
+      sessionDataService.saveNino(clientDetails.nino) flatMap {
+        case Right(_) =>
+          utr.fold[Future[SaveSessionDataResponse]](Future.successful(Right(SaveSessionDataSuccessResponse)))(sessionDataService.saveUTR) flatMap {
+            case Right(_) =>
+              sessionDataService.saveMTDITID(mtditid) flatMap {
+                case Right(_) =>
+
+                  resolver.resolve(
+                    sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
+                    channel = reason
+                  ).flatMap { result =>
+                    sessionDataService.deleteFailedClientMatching().map {
+                      case Right(_) => result
+                      case Left(_) => throw new InternalServerException("handleClientAlreadySubscribed - failed ")
+                    }
+
+                  }
+
+                case Left(_) =>
+                  throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving mtditid to session")
+              }
+            case Left(_) =>
+              throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving utr to session")
+          }
+        case Left(_) =>
+          throw new InternalServerException("[ConfirmClientController][handleClientAlreadySubscribed] - failure when saving nino to session")
+      }
     }
   }
 
   private def handleUnexpectedFailure(clientDetails: UserDetailsModel)
-                                     (implicit request: IdentifierRequest[_]): Result = {
-    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
-    throw new InternalServerException("[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure")
+                                     (implicit request: IdentifierRequest[_]): Future[Result] = {
+
+    getCurrentFailureCount().flatMap { currentFailureCount =>
+      auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
+
+      throw new InternalServerException("[ConfirmClientController][handleUnexpectedFailure] - orchestrate agent qualification failed with an unexpected failure")
+    }
   }
 
   private def handleUnapprovedAgent(nino: String, clientDetails: UserDetailsModel)
                                    (implicit request: IdentifierRequest[_]): Future[Result] = {
-    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
-    auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(request.arn),
-      utr = None,
-      nino = Some(clientDetails.nino),
-      eligibility = "ineligible",
-      failureReason = Some("no-agent-client-relationship")
-    ))
-    sessionDataService.saveNino(nino) flatMap {
-      case Right(_) =>
-        sessionDataService.saveJourneyStep(JourneyStep.SignPosted) map {
-          case Right(value) =>
-            Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show)
-              .removingFromSession(FailedClientMatching)
-          case Left(_) =>
-            throw new InternalServerException("failure when saving journey step to session")
-        }
-      case Left(_) =>
-        throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
+    getCurrentFailureCount().flatMap { currentFailureCount =>
+
+      auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
+
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = Some(request.arn),
+        utr = None,
+        nino = Some(clientDetails.nino),
+        eligibility = "ineligible",
+        failureReason = Some("no-agent-client-relationship")
+      ))
+
+      sessionDataService.saveNino(nino) flatMap {
+        case Right(_) =>
+          sessionDataService.saveJourneyStep(JourneyStep.SignPosted).flatMap {
+            case Right(_) =>
+              sessionDataService.deleteFailedClientMatching().map {
+                case Right(_) => Redirect(controllers.agent.matching.routes.NoClientRelationshipController.show)
+
+                case Left(_) => throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when deleting failed client matching from session")
+              }
+            case Left(_) =>
+              throw new InternalServerException("failure when saving journey step to session")
+          }
+        case Left(_) =>
+          throw new InternalServerException("[ConfirmClientController][handleUnapprovedAgent] - failure when saving nino to session")
+      }
     }
   }
 
   private def handleApprovedAgentWithoutClientUTR(nino: String, clientDetails: UserDetailsModel)
-                                                 (implicit request: IdentifierRequest[_]): Result = {
-    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
-    auditingService.audit(EligibilityAuditModel(
-      agentReferenceNumber = Some(request.arn),
-      utr = None,
-      nino = Some(nino),
-      eligibility = "ineligible",
-      failureReason = Some("no-self-assessment")
-    ))
-    Redirect(controllers.agent.matching.routes.NoSAController.show)
-      .removingFromSession(FailedClientMatching)
-  }
+                                                 (implicit request: IdentifierRequest[_]): Future[Result] = {
+    getCurrentFailureCount().flatMap { currentFailureCount =>
 
-  private def handleApprovedAgent(nino: String, utr: String, clientDetails: UserDetailsModel)
-                                 (implicit request: IdentifierRequest[_]): Future[Result] = {
-    auditDetailsEntered(clientDetails, getCurrentFailureCount(), lockedOut = false)
-    sessionDataService.saveNino(nino) flatMap {
-      case Right(_) =>
-        sessionDataService.saveUTR(utr) map {
-          case Right(_) =>
-            Redirect(routes.ConfirmedClientResolver.resolve)
-              .removingFromSession(FailedClientMatching)
-          case Left(_) =>
-            throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
-        }
-      case Left(_) =>
-        throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+      auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
+
+      auditingService.audit(EligibilityAuditModel(
+        agentReferenceNumber = Some(request.arn),
+        utr = None,
+        nino = Some(nino),
+        eligibility = "ineligible",
+        failureReason = Some("no-self-assessment")
+      ))
+
+      sessionDataService.deleteFailedClientMatching().map {
+        case Right(_) =>
+          Redirect(controllers.agent.matching.routes.NoSAController.show)
+        case Left(_) =>
+          throw new InternalServerException("[ConfirmClientController][handleApprovedAgentWithoutClientUTR] - failure when deleting  failed client matching from session")
+      }
     }
   }
-}
+
+    private def handleApprovedAgent(nino: String, utr: String, clientDetails: UserDetailsModel)
+                                   (implicit request: IdentifierRequest[_]): Future[Result] = {
+
+      getCurrentFailureCount().flatMap { currentFailureCount =>
+
+        auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
+
+        sessionDataService.saveNino(nino).flatMap {
+          case Right(_) =>
+            sessionDataService.saveUTR(utr).flatMap {
+              case Right(_) =>
+                sessionDataService.deleteFailedClientMatching().map {
+                  case Right(_) => Redirect(routes.ConfirmedClientResolver.resolve)
+                  case Left(_) => throw new InternalServerException("[ConfirmClientController][handleApprovedAgentWithoutClientUTR] - failure when deleting  failed client matching from session")
+                }
+              case Left(_) =>
+                throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving utr to session")
+            }
+          case Left(_) =>
+            throw new InternalServerException("[ConfirmClientController][handleApprovedAgent] - failure when saving nino to session")
+        }
+      }
+    }
+  }

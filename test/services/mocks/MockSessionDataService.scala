@@ -28,6 +28,8 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
+import uk.gov.hmrc.http.HeaderCarrier
+import scala.concurrent.Future
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
@@ -128,5 +130,29 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   def mockSaveJourneyState(): Unit = {
     when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)))
+  }
+
+  def mockFetchFailedClientMatching(failureCount: Option[Int]): Unit = {
+    when(
+      mockSessionDataService.fetchFailedClientMatching()(
+        ArgumentMatchers.any[HeaderCarrier](),
+        ArgumentMatchers.any[ExecutionContext]()
+      )
+    ).thenReturn(Future.successful(failureCount))
+  }
+
+  def mockSaveFailedClientMatching(failureCount: Int)(result: SaveSessionDataResponse): Unit = {
+    when(
+      mockSessionDataService.saveFailedClientMatching(
+        ArgumentMatchers.anyInt()
+      )(
+        ArgumentMatchers.any[HeaderCarrier]()
+      )
+    ).thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteFailedClientMatching(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteFailedClientMatching(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
   }
 }

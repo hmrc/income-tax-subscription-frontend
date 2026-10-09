@@ -39,7 +39,7 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
       case _ => SessionData()
     }
   }
-
+  
   def saveReference(reference: String)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData[String](ITSASessionKeys.REFERENCE, reference)
   }
@@ -114,5 +114,20 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
 
   def deleteMRDITID(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.MTDITID)
+  }
+  
+  def saveFailedClientMatching(failureCount: Int)(implicit  hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.FailedClientMatching, failureCount)
+  }
+  
+  def fetchFailedClientMatching()(implicit hc: HeaderCarrier,  ec: ExecutionContext): Future[Option[Int]] = {
+    sessionDataConnector.getSessionData[Int](ITSASessionKeys.FailedClientMatching).map {
+      case Right(value) => value
+      case Left(_) => None
+    }
+  }
+  
+  def deleteFailedClientMatching(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.FailedClientMatching)
   }
 }
