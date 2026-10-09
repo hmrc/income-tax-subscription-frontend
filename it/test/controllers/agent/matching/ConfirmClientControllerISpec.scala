@@ -32,6 +32,17 @@ import play.api.libs.json.{JsString, Json}
 
 class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
+  private val failedClientMatchingKey = ITSASessionKeys.FailedClientMatching
+
+  private def stubNoFailedClientMatching(): Unit =
+    SessionDataConnectorStub.stubGetMissingSessionData(failedClientMatchingKey)
+
+  private def stubFailedClientMatching(count: Int): Unit =
+    SessionDataConnectorStub.stubGetSessionData(failedClientMatchingKey, count)(OK)
+
+  private def stubDeleteFailedClientMatching(): Unit =
+    SessionDataConnectorStub.stubDeleteSessionData(failedClientMatchingKey)(OK)
+
   s"GET ${routes.ConfirmClientController.show().url}" when {
     "the user is not authenticated" should {
       "redirect to the login page" in {
@@ -49,6 +60,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
     }
+
     "the user has no journey state" should {
       "redirect to the add another client controller" in {
         AuthStub.stubAuthSuccess()
@@ -61,6 +73,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
     }
+
     "authenticated and in the client details state" should {
       "display the page" in {
         AuthStub.stubAuthSuccess()
@@ -91,6 +104,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
     }
+
     "the user has no journey state" should {
       "redirect to the add another client controller" in {
         AuthStub.stubAuthSuccess()
@@ -103,6 +117,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         )
       }
     }
+
     "authenticated and in the client details state" when {
       "general error occurred" should {
         "show error page" in {
@@ -110,11 +125,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchFailure()
+          stubNoFailedClientMatching()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
-
-          // n.b. failure is expected as the additional methods are not mocked
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -133,6 +147,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchNotFound()
+          stubNoFailedClientMatching()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
@@ -155,6 +170,11 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             AuthStub.stubAuthSuccess()
             UserLockoutStub.stubUserIsNotLocked(testARN)
             AuthenticatorStub.stubMatchNotFound()
+            stubNoFailedClientMatching()
+            SessionDataConnectorStub.stubSaveSessionData(
+              failedClientMatchingKey,
+              1
+            )(OK)
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
             ))
@@ -167,9 +187,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
               httpStatus(SEE_OTHER),
               redirectURI(AgentURI.clientDetailsErrorURI)
             )
-
-            val cookie = getSessionMap(res)
-            cookie.keys must contain(ITSASessionKeys.FailedClientMatching)
           }
         }
 
@@ -181,6 +198,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             UserLockoutStub.stubUserIsNotLocked(testARN)
             UserLockoutStub.stubLockAgent(testARN)
             AuthenticatorStub.stubMatchNotFound()
+            stubFailedClientMatching(2)
+            stubDeleteFailedClientMatching()
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
             ))
@@ -194,8 +213,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
               redirectURI(AgentURI.lockedOutURI)
             )
 
-            val cookie = getSessionMap(res)
-            cookie.keys must not contain ITSASessionKeys.FailedClientMatching
+            SessionDataConnectorStub.verifyDeleteSessionData(failedClientMatchingKey)
           }
         }
       }
@@ -206,6 +224,11 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthStub.stubAuthSuccess()
           UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchDeceased()
+          stubNoFailedClientMatching()
+          SessionDataConnectorStub.stubSaveSessionData(
+            failedClientMatchingKey,
+            1
+          )(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
@@ -218,9 +241,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
             httpStatus(SEE_OTHER),
             redirectURI(AgentURI.clientDetailsErrorURI)
           )
-
-          val cookie = getSessionMap(res)
-          cookie.keys must contain(ITSASessionKeys.FailedClientMatching)
         }
       }
 
@@ -232,6 +252,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
@@ -262,6 +284,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = false)
           AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = true)
           SubscriptionStub.stubGetSubscriptionFound()
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.MTDITID, testMtdId)(OK)
@@ -291,6 +315,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetSubscriptionFound()
           AgentServicesStub.stubMTDRelationship(testARN, testMtdId, exists = false)
           AgentServicesStub.stubMTDSuppRelationship(testARN, testMtdId, exists = false)
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveJourneyState(SignPosted.key)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -318,6 +344,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveJourneyState(SignPosted.key)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
@@ -346,6 +374,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthenticatorStub.stubMatchFound(testNino, None)
           SubscriptionStub.stubGetNoSubscription()
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
           ))
@@ -372,6 +402,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           UserLockoutStub.stubUserIsNotLocked(testARN)
+          stubNoFailedClientMatching()
+          stubDeleteFailedClientMatching()
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.NINO, testNino)(OK)
           SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UTR, testUtr)(OK)
           SessionDataConnectorStub.stubGetAllSessionData(Map(
