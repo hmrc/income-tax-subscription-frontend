@@ -53,7 +53,7 @@ class AlreadySignedUpControllerISpec extends ComponentSpecBase {
         Then("Should log user out and redirect to BTA/PTA")
         res must have(
           httpStatus(SEE_OTHER),
-          redirectURI("http://localhost:9081/report-quarterly/income-and-expenses/view")
+          redirectURI("http://localhost:9081/manage-self-assessment/income-tax")
         )
       }
 
