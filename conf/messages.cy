@@ -390,7 +390,7 @@ agent.sign-up-confirmation.title                                                
 agent.sign-up-confirmation.heading                                                  = Mae’ch cleient wedi’i gofrestru ar gyfer y cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
 
 agent.sign-up-confirmation.client-details                                           = Manylion y cleient:
-agent.sign-up-confirmation.date                                                     = Dyddiad:
+agent.sign-up-confirmation.date                                                     = Dyddiad heddiw:
 
 agent.sign-up-confirmation.what-must-do.heading                                     = Eich camau nesaf
 
