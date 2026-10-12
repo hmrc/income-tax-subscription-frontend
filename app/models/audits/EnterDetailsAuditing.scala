@@ -37,6 +37,7 @@ object EnterDetailsAuditing {
       "lastName" -> userDetails.lastName,
       "dateOfBirth" -> userDetails.dateOfBirth.toDesDateFormat,
       "nino" -> userDetails.nino,
+      "numberOfAttempts" -> numberOfAttempts.toString,
       "lockedOut" -> lockedOut.toString
     )
 
