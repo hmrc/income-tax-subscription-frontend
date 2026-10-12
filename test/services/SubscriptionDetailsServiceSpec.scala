@@ -20,10 +20,12 @@ import models.*
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
+import play.api.libs.json.{Format, Json}
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
-import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
 class SubscriptionDetailsServiceSpec extends PlaySpec
@@ -39,6 +41,10 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
 
   val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
 
+  implicit val jsonCrypto: Encrypter with Decrypter = crypto.JsonCrypto
+
+  implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
+
   val subscriptionDetailsService: SubscriptionDetailsService = new SubscriptionDetailsService(
     mockIncomeTaxSubscriptionConnector,
     mockMandationStatusService,
@@ -53,7 +59,7 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {
       mockGetSubscriptionDetails(SubscriptionDataKeys.SelectedTaxYear)(None)
       mockGetMandationService(Voluntary, Voluntary)
-       mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
 
       val testResultEventually = subscriptionDetailsService.fetchSelectedTaxYear(testReference)(hc)
       testResultEventually.map(testResult => {
@@ -117,6 +123,33 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
       }
     }
   }
+
+  "getAllSubscriptionData" should {
+    "return Some(SubscriptionData) when getAllSubscriptionDetails returns valid data" in {
+      val testData = Map(
+        "key1" -> Json.obj("field1" -> "value1"),
+        "key2" -> Json.obj("field2" -> "value2")
+      )
+      mockGetAllSubscriptionDetails(Some(testData))
+
+      val result = subscriptionDetailsService.getAllSubscriptionData(testReference)(hc)
+
+      result.map { res =>
+        res mustBe Some(SubscriptionData(testData))
+      }
+    }
+
+    "return None when getAllSubscriptionDetails returns None" in {
+      mockGetAllSubscriptionDetails(None)
+
+      val result = subscriptionDetailsService.getAllSubscriptionData(testReference)(hc)
+
+      result.map { res =>
+        res mustBe None
+      }
+    }
+  }
+
 
   lazy val date: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 

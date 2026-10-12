@@ -32,7 +32,7 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.{AccountingPeriodUtil, CurrentDateProvider}
+import utilities.CurrentDateProvider
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -58,7 +58,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    withCompleteDetails(request.reference) { completeDetails =>
+    withCompleteDetails(request.reference, request.sessionData) { completeDetails =>
       mandationStatusService.getMandationStatus(request.sessionData) map { mandationStatus =>
         Ok(
           globalCheckYourAnswers(
@@ -74,7 +74,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
 
   def submit: Action[AnyContent] =
     (identify andThen journeyRefiner).async { implicit request =>
-      withCompleteDetails(request.reference) { completeDetails =>
+      withCompleteDetails(request.reference, request.sessionData) { completeDetails =>
         itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
           sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
             backgroundSignUp(completeDetails)
@@ -110,10 +110,10 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
     )(headerCarrier)
   }
 
-  private def withCompleteDetails(reference: String)
+  private def withCompleteDetails(reference: String, sessionData: models.SessionData)
                                  (f: CompleteDetails => Future[Result])
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference, sessionData) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(
         tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show

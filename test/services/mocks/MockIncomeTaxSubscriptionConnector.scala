@@ -25,6 +25,7 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.JsValue
 import utilities.UnitTestTrait
 
 import scala.concurrent.Future
@@ -63,6 +64,11 @@ trait MockIncomeTaxSubscriptionConnector extends UnitTestTrait with MockitoSugar
   def mockDeleteSubscriptionDetails(id: String)
                                    (response: DeleteSubscriptionDetailsResponse): OngoingStubbing[Future[DeleteSubscriptionDetailsResponse]] = {
     when(mockIncomeTaxSubscriptionConnector.deleteSubscriptionDetails(ArgumentMatchers.any(), ArgumentMatchers.eq(id))(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(response))
+  }
+
+  def mockGetAllSubscriptionDetails(response: Option[Map[String, JsValue]]): OngoingStubbing[Future[Option[Map[String, JsValue]]]] = {
+    when(mockIncomeTaxSubscriptionConnector.getAllSubscriptionDetails(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(response))
   }
 

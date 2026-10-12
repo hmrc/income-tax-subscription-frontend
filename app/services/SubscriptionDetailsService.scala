@@ -271,4 +271,12 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       data = true
     )
   }
+
+  def getAllSubscriptionData(reference: String)(implicit hc: HeaderCarrier): Future[Option[SubscriptionData]] = {
+    incomeTaxSubscriptionConnector.getAllSubscriptionDetails(reference).map {
+      case Some(dataMap) => Some(SubscriptionData(dataMap))
+      case None => None
+    }
+  }
+
 }

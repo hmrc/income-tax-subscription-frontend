@@ -18,7 +18,12 @@ package services
 
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.{DateModel, SessionData}
+import play.api.libs.json.Format
 import services.GetCompleteDetailsService.*
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
 
@@ -28,36 +33,34 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService)
+class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
+                                          applicationCrypto: ApplicationCrypto)
                                          (implicit ec: ExecutionContext) {
+
+  implicit val jsonCrypto: Encrypter with Decrypter = applicationCrypto.JsonCrypto
+
+  implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
   /*
   * Fetches all information about sign up which we display or submit
   * Returns a failure if any data is missing
   * Returns a complete model if all data is present
   */
-  def getCompleteSignUpDetails(reference: String)
+  def getCompleteSignUpDetails(reference: String, sessionData: SessionData)
                               (implicit hc: HeaderCarrier): Future[Either[GetCompleteDetailsFailure.type, CompleteDetails]] = {
 
-    val fetchAllSelfEmployments = subscriptionDetailsService.fetchAllSelfEmployments(reference)
-    val fetchUKProperty = subscriptionDetailsService.fetchProperty(reference)
-    val fetchForeignProperty = subscriptionDetailsService.fetchOverseasProperty(reference)
-    val fetchSelectedTaxYear = subscriptionDetailsService.fetchSelectedTaxYear(reference)
-
     for {
-      selfEmployments <- fetchAllSelfEmployments
-      ukProperty <- fetchUKProperty
-      foreignProperty <- fetchForeignProperty
-      selectedTaxYear <- fetchSelectedTaxYear
-    } yield {
-      createCompleteDetails(
-        selfEmployments,
-        ukProperty,
-        foreignProperty,
-        selectedTaxYear
-      )
+      maybeSubscriptionData <- subscriptionDetailsService.getAllSubscriptionData(reference)
+    } yield maybeSubscriptionData match {
+      case Some(subscriptionData) =>
+        createCompleteDetails(
+          selfEmployments = subscriptionData.fetchAllSelfEmployments,
+          ukPropertyBusiness = subscriptionData.fetchProperty,
+          foreignPropertyBusiness = subscriptionData.fetchOverseasProperty,
+          selectedTaxYear = subscriptionData.fetchSelectedTaxYear(sessionData)
+        )
+      case None => Left(GetCompleteDetailsFailure)
     }
-
   }
 
   private def createCompleteDetails(selfEmployments: Seq[SelfEmploymentData],
@@ -66,68 +69,86 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
                                     selectedTaxYear: Option[AccountingYearModel]
                                    ): Either[GetCompleteDetailsFailure.type, CompleteDetails] = {
 
-    if (selfEmployments.forall(_.confirmed) && ukPropertyBusiness.forall(_.confirmed && foreignPropertyBusiness.forall(_.confirmed))) {
-      Try {
-        val soleTraderBusinesses: Option[SoleTraderBusinesses] = if (selfEmployments.isEmpty) {
+    if (!allIncomeSourcesConfirmed(selfEmployments, ukPropertyBusiness, foreignPropertyBusiness)) {
+      Left(GetCompleteDetailsFailure)
+    } else {
+      selectedTaxYear match {
+        case None => Left(GetCompleteDetailsFailure)
+        case Some(taxYear) =>
+          Try {
+            CompleteDetails(
+              incomeSources = IncomeSources(
+                soleTraderBusinesses = buildSoleTraderBusinesses(selfEmployments),
+                ukProperty = buildUkProperty(ukPropertyBusiness),
+                foreignProperty = buildForeignProperty(foreignPropertyBusiness)
+              ),
+              taxYear = taxYear
+            )
+          } match {
+            case Failure(_) => Left(GetCompleteDetailsFailure)
+            case Success(completeDetails) => Right(completeDetails)
+          }
+      }
+    }
+  }
+
+  private def allIncomeSourcesConfirmed(selfEmployments: Seq[SelfEmploymentData],
+                                        ukPropertyBusiness: Option[PropertyModel],
+                                        foreignPropertyBusiness: Option[OverseasPropertyModel]): Boolean = {
+    selfEmployments.forall(_.confirmed) && ukPropertyBusiness.forall(_.confirmed) && foreignPropertyBusiness.forall(_.confirmed)
+  }
+
+  private def buildSoleTraderBusinesses(selfEmployments: Seq[SelfEmploymentData]): Option[SoleTraderBusinesses] = {
+    if (selfEmployments.isEmpty) {
+      None
+    } else {
+      Some(SoleTraderBusinesses(
+        businesses = selfEmployments.map(buildSoleTraderBusiness)
+      ))
+    }
+  }
+
+  private def buildSoleTraderBusiness(selfEmploymentData: SelfEmploymentData): SoleTraderBusiness = {
+    val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
+    val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
+
+    SoleTraderBusiness(
+      id = selfEmploymentData.id,
+      name = selfEmploymentData.businessName.get.businessName,
+      trade = selfEmploymentData.businessTradeName.get.businessTradeName,
+      startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
+        None
+      } else {
+        Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
+      },
+      address = selfEmploymentData.businessAddress.get.address
+    )
+  }
+
+  private def buildUkProperty(ukPropertyBusiness: Option[PropertyModel]): Option[UKProperty] = {
+    ukPropertyBusiness.map { property =>
+      UKProperty(startDate = buildStartDate(property.startDateBeforeLimit, property.startDate))
+    }
+  }
+
+  private def buildForeignProperty(foreignPropertyBusiness: Option[OverseasPropertyModel]): Option[ForeignProperty] = {
+    foreignPropertyBusiness.map { property =>
+      ForeignProperty(startDate = buildStartDate(property.startDateBeforeLimit, property.startDate))
+    }
+  }
+
+  private def buildStartDate(startDateBeforeLimit: Option[Boolean], startDate: Option[DateModel]): Option[LocalDate] = {
+    startDate match {
+      case None => throw new NoSuchElementException("Start date missing")
+      case Some(date) =>
+        val selectedStartDateBeforeLimit: Boolean = startDateBeforeLimit.contains(true)
+        val startDateIsBeforeLimit: Boolean = date.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit)
+
+        if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
           None
         } else {
-          Some(SoleTraderBusinesses(
-            businesses = selfEmployments.map { selfEmploymentData =>
-              val selectedStartDateBeforeLimit: Boolean = selfEmploymentData.startDateBeforeLimit.contains(true)
-              val startDateIsBeforeLimit: Boolean = selfEmploymentData.businessStartDate.exists(_.startDate.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
-
-              SoleTraderBusiness(
-                id = selfEmploymentData.id,
-                name = selfEmploymentData.businessName.get.businessName,
-                trade = selfEmploymentData.businessTradeName.get.businessTradeName,
-                startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
-                  None
-                } else {
-                  Some(selfEmploymentData.businessStartDate.get.startDate.toLocalDate)
-                },
-                address = selfEmploymentData.businessAddress.get.address
-              )
-            }
-          ))
+          Some(date.toLocalDate)
         }
-
-        val ukProperty: Option[UKProperty] = ukPropertyBusiness.map { property =>
-          val selectedStartDateBeforeLimit: Boolean = property.startDateBeforeLimit.contains(true)
-          val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
-
-          UKProperty(
-            startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
-              None
-            } else {
-              Some(property.startDate.get.toLocalDate)
-            }
-          )
-        }
-
-        val foreignProperty: Option[ForeignProperty] = foreignPropertyBusiness.map { property =>
-          val selectedStartDateBeforeLimit: Boolean = property.startDateBeforeLimit.contains(true)
-          val startDateIsBeforeLimit: Boolean = property.startDate.exists(_.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit))
-
-          ForeignProperty(
-            startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
-              None
-            } else {
-              Some(property.startDate.get.toLocalDate)
-            }
-          )
-        }
-
-        CompleteDetails(
-          incomeSources = IncomeSources(soleTraderBusinesses, ukProperty, foreignProperty),
-          taxYear = selectedTaxYear.get
-        )
-      } match {
-        case Failure(_) =>
-          Left(GetCompleteDetailsFailure)
-        case Success(completeDetails) => Right(completeDetails)
-      }
-    } else {
-      Left(GetCompleteDetailsFailure)
     }
   }
 }

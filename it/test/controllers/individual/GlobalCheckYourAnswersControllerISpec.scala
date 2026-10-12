@@ -28,15 +28,15 @@ import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
-import models.common.BusinessAccountingPeriod
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
+import models.common.business.SelfEmploymentData
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.sps.SPSPayload
-import models.status.MandationStatus.Voluntary
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import services.individual.SignUpOrchestrationService.*
-import utilities.SubscriptionDataKeys.*
 
 class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with SubmissionStatusHelper with SessionCookieCrumbler {
 
@@ -69,6 +69,21 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
     idempotencyKey = Some("test-uuid")
   )
 
+  private def stubAllSubscriptionDetails(selfEmployments: Seq[SelfEmploymentData] = testBusinesses.getOrElse(Seq.empty),
+                                         property: Option[PropertyModel] = Some(testFullPropertyModel),
+                                         overseasProperty: Option[OverseasPropertyModel] = Some(testFullOverseasPropertyModel),
+                                         selectedTaxYear: Option[AccountingYearModel] = Some(testAccountingYearCurrent)): Unit = {
+    IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+      OK,
+      IncomeTaxSubscriptionConnectorStub.allSubscriptionDataJson(
+        selfEmployments = selfEmployments,
+        property = property,
+        overseasProperty = overseasProperty,
+        selectedTaxYear = selectedTaxYear
+      )
+    )
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/final-check-your-answers" should {
     "return SEE_OTHER to the login page" when {
       "the user is not logged in" in {
@@ -86,11 +101,7 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
       "all data was received and is complete" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(AccountingPeriod, OK, Json.toJson(BusinessAccountingPeriod.SixthAprilToFifthApril.key))
-        IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, OK, Json.toJson(testFullPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
-        IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
+        stubAllSubscriptionDetails()
         SessionDataConnectorStub.stubGetAllSessionData(
           Map(
             ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
@@ -139,27 +150,79 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
     "there is complete data" should {
       "sign up and redirect to the confirmation page" when {
         "signing up for the current tax year" when {
+          "the session says the user is mandated for the current year" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
+                startDate = Some(testUkProperty().tradingStartDate)
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
+                startDate = Some(testOverseasProperty().tradingStartDate)
+              )),
+              selectedTaxYear = Some(testAccountingYearNextConfirmed)
+            )
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Mandated, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+                  businesses = testSoleTraderBusinesses().businesses.map(business =>
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
+                  )
+                )),
+                ukProperty = Some(testUkProperty().copy(tradingStartDate = DateModel.dateConvert(testUkProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                overseasProperty = Some(testOverseasProperty().copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty().tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                idempotencyKey = Some("test-uuid")
+              )
+            )(NO_CONTENT)
+
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+
+            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.spinnyWheelURI)
+            )
+
+            waitUntilStatusIs(success)
+
+            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
+          }
+
           "all calls were successful" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -209,24 +272,17 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             Given("I setup the Wiremock stubs")
 
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -282,24 +338,17 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             Given("I setup the Wiremock stubs")
 
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -351,24 +400,17 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             Given("I setup the Wiremock stubs")
 
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -425,24 +467,17 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -472,27 +507,81 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           }
         }
         "signing up for the next tax year" when {
+          "the session says the user is eligible next year only" in {
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
+                startDate = Some(testUkProperty(Next).tradingStartDate)
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
+                startDateBeforeLimit = Some(true),
+                startDate = Some(testOverseasProperty(Next).tradingStartDate)
+              )),
+              selectedTaxYear = Some(testAccountingYearCurrent)
+            )
+            SessionDataConnectorStub.stubGetAllSessionData(Map(
+              ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
+              ITSASessionKeys.NINO -> JsString(testNino),
+              ITSASessionKeys.UTR -> JsString(testUtr),
+              ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+              ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None))
+            ))
+
+            SignUpAPIStub.stubSignUp(testSignUpModel(Next))(OK, Json.obj("mtdbsa" -> testMtdId))
+            CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
+              mtdbsa = testMtdId,
+              request = CreateIncomeSourcesModel(
+                nino = testNino,
+                soleTraderBusinesses = Some(testSoleTraderBusinesses(Next).copy(
+                  businesses = testSoleTraderBusinesses(Next).businesses.map(business =>
+                    business.copy(confirmed = true, businessStartDate = business.businessStartDate.map(date => date.copy(startDate = DateModel.dateConvert(date.startDate.toLocalDate))), startDateBeforeLimit = Some(true))
+                  )
+                )),
+                ukProperty = Some(testUkProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testUkProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                overseasProperty = Some(testOverseasProperty(Next).copy(tradingStartDate = DateModel.dateConvert(testOverseasProperty(Next).tradingStartDate.toLocalDate), startDateBeforeLimit = Some(true))),
+                idempotencyKey = Some("test-uuid")
+              )
+            )(NO_CONTENT)
+
+            TaxEnrolmentsStub.stubUpsertEnrolmentResult(testMTDITEnrolmentKey.asString, NO_CONTENT)
+            TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testMTDITEnrolmentKey.asString, CREATED)
+
+            ChannelPreferencesStub.stubChannelPreferenceConfirm()
+
+            When("POST /final-check-your-answers is called")
+            val testEntityId: String = "testEntityId"
+            val res = IncomeTaxSubscriptionFrontend.submitGlobalCheckYourAnswers(Map(SPSEntityId -> testEntityId))
+
+            Then("Should redirect to the confirmation page")
+            res must have(
+              httpStatus(SEE_OTHER),
+              redirectURI(IndividualURI.spinnyWheelURI)
+            )
+
+            waitUntilStatusIs(success)
+
+            val expectedSPSBody: SPSPayload = SPSPayload(testEntityId, s"HMRC-MTD-IT~MTDITID~$testMtdId")
+            verifyPost("/channel-preferences/confirm", Some(Json.toJson(expectedSPSBody).toString), Some(1))
+            verifyPost(sessionDataUri(ITSASessionKeys.SUBMISSION_STATUS), Some(Json.toJson(success).toString), Some(1))
+          }
+
           "all calls were successful" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testUkProperty(Next).tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDateBeforeLimit = Some(true),
                 startDate = Some(testOverseasProperty(Next).tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearNextConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -541,22 +630,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           "sign up indicated the customer is already signed up" in {
             Given("I setup the Wiremock stubs")
             AuthStub.stubAuthSuccess()
-            IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              Property,
-              OK,
-              Json.toJson(testFullPropertyModel.copy(
+            stubAllSubscriptionDetails(
+              property = Some(testFullPropertyModel.copy(
                 startDate = Some(testUkProperty().tradingStartDate)
-              ))
-            )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-              OverseasProperty,
-              OK,
-              Json.toJson(testFullOverseasPropertyModel.copy(
+              )),
+              overseasProperty = Some(testFullOverseasPropertyModel.copy(
                 startDate = Some(testOverseasProperty().tradingStartDate)
-              ))
+              )),
+              selectedTaxYear = Some(testAccountingYearNextConfirmed)
             )
-            IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
               ITSASessionKeys.NINO -> JsString(testNino),
@@ -604,10 +686,11 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             s"a unprocessable sign up occurs with a code: $code" in {
               Given("I setup the Wiremock stubs")
               AuthStub.stubAuthSuccess()
-              IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(Property, NO_CONTENT)
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(OverseasProperty, NO_CONTENT)
-              IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearNextConfirmed))
+                stubAllSubscriptionDetails(
+                  property = None,
+                  overseasProperty = None,
+                  selectedTaxYear = Some(testAccountingYearNextConfirmed)
+                )
               SessionDataConnectorStub.stubGetAllSessionData(Map(
                 ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key),
                 ITSASessionKeys.NINO -> JsString(testNino),
@@ -642,22 +725,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         "sign up failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
+          stubAllSubscriptionDetails(
+            property = Some(testFullPropertyModel.copy(
               startDate = Some(testUkProperty().tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
+            )),
+            overseasProperty = Some(testFullOverseasPropertyModel.copy(
               startDate = Some(testOverseasProperty().tradingStartDate)
-            ))
+            )),
+            selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
           )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(INTERNAL_SERVER_ERROR)
 
@@ -677,22 +753,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         "create income sources failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
+          stubAllSubscriptionDetails(
+            property = Some(testFullPropertyModel.copy(
               startDate = Some(testUkProperty().tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
+            )),
+            overseasProperty = Some(testFullOverseasPropertyModel.copy(
               startDate = Some(testOverseasProperty().tradingStartDate)
-            ))
+            )),
+            selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
           )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
@@ -726,22 +795,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         "add known facts failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
+          stubAllSubscriptionDetails(
+            property = Some(testFullPropertyModel.copy(
               startDate = Some(testUkProperty().tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
+            )),
+            overseasProperty = Some(testFullOverseasPropertyModel.copy(
               startDate = Some(testOverseasProperty().tradingStartDate)
-            ))
+            )),
+            selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
           )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
@@ -777,22 +839,15 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
         "enrolment failed" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, testBusinesses.getOrElse(Seq.empty))
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            Property,
-            OK,
-            Json.toJson(testFullPropertyModel.copy(
+          stubAllSubscriptionDetails(
+            property = Some(testFullPropertyModel.copy(
               startDate = Some(testUkProperty().tradingStartDate)
-            ))
-          )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
-            OverseasProperty,
-            OK,
-            Json.toJson(testFullOverseasPropertyModel.copy(
+            )),
+            overseasProperty = Some(testFullOverseasPropertyModel.copy(
               startDate = Some(testOverseasProperty().tradingStartDate)
-            ))
+            )),
+            selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
           )
-          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrentConfirmed))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)
           CreateIncomeSourcesAPIStub.stubCreateIncomeSources(
