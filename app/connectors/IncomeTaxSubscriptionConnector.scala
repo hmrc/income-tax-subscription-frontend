@@ -18,13 +18,13 @@ package connectors
 
 import config.AppConfig
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsResponse
-import connectors.httpparser.GetSubscriptionDetailsHttpParser._
+import connectors.httpparser.GetSubscriptionDetailsHttpParser.*
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
-import connectors.httpparser.RetrieveReferenceHttpParser._
-import play.api.libs.json._
+import connectors.httpparser.RetrieveReferenceHttpParser.*
+import play.api.libs.json.*
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
@@ -35,8 +35,13 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
                                                http: HttpClientV2)
                                               (implicit ec: ExecutionContext) {
 
-  private def subscriptionURL(reference: String, id: String): String =
+  private def subscriptionURL(reference: String, id: String): String = {
     s"${appConfig.microServiceUrl}/income-tax-subscription/subscription-data/$reference/id/$id"
+  }
+
+  private def subscriptionDataAllURL(reference: String): String = {
+    s"${appConfig.microServiceUrl}/income-tax-subscription/subscription-data/$reference/all"
+  }
 
   private def retrieveReferenceUrl: String = {
     appConfig.microServiceUrl + "/income-tax-subscription/subscription-data"
@@ -66,6 +71,10 @@ class IncomeTaxSubscriptionConnector @Inject()(appConfig: AppConfig,
 
   def getSubscriptionDetailsSeq[T](reference: String, id: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
     getSubscriptionDetails[Seq[T]](reference: String, id: String).map(_.getOrElse(Seq.empty))
+  }
+
+  def getAllSubscriptionDetails(reference: String)(implicit hc: HeaderCarrier): Future[Option[Map[String, JsValue]]] = {
+    http.get(url"${subscriptionDataAllURL(reference)}").execute[Option[Map[String, JsValue]]]
   }
 
   def retrieveReference(utr: String)(implicit hc: HeaderCarrier): Future[RetrieveReferenceResponse] = {

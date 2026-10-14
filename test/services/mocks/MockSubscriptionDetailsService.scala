@@ -18,11 +18,11 @@ package services.mocks
 
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
-import models.common._
+import models.common.*
 import models.common.business.SelfEmploymentData
-import models.{DateModel, YesNo}
+import models.{DateModel, SubscriptionData, YesNo}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -50,6 +50,11 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
 
   def mockFetchSelectedTaxYear(result: Option[AccountingYearModel]): Unit = {
     when(mockSubscriptionDetailsService.fetchSelectedTaxYear(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockGetAllSubscriptionData(result: Option[SubscriptionData]): Unit = {
+    when(mockSubscriptionDetailsService.getAllSubscriptionData(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 

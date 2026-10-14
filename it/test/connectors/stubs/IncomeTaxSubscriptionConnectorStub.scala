@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import models.common.business.SelfEmploymentData
-import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import play.api.http.Status
 import play.api.libs.json.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
@@ -33,6 +33,8 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
 
   def subscriptionUri(id: String) = s"/income-tax-subscription/subscription-data/test-reference/id/$id"
 
+  def allSubscriptionDataUri(reference: String = "test-reference") = s"/income-tax-subscription/subscription-data/$reference/all"
+
   private def subscriptionDeleteUri = s"/income-tax-subscription/subscription-data/all"
 
   def verifyGet(id: String)(count: Int = 1): Unit = {
@@ -43,6 +45,32 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
     when(
       method = GET,
       uri = subscriptionUri(id)
+    ).thenReturn(responseStatus, responseBody)
+  }
+
+  def allSubscriptionDataJson(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
+                              property: Option[PropertyModel] = None,
+                              overseasProperty: Option[OverseasPropertyModel] = None,
+                              selectedTaxYear: Option[AccountingYearModel] = None)
+                             (implicit sensitiveFormat: Format[SensitiveString]): JsObject = {
+    implicit val encryptedFormat: OFormat[SoleTraderBusinesses] = SoleTraderBusinesses.encryptedFormat
+
+    val entries: Seq[(String, JsValue)] = Seq(
+      Option.when(selfEmployments.nonEmpty)(
+        SoleTraderBusinessesKey -> Json.toJson(SoleTraderBusinesses(businesses = selfEmployments.map(_.toSoleTraderBusiness)))
+      ),
+      property.map(Property -> Json.toJson(_)),
+      overseasProperty.map(OverseasProperty -> Json.toJson(_)),
+      selectedTaxYear.map(SelectedTaxYear -> Json.toJson(_))
+    ).flatten
+
+    JsObject(entries)
+  }
+
+  def stubGetAllSubscriptionDetails(responseStatus: Int, responseBody: JsValue = Json.obj()): Unit = {
+    when(
+      method = GET,
+      uri = allSubscriptionDataUri()
     ).thenReturn(responseStatus, responseBody)
   }
 

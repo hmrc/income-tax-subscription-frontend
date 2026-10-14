@@ -58,7 +58,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    withCompleteDetails(request.reference) { completeDetails =>
+    withCompleteDetails(request.reference, request.sessionData) { completeDetails =>
       mandationStatusService.getMandationStatus(request.sessionData).map { mandationStatus =>
         Ok(globalCheckYourAnswers(
           postAction = routes.GlobalCheckYourAnswersController.submit,
@@ -72,7 +72,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   def submit: Action[AnyContent] =
     (identify andThen journeyRefiner).async { implicit request =>
-      withCompleteDetails(request.reference) { completeDetails =>
+      withCompleteDetails(request.reference, request.sessionData) { completeDetails =>
         itsaSignUpSubmissionRequestAuditEvent(completeDetails).flatMap { _ =>
           sessionDataService.saveSubmissionStatus(inProgress).map { _ =>
             backgroundSignUp(completeDetails)
@@ -81,8 +81,7 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
         }
       }
     }
-    
-      
+
 
   private def backgroundSignUp(completeDetails: CompleteDetails)(implicit request: SignUpRequest[AnyContent]): Unit = {
     signUp(completeDetails).onComplete {
@@ -112,10 +111,10 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def withCompleteDetails(reference: String)
+  private def withCompleteDetails(reference: String, sessionData: models.SessionData)
                                  (f: CompleteDetails => Future[Result])
                                  (implicit request: Request[AnyContent]): Future[Result] = {
-    getCompleteDetailsService.getCompleteSignUpDetails(reference) flatMap {
+    getCompleteDetailsService.getCompleteSignUpDetails(reference, sessionData) flatMap {
       case Right(completeDetails) => f(completeDetails)
       case Left(_) => Future.successful(Redirect(
         tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show.url
@@ -125,9 +124,9 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
 
   private def itsaSignUpSubmissionRequestAuditEvent(completeDetails: CompleteDetails)
                                                    (implicit request: SignUpRequest[AnyContent], hc: HeaderCarrier): Future[Unit] = {
-    if(!isEnabled(SubmissionAuditUpdate)){
+    if (!isEnabled(SubmissionAuditUpdate)) {
       Future.unit
-    }else{
+    } else {
       for {
         utr <- utrService.getUTR(request.sessionData)
         eligibility <- eligibilityStatusService.getEligibilityStatus(request.sessionData)
@@ -148,6 +147,6 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
       } yield ()
     }
 
-    
+
   }
 }
