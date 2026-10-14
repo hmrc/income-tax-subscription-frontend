@@ -138,17 +138,15 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
   }
 
   private def buildStartDate(startDateBeforeLimit: Option[Boolean], startDate: Option[DateModel]): Option[LocalDate] = {
-    startDate match {
-      case None => throw new NoSuchElementException("Start date missing")
-      case Some(date) =>
-        val selectedStartDateBeforeLimit: Boolean = startDateBeforeLimit.contains(true)
-        val startDateIsBeforeLimit: Boolean = date.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit)
-
-        if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
+    (startDateBeforeLimit, startDate) match {
+      case (Some(true), _) => None
+      case (_, Some(date)) =>
+        if (date.toLocalDate.isBefore(AccountingPeriodUtil.getStartDateLimit)) {
           None
         } else {
           Some(date.toLocalDate)
         }
+      case (_, _) => throw new NoSuchElementException("Start date missing")
     }
   }
 }

@@ -257,6 +257,29 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
 
         await(result) mustBe Right(completeDetailsNoDates)
       }
+      "all fetches were successful and all have selected their start dates are before the limit and no dates are stored" in new Setup {
+        mockGetAllSubscriptionData(Some(buildSubscriptionData(
+          selfEmployments = Seq(selfEmployment.copy(
+            startDateBeforeLimit = Some(true),
+            businessStartDate = None
+          )),
+          ukProperty = Some(ukProperty.copy(
+            startDateBeforeLimit = Some(true),
+            startDate = None
+          )),
+          foreignProperty = Some(foreignProperty.copy(
+            startDateBeforeLimit = Some(true),
+            startDate = None
+          )),
+          selectedTaxYear = Some(accountingYear)
+        )))
+
+        val result: Future[Either[GetCompleteDetailsService.GetCompleteDetailsFailure.type, GetCompleteDetailsService.CompleteDetails]] = {
+          service.getCompleteSignUpDetails("reference", sessionData)(hc)
+        }
+
+        await(result) mustBe Right(completeDetailsNoDates)
+      }
       "no self employments are provided" in new Setup {
         mockGetAllSubscriptionData(Some(buildSubscriptionData(
           ukProperty = Some(ukProperty),
