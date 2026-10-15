@@ -31,7 +31,7 @@ object FeatureSwitch {
     AgentRelationshipSingleCall,
     TaxYear27To28Plus,
     SubmissionAuditUpdate,
-    DuplicateNamePage
+    DisplayName
   )
 
   def apply(str: String): FeatureSwitch =
@@ -77,8 +77,8 @@ object FeatureSwitch {
     override val displayText: String = "Update submission audits"
   }
 
-  case object DuplicateNamePage  extends FeatureSwitch {
-    override val name: String = s"$prefix.duplicate-name-page"
-    override val displayText: String = "Enable duplicate name page"
+  case object DisplayName  extends FeatureSwitch {
+    override val name: String = s"$prefix.display-name"
+    override val displayText: String = "DisplayName"
   }
 }
