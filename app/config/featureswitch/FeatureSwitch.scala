@@ -30,7 +30,8 @@ object FeatureSwitch {
     ThrottlingFeature,
     AgentRelationshipSingleCall,
     TaxYear27To28Plus,
-    SubmissionAuditUpdate
+    SubmissionAuditUpdate,
+    DuplicateNamePage
   )
 
   def apply(str: String): FeatureSwitch =
@@ -74,5 +75,10 @@ object FeatureSwitch {
   case object SubmissionAuditUpdate extends FeatureSwitch {
     override val name: String = s"$prefix.submission-audit-update"
     override val displayText: String = "Update submission audits"
+  }
+
+  case object DuplicateNamePage  extends FeatureSwitch {
+    override val name: String = s"$prefix.duplicate-name-page"
+    override val displayText: String = "Enable duplicate name page"
   }
 }
