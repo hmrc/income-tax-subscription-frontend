@@ -533,6 +533,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       SoleTraderBusiness(
         id = s"id-$index",
         name = s"ABC-$index",
+        displayName = Some(s"ABC-$index"),
         trade = s"Plumbing-$index",
         startDate = startDate.map(_.plusMonths(index - 1)),
         address = Address(
