@@ -112,6 +112,7 @@ class SubscriptionDataUtilSpec extends PlaySpec {
         businesses = Seq(GetCompleteDetailsService.SoleTraderBusiness(
           id = "test-id",
           name = "test name",
+          displayName = Some("test name"),
           trade = "test trade",
           startDate = if (hasStartDate) Some(LocalDate.now) else None,
           address = address

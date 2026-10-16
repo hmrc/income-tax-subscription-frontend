@@ -22,9 +22,9 @@ import forms.agent.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
 import play.api.data.Form
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.HtmlFormat
-import services._
+import services.*
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
@@ -74,7 +74,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                               (f: (Option[BusinessNameModel], Option[BusinessTradeNameModel]) => Future[Result])
                               (implicit hc: HeaderCarrier): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-      case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+      case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, _, maybeBusinessTradeNameModel, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
       case _ => Future.successful(Redirect(controllers.agent.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show().url))
     }

@@ -66,6 +66,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
     startDateBeforeLimit = Some(false),
     businessStartDate = Some(BusinessStartDate(DateModel.dateConvert(startDateLimit))),
     businessName = Some(BusinessNameModel("ABC Limited")),
+    businessDisplayName = Some("ABC Limited"),
     businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
     businessAddress = Some(BusinessAddressModel(address = Address(
       lines = Seq("1 Long Road", "Lonely city"),
@@ -93,6 +94,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
         businesses = Seq(SoleTraderBusiness(
           id = "test-id",
           name = "ABC Limited",
+          displayName = Some("ABC Limited"),
           trade = "Plumbing",
           startDate = Some(startDateLimit),
           address = Address(
@@ -118,6 +120,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
         businesses = Seq(SoleTraderBusiness(
           id = "test-id",
           name = "ABC Limited",
+          displayName = Some("ABC Limited"),
           trade = "Plumbing",
           startDate = None,
           address = Address(

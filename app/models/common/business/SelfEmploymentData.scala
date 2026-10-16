@@ -23,6 +23,7 @@ case class SelfEmploymentData(id: String,
                               startDateBeforeLimit: Option[Boolean] = None,
                               businessStartDate: Option[BusinessStartDate] = None,
                               businessName: Option[BusinessNameModel] = None,
+                              businessDisplayName: Option[String] = None,
                               businessTradeName: Option[BusinessTradeNameModel] = None,
                               businessAddress: Option[BusinessAddressModel] = None,
                               confirmed: Boolean = false) {
@@ -42,6 +43,7 @@ case class SelfEmploymentData(id: String,
     startDateBeforeLimit = startDateBeforeLimit,
     startDate = businessStartDate.map(_.startDate),
     name = businessName.map(_.businessName),
+    displayName = businessDisplayName,
     trade = businessTradeName.map(_.businessTradeName),
     address = businessAddress.map(_.address)
   )

@@ -47,6 +47,7 @@ class ITSASignUpSubmissionRequestAuditModelSpec extends AnyWordSpec with Matcher
   private val soleTraderBusiness = SoleTraderBusiness(
     id = "business-1",
     name = "ABC Builders",
+    displayName = Some("ABC Builders"),
     trade = "Builder",
     startDate = Some(LocalDate.of(2022, 1, 1)),
     address = Address(

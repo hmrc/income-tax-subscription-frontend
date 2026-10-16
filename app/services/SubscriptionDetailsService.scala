@@ -123,6 +123,7 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
           startDateBeforeLimit = se.startDateBeforeLimit,
           startDate = se.businessStartDate.map(_.startDate),
           name = se.businessName.map(_.businessName),
+          displayName = se.businessDisplayName,
           trade = se.businessTradeName.map(_.businessTradeName),
           address = se.businessAddress.map(_.address)
         )
