@@ -29,6 +29,7 @@ class SelfEmploymentDataSpec extends PlaySpec {
     startDateBeforeLimit = Some(false),
     businessStartDate = Some(BusinessStartDate(dateModel)),
     businessName = Some(BusinessNameModel("test name")),
+    businessDisplayName = Some("display name"),
     businessTradeName = Some(BusinessTradeNameModel("test trade")),
     businessAddress = Some(BusinessAddressModel(Address(
       lines = Seq("1 long road"),
@@ -55,6 +56,7 @@ class SelfEmploymentDataSpec extends PlaySpec {
     "businessName" -> Json.obj(
       "businessName" -> "test name"
     ),
+    "businessDisplayName" -> "display name",
     "businessTradeName" -> Json.obj(
       "businessTradeName" -> "test trade"
     ),

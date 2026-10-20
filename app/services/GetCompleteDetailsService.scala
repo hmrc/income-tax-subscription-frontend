@@ -115,6 +115,7 @@ class GetCompleteDetailsService @Inject()(subscriptionDetailsService: Subscripti
     SoleTraderBusiness(
       id = selfEmploymentData.id,
       name = selfEmploymentData.businessName.get.businessName,
+      displayName = selfEmploymentData.businessDisplayName,
       trade = selfEmploymentData.businessTradeName.get.businessTradeName,
       startDate = if (selectedStartDateBeforeLimit || startDateIsBeforeLimit) {
         None
@@ -164,6 +165,7 @@ object GetCompleteDetailsService {
 
   case class SoleTraderBusiness(id: String,
                                 name: String,
+                                displayName: Option[String],
                                 trade: String,
                                 startDate: Option[LocalDate],
                                 address: Address)

@@ -18,7 +18,6 @@ package controllers.individual.tasklist.selfemployment
 
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import controllers.utils.ReferenceRetrieval
 import forms.individual.business.RemoveBusinessForm
 import models.common.business.{BusinessNameModel, BusinessTradeNameModel, SelfEmploymentData}
 import models.{No, Yes, YesNo}
@@ -47,17 +46,17 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
   }
 
   def submit(businessId: String): Action[AnyContent] = (identify andThen refine).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
-            Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
-          }
-        },
-        {
-          case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, request.reference)
-          case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+    form.bindFromRequest().fold(
+      formWithErrors => {
+        withBusinessData(request.reference, businessId) { (maybeBusinessNameModel, maybeBusinessTradeNameModel) =>
+          Future.successful(BadRequest(view(businessId, formWithErrors, maybeBusinessNameModel, maybeBusinessTradeNameModel)))
         }
-      )
+      },
+      {
+        case Yes => fetchBusinessesAndRemoveThisBusiness(businessId, request.reference)
+        case No => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.YourIncomeSourceToSignUpController.show))
+      }
+    )
   }
 
   private def fetchBusinessesAndRemoveThisBusiness(businessId: String, reference: String)(implicit headerCarrier: HeaderCarrier) = {
@@ -76,7 +75,7 @@ class RemoveSelfEmploymentBusinessController @Inject()(removeBusinessView: Remov
                                 implicit hc: HeaderCarrier
                               ): Future[Result] = {
     fetchBusinessData(reference, businessId).flatMap {
-      case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, maybeBusinessTradeNameModel, _, _)) =>
+      case Some(SelfEmploymentData(_, _, _, maybeBusinessNameModel, _, maybeBusinessTradeNameModel, _, _)) =>
         f(maybeBusinessNameModel, maybeBusinessTradeNameModel)
       case _ => Future.successful(Redirect(controllers.individual.tasklist.addbusiness.routes.BusinessAlreadyRemovedController.show()))
     }
