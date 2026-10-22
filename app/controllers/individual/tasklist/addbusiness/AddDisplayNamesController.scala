@@ -37,18 +37,18 @@ class AddDisplayNamesController @Inject()(view: AddDisplayNames,
                                                    mcc: MessagesControllerComponents) extends SignUpBaseController {
 
 
-  def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.fetchAllSoleTraderBusinesses(request.reference) map { soleTraderBusinesses =>
       val businessesWithDuplicateNames = soleTraderBusinesses.getBusinessesWithDuplicateNames
       Ok(view(
         displayNameForm = DisplayNameForm.displayNameForm,
-        postAction = controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.submit,
+        postAction = controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.submit(editMode),
         businesses = businessesWithDuplicateNames
       ))
     }
   }
 
-  def submit: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+  def submit(editMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     subscriptionDetailsService.fetchAllSoleTraderBusinesses(request.reference).flatMap { soleTraderBusinesses =>
       val businessesWithDuplicateNames = soleTraderBusinesses.getBusinessesWithDuplicateNames
 
@@ -58,13 +58,15 @@ class AddDisplayNamesController @Inject()(view: AddDisplayNames,
       ).fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
-            formWithErrors,
-            controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.submit,
-            businessesWithDuplicateNames))),
+            displayNameForm = formWithErrors,
+            postAction = controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.submit(editMode),
+            businesses = businessesWithDuplicateNames
+          ))),
         displayNames => {
           val businessesWithDisplayNames = soleTraderBusinesses.addDisplayNames(displayNames)
           subscriptionDetailsService.saveBusinesses(request.reference, businessesWithDisplayNames.businesses) map {
-            case Right(_) => Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            case Right(_) if editMode => Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            case Right(_) => Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
             case Left(_) => throw new InternalServerException("[AddDisplayNamesController][submit] - failed to save business display names")
           }
         }

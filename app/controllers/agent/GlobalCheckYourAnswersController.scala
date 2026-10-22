@@ -32,7 +32,6 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.agent.SignUpOrchestrationService
 import services.agent.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.CurrentDateProvider
 import views.html.agent.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -46,11 +45,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
                                                  sessionDataService: SessionDataService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
-                                                 subscriptionDetailsService: SubscriptionDetailsService,
                                                  eligibilityStatusService: GetEligibilityStatusService,
-                                                 currentDateProvider: CurrentDateProvider,
-                                                 utrService: UTRService,
-                                                 ninoService: NinoService,
                                                  mandationStatusService: MandationStatusService,
                                                  val appConfig: AppConfig)
                                                 (val auditingService: AuditingService)
@@ -90,7 +85,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         sessionDataService.saveSubmissionStatus(success)
       case Success(Left(HandledUnprocessableSignUp)) =>
         sessionDataService.saveSubmissionStatus(handledError)
-      case Success(Left(failure)) =>
+      case Success(Left(_)) =>
         sessionDataService.saveSubmissionStatus(otherError)
       case _ =>
         sessionDataService.saveSubmissionStatus(otherError)
