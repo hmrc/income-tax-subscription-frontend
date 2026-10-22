@@ -191,6 +191,17 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 )
               ),
               SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName,
+                value = Some("ABC-1-display"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = "",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              ),
+              SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
                 value = Some("1 January 1980"),
                 actions = Seq(
@@ -243,6 +254,17 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                 )
               ),
               SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName,
+                value = Some("ABC-1-display"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = "",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              ),
+              SummaryListRowValues(
                 key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
                 value = Some(GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.beforeStartDateLimit),
                 actions = Seq(
@@ -266,6 +288,63 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
               )
             ))
           }
+
+          "sole trader businesses are present without display names" in {
+            val soleTraderBusinessesWithoutDisplayNames = selfEmploymentIncomeSource(2).copy(
+              businesses = selfEmploymentIncomeSource(2).businesses.map(_.copy(displayName = None))
+            )
+            val summaryList = document(
+              details = completeDetails(soleTraderBusinesses = Some(soleTraderBusinessesWithoutDisplayNames))
+            ).mainContent.selectNth(".govuk-summary-list", 3)
+
+            summaryList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+                value = Some("Plumbing-1"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderTradeNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+                value = Some("ABC-1"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+                value = Some("1 January 1980"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderStartDateBeforeLimitUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              ),
+              SummaryListRowValues(
+                key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+                value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
+                actions = Seq(
+                  SummaryListActionValues(
+                    href = s"${appConfig.incomeTaxSelfEmploymentsUKForeignBusinessUrl}?id=id-1&isEditMode=true&isGlobalEdit=true",
+                    text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1",
+                    visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-1, ABC-1"
+                  )
+                )
+              )
+            ))
+          }
+
         }
 
         "display the next sole trader business" in {
@@ -295,6 +374,17 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
                   href = s"${appConfig.incomeTaxSelfEmploymentsSoleTraderBusinessNameUrl}?id=id-2&isEditMode=true&isGlobalEdit=true",
                   text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
                   visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
+                )
+              )
+            ),
+            SummaryListRowValues(
+              key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName,
+              value = Some("ABC-2-display"),
+              actions = Seq(
+                SummaryListActionValues(
+                  href = "",
+                  text = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2",
+                  visuallyHidden = s"${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.details} Plumbing-2, ABC-2"
                 )
               )
             ),
@@ -489,6 +579,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val details: String = "of sole trader business"
         val trade: String = "Trade"
         val name: String = "Business name"
+        val displayName: String = "Display name"
         val startDate: String = "Business start date"
         val address: String = "Business address"
         val beforeStartDateLimit: String = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
@@ -533,7 +624,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       SoleTraderBusiness(
         id = s"id-$index",
         name = s"ABC-$index",
-        displayName = Some(s"ABC-$index"),
+        displayName = Some(s"ABC-$index-display"),
         trade = s"Plumbing-$index",
         startDate = startDate.map(_.plusMonths(index - 1)),
         address = Address(

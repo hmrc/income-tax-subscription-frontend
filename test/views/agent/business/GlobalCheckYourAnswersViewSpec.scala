@@ -88,7 +88,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         ))
       }
 
-      "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is voluntary for next year" in {
+      "display the tax year when the user is voluntary for next year" in {
 
         def summaryList: Element = document(details = completeDetails(taxYear = Current)).mainContent.selectNth(".govuk-summary-list", 1)
 
@@ -107,7 +107,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         ))
       }
 
-      "display the tax year when the WhenDoYouWantToStart feature switch is enabled and the user is mandated for next year" in {
+      "display the tax year when the user is mandated for next year" in {
 
         def summaryList: Element = document(
           details = completeDetails(taxYear = Current),
@@ -131,8 +131,66 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
     }
 
     "render sole trader summaries" when {
-      "sole trader businesses are present" in {
+      "sole trader businesses are present with display names" in {
         val mainContent = document().mainContent
+        mainContent.selectNth("h2.govuk-heading-m", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(1)
+        mainContent.selectNth("h2.govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(2)
+
+        val firstSoleTraderList = mainContent.selectNth(".govuk-summary-list", 2)
+        firstSoleTraderList.mustHaveSummaryList(".govuk-summary-list")(Seq(
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsKey,
+            value = Some(""),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.detailsHiddenText("Plumbing-1", "ABC-1")
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.trade,
+            value = Some("Plumbing-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.name,
+            value = Some("ABC-1"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.startDate,
+            value = Some("1 January 1980"),
+            actions = Seq.empty
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.address,
+            value = Some("1 Long Road Lonely City ZZ11ZZ United Kingdom"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressLink(1),
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.addressHiddenText("Plumbing-1", "ABC-1")
+              )
+            )
+          ),
+          SummaryListRowValues(
+            key = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayName,
+            value = Some("ABC-1-display"),
+            actions = Seq(
+              SummaryListActionValues(
+                href = "",
+                text = s"${GlobalCheckYourAnswersMessages.Common.change} ${GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayNameHiddenText("Plumbing-1", "ABC-1")}",
+                visuallyHidden = GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.displayNameHiddenText("Plumbing-1", "ABC-1")
+              )
+            )
+          )
+        ))
+      }
+      "sole trader businesses are present without display names" in {
+        val soleTraderBusinessesWithoutDisplayNames = selfEmploymentIncomeSource(2).copy(businesses = selfEmploymentIncomeSource(2).businesses.map(_.copy(displayName = None)))
+        val mainContent = document(details = completeDetails(soleTraderBusinesses = Some(soleTraderBusinessesWithoutDisplayNames))).mainContent
         mainContent.selectNth("h2.govuk-heading-m", 2).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(1)
         mainContent.selectNth("h2.govuk-heading-m", 3).text mustBe GlobalCheckYourAnswersMessages.IncomeSources.SoleTrader.heading(2)
 
@@ -375,11 +433,14 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
         val detailsKey: String = "Business details"
         val trade: String = "Trade"
         val name: String = "Business name"
+        val displayName: String = "Display name"
         val startDate: String = "Business start date"
         val address: String = "Business address"
         val beforeStartDateLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
 
         def detailsHiddenText(tradeName: String, businessName: String): String = s"details of sole trader business $tradeName, $businessName"
+
+        def displayNameHiddenText(tradeName: String, businessName: String): String = s"display name of sole trader business $tradeName, $businessName"
 
         def addressHiddenText(tradeName: String, businessName: String): String = s"business address of sole trader business $tradeName, $businessName"
 
@@ -432,7 +493,7 @@ class GlobalCheckYourAnswersViewSpec extends ViewSpec {
       SoleTraderBusiness(
         id = s"id-$index",
         name = s"ABC-$index",
-        displayName = Some(s"ABC-$index"),
+        displayName = Some(s"ABC-$index-display"),
         trade = s"Plumbing-$index",
         startDate = startDate.map(_.plusMonths(index - 1)),
         address = Address(

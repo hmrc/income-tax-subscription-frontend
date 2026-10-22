@@ -1091,6 +1091,7 @@ individual.global-check-your-answers.income-sources.self-employment.change      
 individual.global-check-your-answers.income-sources.self-employment.hidden-text                 = {0} busnesau unig fasnachwr {1}, {2}
 individual.global-check-your-answers.income-sources.self-employment.trade                       = Gwaith masnach
 individual.global-check-your-answers.income-sources.self-employment.name                        = Enw’r busnes
+individual.global-check-your-answers.income-sources.self-employment.display-name                = ???
 individual.global-check-your-answers.income-sources.self-employment.start-date                  = Dyddiad dechrau’r busnes
 individual.global-check-your-answers.income-sources.self-employment.before-start-date-limit     = Cyn 6 Ebrill {0}
 individual.global-check-your-answers.income-sources.self-employment.address                     = Cyfeiriad y busnes
@@ -1123,6 +1124,8 @@ agent.global-check-your-answers.sole-trader.summary.name.key = Enw’r busnes
 agent.global-check-your-answers.sole-trader.summary.start-date.key = Dyddiad dechrau’r busnes
 agent.global-check-your-answers.sole-trader.summary.address.key = Cyfeiriad y busnes
 agent.global-check-your-answers.sole-trader.summary.address.change = Newid cyfeiriad busnes unig fasnachwr {0}, {1}
+agent.global-check-your-answers.sole-trader.summary.display-name.key = ???
+agent.global-check-your-answers.sole-trader.summary.display-name.change = ???
 agent.global-check-your-answers.uk-property.heading = Incwm o eiddo
 agent.global-check-your-answers.uk-property.summary.property-details.change = dyddiad dechrau – eiddo yn y DU
 agent.global-check-your-answers.uk-property.summary.start-date.key = Dyddiad dechrau’r

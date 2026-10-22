@@ -204,7 +204,29 @@
                                 )
                             )
                         ))
-                    ),
+                    )
+                ) ++ business.displayName.map { displayName =>
+                    SummaryListRow(
+                        key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.display-name"))),
+                        value = Value(content = Text(displayName)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "", // TODO: Add the correct URL for changing the display name
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages(
+                                        key = "individual.global-check-your-answers.income-sources.self-employment.hidden-text",
+                                        args = Seq(
+                                            messages("individual.global-check-your-answers.income-sources.self-employment.display-name"),
+                                            business.trade,
+                                            business.name
+                                        ): _*
+                                    ))
+                                )
+                            )
+                        ))
+                    )
+                }.toSeq ++ Seq(
                     SummaryListRow(
                         key = Key(content = Text(messages("individual.global-check-your-answers.income-sources.self-employment.start-date"))),
                         value = Value(content = Text(

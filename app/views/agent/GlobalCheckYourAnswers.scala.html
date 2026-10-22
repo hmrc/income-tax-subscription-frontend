@@ -140,7 +140,8 @@
                     SummaryListRow(
                         key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.name.key"))),
                         value = Value(content = Text(business.name))
-                    ),
+                    )
+                ) ++ Seq(
                     SummaryListRow(
                         key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.start-date.key"))),
                         value = Value(content = Text(startDateDisplay(business.startDate)))
@@ -158,7 +159,21 @@
                             )
                         ))
                     )
-                )
+                ) ++ business.displayName.map { displayName =>
+                    SummaryListRow(
+                        key = Key(content = Text(messages("agent.global-check-your-answers.sole-trader.summary.display-name.key"))),
+                        value = Value(content = Text(displayName)),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "", // TODO: Add the correct URL for changing the display name
+                                    content = Text(messages("base.change")),
+                                    visuallyHiddenText = Some(messages("agent.global-check-your-answers.sole-trader.summary.display-name.change", business.trade, business.name))
+                                )
+                            )
+                        ))
+                    )
+                }.toSeq
             ))
         }
     }
