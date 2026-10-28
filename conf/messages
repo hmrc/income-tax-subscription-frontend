@@ -1015,6 +1015,31 @@ agent.business.progress-saved.content.sign-up-link                    = continue
 agent.business.progress-saved.content.sign-up-another-client-link     = sign up another client
 agent.business.progress-saved.content.paragraph2                      = If you sign out, you’ll need to sign in again using the user ID and password you use for your agent services account.
 
+#Self Employed Business Display Name page
+individual.business-display-name.title                          = Create display labels for your income sources
+agent.business-display-name.title                               = Create display labels for your client’s income sources
+individual.business-display-name.heading                        = Create display labels for your income sources
+agent.business-display-name.heading                             = Create display labels for your client’s income sources
+individual.business-display-name.para-one                       = As you have more than one business with the same name, you need to add a display label to make it easier to tell them apart in your software.
+agent.business-display-name.para-one                            = As your client has more than one business with the same name, you need to add a display label to make it easier to tell them apart in your software.
+individual.business-display-name.para-two                       = The label is for your reference only and does not need to match your actual business name.
+agent.business-display-name.para-two                            = The label is for reference only and does not need to match your client's actual business name.
+individual.business-display-name.warning                        = Make a note of the label you choose, as it will affect how your business is identified across HMRC services and in your software.
+agent.business-display-name.warning                             = Make a note of the label you choose, as it will affect how your client's business is identified across HMRC services and in your software.
+business-display-name.sub-heading                               = Sole trader business {0}
+business-display-name.trade                                     = Trade
+business-display-name.business-name                             = Business name
+individual.business-display-name.question                       = What label do you want to give to sole trader business {0}?
+agent.business-display-name.question                            = What label will be suitable for sole trader business {0}?
+business-display-name.hint                                      = Enter something that will help you tell this income source apart from others.
+
+error.display-name.business-display-name.empty                = Enter a business name display labels
+error.display-name.business-display-name.max-length           = Business name display labels must be 35 characters or less
+error.display-name.business-display-name.min-length           = Business name display labels must have at least 2 letters
+error.display-name.business-display-name.invalid              = Business name display labels can only include letters, numbers and permitted punctuation
+error.display-name.duplicate                                  = The business name display labels cannot be the same
+error.display-name.count                                      = Enter a display label for each business shown
+
 ## Cannot go back to previous client
 agent.cannot-go-back-previous-client.title                      = Sorry, there is a problem
 agent.cannot-go-back-previous-client.heading                    = Sorry, there is a problem

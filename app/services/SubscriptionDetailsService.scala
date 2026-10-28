@@ -113,8 +113,8 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
-  def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
-                    (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+  def saveBusinessesFromSelfEmploymentData(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
+                                          (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
     val soleTraderBusinesses = SoleTraderBusinesses(
       businesses = selfEmploymentData.map { se =>
         SoleTraderBusiness(
@@ -130,6 +130,14 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       }
     )
     incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, soleTraderBusinesses)(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
+      result =>
+        taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
+    }
+  }
+  
+  def saveBusinesses(reference: String, soleTraderBusinesses: Seq[SoleTraderBusiness])
+                    (implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails(reference, SoleTraderBusinessesKey, SoleTraderBusinesses(businesses = soleTraderBusinesses))(implicitly, SoleTraderBusinesses.encryptedFormat).flatMap {
       result =>
         taskListStatusUpdate(reference, incomeTaxSubscriptionConnector, result)
     }
@@ -231,6 +239,16 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
       case None => OverseasPropertyModel(startDate = Some(propertyStartDate))
     } flatMap { model =>
       saveOverseasProperty(reference, model)
+    }
+  }
+
+  def fetchAllSoleTraderBusinesses(reference: String)(implicit hc: HeaderCarrier): Future[SoleTraderBusinesses] = {
+    incomeTaxSubscriptionConnector.getSubscriptionDetails[SoleTraderBusinesses](
+      reference = reference, 
+      id = SoleTraderBusinessesKey
+    )(implicitly, SoleTraderBusinesses.encryptedFormat) map {
+      case Some(value) => value
+      case None => SoleTraderBusinesses(Seq.empty)
     }
   }
 

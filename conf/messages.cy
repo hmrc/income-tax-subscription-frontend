@@ -991,6 +991,31 @@ agent.business.progress-saved.content.sign-up-link                    = parhau i
 agent.business.progress-saved.content.sign-up-another-client-link     = cofrestru cleient arall
 agent.business.progress-saved.content.paragraph2                      = Os byddwch yn allgofnodi, bydd angen i chi fewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) a’r cyfrinair rydych yn eu defnyddio ar gyfer eich cyfrif gwasanaethau asiant.
 
+#Self Employed Business Display Name page
+individual.business-display-name.title                          = *** MISSING TRANSLATION ***
+agent.business-display-name.title                               = *** MISSING TRANSLATION ***
+individual.business-display-name.heading                        = *** MISSING TRANSLATION ***
+agent.business-display-name.heading                             = *** MISSING TRANSLATION ***
+individual.business-display-name.para-one                       = *** MISSING TRANSLATION ***
+agent.business-display-name.para-one                            = *** MISSING TRANSLATION ***
+individual.business-display-name.para-two                       = *** MISSING TRANSLATION ***
+agent.business-display-name.para-two                            = *** MISSING TRANSLATION ***
+individual.business-display-name.warning                        = *** MISSING TRANSLATION ***
+agent.business-display-name.warning                             = *** MISSING TRANSLATION ***
+business-display-name.sub-heading                               = *** MISSING TRANSLATION ***
+business-display-name.trade                                     = *** MISSING TRANSLATION ***
+business-display-name.business-name                             = *** MISSING TRANSLATION ***
+individual.business-display-name.question                       = *** MISSING TRANSLATION ***
+agent.business-display-name.question                            = *** MISSING TRANSLATION ***
+business-display-name.hint                                      = *** MISSING TRANSLATION ***
+
+error.display-name.business-display-name.empty                = *** MISSING TRANSLATION ***
+error.display-name.business-display-name.max-length           = *** MISSING TRANSLATION ***
+error.display-name.business-display-name.min-length           = *** MISSING TRANSLATION ***
+error.display-name.business-display-name.invalid              = *** MISSING TRANSLATION ***
+error.display-name.duplicate                                  = *** MISSING TRANSLATION ***
+error.display-name.count                                      = *** MISSING TRANSLATION ***
+
 ## Cannot go back to previous client
 agent.cannot-go-back-previous-client.title                      = Mae’n ddrwg gennym – mae problem
 agent.cannot-go-back-previous-client.heading                    = Mae’n ddrwg gennym – mae problem

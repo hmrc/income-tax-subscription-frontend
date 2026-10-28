@@ -1,0 +1,84 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.common._
+@import models.common.business._
+@import views.html.templates.AgentMainTemplate
+@import views.html.helpers.{SaveAndContinueButtonHelper, TextInputHelper}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.templates.FormWithCSRFAndNoAutoComplete
+@import forms.common.DisplayNameForm
+
+@this(
+    agentMainTemplate: AgentMainTemplate,
+    form: FormWithCSRFAndNoAutoComplete,
+    saveAndContinueButtonHelper: SaveAndContinueButtonHelper,
+    textInputHelper: TextInputHelper,
+    govukSummaryList : GovukSummaryList,
+    govukInsetText: GovukInsetText
+)
+
+@(displayNameForm: Form[Seq[String]], postAction: Call, businesses: Seq[SoleTraderBusiness])(implicit request: Request[_], messages: Messages)
+
+
+@agentMainTemplate(title = messages("agent.business-display-name.title"), optForm = Some(displayNameForm)) {
+
+    <h1 class="govuk-heading-xl">@messages("agent.business-display-name.heading")</h1>
+    
+    
+    <p class="govuk-body">@messages("agent.business-display-name.para-one")</p>
+    <p class="govuk-body">@messages("agent.business-display-name.para-two")</p>
+    
+    @govukInsetText(InsetText(
+        content = Text(messages("agent.business-display-name.warning"))
+    ))
+    
+    @form(action = postAction) {
+        @businesses.zipWithIndex.map {
+            case (business, index) => {
+                <h2 class="govuk-heading-m">
+                    @messages("business-display-name.sub-heading", index + 1)
+                </h2>
+                @govukSummaryList(SummaryList(
+                    rows = Seq(
+                        row(messages("business-display-name.trade"), business.trade.getOrElse("")),
+                        row(messages("business-display-name.business-name"), business.name.getOrElse(""))
+                    )
+                ))
+                @textInputHelper(
+                    field = displayNameForm(s"${DisplayNameForm.displayName}[$index]"),
+                    label = messages("agent.business-display-name.question", index + 1),
+                    hint = Some(messages("business-display-name.hint")),
+                    isPageHeading = false,
+                    autoComplete = Some("organization")
+                )
+            }
+        }
+        
+        @saveAndContinueButtonHelper(
+            isIndividual = false,
+            saveAndContinueText = Some(messages("base.save-and-continue")),
+            saveAndReturnReference = Some("income-sources")
+        )
+    }
+}
+    
+@row(key: String, value: String) = @{
+    SummaryListRow(
+        key = Key(content = Text(key)),
+        value = Value(content = Text(value))
+    )
+}
