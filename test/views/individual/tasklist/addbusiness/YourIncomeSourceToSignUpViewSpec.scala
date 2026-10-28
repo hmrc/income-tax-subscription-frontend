@@ -50,7 +50,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val confirmDetails: String = "Confirm details"
     val change: String = "Change"
     val remove: String = "Remove"
-    val statusTagKey = "Status"
+    val statusTagKey = "Action required"
     val incompleteTag: String = "Incomplete"
     val completedTag: String = "Completed"
     val notConfirmedTag: String = "Not confirmed"
