@@ -37,7 +37,7 @@ class RemoveBusinessService @Inject()(val incomeTaxSubscriptionConnector: Income
   ): Future[Either[RemoveBusinessFailure, DeleteSubscriptionDetailsSuccess]] = {
     val remainingBusinesses = businesses.filterNot(_.id == businessId)
 
-    subscriptionDetailsService.saveBusinesses(reference, remainingBusinesses).flatMap {
+    subscriptionDetailsService.saveBusinessesFromSelfEmploymentData(reference, remainingBusinesses).flatMap {
       case Right(_) => if (remainingBusinesses.isEmpty) {
         incomeTaxSubscriptionConnector.deleteSubscriptionDetails(reference, SoleTraderBusinessesKey) map {
           case Right(value) => Right(value)

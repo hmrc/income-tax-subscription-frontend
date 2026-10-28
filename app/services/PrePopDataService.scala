@@ -72,7 +72,7 @@ class PrePopDataService @Inject()(prePopConnector: PrePopConnector,
         val selfEmployments: Seq[SelfEmploymentData] = prePopSelfEmployments.map(_.toSelfEmploymentData(
           id = uuidProvider.getUUID
         ))
-        subscriptionDetailsService.saveBusinesses(reference, selfEmployments) map {
+        subscriptionDetailsService.saveBusinessesFromSelfEmploymentData(reference, selfEmployments) map {
           case Left(error) =>
             logger.error(s"[PrePopDataService][savePrePopSelfEmployments] - Error saving self employment businesses. Error: $error")
             PrePopFailure(error.toString)

@@ -21,7 +21,9 @@ import play.api.data.Forms._
 import play.api.data._
 
 object MappingUtil {
-
+  
+  val trimmedText: Mapping[String] = default(text, "").transform(_.trim, identity)
+  
   val oText: Mapping[Option[String]] = optional(text)
 
   implicit class OTextUtil(mapping: Mapping[Option[String]]) {
