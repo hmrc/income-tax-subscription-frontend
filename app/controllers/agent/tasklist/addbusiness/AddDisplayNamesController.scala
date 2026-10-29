@@ -62,12 +62,13 @@ class AddDisplayNamesController @Inject()(view: AddDisplayNames,
             formWithErrors,
             controllers.agent.tasklist.addbusiness.routes.AddDisplayNamesController.submit,
             businessesWithDuplicateNames))),
-        displayNames =>
+        displayNames => {
           val businessesWithDisplayNames = soleTraderBusinesses.addDisplayNames(displayNames)
           subscriptionDetailsService.saveBusinesses(request.reference, businessesWithDisplayNames.businesses) map {
             case Right(_) => Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
             case Left(_) => throw new InternalServerException("[AddDisplayNamesController][submit] - failed to save business display names")
           }
+        }
       )
     }
   }
