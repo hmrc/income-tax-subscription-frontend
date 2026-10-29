@@ -56,6 +56,14 @@ object Constraints {
     constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else Invalid("error.nino.invalid"))
   }
 
+  val validateCharAgainst: (String, String) => Constraint[String] = (test, msgKey) => constraint[String](
+    x => if (x.matches(test)) Valid else Invalid(msgKey)
+  )
+
+  val minLettersLength: (Int, String) => Constraint[String] = (length, msgKey) => constraint[String](
+    x => if (x.count(_.isLetter) < length) Invalid(msgKey) else Valid
+  )
+
   def isAfter(
     minDate: LocalDate,
     errorContext: String,

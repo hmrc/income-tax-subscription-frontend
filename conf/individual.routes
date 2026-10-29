@@ -83,6 +83,10 @@ POST        /business/property-commencement-date                 controllers.ind
 GET         /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 POST        /business/overseas-property-start-date               controllers.individual.tasklist.overseasproperty.ForeignPropertyStartDateController.submit(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
 
+# Add display names
+GET        /business/sole-trader-display-names                   controllers.individual.tasklist.addbusiness.AddDisplayNamesController.show
+POST       /business/sole-trader-display-names                   controllers.individual.tasklist.addbusiness.AddDisplayNamesController.submit
+
 # Identity Verification return routes
 GET         /iv-success                                          controllers.individual.iv.IVSuccessController.success
 GET         /iv-failure                                          controllers.individual.iv.IVFailureController.failure

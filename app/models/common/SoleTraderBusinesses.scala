@@ -20,7 +20,26 @@ import play.api.libs.functional.syntax.unlift
 import play.api.libs.json.{Format, OFormat, __}
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
-case class SoleTraderBusinesses(businesses: Seq[SoleTraderBusiness])
+case class SoleTraderBusinesses(businesses: Seq[SoleTraderBusiness]) {
+  def getBusinessesWithDuplicateNames: Seq[SoleTraderBusiness] = businesses.filter { business =>
+    business.name.exists { name =>
+      businesses.exists(other => other.id != business.id && other.name.contains(name))
+    }
+  }
+
+  def addDisplayNames(displayNames: Seq[String]): SoleTraderBusinesses = {
+    val businessesWithDuplicateNames = getBusinessesWithDuplicateNames
+    require(displayNames.size == businessesWithDuplicateNames.size, "Must have a display name for each business with a duplicate name")
+
+    val displayNamesByBusinessId = businessesWithDuplicateNames.map(_.id).zip(displayNames).toMap
+    copy(businesses = businesses.map { business =>
+      displayNamesByBusinessId.get(business.id) match {
+        case Some(displayName) => business.copy(displayName = Some(displayName))
+        case None => business
+      }
+    })
+  }
+}
 
 object SoleTraderBusinesses {
 

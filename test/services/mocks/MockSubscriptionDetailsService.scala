@@ -173,15 +173,15 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
   }
 
   def mockSaveBusinesses(businesses: Seq[SelfEmploymentData])(result: PostSubscriptionDetailsResponse): Unit = {
-    when(mockSubscriptionDetailsService.saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any()))
+    when(mockSubscriptionDetailsService.saveBusinessesFromSelfEmploymentData(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any()))
       .thenReturn(Future.successful(result))
   }
 
   def verifySaveBusinesses(businesses: Seq[SelfEmploymentData], count: Int = 1): Unit = {
     if (count == 0) {
-      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinessesFromSelfEmploymentData(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any())
     } else {
-      verify(mockSubscriptionDetailsService, times(count)).saveBusinesses(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any())
+      verify(mockSubscriptionDetailsService, times(count)).saveBusinessesFromSelfEmploymentData(ArgumentMatchers.any(), ArgumentMatchers.eq(businesses))(ArgumentMatchers.any())
     }
   }
 
