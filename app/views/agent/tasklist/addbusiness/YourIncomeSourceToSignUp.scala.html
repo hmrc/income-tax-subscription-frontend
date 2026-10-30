@@ -84,10 +84,17 @@
 }
 
 @selfEmploymentName(business: SelfEmploymentData, index: Int) = @{
+if((business.displayName).isDefined) {
+(business.displayName) match {
+case (Some(BusinessDisplayNameModel(name))) => messages("agent.your-income-source.self-employed.name", name)
+case _ => messages("agent.your-income-source.self-employed.label-none", index)
+}
+}else{
     (business.businessName) match {
         case (Some(BusinessNameModel(name))) => messages("agent.your-income-source.self-employed.name", name)
         case _ => messages("agent.your-income-source.self-employed.label-none", index)
     }
+}
 }
 
 @selfEmploymentStartDate(business: SelfEmploymentData) = @{
