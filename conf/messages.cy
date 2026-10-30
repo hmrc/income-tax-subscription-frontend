@@ -396,16 +396,15 @@ agent.sign-up-confirmation.what-must-do.heading                                 
 
 agent.sign-up-confirmation.you-must-use                                             = Mae hyn yn golygu o {0} ymlaen bydd angen i chi anfon diweddariadau chwarterol eich cleient a chyflwyno’i Ffurflen Dreth gan ddefnyddio’ch meddalwedd dewisol.
 
-agent.sign-up-confirmation.you-must-use.para                                        = I wneud yn siŵr eich bod chi a’ch cleient yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
+agent.sign-up-confirmation.you-must-use.para                                        = I wneud yn siŵr eich cleient yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = cael meddalwedd sy’n gweithio ar gyfer anghenion unigol eich cleient, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
-agent.sign-up-confirmation.you-must-use.bullet2                                     = gwirio bod awdurdodiadau eich cleient wedi’u hychwanegu at eich {0}
-agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = cyfrif gwasanaethau asiant
-agent.sign-up-confirmation.you-must-use.bullet3                                     = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation.you-must-use.bullet2                                     = cael eich meddalwedd yn barod
+agent.sign-up-confirmation.you-must-use.bullet2.link                                = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/get-your-software-ready
 
-agent.sign-up-confirmation.quarterly.updates.para                                   = Mae angen i chi greu cofnodion digidol ac anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient fel unig fasnachwr a phob ffynhonnell incwm o eiddo. Y dyddiadau cau yw:
-agent.sign-up-confirmation.mtd.para                                                 = Darllenwch {0} i gael gwybod sut i wneud y camau gofynnol nesaf.
-agent.sign-up-confirmation.mtd.para.link-text                                       = Defnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+agent.sign-up-confirmation-quarterly.updates.para                                   = Mae angen i chi greu cofnodion digidol ac anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient fel unig fasnachwr a phob ffynhonnell incwm o eiddo. Mae’r {0} yn esbonio’r ffordd o wneud hyn.
+agent.sign-up-confirmation-quarterly.updates.para.link-text                         = arweiniad ynghylch cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+agent.sign-up-confirmation-quarterly.updates.para.link                              = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
+agent.sign-up-confirmation-quarterly.updates.deadline-header                        = Y dyddiadau cau ar gyfer diweddariadau chwarterol yw:
 
 agent.sign-up-confirmation.feedback.link                                            = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation_Clients
 
@@ -486,18 +485,17 @@ sign-up-confirmation.date                                            = Dyddiad h
 
 sign-up-confirmation.what-you-must-do.heading                        = Eich camau nesaf
 
-sign-up-confirmation.you-must-use.para                               = I wneud yn siŵr eich bod yn barod i ddefnyddio Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol nawr:
+sign-up-confirmation.you-must-use.para                               = Er mwyn bod yn barod i ddefnyddio’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm, mae’n rhaid i chi wneud y canlynol:
 sign-up-confirmation.you-must-use.bullet1                            = cael meddalwedd sy’n gweithio ar gyfer eich anghenion unigol, os nad oes eisoes gennych feddalwedd sy’n bodloni hynny
-sign-up-confirmation.you-must-use.bullet2                            = awdurdodi’ch meddalwedd dewisol (mae hyn yn cysylltu eich meddalwedd) fel ei bod yn gweithio gyda’r cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation.you-must-use.bullet3                            = gwirio bod eich cyfnod cyfrifyddu yn gywir yn eich meddalwedd
-sign-up-confirmation.you-must-use.bullet4                            = gwirio bod Troi Treth yn Ddigidol ar gyfer Treth Incwm wedi’i ychwanegu at {0}
-sign-up-confirmation.you-must-use.bullet4.link-text                  = eich cyfrif ar-lein CThEF
+sign-up-confirmation.you-must-use.bullet2                            = cael eich meddalwedd yn barod
+sign-up-confirmation.you-must-use.bullet2.link                       = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/get-your-software-ready
+sign-up-confirmation.you-must-use.bullet3                            = gwirio bod Troi Treth yn Ddigidol ar gyfer Treth Incwm wedi’i ychwanegu at {0}
+sign-up-confirmation.you-must-use.bullet3.link-text                  = eich cyfrif ar-lein CThEF
 
-sign-up-confirmation.quarterly.updates.para                          = Mae angen i chi greu cofnodion digidol ac anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient fel unig fasnachwr a phob ffynhonnell incwm o eiddo. Y dyddiadau cau yw:
-
-sign-up-confirmation-what-you-must-do.para                           = Darllenwch y canllaw {0} – mae hwn yn esbonio sut i wneud y camau gofynnol nesaf a restrir uchod.
-sign-up-confirmation-what-you-must-do.para.link-text                 = Troi Treth yn Ddigidol ar gyfer Treth Incwm
-sign-up-confirmation-what-you-must-do.para.link-href                 = https://www.gov.uk/guidance/defnyddio-r-cynllun-troi-treth-yn-ddigidol-ar-gyfer-treth-incwm
+sign-up-confirmation-quarterly.updates.para                          = Mae angen i chi anfon diweddariadau chwarterol ar gyfer pob un o ffynonellau incwm eich cleient o fod yn unig fasnachwr a ffynonellau incwm eich cleient o eiddo. Mae’r {0} yn esbonio’r ffordd o wneud hyn.
+sign-up-confirmation-quarterly.updates.para.link-text                = arweiniad ynghylch cynllun Troi Treth yn Ddigidol ar gyfer Treth Incwm
+sign-up-confirmation-quarterly.updates.para.link                     = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+sign-up-confirmation-quarterly.updates.deadline-header               = Y dyddiadau cau ar gyfer diweddariadau chwarterol yw:
 
 sign-up-confirmation.survey.link-text                                = Rhoi adborth ar y gwasanaeth hwn
 sign-up-confirmation.survey.after                                    = (mae’n cymryd 30 eiliad)
