@@ -17,11 +17,15 @@
 package services
 
 import models.*
-import models.common.AccountingYearModel
+import models.common.{AccountingYearModel, SoleTraderBusiness, SoleTraderBusinesses}
+import models.common.business.{BusinessNameModel, SelfEmploymentData}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{Format, Json}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
@@ -150,6 +154,73 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
     }
   }
 
+  "fetchAllSoleTraderBusinesses" should {
+    "return the stored businesses" in {
+      val businesses = SoleTraderBusinesses(Seq(
+        SoleTraderBusiness(id = "business-1", name = Some("Business one"), displayName = Some("Display one"))
+      ))
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(Some(businesses))
+
+      await(subscriptionDetailsService.fetchAllSoleTraderBusinesses(testReference)(hc)) mustBe businesses
+    }
+
+    "return an empty businesses collection when none are stored" in {
+      mockGetSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey)(None)
+
+      await(subscriptionDetailsService.fetchAllSoleTraderBusinesses(testReference)(hc)) mustBe SoleTraderBusinesses(Seq.empty)
+    }
+  }
+
+  "saveBusinesses" should {
+    "save sole trader businesses and clear income source confirmation" in {
+      val businesses = Seq(
+        SoleTraderBusiness(id = "business-1", name = Some("Business one"), displayName = Some("Display one"))
+      )
+      val storedBusinesses = SoleTraderBusinesses(businesses)
+      mockSaveSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey, storedBusinesses)(
+        Right(PostSubscriptionDetailsSuccessResponse)
+      )
+      mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(
+        Right(connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse)
+      )
+
+      await(subscriptionDetailsService.saveBusinesses(testReference, businesses)(hc)) mustBe
+        Right(PostSubscriptionDetailsSuccessResponse)
+    }
+  }
+
+  "saveBusinessesFromSelfEmploymentData" should {
+    "convert and save self-employment data" in {
+      val selfEmploymentData = Seq(SelfEmploymentData(
+        id = "business-1",
+        businessName = Some(BusinessNameModel("Business one")),
+        businessDisplayName = Some("Display one")
+      ))
+      val storedBusinesses = SoleTraderBusinesses(Seq(
+        SoleTraderBusiness(id = "business-1", name = Some("Business one"), displayName = Some("Display one"))
+      ))
+      mockSaveSubscriptionDetails(SubscriptionDataKeys.SoleTraderBusinessesKey, storedBusinesses)(
+        Right(PostSubscriptionDetailsSuccessResponse)
+      )
+      mockDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)(
+        Right(connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse)
+      )
+
+      await(subscriptionDetailsService.saveBusinessesFromSelfEmploymentData(testReference, selfEmploymentData)(hc)) mustBe
+        Right(PostSubscriptionDetailsSuccessResponse)
+    }
+
+    "return a save failure without clearing income source confirmation" in {
+      val selfEmploymentData = Seq(SelfEmploymentData(id = "business-1"))
+      mockSaveSubscriptionDetails(
+        SubscriptionDataKeys.SoleTraderBusinessesKey,
+        SoleTraderBusinesses(Seq(SoleTraderBusiness(id = "business-1")))
+      )(Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+
+      await(subscriptionDetailsService.saveBusinessesFromSelfEmploymentData(testReference, selfEmploymentData)(hc)) mustBe
+        Left(UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+    }
+  }
 
   lazy val date: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 

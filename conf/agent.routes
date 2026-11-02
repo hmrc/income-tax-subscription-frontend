@@ -121,6 +121,10 @@ POST        /business/remove-uk-property-business                controllers.age
 GET         /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.show
 POST        /business/remove-overseas-property-business          controllers.agent.tasklist.overseasproperty.RemoveOverseasPropertyController.submit
 
+# Add display names
+GET        /business/sole-trader-display-names                   controllers.agent.tasklist.addbusiness.AddDisplayNamesController.show
+POST       /business/sole-trader-display-names                   controllers.agent.tasklist.addbusiness.AddDisplayNamesController.submit
+
 # Throttle
 GET         /throttle-start                                      controllers.agent.ThrottlingController.start()
 GET         /throttle-end                                        controllers.agent.ThrottlingController.end()
