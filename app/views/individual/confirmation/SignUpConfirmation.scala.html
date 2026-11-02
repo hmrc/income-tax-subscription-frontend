@@ -54,20 +54,34 @@
         leadIn=messages("sign-up-confirmation.you-must-use.para"),
         Seq(
             HtmlContent(messages("sign-up-confirmation.you-must-use.bullet1")),
-            HtmlContent(messages("sign-up-confirmation.you-must-use.bullet2")),
-            HtmlContent(messages("sign-up-confirmation.you-must-use.bullet3")),
+            HtmlContent(
+                hmrcNewTabLinkHelper(NewTabLinkHelper(
+                    text = messages("sign-up-confirmation.you-must-use.bullet2"),
+                    href = Some(messages("sign-up-confirmation.you-must-use.bullet2.link"))
+                ))
+            ),
             HtmlContent(messages(
-                key = "sign-up-confirmation.you-must-use.bullet4",
+                key = "sign-up-confirmation.you-must-use.bullet3",
                 args = hmrcNewTabLinkHelper(NewTabLinkHelper(
-                    text = messages("sign-up-confirmation.you-must-use.bullet4.link-text"),
+                    text = messages("sign-up-confirmation.you-must-use.bullet3.link-text"),
                     href = Some(appConfig.getAccountUrl)
                 ))
             ))
         )
     )
 
+    <p class="govuk-body">
+        @Html(messages(
+            key = "sign-up-confirmation-quarterly.updates.para",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                text = messages("sign-up-confirmation-quarterly.updates.para.link-text"),
+                href = Some(messages("sign-up-confirmation-quarterly.updates.para.link"))
+            ))
+        ))
+    </p>
+
     @ul(
-        leadIn=messages("sign-up-confirmation.quarterly.updates.para"),
+        leadIn=messages("sign-up-confirmation-quarterly.updates.deadline-header"),
         Seq(
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.1")),
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.2")),
@@ -75,11 +89,6 @@
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
         )
     )
-
-    <p class="govuk-body">@Html(messages(
-        key = "sign-up-confirmation-what-you-must-do.para",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("sign-up-confirmation-what-you-must-do.para.link-text"), Some(messages("sign-up-confirmation-what-you-must-do.para.link-href"))))))
-    </p>
 
     <div class="govuk-!-display-none-print">
         <p class="govuk-body">

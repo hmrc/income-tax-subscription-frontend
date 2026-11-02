@@ -129,9 +129,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "has a second item" in {
           bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.nextStepsTwo
         }
-        "has a third item" in {
-          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.nextStepsThree
-        }
       }
 
       "have the correct second bullet point with text and link" in {
@@ -139,11 +136,15 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         val link = secondBullet.selectHead("a")
 
         link.text mustBe SignUpConfirmationMessages.nextStepsTwoLink
-        link.attr("href") mustBe appConfig.agentServicesAccountHomeUrl
+        link.attr("href") mustBe SignUpConfirmationMessages.nextStepsTwoAddress
       }
 
       "contains third paragraph" in {
         mainContent.select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paraTwo
+      }
+
+      "contains fourth paragraph" in {
+        mainContent.select(".govuk-body").select("p").get(6).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
       "contains bullet list for dealines" which {
@@ -161,16 +162,6 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         "has a fourth item" in {
           bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.deadline4
         }
-      }
-
-      "contains a mtd paragraph with a link" in {
-        val usingMtdPara = mainContent.selectNth("p", 7)
-        val expectedText =
-          s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-        usingMtdPara.text() mustBe expectedText
-        val link = usingMtdPara.select("a")
-        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
-        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
       }
 
       "contains survey link" which {
@@ -208,22 +199,19 @@ class SignUpConfirmationViewSpec extends ViewSpec {
     val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
 
     val nextStepsHeading = "Your next steps"
-    val paraOne = "To make sure that you and your client are ready to use Making Tax Digital for Income Tax, you must now:"
+    val paraOne = "To make sure your client is ready to use Making Tax Digital for Income Tax, you must now:"
     val nextStepsOne = "get software that works for your client’s individual needs, if you have not already got this"
-    val nextStepsTwo = "check your client authorisations have been added to your agent services account (opens in new tab)"
-    val nextStepsTwoLink = "agent services account (opens in new tab)"
-    val nextStepsThree = "authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax"
+    val nextStepsTwo = "get your software ready (opens in new tab)"
+    val nextStepsTwoLink = "get your software ready (opens in new tab)"
+    val nextStepsTwoAddress = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/get-your-software-ready"
 
-    val paraTwo = "You need to create digital records and send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:"
+    val paraTwo = "You need to create digital records and send quarterly updates for each of your client’s sole trader and property income sources. The Use Making Tax Digital for Income Tax guide (opens in new tab) explains how to do this."
+
+    val paraThree = "The quarterly update deadlines are:"
     val deadline1 = "7 August"
     val deadline2 = "7 November"
     val deadline3 = "7 February"
     val deadline4 = "7 May"
-
-    val usingMtdPara = "Read"
-    val usingMtdParaEnd = "to find out how to do the required next steps."
-    val usingMtdLink = "use Making Tax Digital for Income Tax (opens in new tab)"
-    val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
 
     val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"

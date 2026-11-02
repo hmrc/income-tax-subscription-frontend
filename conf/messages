@@ -405,17 +405,15 @@ agent.sign-up-confirmation.what-must-do.heading                                 
 
 agent.sign-up-confirmation.you-must-use                                             = This means that from {0} you need to send your client’s quarterly updates and submit their tax return using your chosen software.
 
-agent.sign-up-confirmation.you-must-use.para                                        = To make sure that you and your client are ready to use Making Tax Digital for Income Tax, you must now:
+agent.sign-up-confirmation.you-must-use.para                                        = To make sure your client is ready to use Making Tax Digital for Income Tax, you must now:
 agent.sign-up-confirmation.you-must-use.bullet1                                     = get software that works for your client’s individual needs, if you have not already got this
-agent.sign-up-confirmation.you-must-use.bullet2                                     = check your client authorisations have been added to your {0}
-agent.sign-up-confirmation.you-must-use.bullet2.link-text                           = agent services account
-agent.sign-up-confirmation.you-must-use.bullet3                                     = authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax
+agent.sign-up-confirmation.you-must-use.bullet2                                     = get your software ready
+agent.sign-up-confirmation.you-must-use.bullet2.link                                = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/get-your-software-ready
 
-agent.sign-up-confirmation.quarterly.updates.para                                   = You need to create digital records and send your quarterly updates for each of your client’s sole trader and property income sources. The deadlines are:
-
-agent.sign-up-confirmation.mtd.para                                                 = Read {0} to find out how to do the required next steps.
-agent.sign-up-confirmation.mtd.para.link-text                                       = use Making Tax Digital for Income Tax
-agent.sign-up-confirmation.mtd.para.link-href                                       = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+agent.sign-up-confirmation-quarterly.updates.para                                   = You need to create digital records and send quarterly updates for each of your client’s sole trader and property income sources. The {0} explains how to do this.
+agent.sign-up-confirmation-quarterly.updates.para.link-text                         = Use Making Tax Digital for Income Tax guide
+agent.sign-up-confirmation-quarterly.updates.para.link                              = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax
+agent.sign-up-confirmation-quarterly.updates.deadline-header                        = The quarterly update deadlines are:
 
 agent.sign-up-confirmation.feedback.link                                            = https://survey.take-part-in-research.service.gov.uk/jfe/form/SV_74GjifgnGv6GsMC?Source=BannerList_HMRC_Income_Expenses_Sign-Up_Confirmation_Clients
 
@@ -496,18 +494,17 @@ sign-up-confirmation.date                                            = Today’s
 
 sign-up-confirmation.what-you-must-do.heading                        = Your next steps
 
-sign-up-confirmation.you-must-use.para                               = To make sure that you’re ready to use Making Tax Digital for Income Tax, you must now:
+sign-up-confirmation.you-must-use.para                               = To be ready to use Making Tax Digital for Income Tax, you must now:
 sign-up-confirmation.you-must-use.bullet1                            = get software that works for your individual needs, if you have not already got this
-sign-up-confirmation.you-must-use.bullet2                            = authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax
-sign-up-confirmation.you-must-use.bullet3                            = check your accounting period is correct in your software
-sign-up-confirmation.you-must-use.bullet4                            = check that Making Tax Digital for Income Tax has been added to {0}
-sign-up-confirmation.you-must-use.bullet4.link-text                  = your HMRC online account
+sign-up-confirmation.you-must-use.bullet2                            = get your software ready
+sign-up-confirmation.you-must-use.bullet2.link                       = https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/get-your-software-ready
+sign-up-confirmation.you-must-use.bullet3                            = check that Making Tax Digital for Income Tax has been added to {0}
+sign-up-confirmation.you-must-use.bullet3.link-text                  = your HMRC online account
 
-sign-up-confirmation.quarterly.updates.para                          = You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The deadlines are:
-
-sign-up-confirmation-what-you-must-do.para                           = Read the {0} – this explains how to do the required next steps listed above.
-sign-up-confirmation-what-you-must-do.para.link-text                 = Use Making Tax Digital for Income Tax guide
-sign-up-confirmation-what-you-must-do.para.link-href                 = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+sign-up-confirmation-quarterly.updates.para                          = You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The {0} explains how to do this.
+sign-up-confirmation-quarterly.updates.para.link-text                = Use Making Tax Digital for Income Tax guide
+sign-up-confirmation-quarterly.updates.para.link                     = https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax
+sign-up-confirmation-quarterly.updates.deadline-header               = The quarterly update deadlines are:
 
 sign-up-confirmation.survey.link-text                                = What do you think of this service
 sign-up-confirmation.survey.after                                    = (takes 30 seconds)

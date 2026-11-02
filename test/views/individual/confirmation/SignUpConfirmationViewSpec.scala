@@ -105,16 +105,13 @@ class SignUpConfirmationViewSpec extends ViewSpec {
           bulletList.selectNth("li", 2).text mustBe SignUpConfirmationMessages.nextStepsTwo
         }
         "has a third item" in {
-          bulletList.selectNth("li", 3).text mustBe SignUpConfirmationMessages.nextStepsThree
-        }
-        "has a forth item" in {
-          bulletList.selectNth("li", 4).text mustBe SignUpConfirmationMessages.nextStepsFour
+          bulletList.selectNth("li", 3).text mustBe s"${SignUpConfirmationMessages.nextStepsThree} ${SignUpConfirmationMessages.nextStepsThreeLink}"
         }
       }
 
-      "have the correct forth bullet point with text and link" in {
-        val forthBullet = mainContent().selectNth("ul", 1).selectNth("li", 4)
-        val link = forthBullet.selectHead("a")
+      "have the correct third bullet point with text and link" in {
+        val thirdBullet = mainContent().selectNth("ul", 1).selectNth("li", 3)
+        val link = thirdBullet.selectHead("a")
 
         link.text mustBe SignUpConfirmationMessages.nextStepsThreeLink
         link.attr("href") mustBe appConfig.getAccountUrl
@@ -122,6 +119,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
       "contains a second paragraph" in {
         mainContent().select(".govuk-body").select("p").get(4).text() mustBe SignUpConfirmationMessages.paraTwo
+      }
+
+      "contains a third paragraph" in {
+        mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
       "contains bullet list for dealines" which {
@@ -141,21 +142,10 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         }
       }
 
-      "contains a mtd paragraph with a link" in {
-        def usingMtdPara() = mainContent().selectNth("p", 6)
-
-        val expectedText = s"${SignUpConfirmationMessages.usingMtdPara} ${SignUpConfirmationMessages.usingMtdLink} ${SignUpConfirmationMessages.usingMtdParaEnd}"
-
-        usingMtdPara().text() mustBe expectedText
-        val link = usingMtdPara().select("a")
-        link.text() mustBe SignUpConfirmationMessages.usingMtdLink
-        link.attr("href") mustBe SignUpConfirmationMessages.usingMtdLinkHref
-      }
-
       "contains survey link" which {
         "has a link for survey" in {
-          mainContent().selectNth(".govuk-link", 4).text mustBe SignUpConfirmationMessages.surveyText
-          mainContent().selectNth(".govuk-link", 4).attr("href") mustBe SignUpConfirmationMessages.surveyLink
+          mainContent().selectNth(".govuk-link", 5).text mustBe SignUpConfirmationMessages.surveyText
+          mainContent().selectNth(".govuk-link", 5).attr("href") mustBe SignUpConfirmationMessages.surveyLink
           mainContent().select("p.govuk-body").last().text mustBe SignUpConfirmationMessages.surveyText + SignUpConfirmationMessages.surveyTextEnd
         }
       }
@@ -189,24 +179,19 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       s"Today’s date: $date"
     }
 
-    val paraOne = "To make sure that you’re ready to use Making Tax Digital for Income Tax, you must now:"
+    val paraOne = "To be ready to use Making Tax Digital for Income Tax, you must now:"
     val nextStepsOne = "get software that works for your individual needs, if you have not already got this"
-    val nextStepsTwo = "authorise your chosen software (this links your software) so that it works with Making Tax Digital for Income Tax"
-    val nextStepsThree = "check your accounting period is correct in your software"
-    val nextStepsFour = "check that Making Tax Digital for Income Tax has been added to your HMRC online account (opens in new tab)"
+    val nextStepsTwo = "get your software ready (opens in new tab)"
+    val nextStepsThree = "check that Making Tax Digital for Income Tax has been added to"
     val nextStepsThreeLink = "your HMRC online account (opens in new tab)"
 
-    val paraTwo = "You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The deadlines are:"
+    val paraTwo = "You need to create digital records and send your quarterly updates for each of your sole trader and property income sources. The Use Making Tax Digital for Income Tax guide (opens in new tab) explains how to do this."
 
+    val paraThree = "The quarterly update deadlines are:"
     val deadline1 = "7 August"
     val deadline2 = "7 November"
     val deadline3 = "7 February"
     val deadline4 = "7 May"
-
-    val usingMtdPara = "Read the"
-    val usingMtdParaEnd = "– this explains how to do the required next steps listed above."
-    val usingMtdLink = "Use Making Tax Digital for Income Tax guide (opens in new tab)"
-    val usingMtdLinkHref = "https://www.gov.uk/guidance/using-making-tax-digital-for-income-tax"
 
     val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"

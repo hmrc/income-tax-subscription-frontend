@@ -70,19 +70,27 @@
         leadIn=messages("agent.sign-up-confirmation.you-must-use.para"),
         Seq(
             HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet1")),
-            HtmlContent(messages(
-                key = "agent.sign-up-confirmation.you-must-use.bullet2",
-                args = hmrcNewTabLinkHelper(NewTabLinkHelper(
-                    text = messages("agent.sign-up-confirmation.you-must-use.bullet2.link-text"),
-                    href = Some(appConfig.agentServicesAccountHomeUrl)
+            HtmlContent(
+                hmrcNewTabLinkHelper(NewTabLinkHelper(
+                    text = messages("agent.sign-up-confirmation.you-must-use.bullet2"),
+                    href = Some(messages("sign-up-confirmation.you-must-use.bullet2.link"))
                 ))
-            )),
-            HtmlContent(messages("agent.sign-up-confirmation.you-must-use.bullet3"))
+            ),
         )
     )
 
+    <p class="govuk-body">
+        @Html(messages(
+            key = "agent.sign-up-confirmation-quarterly.updates.para",
+            args = hmrcNewTabLinkHelper(NewTabLinkHelper(
+                text = messages("agent.sign-up-confirmation-quarterly.updates.para.link-text"),
+                href = Some(messages("agent.sign-up-confirmation-quarterly.updates.para.link"))
+            ))
+        ))
+    </p>
+
     @ul(
-        leadIn=messages("agent.sign-up-confirmation.quarterly.updates.para"),
+        leadIn=messages("agent.sign-up-confirmation-quarterly.updates.deadline-header"),
         Seq(
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.1")),
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.2")),
@@ -90,12 +98,6 @@
             HtmlContent(messages("sign-up-confirmation.quarterly.updates.deadline.4"))
         )
     )
-
-    <p class="govuk-body">
-        @Html(messages(
-        key = "agent.sign-up-confirmation.mtd.para",
-        args = hmrcNewTabLinkHelper(NewTabLinkHelper(messages("agent.sign-up-confirmation.mtd.para.link-text"), Some(messages("agent.sign-up-confirmation.mtd.para.link-href"))))))
-    </p>
 
     <div class = "govuk-!-display-none-print">
         @buttonHelper(
