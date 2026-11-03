@@ -216,7 +216,8 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       fakeIdentifierAction,
       fakeSignUpJourneyRefiner,
       yourIncomeSourceToSignUpView,
-      mockSubscriptionDetailsService)
+      mockSubscriptionDetailsService
+    )(appConfig)
 
     def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean, taxYearSelection: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(

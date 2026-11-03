@@ -17,9 +17,13 @@
 package controllers.agent.tasklist.addbusiness
 
 import config.AppConfig
+import config.featureswitch.FeatureSwitch.DisplayName
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.Next
+import models.common.SoleTraderBusinesses
+import models.common.business.SelfEmploymentData
 import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
@@ -35,7 +39,8 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
                                                    journeyRefiner: ConfirmedClientJourneyRefiner,
                                                    subscriptionDetailsService: SubscriptionDetailsService
                                                   )(val appConfig: AppConfig)
-                                                  (implicit mcc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
+                                                  (implicit mcc: MessagesControllerComponents,
+                                                   ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
 
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
@@ -59,12 +64,21 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
     subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
-          case Right(_) => Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+          case Right(_) =>
+            if (thereAreDuplicateBusinessNames(incomeSources.selfEmployments) && isEnabled(DisplayName)) {
+              Redirect(controllers.agent.tasklist.addbusiness.routes.AddDisplayNamesController.show)
+            } else {
+              Redirect(controllers.agent.routes.GlobalCheckYourAnswersController.show)
+            }
           case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
       } else {
         Future.successful(Redirect(controllers.agent.tasklist.routes.IncomeSourcesIncompleteController.show))
       }
     }
+  }
+
+  private def thereAreDuplicateBusinessNames(selfEmployments: Seq[SelfEmploymentData]): Boolean = {
+    SoleTraderBusinesses(selfEmployments.map(_.toSoleTraderBusiness)).getBusinessesWithDuplicateNames.nonEmpty
   }
 }

@@ -17,12 +17,14 @@
 package controllers.individual.tasklist.addbusiness
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.DisplayName
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.IndividualURI.apaHandOffControllerUrI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.*
 import helpers.servicemocks.AuthStub
+import models.common.business.BusinessNameModel
 import models.EligibilityStatus
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
@@ -37,6 +39,23 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
   }
 
   val serviceNameGovUk = " - Sign up for Making Tax Digital for Income Tax - GOV.UK"
+
+  private def stubCompleteIncomeSources(selfEmployments: Seq[models.common.business.SelfEmploymentData]): Unit = {
+    AuthStub.stubAuthSuccess()
+    IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, selfEmployments)
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.JourneyStateKey -> JsString(models.individual.JourneyStep.SignUp.key)
+    ))
+    IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+    IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+    IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true)
+  }
+
+  private def withDisplayNameFeatureSwitch(enabled: Boolean)(testCode: => Unit): Unit = {
+    if (enabled) enable(DisplayName) else disable(DisplayName)
+    try testCode
+    finally disable(DisplayName)
+  }
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
     "return SEE_OTHER to login page" when {
@@ -138,6 +157,55 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))
+      }
+
+      "redirect to add display names when duplicate names exist and the feature is enabled" in {
+        withDisplayNameFeatureSwitch(enabled = true) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true)
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show.url)
+          )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](
+            SubscriptionDataKeys.IncomeSourceConfirmation,
+            true,
+            Some(1)
+          )
+        }
+      }
+
+      "redirect to SPS when names are unique and the feature is enabled" in {
+        withDisplayNameFeatureSwitch(enabled = true) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true).copy(
+              businessName = Some(BusinessNameModel("Another business"))
+            )
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
+
+          result must have(httpStatus(SEE_OTHER), redirectURI(apaHandOffControllerUrI))
+        }
+      }
+
+      "redirect to SPS when duplicate names exist and the feature is disabled" in {
+        withDisplayNameFeatureSwitch(enabled = false) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true)
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSources()
+
+          result must have(httpStatus(SEE_OTHER), redirectURI(apaHandOffControllerUrI))
+        }
       }
     }
     "the user has incomplete businesses" should {

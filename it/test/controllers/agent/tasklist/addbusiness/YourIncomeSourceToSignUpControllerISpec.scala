@@ -17,12 +17,14 @@
 package controllers.agent.tasklist.addbusiness
 
 import common.Constants.ITSASessionKeys
+import config.featureswitch.FeatureSwitch.DisplayName
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.globalCheckYourAnswersURI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.common.business.BusinessNameModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.libs.ws.WSResponse
@@ -35,6 +37,25 @@ import models.agent.JourneyStep.SignUp
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
   private val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
+
+  private def stubCompleteIncomeSources(selfEmployments: Seq[models.common.business.SelfEmploymentData]): Unit = {
+    AuthStub.stubAuthSuccess()
+    IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, selfEmployments)
+    SessionDataConnectorStub.stubGetAllSessionData(Map(
+      ITSASessionKeys.NINO -> JsString(testNino),
+      ITSASessionKeys.UTR -> JsString(testUtr),
+      ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+    ))
+    IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
+    IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
+    IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true)
+  }
+
+  private def withDisplayNameFeatureSwitch(enabled: Boolean)(testCode: => Unit): Unit = {
+    if (enabled) enable(DisplayName) else disable(DisplayName)
+    try testCode
+    finally disable(DisplayName)
+  }
 
   s"GET ${routes.YourIncomeSourceToSignUpController.show.url}" should {
     "return OK" when {
@@ -148,6 +169,55 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         )
 
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](SubscriptionDataKeys.IncomeSourceConfirmation, true, Some(1))
+      }
+
+      "redirect to add display names when duplicate names exist and the feature is enabled" in {
+        withDisplayNameFeatureSwitch(enabled = true) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true)
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          result must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.addbusiness.routes.AddDisplayNamesController.show.url)
+          )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](
+            SubscriptionDataKeys.IncomeSourceConfirmation,
+            true,
+            Some(1)
+          )
+        }
+      }
+
+      "redirect to the declaration page when names are unique and the feature is enabled" in {
+        withDisplayNameFeatureSwitch(enabled = true) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true).copy(
+              businessName = Some(BusinessNameModel("Another business"))
+            )
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          result must have(httpStatus(SEE_OTHER), redirectURI(globalCheckYourAnswersURI))
+        }
+      }
+
+      "redirect to the declaration page when duplicate names exist and the feature is disabled" in {
+        withDisplayNameFeatureSwitch(enabled = false) {
+          stubCompleteIncomeSources(Seq(
+            testBusiness("business-1", confirmed = true),
+            testBusiness("business-2", confirmed = true)
+          ))
+
+          val result = IncomeTaxSubscriptionFrontend.submitYourIncomeSourcesAgent()
+
+          result must have(httpStatus(SEE_OTHER), redirectURI(globalCheckYourAnswersURI))
+        }
       }
     }
     "the user has incomplete businesses" should {
