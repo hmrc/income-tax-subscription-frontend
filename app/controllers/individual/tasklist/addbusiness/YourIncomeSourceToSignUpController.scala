@@ -16,9 +16,14 @@
 
 package controllers.individual.tasklist.addbusiness
 
+import config.AppConfig
+import config.featureswitch.FeatureSwitch.DisplayName
+import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.Current
+import models.common.SoleTraderBusinesses
+import models.common.business.SelfEmploymentData
 import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
@@ -31,9 +36,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
                                                    journeyRefiner: SignUpJourneyRefiner,
                                                    view: YourIncomeSourceToSignUp,
-                                                   subscriptionDetailsService: SubscriptionDetailsService)
+                                                   subscriptionDetailsService: SubscriptionDetailsService
+                                                  )(val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                                   mcc: MessagesControllerComponents) extends SignUpBaseController  with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     for {
@@ -55,12 +61,21 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
     subscriptionDetailsService.fetchAllIncomeSources(request.reference) flatMap { incomeSources =>
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
-          case Right(_) => Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
+          case Right(_) =>
+            if (displayNamesAreRequired(incomeSources.selfEmployments)) {
+              Redirect(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show)
+            } else {
+              Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
+            }
           case Left(_) => throw new InternalServerException("[YourIncomeSourceToSignUpController][submit] - failed to save income sources confirmation")
         }
       } else {
         Future.successful(Redirect(controllers.individual.tasklist.routes.IncomeSourcesIncompleteController.show))
       }
     }
+  }
+
+  private def displayNamesAreRequired(selfEmployments: Seq[SelfEmploymentData]): Boolean = {
+    SoleTraderBusinesses(selfEmployments.map(_.toSoleTraderBusiness)).getBusinessesWithDuplicateNames.nonEmpty && isEnabled(DisplayName)
   }
 }
