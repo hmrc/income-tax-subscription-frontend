@@ -62,7 +62,7 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
       if (incomeSources.isComplete) {
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
           case Right(_) =>
-            if (thereAreDuplicateBusinessNames(incomeSources.selfEmployments) && isEnabled(DisplayName)) {
+            if (displayNamesAreRequired(incomeSources.selfEmployments)) {
               Redirect(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show)
             } else {
               Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
@@ -75,7 +75,7 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
     }
   }
 
-  private def thereAreDuplicateBusinessNames(selfEmployments: Seq[SelfEmploymentData]): Boolean = {
-    SoleTraderBusinesses(selfEmployments.map(_.toSoleTraderBusiness)).getBusinessesWithDuplicateNames.nonEmpty
+  private def displayNamesAreRequired(selfEmployments: Seq[SelfEmploymentData]): Boolean = {
+    SoleTraderBusinesses(selfEmployments.map(_.toSoleTraderBusiness)).getBusinessesWithDuplicateNames.nonEmpty && isEnabled(DisplayName)
   }
 }
