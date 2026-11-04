@@ -764,66 +764,6 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
         }
       }
-      "displays the business display name when one is present" in {
-        val originalIncomeSources = completeIncomeSources
-        val updatedSelfEmployments = originalIncomeSources.selfEmployments.updated(
-          0,
-          originalIncomeSources.selfEmployments.head.copy(
-            businessDisplayName = Some("Display Name")
-          )
-        )
-        val incomeSources = originalIncomeSources.copy(selfEmployments = updatedSelfEmployments)
-        val testView = new ViewTest(incomeSources)
-
-        val businessNameRow: Element = testView.document.mainContent
-          .select(".govuk-summary-card")
-          .first()
-          .select(".govuk-summary-list__row")
-          .get(1)
-
-        businessNameRow.select(".govuk-summary-list__value").text mustBe "Display Name"
-      }
-
-      "displays the original business name when no display name is present" in {
-        val originalIncomeSources = completeIncomeSources
-        val updatedSelfEmployments = originalIncomeSources.selfEmployments.updated(
-          0,
-          originalIncomeSources.selfEmployments.head.copy(
-            businessDisplayName = None
-          )
-        )
-        val incomeSources = originalIncomeSources.copy(selfEmployments = updatedSelfEmployments)
-        val testView = new ViewTest(incomeSources)
-
-        val businessNameRow: Element = testView.document.mainContent
-          .select(".govuk-summary-card")
-          .first()
-          .select(".govuk-summary-list__row")
-          .get(1)
-
-        businessNameRow.select(".govuk-summary-list__value").text mustBe "business name"
-      }
-
-      "displays the fallback label when neither display name nor business name is present" in {
-        val originalIncomeSources = completeIncomeSources
-        val updatedSelfEmployments = originalIncomeSources.selfEmployments.updated(
-          0,
-          originalIncomeSources.selfEmployments.head.copy(
-            businessDisplayName = None,
-            businessName = None
-          )
-        )
-        val incomeSources = originalIncomeSources.copy(selfEmployments = updatedSelfEmployments)
-        val testView = new ViewTest(incomeSources)
-
-        val businessNameRow: Element = testView.document.mainContent
-          .select(".govuk-summary-card")
-          .first()
-          .select(".govuk-summary-list__row")
-          .get(1)
-
-        businessNameRow.select(".govuk-summary-list__value").text mustBe "Business 1"
-      }
     }
 
     "there are complete and confirmed set of income sources added" should {

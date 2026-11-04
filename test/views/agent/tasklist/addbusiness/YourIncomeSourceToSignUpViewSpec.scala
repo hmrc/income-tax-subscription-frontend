@@ -439,66 +439,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
           link.text mustBe AgentIncomeSource.soleTraderLinkText
           link.attr("href") mustBe AgentIncomeSource.soleTraderLink
         }
-
-        "displays the business display name instead of the original business name" in new ViewTest(
-          incomeSources = completeIncomeSources.copy(
-            selfEmployments = completeSelfEmployments.updated(
-              0,
-              completeSelfEmployments.head.copy(
-                businessDisplayName = Some("Display Name")
-              )
-            )
-          )
-        ) {
-          val businessNameRow = document.mainContent
-            .select(".govuk-summary-card")
-            .first()
-            .select(".govuk-summary-list__row")
-            .get(1)
-
-          businessNameRow.select(".govuk-summary-list__value").text mustBe "Display Name"
-        }
-
-        "displays the original business name when no display name exists" in new ViewTest(
-          incomeSources = completeIncomeSources.copy(
-            selfEmployments = completeSelfEmployments.updated(
-              0,
-              completeSelfEmployments.head.copy(
-                businessDisplayName = None
-              )
-            )
-          )
-        ) {
-          val businessNameRow = document.mainContent
-            .select(".govuk-summary-card")
-            .first()
-            .select(".govuk-summary-list__row")
-            .get(1)
-
-          businessNameRow.select(".govuk-summary-list__value").text mustBe "business name"
-        }
-
-        "displays the fallback label when neither display name nor business name exists" in new ViewTest(
-          incomeSources = completeIncomeSources.copy(
-            selfEmployments = completeSelfEmployments.updated(
-              0,
-              completeSelfEmployments.head.copy(
-                businessDisplayName = None,
-                businessName = None
-              )
-            )
-          )
-        ) {
-          val businessNameRow = document.mainContent
-            .select(".govuk-summary-card")
-            .first()
-            .select(".govuk-summary-list__row")
-            .get(1)
-
-          businessNameRow.select(".govuk-summary-list__value").text mustBe "Business 1"
-        }
       }
-
       "have an income from property section" which {
         "has a heading" in new ViewTest(completeIncomeSources) {
           document.mainContent.getSubHeading("h2", 3).text mustBe AgentIncomeSource.incomeFromPropertyHeading
