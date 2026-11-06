@@ -23,14 +23,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.claimenrolment.ClaimEnrolmentAlreadySignedUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClaimEnrolmentAlreadySignedUpController @Inject()(identify: IdentifierAction,
                                                         refine: ClaimEnrolmentJourneyRefiner,
                                                         claimEnrolmentAlreadySignedUp: ClaimEnrolmentAlreadySignedUp)
-                                                       (implicit ec: ExecutionContext,
-                                                        appConfig: AppConfig,
+                                                       (implicit appConfig: AppConfig,
                                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
   def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
     Ok(claimEnrolmentAlreadySignedUp())

@@ -108,7 +108,7 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.SUBMISSION_STATUS)
   }
 
-  def saveJourneyStep(state: JourneyStep)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SaveSessionDataResponse] = {
+  def saveJourneyStep(state: JourneyStep)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.JourneyStateKey, state.key)
   }
 

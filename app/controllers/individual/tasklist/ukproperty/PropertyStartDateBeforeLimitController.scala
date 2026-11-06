@@ -56,7 +56,7 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
         case Yes =>
           saveAnswerAndRedirect(
             answer = Yes,
-            call = routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit)
+            call = routes.PropertyCheckYourAnswersController.show(isGlobalEdit)
           )
         case No =>
           saveAnswerAndRedirect(

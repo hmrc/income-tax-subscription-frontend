@@ -116,10 +116,10 @@ GET         /claim-enrolment/sps-callback                        controllers.ind
 GET         /claim-enrolment/use-self-assessment-details         controllers.individual.claimenrolment.CheckIRSAEnrolmentController.show
 POST        /claim-enrolment/use-self-assessment-details         controllers.individual.claimenrolment.CheckIRSAEnrolmentController.submit
 
-GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+GET         /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.show(isGlobalEdit: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.individual.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
-GET         /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+GET         /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit: Boolean ?= false)
 POST        /business/overseas-property-check-your-answers       controllers.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 GET         /business/remove-sole-trader-business                controllers.individual.tasklist.selfemployment.RemoveSelfEmploymentBusinessController.show(id: String)

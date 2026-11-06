@@ -55,15 +55,7 @@ class ConfirmationControllerSpec extends ControllerSpec
         ))
         when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
           .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
-        mockView(
-          mandatedCurrentYear = true,
-          mandatedNextYear = false,
-          taxYearSelectionIsNext = false,
-          name = clientDetails.name,
-          nino = clientDetails.formattedNino,
-          usingSoftware = false,
-          sessionData: SessionData
-        )
+        mockView(name = clientDetails.name, nino = clientDetails.formattedNino, accountingPeriodModelForNextYear = false)
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
@@ -78,15 +70,7 @@ class ConfirmationControllerSpec extends ControllerSpec
         ))
         when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
           .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
-        mockView(
-          mandatedCurrentYear = false,
-          mandatedNextYear = true,
-          taxYearSelectionIsNext = true,
-          name = clientDetails.name,
-          nino = clientDetails.formattedNino,
-          usingSoftware = true,
-          sessionData: SessionData
-        )
+        mockView(name = clientDetails.name, nino = clientDetails.formattedNino, accountingPeriodModelForNextYear = true)
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
@@ -101,15 +85,7 @@ class ConfirmationControllerSpec extends ControllerSpec
         ))
         when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
           .thenReturn(Future.successful(LocalDate.of(2026, 1, 16)))
-        mockView(
-          mandatedCurrentYear = false,
-          mandatedNextYear = false,
-          taxYearSelectionIsNext = true,
-          name = clientDetails.name,
-          nino = clientDetails.formattedNino,
-          usingSoftware = true,
-          sessionData: SessionData
-        )
+        mockView(name = clientDetails.name, nino = clientDetails.formattedNino, accountingPeriodModelForNextYear = true)
 
         val result: Future[Result] = testConfirmationController(sessionData).show(request)
 
@@ -138,8 +114,7 @@ class ConfirmationControllerSpec extends ControllerSpec
     fakeIdentifierActionWithSessionData(sessionData),
     fakeConfirmationJourneyRefiner,
     mockSubscriptionDetailsService,
-    mockSignedUpDateService,
-    mockMandationStatusService
+    mockSignedUpDateService
   )
 
 }

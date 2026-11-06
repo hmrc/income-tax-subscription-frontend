@@ -35,7 +35,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(view: OverseasPropert
                                                           (implicit val ec: ExecutionContext,
                                                            mcc: MessagesControllerComponents) extends SignUpBaseController {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
+  def show(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withProperty(request.reference) { property =>
       Future.successful(Ok(view(
         viewModel = property,

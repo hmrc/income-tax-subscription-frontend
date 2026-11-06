@@ -25,15 +25,13 @@ import utilities.AccountingPeriodUtil
 import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class NonEligibleVoluntaryController @Inject()(view: NonEligibleVoluntary)
                                               (val appConfig: AppConfig,
                                                identify: IdentifierAction,
                                                refine: SignUpJourneyRefiner)
-                                              (implicit mcc: MessagesControllerComponents,
-                                               ec: ExecutionContext) extends SignUpBaseController with FeatureSwitching {
+                                              (implicit mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen refine) { implicit request =>
     val model = AccountingPeriodUtil.getCurrentTaxYear

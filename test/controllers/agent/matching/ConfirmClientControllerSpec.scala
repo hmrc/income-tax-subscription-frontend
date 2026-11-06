@@ -302,7 +302,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
             verify(mockSessionDataService)
               .saveJourneyStep(
                 ArgumentMatchers.eq(JourneyStep.SignPosted)
-              )(any(), any())
+              )(any())
 
             verify(mockSessionDataService)
               .deleteFailedClientMatching(any())

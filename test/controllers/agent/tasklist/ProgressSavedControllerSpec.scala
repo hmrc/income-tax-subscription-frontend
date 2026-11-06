@@ -58,7 +58,7 @@ class ProgressSavedControllerSpec extends ControllerSpec
       "no location was provided" should {
         "display the page" in new Setup {
           mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
-          mockProgressSaved(fakeExpiryDate, clientDetails)
+          mockProgressSaved(fakeExpiryDate)
 
           val result: Future[Result] = controller.show()(request)
 
@@ -70,7 +70,7 @@ class ProgressSavedControllerSpec extends ControllerSpec
         "audit the details of the users journey and display the page" when {
           "the user has full journey details" in new Setup {
             mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
-            mockProgressSaved(fakeExpiryDate, clientDetails)
+            mockProgressSaved(fakeExpiryDate)
             mockCurrentDate(LocalDate.now())
             mockFetchAllSelfEmployments(selfEmployments)
             mockFetchProperty(Some(ukProperty))
@@ -97,7 +97,7 @@ class ProgressSavedControllerSpec extends ControllerSpec
           }
           "the user has minimal data stored" in new Setup {
             mockFetchLastUpdatedTimestamp(Some(TimestampModel(dateTime)))
-            mockProgressSaved(fakeExpiryDate, clientDetails)
+            mockProgressSaved(fakeExpiryDate)
             mockCurrentDate(LocalDate.now())
             mockFetchAllSelfEmployments(Seq.empty)
             mockFetchProperty(None)

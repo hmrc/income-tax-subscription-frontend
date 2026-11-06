@@ -125,7 +125,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerSpec
         val result: Future[Result] = callPost(controller, isEditMode = true, isGlobalEdit = false)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+        redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show().url)
       }
     }
 
@@ -135,7 +135,7 @@ class ForeignPropertyStartDateControllerSpec extends ControllerSpec
 
         val result: Future[Result] = callPost(controller, isEditMode = true, isGlobalEdit = true)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+        redirectLocation(result) mustBe Some(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
       }
     }
 

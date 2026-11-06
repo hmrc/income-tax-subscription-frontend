@@ -42,7 +42,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
       "throw an exception" in {
         mockFetchOverseasProperty(None)
 
-        val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+        val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
 
         intercept[InternalServerException](await(result))
           .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve overseas property details"
@@ -59,7 +59,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             clientDetails = clientDetails
           )
 
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
 
           status(result) mustBe OK
           contentType(result) mustBe Some(HTML)
@@ -73,7 +73,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
             clientDetails = clientDetails
           )
 
-          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = true, isGlobalEdit = false)(request)
+          val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
 
           status(result) mustBe OK
           contentType(result) mustBe Some(HTML)
@@ -88,7 +88,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
               clientDetails = clientDetails
             )
 
-            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true)(request)
 
             status(result) mustBe OK
             contentType(result) mustBe Some(HTML)
@@ -102,7 +102,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
               clientDetails = clientDetails
             )
 
-            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)
+            val result: Future[Result] = TestOverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true)(request)
 
             status(result) mustBe OK
             contentType(result) mustBe Some(HTML)

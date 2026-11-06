@@ -51,13 +51,9 @@ class SignUpConfirmationViewSpec extends ViewSpec {
            userNameMaybe: Option[String],
            usingSoftwareStatus: Boolean,
            signedUpDate: LocalDate): Html =
-    signUpConfirmation(mandatedCurrentYear,
-      mandatedNextYear,
-      selectedTaxYearIsNext,
-      userNameMaybe,
+    signUpConfirmation(userNameMaybe,
       testNino,
       testAccountingPeriodModel,
-      usingSoftwareStatus,
       signedUpDate)
 
   def document(eligibleNextYearOnly: Boolean,
@@ -196,7 +192,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       s"Today’s date: $date"
     }
 
-    val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
+    val nextYear: Int = AccountingPeriodUtil.getNextTaxEndYear - 1
 
     val nextStepsHeading = "Your next steps"
     val paraOne = "To make sure your client is ready to use Making Tax Digital for Income Tax, you must now:"
@@ -215,7 +211,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
-    val surveyLink = appConfig.feedbackFrontendAgentRedirectUrl
+    val surveyLink: String = appConfig.feedbackFrontendAgentRedirectUrl
 
     val signUpAnotherClient = "Sign up another client"
   }

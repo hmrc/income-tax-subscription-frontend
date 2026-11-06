@@ -41,8 +41,7 @@ class GetITSAStatusServiceSpec extends PlaySpec
   trait Setup {
     val service: GetITSAStatusService = new GetITSAStatusService(
       mockGetITSAStatusConnector,
-      mockNinoService,
-      mockSessionDataService
+      mockNinoService
     )
   }
 
