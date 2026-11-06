@@ -20,12 +20,12 @@ import common.Constants
 import config.AppConfig
 import models.requests.agent.IdentifierRequest
 import play.api.Logging
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
 import services.SessionDataService
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter

@@ -20,7 +20,6 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
 import play.api.mvc.*
-import services.{AuditingService, AuthService}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
 import java.net.URLEncoder

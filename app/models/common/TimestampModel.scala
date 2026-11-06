@@ -16,7 +16,7 @@
 
 package models.common
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import java.time.{LocalDateTime, ZoneOffset}
 
@@ -30,9 +30,7 @@ object TimestampModel {
       .map[TimestampModel](timestamp => TimestampModel(LocalDateTime.ofEpochSecond(timestamp/1000, 0, ZoneOffset.UTC)))
   }
 
-  private val writes: Writes[TimestampModel] = new Writes[TimestampModel] {
-    def writes(model: TimestampModel): JsValue = JsString(model.dateTime.toString)
-  }
+  private val writes: Writes[TimestampModel] = (model: TimestampModel) => JsString(model.dateTime.toString)
 
   implicit val format: Format[TimestampModel] = Format[TimestampModel](reads, writes)
 }

@@ -19,9 +19,9 @@ package connectors.individual.subscription.mocks
 import connectors.individual.TaxEnrolmentsConnector
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{AllocateEnrolmentResponse, EnrolFailure, EnrolSuccess}
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess, UpsertEnrolmentResponse}
-import models.common.subscription._
+import models.common.subscription.*
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier

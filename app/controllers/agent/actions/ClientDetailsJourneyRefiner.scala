@@ -16,8 +16,6 @@
 
 package controllers.agent.actions
 
-import common.Constants.ITSASessionKeys
-import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.IdentifierRequest
 import play.api.mvc.Results.Redirect

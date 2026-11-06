@@ -17,7 +17,7 @@
 package services.individual
 
 import common.Constants
-import common.Constants.GovernmentGateway._
+import common.Constants.GovernmentGateway.*
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
 import config.featureswitch.FeatureSwitching
@@ -26,7 +26,7 @@ import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{En
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 

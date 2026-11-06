@@ -19,7 +19,7 @@ package connectors.individual.subscription
 import connectors.individual.subscription.mocks.TestSubscriptionConnector
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues}
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class SubscriptionConnectorSpec extends TestSubscriptionConnector with EitherValues with OptionValues with Matchers {
   "SubscriptionConnector.subscribe" should {

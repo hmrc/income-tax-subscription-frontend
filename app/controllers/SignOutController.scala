@@ -17,10 +17,10 @@
 package controllers
 
 import config.AppConfig
-import play.api.mvc._
+import play.api.mvc.*
 import services.AuthService
 import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.{Inject, Singleton}

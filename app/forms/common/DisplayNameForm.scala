@@ -16,12 +16,12 @@
 
 package forms.common
 
-import forms.validation.Constraints.{validateCharAgainst, maxLength, minLettersLength, nonEmpty}
+import forms.validation.Constraints.{maxLength, minLettersLength, nonEmpty, validateCharAgainst}
+import forms.validation.utils.ConstraintUtil.*
+import forms.validation.utils.MappingUtil.trimmedText
 import play.api.data.Form
 import play.api.data.Forms.*
 import play.api.data.validation.Constraint
-import forms.validation.utils.ConstraintUtil.*
-import forms.validation.utils.MappingUtil.trimmedText
 
 object DisplayNameForm {
 

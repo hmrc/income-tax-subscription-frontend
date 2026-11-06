@@ -17,7 +17,7 @@
 package models.status
 
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class MandationStatusRequestSpec extends PlaySpec {
 

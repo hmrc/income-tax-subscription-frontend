@@ -16,12 +16,12 @@
 
 package helpers
 
+import _root_.common.Constants.*
 import _root_.common.Constants.ITSASessionKeys.MTDITID
-import _root_.common.Constants._
-import helpers.IntegrationTestConstants._
-import models._
-import models.common._
-import models.common.business._
+import helpers.IntegrationTestConstants.*
+import models.*
+import models.common.*
+import models.common.business.*
 import models.common.subscription.EnrolmentKey
 import models.usermatching.UserDetailsModel
 

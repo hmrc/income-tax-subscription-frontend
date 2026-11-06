@@ -22,14 +22,14 @@ import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
 import config.featureswitch.FeatureSwitching
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import org.mockito.Mockito.reset
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

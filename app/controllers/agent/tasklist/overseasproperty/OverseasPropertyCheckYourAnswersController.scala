@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.OverseasPropertyModel
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers

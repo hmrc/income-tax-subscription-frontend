@@ -21,7 +21,7 @@ import common.Constants
 import common.Constants.GovernmentGateway.*
 import config.AppConfig
 import config.featureswitch.FeatureSwitch.{CompositeEnrolmentKey, DistributedKnownFactsPattern}
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import config.featureswitch.FeatureSwitching
 import connectors.individual.TaxEnrolmentsConnector
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
@@ -55,7 +55,8 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
 
   }
 
-  def upsertEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
+  def upsertEnrolment(enrolmentKey: EnrolmentKey, nino: String)
+                     (implicit hc: HeaderCarrier): Future[Either[UpsertAndAllocateEnrolmentService.UpsertKnownFactsFailure.type, UpsertEnrolmentResponseHttpParser.KnownFactsSuccess.type]] = {
     if (isEnabled(DistributedKnownFactsPattern)) {
       Future.successful(Right(
         UpsertEnrolmentResponseHttpParser.KnownFactsSuccess
@@ -69,7 +70,8 @@ class UpsertAndAllocateEnrolmentService @Inject()(taxEnrolmentsConnector: TaxEnr
     }
   }
 
-  private def allocateEnrolment(enrolmentKey: EnrolmentKey, nino: String)(implicit hc: HeaderCarrier) = {
+  private def allocateEnrolment(enrolmentKey: EnrolmentKey, nino: String)
+                               (implicit hc: HeaderCarrier): Future[Either[UpsertAndAllocateEnrolmentFailure, UpsertAndAllocateEnrolmentSuccess.type]] = {
     authConnector.authorise(EmptyPredicate, credentials and groupIdentifier) flatMap {
       case Some(Credentials(credId, _)) ~ Some(groupId) =>
         val allocateCall = if (isEnabled(DistributedKnownFactsPattern)) {

@@ -16,13 +16,13 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testARN, testNino, testUtr}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import helpers.{IntegrationTestModels, UserMatchingIntegrationResultSupport}
+import models.agent.JourneyStep.UserMatching
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}

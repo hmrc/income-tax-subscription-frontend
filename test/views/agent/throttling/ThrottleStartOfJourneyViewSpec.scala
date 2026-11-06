@@ -17,7 +17,7 @@
 package views.agent.throttling
 
 import messagelookup.agent.MessageLookup.Base.tryAgain
-import messagelookup.individual.MessageLookup.{ThrottleStartOfJourneyAgent => messages}
+import messagelookup.individual.MessageLookup.ThrottleStartOfJourneyAgent as messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call

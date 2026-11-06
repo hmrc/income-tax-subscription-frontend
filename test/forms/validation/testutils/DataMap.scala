@@ -17,8 +17,8 @@
 package forms.validation.testutils
 
 import forms.individual.business.AccountingYearForm
-import forms.validation.utils.ConstraintUtil._
-import play.api.data.validation._
+import forms.validation.utils.ConstraintUtil.*
+import play.api.data.validation.*
 
 object DataMap {
 

@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.twirl.api.HtmlFormat
 import views.html.agent.Timeout
 

@@ -16,9 +16,7 @@
 
 package controllers.individual.actions
 
-import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
-import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.{No, Yes}
@@ -65,7 +63,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
             sessionData = sessionData
           ))
         }
-      case state@(None | Some(PreSignUp | SignUp | ClaimEnrolment)) =>
+      case _@(None | Some(PreSignUp | SignUp | ClaimEnrolment)) =>
         Future.successful(Left(NotFound))
     }
   }

@@ -16,7 +16,6 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import config.MockConfig.appConfig.ggLoginUrl
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
@@ -25,6 +24,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.PrePopStub
 import models.EligibilityStatus
+import models.agent.JourneyStep.UserMatching
 import models.common.business.*
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.{MandationStatus, MandationStatusModel}

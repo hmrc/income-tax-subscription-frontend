@@ -18,14 +18,13 @@ package controllers.individual.tasklist.ukproperty
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.IndividualURI
+import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import models.common.PropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.Property
-import helpers.IntegrationTestConstants.basGatewaySignIn
 
 class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
 

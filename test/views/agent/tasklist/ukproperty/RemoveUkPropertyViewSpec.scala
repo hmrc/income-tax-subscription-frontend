@@ -17,7 +17,7 @@
 package views.agent.tasklist.ukproperty
 
 import forms.agent.ClientRemoveUkPropertyForm
-import forms.agent.ClientRemoveUkPropertyForm._
+import forms.agent.ClientRemoveUkPropertyForm.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.FormError

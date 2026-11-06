@@ -17,9 +17,9 @@
 package controllers.individual.matching
 
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants.basGatewaySignIn
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
-import helpers.IntegrationTestConstants.basGatewaySignIn
 
 class CannotUseServiceControllerISpec extends ComponentSpecBase {
 

@@ -16,14 +16,13 @@
 
 package services.mocks
 
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.mvc.Result
-import services.{Throttle, ThrottlingService}
+import config.AppConfig
 import connectors.ThrottlingConnector
 import models.SessionData
-import config.AppConfig
-import uk.gov.hmrc.http.HeaderCarrier
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.mvc.Result
 import services.*
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 

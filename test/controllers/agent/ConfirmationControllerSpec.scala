@@ -24,19 +24,19 @@ import models.Yes.YES
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.{Current, Next, SessionData}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.libs.json.JsString
 import play.api.mvc.Result
 import play.api.test.Helpers.*
-import services.mocks.*
-import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers
-import views.agent.mocks.MockSignUpConfirmation
 import services.SignedUpDateService
-
-import scala.concurrent.Future
-import utilities.ImplicitDateFormatterImpl
+import services.mocks.*
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.ImplicitDateFormatterImpl
+import views.agent.mocks.MockSignUpConfirmation
+
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpec
   with MockSignUpConfirmation

@@ -17,7 +17,7 @@
 package forms.submapping
 
 import models.{No, Yes, YesNo}
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
 import play.api.data.validation.Invalid
 import play.api.data.{FormError, Mapping}

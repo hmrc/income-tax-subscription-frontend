@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.AppConfig
 import models.ErrorModel
 import models.status.MandationStatus.Voluntary
@@ -55,7 +55,7 @@ class MandationStatusConnectorSpec extends AnyWordSpec with Matchers with WireMo
 
   private val connector = new MandationStatusConnector(appConfig, httpClientV2)
 
-  val headers = Seq()
+  val headers: Seq[Nothing] = Seq()
 
   "getMandationStatus" should {
     "retrieve the user mandation status" when {

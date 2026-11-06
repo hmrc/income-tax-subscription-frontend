@@ -16,7 +16,7 @@
 
 package connectors.httpparser
 
-import connectors.httpparser.GetSessionDataHttpParser._
+import connectors.httpparser.GetSessionDataHttpParser.*
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsString, Json, OFormat}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}

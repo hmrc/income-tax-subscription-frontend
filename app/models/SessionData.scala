@@ -23,7 +23,6 @@ import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
 import play.api.Logging
 import play.api.libs.json.*
-import play.api.mvc.Request
 import services.Throttle
 import uk.gov.hmrc.http.InternalServerException
 

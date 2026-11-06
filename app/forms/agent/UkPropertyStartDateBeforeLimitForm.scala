@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.submapping.YesNoMapping
-import models._
+import models.*
 import play.api.data.Form
 import play.api.data.Forms.single
 import play.api.data.validation.Invalid

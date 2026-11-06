@@ -16,8 +16,8 @@
 
 package testonly.form.individual
 
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
+import forms.validation.utils.ConstraintUtil.*
+import forms.validation.utils.MappingUtil.*
 import forms.validation.utils.Patterns
 import play.api.data.Form
 import play.api.data.Forms.mapping

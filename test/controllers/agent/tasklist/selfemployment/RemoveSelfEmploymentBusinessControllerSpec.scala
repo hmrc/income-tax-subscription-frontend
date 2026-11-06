@@ -20,7 +20,7 @@ import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscript
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import forms.agent.RemoveBusinessForm
-import models.common.business._
+import models.common.business.*
 import models.{DateModel, No, Yes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,7 +29,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Codec, Result}
 import play.api.test.Helpers.{HTML, await, charset, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.mocks._
+import services.mocks.*
 import views.html.agent.tasklist.selfemployment.RemoveSelfEmploymentBusiness
 
 import scala.concurrent.Future

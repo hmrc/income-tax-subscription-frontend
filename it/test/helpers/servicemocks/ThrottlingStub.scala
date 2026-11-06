@@ -17,7 +17,7 @@
 package helpers.servicemocks
 
 import helpers.WiremockHelper
-import play.api.http.Status._
+import play.api.http.Status.*
 import services.ThrottleId
 
 object ThrottlingStub extends WireMockMethods {

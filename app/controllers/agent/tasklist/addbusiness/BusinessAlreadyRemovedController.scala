@@ -18,7 +18,7 @@ package controllers.agent.tasklist.addbusiness
 
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
-import play.api.mvc._
+import play.api.mvc.*
 import views.html.agent.tasklist.addbusiness.BusinessAlreadyRemoved
 
 import javax.inject.{Inject, Singleton}

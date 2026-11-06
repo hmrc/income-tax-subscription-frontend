@@ -17,8 +17,8 @@
 package connectors.individual.subscription.httpparsers
 
 import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponseHttpReads
-import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed}
 import models.common.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
+import models.{CustomerLed, HmrcLedConfirmed, HmrcLedUnconfirmed}
 import org.scalatest.EitherValues
 import play.api.http.Status.*
 import play.api.libs.json.Json

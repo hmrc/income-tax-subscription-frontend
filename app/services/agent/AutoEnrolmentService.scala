@@ -23,9 +23,9 @@ import config.AppConfig
 import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
 import config.featureswitch.FeatureSwitching
 import connectors.UsersGroupsSearchConnector
+import connectors.agent.EnrolmentStoreProxyConnector
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UsersFound
 import connectors.agent.httpparsers.{AllocateEnrolmentResponseHttpParser, QueryUsersHttpParser, UpsertEnrolmentResponseHttpParser}
-import connectors.agent.EnrolmentStoreProxyConnector
 import models.ConnectorError
 import models.common.subscription.EnrolmentKey
 import play.api.Logging
@@ -43,7 +43,7 @@ class AutoEnrolmentService @Inject()(enrolmentStoreProxyConnector: EnrolmentStor
                                      val appConfig: AppConfig)
                                     (implicit ec: ExecutionContext) extends FeatureSwitching with Logging {
 
-  import services.agent.AutoEnrolmentService._
+  import services.agent.AutoEnrolmentService.*
   
   private def logError(location: String, nino: String, detail: String): Unit = {
     logger.warn(s"[AutoEnrolmentService][$location] - Auto enrolment failed for nino: $nino - $detail")

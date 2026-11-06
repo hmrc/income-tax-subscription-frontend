@@ -16,17 +16,17 @@
 
 package connectors.usermatching.httpparsers
 
-import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.*
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.CredentialRoleReads.*
 import connectors.agent.httpparsers.GetUsersForGroupHttpParser.GetUsersForGroupsHttpReads.read
-import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads._
-import connectors.agent.httpparsers.GetUsersForGroupHttpParser._
+import connectors.agent.httpparsers.GetUsersForGroupHttpParser.UserReads.*
 import org.scalatest.EitherValues
-import play.api.libs.json._
-import play.api.test.Helpers._
+import play.api.libs.json.*
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.{Assistant, CredentialRole, User}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class GetUsersForGroupsHttpParserSpec extends UnitTestTrait with EitherValues{
   val testMethod = "GET"

@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 trait UserMatchingTestSupport {
   matcher: Matchers =>
 
-  import utilities.UserMatchingSessionUtil._
+  import utilities.UserMatchingSessionUtil.*
 
   implicit class UserMatchingRequestUtil[A](request: FakeRequest[A]) {
     def buildRequest(userDetails: Option[UserDetailsModel]): FakeRequest[A] = {

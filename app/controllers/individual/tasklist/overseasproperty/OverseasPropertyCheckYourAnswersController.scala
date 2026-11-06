@@ -16,12 +16,11 @@
 
 package controllers.individual.tasklist.overseasproperty
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.common.OverseasPropertyModel
 import play.api.mvc.*
-import services.{AuditingService, AuthService, SubscriptionDetailsService}
+import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.individual.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
 

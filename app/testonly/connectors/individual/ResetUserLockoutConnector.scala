@@ -17,7 +17,7 @@
 package testonly.connectors.individual
 
 import config.AppConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -31,7 +31,7 @@ class ResetUserLockoutConnector @Inject()(val appConfig: AppConfig,
 
   lazy val resetUrl: String = appConfig.userMatchingUrl + ResetUserLockoutConnector.resetUri
 
-  def resetLockout(implicit hc: HeaderCarrier): Future[HttpResponse] = http.get(url"${resetUrl}").execute[HttpResponse]
+  def resetLockout(implicit hc: HeaderCarrier): Future[HttpResponse] = http.get(url"$resetUrl").execute[HttpResponse]
 
 }
 

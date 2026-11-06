@@ -26,7 +26,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import utilities.ViewSpec
 import views.html.agent.matching.ClientDetails
 
 class ClientDetailsViewSpec extends ViewSpec {

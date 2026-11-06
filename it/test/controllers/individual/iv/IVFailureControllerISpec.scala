@@ -16,11 +16,11 @@
 
 package controllers.individual.iv
 
-import helpers.ComponentSpecBase
 import common.Constants.ITSASessionKeys
-import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.basGatewaySignIn
+import helpers.servicemocks.AuthStub
+import play.api.http.Status.*
 
 class IVFailureControllerISpec extends ComponentSpecBase {
 

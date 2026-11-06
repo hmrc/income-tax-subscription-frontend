@@ -19,11 +19,11 @@ package connectors.usermatching.httpparsers
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusHttpReads
 import models.usermatching.{LockedOut, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import java.time.OffsetDateTime
 

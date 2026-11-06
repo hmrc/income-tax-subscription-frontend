@@ -17,9 +17,9 @@
 package controllers.individual.matching
 
 import controllers.SignUpBaseController
+import controllers.individual.actions.BasicIdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.matching.CannotUseService
-import controllers.individual.actions.BasicIdentifierAction
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

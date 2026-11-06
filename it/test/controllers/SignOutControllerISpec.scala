@@ -17,7 +17,7 @@
 package controllers
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.SEE_OTHER
 

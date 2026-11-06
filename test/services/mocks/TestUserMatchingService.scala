@@ -19,12 +19,12 @@ package services.mocks
 import connectors.usermatching.mocks.MockAuthenticatiorConnector
 import models.usermatching.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import services.UserMatchingService
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.TestModels._
-import utilities.individual.TestConstants._
+import utilities.TestModels.*
+import utilities.individual.TestConstants.*
 import utilities.{UnitTestTrait, UserMatchingTestSupport}
 
 import scala.concurrent.Future
@@ -36,7 +36,7 @@ trait TestUserMatchingService extends MockAuthenticatiorConnector {
 }
 
 trait MockUserMatchingService extends UnitTestTrait with MockitoSugar with UserMatchingTestSupport {
-  val mockUserMatchingService = mock[UserMatchingService]
+  val mockUserMatchingService: UserMatchingService = mock[UserMatchingService]
 
   private def mockUserMatch(userDetails: UserDetailsModel)
                            (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =

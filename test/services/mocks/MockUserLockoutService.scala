@@ -20,11 +20,11 @@ import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatus
 import connectors.usermatching.mocks.MockUserLockoutConnector
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status._
+import play.api.http.Status.*
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UserMatchingTestSupport
