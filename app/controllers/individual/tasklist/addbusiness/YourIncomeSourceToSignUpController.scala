@@ -39,7 +39,7 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
                                                    subscriptionDetailsService: SubscriptionDetailsService
                                                   )(val appConfig: AppConfig)
                                                   (implicit val ec: ExecutionContext,
-                                                   mcc: MessagesControllerComponents) extends SignUpBaseController  with FeatureSwitching {
+                                                   mcc: MessagesControllerComponents) extends SignUpBaseController with FeatureSwitching {
 
   def show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     for {
@@ -63,7 +63,7 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
         subscriptionDetailsService.saveIncomeSourcesConfirmation(request.reference) map {
           case Right(_) =>
             if (displayNamesAreRequired(incomeSources.selfEmployments)) {
-              Redirect(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show)
+              Redirect(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show())
             } else {
               Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
             }
