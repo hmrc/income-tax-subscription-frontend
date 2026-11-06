@@ -52,7 +52,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
           isGlobalEdit = false
         )
-        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
@@ -64,7 +64,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(),
           isGlobalEdit = false
         )
-        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = true, isGlobalEdit = false)(request)
+        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
@@ -77,7 +77,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
           postAction = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.submit(isGlobalEdit = true),
           isGlobalEdit = true
         )
-        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = true)(request)
+        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isGlobalEdit = true)(request)
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
       }
@@ -86,7 +86,7 @@ class PropertyCheckYourAnswersControllerSpec extends ControllerSpec
     "throw an internal server exception" when {
       "property data is not available" in {
         mockFetchProperty(None)
-        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isEditMode = false, isGlobalEdit = false)(request)
+        val result: Future[Result] = TestPropertyCheckYourAnswersController.show(isGlobalEdit = false)(request)
         intercept[InternalServerException](await(result))
           .message mustBe "[PropertyCheckYourAnswersController] - Could not retrieve property details"
       }

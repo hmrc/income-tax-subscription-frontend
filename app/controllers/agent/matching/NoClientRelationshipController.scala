@@ -31,7 +31,6 @@ class NoClientRelationshipController @Inject()(identify: IdentifierAction,
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner) { implicit request =>
     Ok(view(
-      postAction = controllers.agent.matching.routes.NoClientRelationshipController.submit,
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino
     ))

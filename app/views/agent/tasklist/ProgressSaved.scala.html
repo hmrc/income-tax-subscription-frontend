@@ -20,15 +20,10 @@
 
 @this(
     mainTemplate: AgentMainTemplate,
-    govukNotificationBanner : GovukNotificationBanner,
     ul: UnorderedList
 )
 
-@(
-  expirationDate: String,
-  signInUrl: String,
-  clientDetails: ClientDetails
-)(implicit request: Request[_], messages: Messages)
+@(expirationDate: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = messages("agent.business.progress-saved.title")) {
 

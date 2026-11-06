@@ -32,7 +32,6 @@ import services.GetCompleteDetailsService.CompleteDetails
 import services.individual.SignUpOrchestrationService
 import services.individual.SignUpOrchestrationService.{AlreadySignedUp, HandledUnprocessableSignUp, SignUpOrchestrationResponse}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.CurrentDateProvider
 import views.html.individual.GlobalCheckYourAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -45,11 +44,8 @@ class GlobalCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                  sessionDataService: SessionDataService,
                                                  signUpOrchestrationService: SignUpOrchestrationService,
                                                  getCompleteDetailsService: GetCompleteDetailsService,
-                                                 subscriptionDetailsService: SubscriptionDetailsService,
                                                  eligibilityStatusService: GetEligibilityStatusService,
-                                                 currentDateProvider: CurrentDateProvider,
                                                  utrService: UTRService,
-                                                 ninoService: NinoService,
                                                  globalCheckYourAnswers: GlobalCheckYourAnswers,
                                                  mandationStatusService: MandationStatusService,
                                                  val appConfig: AppConfig)

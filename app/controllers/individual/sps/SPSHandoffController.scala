@@ -24,13 +24,11 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class SPSHandoffController @Inject()(identify: IdentifierAction,
                                      crypto: ApplicationCrypto)
-                                    (implicit ec: ExecutionContext,
-                                     appConfig: AppConfig,
+                                    (implicit appConfig: AppConfig,
                                      mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def redirectToSPS: Action[AnyContent] = identify { implicit request =>

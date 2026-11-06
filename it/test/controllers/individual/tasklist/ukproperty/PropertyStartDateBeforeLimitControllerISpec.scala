@@ -259,7 +259,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
             result must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+              redirectURI(routes.PropertyCheckYourAnswersController.show().url)
             )
           }
           "in global edit mode" in {

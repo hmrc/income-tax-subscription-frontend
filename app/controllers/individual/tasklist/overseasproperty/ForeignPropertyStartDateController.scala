@@ -59,7 +59,7 @@ class ForeignPropertyStartDateController @Inject()(view: ForeignPropertyStartDat
       },
       startDate =>
         subscriptionDetailsService.saveForeignPropertyStartDate(request.reference, startDate) map {
-          case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+          case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit))
           case Left(_) => throw new InternalServerException("[ForeignPropertyStartDateController][submit] - Could not save start date")
         }
     )

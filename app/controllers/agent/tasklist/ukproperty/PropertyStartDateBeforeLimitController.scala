@@ -64,7 +64,7 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
             if (startDateBeforeLimit == No) {
               Redirect(routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
             } else {
-              Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+              Redirect(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = isGlobalEdit))
             }
           case Left(_) =>
             throw new InternalServerException("[PropertyStartDateBeforeLimitController] - Could not save uk property start date before limit")

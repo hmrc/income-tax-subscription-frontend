@@ -51,9 +51,7 @@ class AgentWhatYouNeedToDoControllerSpec
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
     fakeIdentifierAction,
-    fakeConfirmedClientJourneyRefiner,
-    mockGetEligibilityStatusService,
-    mockSubscriptionDetailsService
+    fakeConfirmedClientJourneyRefiner
   )(appConfig)
 
   trait Setup {
@@ -61,9 +59,7 @@ class AgentWhatYouNeedToDoControllerSpec
     val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(
       whatYouNeedToDo,
       fakeIdentifierAction,
-      fakeConfirmedClientJourneyRefiner,
-      mockGetEligibilityStatusService,
-      mockSubscriptionDetailsService
+      fakeConfirmedClientJourneyRefiner
     )(appConfig)
   }
 

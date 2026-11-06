@@ -259,7 +259,7 @@ class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBa
 
             result must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show().url)
             )
           }
           "in global edit mode" in {
