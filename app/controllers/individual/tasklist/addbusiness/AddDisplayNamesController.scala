@@ -64,7 +64,7 @@ class AddDisplayNamesController @Inject()(view: AddDisplayNames,
         displayNames => {
           val businessesWithDisplayNames = soleTraderBusinesses.addDisplayNames(displayNames)
           subscriptionDetailsService.saveBusinesses(request.reference, businessesWithDisplayNames.businesses) map {
-            case Right(_) => Redirect(controllers.individual.routes.GlobalCheckYourAnswersController.show)
+            case Right(_) => Redirect(controllers.individual.sps.routes.SPSHandoffController.redirectToSPS)
             case Left(_) => throw new InternalServerException("[AddDisplayNamesController][submit] - failed to save business display names")
           }
         }

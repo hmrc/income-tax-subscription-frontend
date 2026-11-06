@@ -54,7 +54,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
   }
 
   s"POST ${routes.AddDisplayNamesController.submit.url}" should {
-    "save distinct display names and redirect to check your answers" in {
+    "save distinct display names and redirect to SPS page" in {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
       val expectedBusinesses = businessesWithDisplayNames(Seq("First business", "Second business"))
@@ -72,7 +72,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
 
       result must have(
         httpStatus(SEE_OTHER),
-        redirectURI(IndividualURI.globalCheckYourAnswersURI)
+        redirectURI(IndividualURI.spsHandoffRouteURI)
       )
       IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails(SoleTraderBusinessesKey, expectedBusinesses, Some(1))(
         SoleTraderBusinesses.encryptedFormat(sensitiveFormat)
