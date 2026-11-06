@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                           identify: IdentifierAction,
-                                          journeyRefiner: ConfirmedClientJourneyRefiner,
+                                          journeyRefiner: ConfirmedClientJourneyRefiner
                                          )(val appConfig: AppConfig)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController {
