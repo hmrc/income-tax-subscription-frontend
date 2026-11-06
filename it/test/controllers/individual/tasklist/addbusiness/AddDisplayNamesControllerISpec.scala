@@ -39,7 +39,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
   private def businessesWithDisplayNames(displayNames: Seq[String]): SoleTraderBusinesses =
     SoleTraderBusinesses(businesses.map(_.toSoleTraderBusiness)).addDisplayNames(displayNames)
 
-  s"GET ${routes.AddDisplayNamesController.show.url}" should {
+  s"GET ${routes.AddDisplayNamesController.show().url}" should {
     "show the display names page for businesses with duplicate names" in {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
@@ -53,8 +53,8 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
     }
   }
 
-  s"POST ${routes.AddDisplayNamesController.submit.url}" should {
-    "save distinct display names and redirect to check your answers" in {
+  s"POST ${routes.AddDisplayNamesController.submit().url}" should {
+    "save distinct display names and redirect to the SPS handoff" in {
       AuthStub.stubAuthSuccess()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
       val expectedBusinesses = businessesWithDisplayNames(Seq("First business", "Second business"))
@@ -64,6 +64,31 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
       val result = IncomeTaxSubscriptionFrontend.post(path)(
+        Map(
+          "business-display-name[0]" -> Seq("First business"),
+          "business-display-name[1]" -> Seq("Second business")
+        )
+      )
+
+      result must have(
+        httpStatus(SEE_OTHER),
+        redirectURI(IndividualURI.spsHandoffRouteURI)
+      )
+      IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails(SoleTraderBusinessesKey, expectedBusinesses, Some(1))(
+        SoleTraderBusinesses.encryptedFormat(sensitiveFormat)
+      )
+    }
+
+    "return to check your answers when submitted in edit mode" in {
+      AuthStub.stubAuthSuccess()
+      IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
+      val expectedBusinesses = businessesWithDisplayNames(Seq("First business", "Second business"))
+      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SoleTraderBusinessesKey, expectedBusinesses)(
+        SoleTraderBusinesses.encryptedFormat(sensitiveFormat)
+      )
+      IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+
+      val result = IncomeTaxSubscriptionFrontend.post(s"$path?editMode=true")(
         Map(
           "business-display-name[0]" -> Seq("First business"),
           "business-display-name[1]" -> Seq("Second business")
