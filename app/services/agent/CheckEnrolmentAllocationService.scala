@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckEnrolmentAllocationService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)
                                                (implicit ec: ExecutionContext) {
   
-  import services.agent.CheckEnrolmentAllocationService._
+  import services.agent.CheckEnrolmentAllocationService.*
   def getGroupIdForEnrolment(enrolmentKey: EnrolmentKey)(implicit hc: HeaderCarrier): Future[CheckEnrolmentAllocationResponse] = {
     enrolmentStoreProxyConnector.getAllocatedEnrolments(enrolmentKey) map {
       case Right(EnrolmentStoreProxyHttpParser.EnrolmentNotAllocated) => Right(EnrolmentNotAllocated)

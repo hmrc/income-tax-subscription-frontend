@@ -16,10 +16,8 @@
 
 package controllers.individual.tasklist.taxyear
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import controllers.utils.ReferenceRetrieval
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel

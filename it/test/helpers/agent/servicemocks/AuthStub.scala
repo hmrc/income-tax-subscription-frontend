@@ -18,8 +18,8 @@ package helpers.agent.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import common.Constants.{agentServiceIdentifierKey, hmrcAsAgent}
-import helpers.IntegrationTestConstants._
-import play.api.http.Status._
+import helpers.IntegrationTestConstants.*
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 

@@ -21,7 +21,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateBeforeLimitForm.overseasPropertyStartDateBeforeLimitForm
 import models.No
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDateBeforeLimit

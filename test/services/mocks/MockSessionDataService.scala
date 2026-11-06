@@ -29,7 +29,6 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.Future
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 

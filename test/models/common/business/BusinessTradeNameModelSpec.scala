@@ -17,7 +17,7 @@
 package models.common.business
 
 import models.common.business.BusinessTradeNameModel.MaximumLengthOfBusinessTradeName
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.should.Matchers.*
 import org.scalatestplus.play.PlaySpec
 
 class BusinessTradeNameModelSpec extends PlaySpec {

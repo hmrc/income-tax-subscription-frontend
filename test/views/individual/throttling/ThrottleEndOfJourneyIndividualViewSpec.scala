@@ -16,7 +16,7 @@
 
 package views.individual.throttling
 
-import messagelookup.individual.MessageLookup.ThrottleEndofJourney._
+import messagelookup.individual.MessageLookup.ThrottleEndofJourney.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call

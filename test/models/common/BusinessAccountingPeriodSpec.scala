@@ -16,9 +16,9 @@
 
 package models.common
 
-import models.common.BusinessAccountingPeriod._
+import models.common.BusinessAccountingPeriod.*
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class BusinessAccountingPeriodSpec extends PlaySpec {
 

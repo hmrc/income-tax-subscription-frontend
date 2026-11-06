@@ -23,7 +23,7 @@ import testonly.form.UpdateEnrolmentsForm
 import testonly.views.html.individual.UpdateEnrolments
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject

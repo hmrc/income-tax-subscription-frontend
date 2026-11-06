@@ -25,7 +25,7 @@ import models.DateModel
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.{AccountingPeriodUtil, ImplicitDateFormatter}

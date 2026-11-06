@@ -19,7 +19,6 @@ package controllers.individual.claimenrolment
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{ClaimEnrolmentJourneyRefiner, IdentifierAction}
-import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.ClaimEnrolmentBTA
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.individual.claimenrolment.ClaimEnrolmentConfirmation

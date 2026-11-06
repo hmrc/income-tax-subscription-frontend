@@ -16,12 +16,11 @@
 
 package controllers.individual.tasklist.taxyear
 
+import config.AppConfig
 import config.featureswitch.FeatureSwitching
 import controllers.SignUpBaseController
-import config.AppConfig
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import play.api.mvc.*
-import services.*
 import utilities.AccountingPeriodUtil
 import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 

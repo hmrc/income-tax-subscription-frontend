@@ -16,11 +16,9 @@
 
 package controllers.individual.tasklist.taxyear
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import play.api.mvc.*
-import services.*
 import utilities.AccountingPeriodUtil
 import views.html.individual.tasklist.taxyear.NonEligibleMandated
 

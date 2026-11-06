@@ -17,7 +17,7 @@
 package controllers.individual
 
 import config.AppConfig
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.individual.Timeout
 

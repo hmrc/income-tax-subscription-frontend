@@ -16,9 +16,7 @@
 
 package controllers.agent.actions
 
-import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
-import models.agent.JourneyStep
 import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
 import play.api.mvc.Results.Redirect
@@ -62,7 +60,7 @@ class ConfirmedClientJourneyRefiner @Inject()(utrService: UTRService,
               ))
           }
         }
-      case state@(None | Some(ClientDetails | SignPosted)) =>
+      case _@(None | Some(ClientDetails | SignPosted)) =>
         Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))

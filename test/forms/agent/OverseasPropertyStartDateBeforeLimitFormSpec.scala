@@ -16,9 +16,9 @@
 
 package forms.agent
 
-import forms.agent.OverseasPropertyStartDateBeforeLimitForm._
+import forms.agent.OverseasPropertyStartDateBeforeLimitForm.*
 import forms.submapping.YesNoMapping
-import models._
+import models.*
 import org.scalatestplus.play.PlaySpec
 import play.api.data.{Form, FormError}
 import utilities.AccountingPeriodUtil

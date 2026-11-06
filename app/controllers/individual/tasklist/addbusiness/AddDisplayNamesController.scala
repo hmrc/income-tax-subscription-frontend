@@ -17,13 +17,12 @@
 package controllers.individual.tasklist.addbusiness
 
 import controllers.SignUpBaseController
-import controllers.individual.actions.{SignUpJourneyRefiner, IdentifierAction}
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
+import forms.common.DisplayNameForm
 import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.addbusiness.AddDisplayNames
-import forms.common.DisplayNameForm
-
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

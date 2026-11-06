@@ -18,7 +18,7 @@ package helpers.agent
 
 import models.DateModel
 import org.jsoup.Jsoup
-import org.scalatest.matchers._
+import org.scalatest.matchers.*
 import play.api.libs.ws.WSResponse
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
@@ -104,18 +104,16 @@ trait CustomMatchers {
     )
   }
 
-  def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
-    def apply(response: WSResponse): HavePropertyMatchResult[String] = {
-      val redirectLocation: Option[String] = response.header("Location")
+  def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = (response: WSResponse) => {
+    val redirectLocation: Option[String] = response.header("Location")
 
-      val matchCondition = redirectLocation.exists(_.contains(expectedValue))
-      HavePropertyMatchResult(
-        matchCondition,
-        "redirectUri",
-        expectedValue,
-        redirectLocation.getOrElse("")
-      )
-    }
+    val matchCondition = redirectLocation.exists(_.contains(expectedValue))
+    HavePropertyMatchResult(
+      matchCondition,
+      "redirectUri",
+      expectedValue,
+      redirectLocation.getOrElse("")
+    )
   }
 
   def radioButtonSet(id: String, selectedRadioButton: Option[String]): HavePropertyMatcher[WSResponse, String] =

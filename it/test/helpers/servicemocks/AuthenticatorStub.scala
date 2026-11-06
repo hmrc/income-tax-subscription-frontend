@@ -16,7 +16,7 @@
 
 package helpers.servicemocks
 
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.IntegrationTestModels
 import models.usermatching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 import play.api.http.Status

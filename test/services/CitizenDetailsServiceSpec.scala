@@ -20,7 +20,7 @@ import models.usermatching.CitizenDetails
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestCitizenDetailsService
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.Future
 

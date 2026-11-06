@@ -16,10 +16,10 @@
 
 package forms.agent
 
-import forms.agent.AccountingYearForm._
+import forms.agent.AccountingYearForm.*
 import forms.submapping.AccountingYearMapping
+import forms.validation.testutils.*
 import forms.validation.testutils.DataMap.DataMap
-import forms.validation.testutils._
 import models.Current
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
@@ -61,17 +61,17 @@ class AccountingYearFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
     "The following cash submission should be valid" in {
       val testCash = DataMap.accountingYear(AccountingYearMapping.option_current)
-      accountingYearForm isValidFor testCash
+      accountingYearForm confirmValidityFor testCash
     }
 
     "The following accurals submission should be valid" in {
       val testAccruals = DataMap.accountingYear(AccountingYearMapping.option_current)
-      accountingYearForm isValidFor testAccruals
+      accountingYearForm confirmValidityFor testAccruals
     }
 
     "The Accruals and next year submission should be valid" in {
       val testAccruals = DataMap.accountingYear(AccountingYearMapping.option_next)
-      accountingYearForm isValidFor testAccruals
+      accountingYearForm confirmValidityFor testAccruals
     }
   }
 }

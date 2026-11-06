@@ -17,7 +17,7 @@
 package connectors.stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock as WireMockClient
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, matchingJsonPath, post, postRequestedFor, stubFor, urlEqualTo, urlMatching}
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.{Scenario, StubMapping}
 import helpers.servicemocks.WireMockMethods
 import models.common.subscription.CreateIncomeSourcesModel

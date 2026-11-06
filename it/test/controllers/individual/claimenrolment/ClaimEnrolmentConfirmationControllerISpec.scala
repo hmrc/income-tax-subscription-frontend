@@ -16,11 +16,11 @@
 
 package controllers.individual.claimenrolment
 
-import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
+import models.individual.JourneyStep.ClaimEnrolment
 import play.api.http.Status.*
 import play.api.libs.json.JsString
 

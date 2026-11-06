@@ -22,7 +22,7 @@ import controllers.agent.actions.IdentifierAction
 import models.requests.agent.IdentifierRequest
 import models.usermatching.{LockedOut, NotLockedOut}
 import play.api.i18n.Messages
-import play.api.mvc._
+import play.api.mvc.*
 import services.UserLockoutService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.matching.ClientDetailsLockout

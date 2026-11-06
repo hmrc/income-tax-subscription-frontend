@@ -17,7 +17,7 @@
 package utilities.agent
 
 import models.DateModel
-import models.common.business.{Address, BusinessAddressModel, BusinessStartDate, Country, SelfEmploymentData}
+import models.common.business.*
 import models.common.subscription.*
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.domain.*
@@ -45,11 +45,11 @@ object TestConstants {
   val testErrorMessage = "This is an error"
   val testException: Exception = individual.TestConstants.testException
 
-  val testCredId = UUID.randomUUID().toString
+  val testCredId: String = UUID.randomUUID().toString
 
-  val testSubscriptionSuccess = Right(Some(SubscriptionSuccess(testMTDID, None)))
+  val testSubscriptionSuccess: Right[Nothing, Some[SubscriptionSuccess]] = Right(Some(SubscriptionSuccess(testMTDID, None)))
 
-  val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
+  val testSubscriptionFailure: Left[SubscriptionFailureResponse, Nothing] = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
   lazy val testCreateIncomeSourcesThisYear: CreateIncomeSourcesModel =
     CreateIncomeSourcesModel(

@@ -17,7 +17,7 @@
 package testonly.form.agent
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import testonly.models.agent.NinoModel
 
 object NinoForm {

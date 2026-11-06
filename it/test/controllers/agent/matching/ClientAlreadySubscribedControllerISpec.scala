@@ -16,12 +16,12 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.agent.JourneyStep.UserMatching
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString
 

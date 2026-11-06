@@ -17,7 +17,7 @@
 package models
 
 import play.api.i18n.Messages
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait YesNo {
   def toMessageString(implicit messages: Messages): String

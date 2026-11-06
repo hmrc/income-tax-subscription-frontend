@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import org.scalatest.matchers.must.Matchers._
+import org.scalatest.matchers.must.Matchers.*
 import play.api.data.Form
 import play.api.data.FormBinding.Implicits.formBinding
 import play.api.data.validation.Invalid
@@ -41,19 +41,19 @@ package object testutils {
       override val fieldName: String = testFieldName
     }
 
-    def isValidFor(data: T): Unit = {
+    def confirmValidityFor(data: T): Unit = {
       val validated = testForm.fillAndValidate(data)
       validated.hasErrors mustBe false
       validated.hasGlobalErrors mustBe false
     }
 
-    def isValidFor(data: Map[String, String]): Unit = {
+    def confirmValidityFor(data: Map[String, String]): Unit = {
       val validated = testForm.bind(data)
       validated.hasErrors mustBe false
       validated.hasGlobalErrors mustBe false
     }
 
-    def isValidFor(request: FakeRequest[_]): Unit = {
+    def confirmValidityFor(request: FakeRequest[_]): Unit = {
       val validated = testForm.bindFromRequest()(request, implicitly)
       validated.hasErrors mustBe false
       validated.hasGlobalErrors mustBe false

@@ -16,10 +16,10 @@
 
 package helpers.servicemocks
 
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import models.common.subscription.SubscriptionSuccess
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
@@ -40,6 +40,6 @@ object SubscriptionStub extends WireMockMethods {
   }
 
   val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId, None)
-  val failureSubscriptionResponse = Json.obj()
-  val successfulNoSubscriptionResponse = Json.obj()
+  val failureSubscriptionResponse: JsObject = Json.obj()
+  val successfulNoSubscriptionResponse: JsObject = Json.obj()
 }

@@ -18,7 +18,7 @@ package controllers.individual.matching
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import play.api.http.Status.*
 
 class AffinityGroupErrorControllerISpec extends ComponentSpecBase {
   "GET /error/affinity-group" should {

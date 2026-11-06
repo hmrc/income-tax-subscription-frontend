@@ -90,7 +90,7 @@ class GlobalCheckYourAnswersController @Inject()(globalCheckYourAnswers: GlobalC
         sessionDataService.saveSubmissionStatus(success)
       case Success(Left(HandledUnprocessableSignUp)) =>
         sessionDataService.saveSubmissionStatus(handledError)
-      case Success(Left(failure)) =>
+      case Success(Left(_)) =>
         sessionDataService.saveSubmissionStatus(otherError)
       case _ =>
         sessionDataService.saveSubmissionStatus(otherError)

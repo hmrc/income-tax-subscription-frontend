@@ -17,9 +17,9 @@
 package testonly.form.individual
 
 import forms.formatters.LocalDateMapping
-import forms.validation.Constraints._
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
+import forms.validation.Constraints.*
+import forms.validation.utils.ConstraintUtil.*
+import forms.validation.utils.MappingUtil.*
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping

@@ -19,7 +19,7 @@ package controllers.individual.sps
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import play.api.http.Status.*
 
 class SPSCallbackControllerISpec extends ComponentSpecBase {
   s"GET ${controllers.individual.sps.routes.SPSCallbackController.callback(None).url}" when {

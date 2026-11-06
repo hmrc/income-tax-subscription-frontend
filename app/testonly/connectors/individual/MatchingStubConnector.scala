@@ -20,13 +20,13 @@ package testonly.connectors.individual
 
 import models.DateModel
 import play.api.Logging
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json, OFormat}
+import play.api.libs.ws.writeableOf_JsValue
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.time.LocalDate
@@ -112,7 +112,7 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
    */
   def newUser(userData: UserData)(implicit hc: HeaderCarrier): Future[Boolean] = {
     http
-      .post(url"${dynamicStubUrl}")
+      .post(url"$dynamicStubUrl")
       .withBody(Json.toJson(Request(userData)))
       .execute[HttpResponse]
       .flatMap {

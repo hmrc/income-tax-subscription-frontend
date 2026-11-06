@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 class ClientDetailsFormSpec extends PlaySpec with UnitTestTrait {
 
-  import forms.agent.ClientDetailsForm._
+  import forms.agent.ClientDetailsForm.*
 
   private val testClientFirstName = "Test client first name"
   private val testClientLastName = "Test client last name"

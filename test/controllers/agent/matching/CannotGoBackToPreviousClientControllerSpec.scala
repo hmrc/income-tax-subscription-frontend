@@ -21,7 +21,7 @@ import controllers.ControllerSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
 import play.api.http.Status
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.agent.mocks.MockCannotGoBackToPreviousClient
 
 import scala.concurrent.Future

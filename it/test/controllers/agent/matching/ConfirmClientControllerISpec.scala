@@ -17,7 +17,6 @@
 package controllers.agent.matching
 
 import _root_.common.Constants.ITSASessionKeys
-import models.agent.JourneyStep.{SignPosted, UserMatching}
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.*
 import helpers.UserMatchingIntegrationResultSupport
@@ -25,6 +24,7 @@ import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub}
 import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import helpers.servicemocks.{AuthStub as _, *}
+import models.agent.JourneyStep.{SignPosted, UserMatching}
 import models.status.GetITSAStatus.NoStatus
 import models.status.{GetITSAStatusModel, GetITSAStatusRequest}
 import play.api.http.Status.*

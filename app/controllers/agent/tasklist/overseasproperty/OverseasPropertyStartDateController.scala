@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
-import forms.agent.OverseasPropertyStartDateForm._
+import forms.agent.OverseasPropertyStartDateForm.*
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}

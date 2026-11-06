@@ -17,12 +17,12 @@
 package connectors.individual
 
 import config.AppConfig
-import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser._
-import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser._
+import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.*
+import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.*
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.Inject
@@ -46,7 +46,7 @@ class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
                        )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
     val url = appConfig.allocateEnrolmentUrl(groupId, enrolmentKey.asString)
     http
-      .post(url"${url}")
+      .post(url"$url")
       .withBody(Json.toJson(enrolmentRequest))
       .execute[AllocateEnrolmentResponse]
   }
@@ -62,7 +62,7 @@ class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
       "action" -> "enrolAndActivate"
     )
     http
-      .post(url"${url}")
+      .post(url"$url")
       .withBody(requestBody)
       .execute[AllocateEnrolmentResponse]
   }

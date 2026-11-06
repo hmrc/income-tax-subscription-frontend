@@ -18,11 +18,11 @@ package controllers.individual.claimenrolment.sps
 
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
-import play.api.http.Status._
+import models.individual.JourneyStep.ClaimEnrolment
+import play.api.http.Status.*
 import play.api.libs.json.JsString
 
 class SPSHandoffForClaimEnrolControllerISpec extends ComponentSpecBase {

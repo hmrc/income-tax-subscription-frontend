@@ -18,9 +18,9 @@ package controllers.individual.actions.mocks
 
 import controllers.individual.actions.ConfirmationJourneyRefiner
 import controllers.utils.ReferenceRetrieval
+import models.SessionData
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary
-import models.SessionData
 import models.status.MandationStatusModel
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar

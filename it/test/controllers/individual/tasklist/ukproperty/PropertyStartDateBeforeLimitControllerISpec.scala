@@ -19,11 +19,11 @@ package controllers.individual.tasklist.ukproperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.individual.business.PropertyStartDateBeforeLimitForm
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
 import models.common.PropertyModel
 import models.{No, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 

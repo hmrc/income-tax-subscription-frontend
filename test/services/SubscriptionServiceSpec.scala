@@ -17,13 +17,13 @@
 package services
 
 import connectors.httpparser.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import models.common.subscription._
+import models.common.subscription.*
 import org.scalatest.EitherValues
-import org.scalatest.matchers.should.Matchers._
-import play.api.test.Helpers._
+import org.scalatest.matchers.should.Matchers.*
+import play.api.test.Helpers.*
 import services.mocks.TestSubscriptionService
 import utilities.individual.TestConstants
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class SubscriptionServiceSpec extends TestSubscriptionService
   with EitherValues {

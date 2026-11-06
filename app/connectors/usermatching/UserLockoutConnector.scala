@@ -17,12 +17,12 @@
 package connectors.usermatching
 
 import config.AppConfig
-import connectors.usermatching.httpparsers.LockoutStatusHttpParser._
+import connectors.usermatching.httpparsers.LockoutStatusHttpParser.*
 import models.usermatching.LockOutRequest
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
-import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

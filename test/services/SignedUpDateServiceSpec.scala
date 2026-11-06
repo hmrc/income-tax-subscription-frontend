@@ -17,16 +17,15 @@
 package services
 
 import common.Constants.ITSASessionKeys
-
 import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.UnexpectedStatusFailure
-import models.SessionData
-import org.scalatestplus.play.PlaySpec
-import org.scalatest.matchers.must.Matchers
-import org.mockito.ArgumentMatchers
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
-import org.scalatest.concurrent.ScalaFutures
+import models.SessionData
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
