@@ -76,7 +76,7 @@ object CreateIncomeSourcesModel {
             id = business.id,
             startDateBeforeLimit = if (business.startDate.isEmpty) Some(true) else Some(false),
             businessStartDate = Some(BusinessStartDate(startDate)),
-            businessName = Some(BusinessNameModel(business.name)),
+            businessName = Some(BusinessNameModel(business.displayName.getOrElse(business.name))),
             businessTradeName = Some(BusinessTradeNameModel(business.trade)),
             businessAddress = Some(BusinessAddressModel(business.address)),
             confirmed = true

@@ -23,12 +23,21 @@ import org.scalatest.matchers.must.{Matchers => MustMatchers}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
 import utilities.individual.TestConstants.testNino
+import services.GetCompleteDetailsService.{
+  CompleteDetails,
+  IncomeSources,
+  SoleTraderBusiness,
+  SoleTraderBusinesses as CompleteDetailsSoleTraderBusinesses
+}
+
+import models.common.AccountingYearModel
+import models.Current
 
 import java.time.LocalDate
 import scala.language.implicitConversions
 
 class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
-
+  
   val now: LocalDate = LocalDate.now
 
   implicit def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
@@ -160,7 +169,58 @@ class CreateIncomeSourcesModelSpec extends PlaySpec with MustMatchers {
     "overseasProperty" -> fullOverseasPropertyJson
   )
 
+  val completeDetails: CompleteDetails = CompleteDetails(
+    incomeSources = IncomeSources(
+      soleTraderBusinesses = Some(CompleteDetailsSoleTraderBusinesses(
+        businesses = Seq(SoleTraderBusiness(
+          id = "testBusinessId",
+          name = "testBusinessName",
+          displayName = Some("testDisplayName"),
+          trade = "testBusinessTrade",
+          startDate = Some(now),
+          address = Address(
+            lines = Seq("line 1", "line 2"),
+            postcode = Some("testPostcode"),
+            country = Some(Country("GB", "United Kingdom"))
+          )
+        ))
+      )),
+      ukProperty = None,
+      foreignProperty = None
+    ),
+    taxYear = AccountingYearModel(Current)
+  )
+
+
   "CreateIncomeSourcesModel" must {
+
+    "create income sources successfully" when {
+
+      "a business has a display name" in {
+        val result = CreateIncomeSourcesModel.createIncomeSources(testNino, completeDetails)
+
+        result.soleTraderBusinesses.get.businesses.head.businessName mustBe
+          Some(BusinessNameModel("testDisplayName"))
+      }
+
+      "a business does not have a display name" in {
+        val detailsWithoutDisplayName = completeDetails.copy(
+          incomeSources = completeDetails.incomeSources.copy(
+            soleTraderBusinesses = completeDetails.incomeSources.soleTraderBusinesses.map { businesses =>
+              businesses.copy(
+                businesses = businesses.businesses.map(_.copy(displayName = None))
+              )
+            }
+          )
+        )
+
+        val result = CreateIncomeSourcesModel.createIncomeSources(testNino, detailsWithoutDisplayName)
+
+        result.soleTraderBusinesses.get.businesses.head.businessName mustBe
+          Some(BusinessNameModel("testBusinessName"))
+      }
+    }
+    
     "throw an IllegalArgumentException" when {
       "no businesses are provided to the model" in {
         intercept[IllegalArgumentException](CreateIncomeSourcesModel(testNino))

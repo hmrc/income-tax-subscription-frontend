@@ -33,7 +33,7 @@ import helpers.servicemocks.EnrolmentStoreProxyStub.jsonResponseBody
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
 import models.agent.JourneyStep.SignUp
-import models.common.business.SelfEmploymentData
+import models.common.business.{BusinessNameModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.sps.AgentSPSPayload
@@ -180,6 +180,107 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
       }
     }
     "there is complete data" should {
+      "submit the display name as the business name when a display name is present" in {
+        AuthStub.stubAuthSuccess()
+
+        val selfEmployments = testSelfEmploymentData.map(_.copy(
+          startDateBeforeLimit = Some(true),
+          businessName = Some(BusinessNameModel("Original business name")),
+          businessDisplayName = Some("Business display name"),
+          confirmed = true
+        ))
+        stubAllSubscriptionDetails(
+          selfEmployments = selfEmployments,
+          property = None,
+          overseasProperty = None,
+          selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
+        )
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ))
+        AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+        AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
+
+        val expectedIncomeSources = CreateIncomeSourcesModel(
+          nino = testNino,
+          soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+            businesses = selfEmployments.map(_.copy(
+              businessName = Some(BusinessNameModel("Business display name")),
+              businessDisplayName = None
+            ))
+          )),
+          idempotencyKey = Some("test-uuid")
+        )
+        SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, expectedIncomeSources)(NO_CONTENT)
+
+        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.spinnyWheelURI)
+        )
+        waitUntilStatusIs(success)
+        verifyPost(
+          CreateIncomeSourcesAPIStub.createIncomeSourcesUri(testMtdId),
+          Some(Json.toJson(expectedIncomeSources).toString),
+          Some(1)
+        )
+      }
+
+      "submit the original business name when no display name is present" in {
+        AuthStub.stubAuthSuccess()
+
+        val selfEmployments = testSelfEmploymentData.map(_.copy(
+          startDateBeforeLimit = Some(true),
+          businessName = Some(BusinessNameModel("Original business name")),
+          businessDisplayName = None,
+          confirmed = true
+        ))
+        stubAllSubscriptionDetails(
+          selfEmployments = selfEmployments,
+          property = None,
+          overseasProperty = None,
+          selectedTaxYear = Some(testAccountingYearCurrentConfirmed)
+        )
+        SessionDataConnectorStub.stubGetAllSessionData(Map(
+          ITSASessionKeys.MANDATION_STATUS -> Json.toJson(MandationStatusModel(Voluntary, Voluntary)),
+          ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
+          ITSASessionKeys.NINO -> JsString(testNino),
+          ITSASessionKeys.UTR -> JsString(testUtr),
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ))
+        AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
+        AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
+
+        val expectedIncomeSources = CreateIncomeSourcesModel(
+          nino = testNino,
+          soleTraderBusinesses = Some(testSoleTraderBusinesses().copy(
+            businesses = selfEmployments
+          )),
+          idempotencyKey = Some("test-uuid")
+        )
+        SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK, Json.obj("mtdbsa" -> testMtdId))
+        CreateIncomeSourcesAPIStub.stubCreateIncomeSources(testMtdId, expectedIncomeSources)(NO_CONTENT)
+
+        val res = IncomeTaxSubscriptionFrontend.submitAgentGlobalCheckYourAnswers()
+
+        res must have(
+          httpStatus(SEE_OTHER),
+          redirectURI(AgentURI.spinnyWheelURI)
+        )
+        waitUntilStatusIs(success)
+        verifyPost(
+          CreateIncomeSourcesAPIStub.createIncomeSourcesUri(testMtdId),
+          Some(Json.toJson(expectedIncomeSources).toString),
+          Some(1)
+        )
+      }
+
       "sign up and redirect to the confirmation page" when {
         "signing up for the current tax year" when {
           "the session says the user is mandated for the current year" in {
