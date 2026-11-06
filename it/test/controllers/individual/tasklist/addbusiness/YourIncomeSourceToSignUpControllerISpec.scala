@@ -165,7 +165,7 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 
         result must have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show.url)
+          redirectURI(controllers.individual.tasklist.addbusiness.routes.AddDisplayNamesController.show().url)
         )
         IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails[Boolean](
           SubscriptionDataKeys.IncomeSourceConfirmation,
