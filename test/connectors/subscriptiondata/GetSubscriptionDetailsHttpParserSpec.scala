@@ -16,7 +16,7 @@
 
 package connectors.subscriptiondata
 
-import connectors.httpparser.GetSubscriptionDetailsHttpParser._
+import connectors.httpparser.GetSubscriptionDetailsHttpParser.*
 import play.api.libs.json.{Json, OFormat}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK}
 import uk.gov.hmrc.http.HttpResponse

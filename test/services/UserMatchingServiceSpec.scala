@@ -16,9 +16,9 @@
 
 package services
 
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.TestUserMatchingService
-import utilities.TestModels._
+import utilities.TestModels.*
 
 class UserMatchingServiceSpec extends TestUserMatchingService {
 

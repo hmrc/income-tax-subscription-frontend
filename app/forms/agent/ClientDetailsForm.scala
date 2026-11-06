@@ -18,7 +18,7 @@ package forms.agent
 
 import forms.formatters.LocalDateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
-import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.ConstraintUtil.*
 import models.DateModel
 import models.usermatching.UserDetailsModel
 import play.api.data.Form

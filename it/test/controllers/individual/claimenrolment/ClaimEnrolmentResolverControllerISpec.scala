@@ -16,7 +16,6 @@
 
 package controllers.individual.claimenrolment
 
-import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.*
@@ -24,6 +23,7 @@ import helpers.IntegrationTestModels.testMTDITEnrolmentKey
 import helpers.servicemocks.AuditStub.verifyAudit
 import helpers.servicemocks.{AuthStub, EnrolmentStoreProxyStub, SubscriptionStub, TaxEnrolmentsStub}
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import models.individual.JourneyStep.ClaimEnrolment
 import play.api.http.Status.*
 import play.api.libs.json.JsString
 

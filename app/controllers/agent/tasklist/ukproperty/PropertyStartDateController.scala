@@ -24,7 +24,7 @@ import forms.agent.PropertyStartDateForm
 import forms.agent.PropertyStartDateForm.propertyStartDateForm
 import models.DateModel
 import play.api.data.Form
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import utilities.ImplicitDateFormatter
@@ -64,7 +64,7 @@ class PropertyStartDateController @Inject()(identify: IdentifierAction,
         ))),
       startDate =>
         subscriptionDetailsService.savePropertyStartDate(request.reference, startDate) map {
-          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = isGlobalEdit))
           case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
         }
     )

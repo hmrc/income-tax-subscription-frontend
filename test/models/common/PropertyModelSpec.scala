@@ -19,7 +19,7 @@ package models.common
 import models.DateModel
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class PropertyModelSpec extends PlaySpec with BeforeAndAfterEach {
 

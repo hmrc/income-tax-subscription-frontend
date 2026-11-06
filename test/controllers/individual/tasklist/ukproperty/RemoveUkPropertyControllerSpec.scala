@@ -19,6 +19,7 @@ package controllers.individual.tasklist.ukproperty
 import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.DeleteSubscriptionDetailsSuccessResponse
 import connectors.subscriptiondata.mocks.MockIncomeTaxSubscriptionConnector
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.RemoveUkPropertyForm
 import forms.submapping.YesNoMapping
 import models.common.PropertyModel
@@ -27,7 +28,6 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.MockSubscriptionDetailsService
-import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import utilities.SubscriptionDataKeys
 import views.individual.mocks.MockRemoveUkProperty
 

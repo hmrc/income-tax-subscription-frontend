@@ -16,15 +16,15 @@
 
 package services
 
-import models._
+import models.*
 import models.common.AccountingPeriodModel
-import utilities.AccountingPeriodUtil._
+import utilities.AccountingPeriodUtil.*
 import utilities.{AccountingPeriodUtil, CurrentDateProvider}
 
 import java.time.LocalDate
-import java.time.Month._
+import java.time.Month.*
 import javax.inject.{Inject, Singleton}
-import scala.Ordering.Implicits._
+import scala.Ordering.Implicits.*
 
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {

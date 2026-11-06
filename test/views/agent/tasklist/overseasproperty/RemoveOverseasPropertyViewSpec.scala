@@ -17,7 +17,7 @@
 package views.agent.tasklist.overseasproperty
 
 import forms.agent.RemoveClientOverseasPropertyForm
-import forms.agent.RemoveClientOverseasPropertyForm._
+import forms.agent.RemoveClientOverseasPropertyForm.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.FormError

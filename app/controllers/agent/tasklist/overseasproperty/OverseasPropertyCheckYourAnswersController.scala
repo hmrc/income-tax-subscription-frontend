@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.OverseasPropertyModel
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswers
@@ -37,7 +37,7 @@ class OverseasPropertyCheckYourAnswersController @Inject()(identify: IdentifierA
                                                           (implicit cc: MessagesControllerComponents,
                                                            ec: ExecutionContext) extends SignUpBaseController {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+  def show(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withOverseasProperty(request.reference) { overseasProperty =>
       Future.successful(Ok(view(
         viewModel = overseasProperty,

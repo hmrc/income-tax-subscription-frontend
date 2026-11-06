@@ -16,9 +16,7 @@
 
 package controllers.individual.actions
 
-import common.Constants.ITSASessionKeys
 import controllers.utils.ReferenceRetrieval
-import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, SignUpRequest}
 import play.api.mvc.Results.Redirect
@@ -60,7 +58,7 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
         Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
           origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
         ))))
-      case state@(None | Some(PreSignUp)) =>
+      case _@(None | Some(PreSignUp)) =>
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }

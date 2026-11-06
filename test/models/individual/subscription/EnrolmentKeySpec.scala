@@ -16,13 +16,13 @@
 
 package models.individual.subscription
 
-import common.Constants.GovernmentGateway._
-import common.Constants._
+import common.Constants.*
+import common.Constants.GovernmentGateway.*
 import models.common.subscription.EnrolmentKey
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class EnrolmentKeySpec extends AnyWordSpecLike with Matchers with OptionValues {
   "asString" should {

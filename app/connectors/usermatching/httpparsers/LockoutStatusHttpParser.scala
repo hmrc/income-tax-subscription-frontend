@@ -16,7 +16,7 @@
 
 package connectors.usermatching.httpparsers
 
-import models.usermatching._
+import models.usermatching.*
 import play.api.http.HttpVerbs
 import play.api.http.Status.{CREATED, NOT_FOUND, OK}
 import play.api.libs.json.{JsSuccess, JsValue}

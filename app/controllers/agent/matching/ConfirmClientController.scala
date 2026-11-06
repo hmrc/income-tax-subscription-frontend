@@ -18,7 +18,6 @@ package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataResponse, SaveSessionDataSuccessResponse}
-import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import controllers.agent.resolvers.AlreadySignedUpResolver

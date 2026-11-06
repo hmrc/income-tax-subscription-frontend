@@ -32,7 +32,7 @@ class UsingSoftwareViewSpec extends ViewSpec {
   private val testFormError: FormError = FormError(UsingSoftwareForm.fieldName, "individual.using-software.form-error")
 
   "using software" must {
-    import UsingSoftwareMessages._
+    import UsingSoftwareMessages.*
 
     "have the correct template details" when {
 

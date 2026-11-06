@@ -16,11 +16,11 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.UserMatching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
+import models.agent.JourneyStep.UserMatching
 import play.api.http.Status.*
 import play.api.libs.json.JsString
 

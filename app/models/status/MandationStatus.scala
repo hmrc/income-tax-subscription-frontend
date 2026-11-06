@@ -16,7 +16,7 @@
 
 package models.status
 
-import models.status.MandationStatus._
+import models.status.MandationStatus.*
 import play.api.libs.json.*
 
 sealed trait MandationStatus {

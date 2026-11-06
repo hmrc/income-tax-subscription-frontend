@@ -33,12 +33,11 @@ import play.api.test.Helpers.{await, *}
 import play.twirl.api.HtmlFormat
 import services.agent.*
 import services.mocks.*
-import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utilities.UserMatchingTestSupport
 import utilities.agent.TestConstants.{testMTDID, testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
 import views.html.agent.matching.CheckYourClientDetails
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
@@ -303,7 +302,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
             verify(mockSessionDataService)
               .saveJourneyStep(
                 ArgumentMatchers.eq(JourneyStep.SignPosted)
-              )(any(), any())
+              )(any())
 
             verify(mockSessionDataService)
               .deleteFailedClientMatching(any())

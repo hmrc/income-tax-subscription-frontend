@@ -18,12 +18,12 @@ package controllers.individual.tasklist.overseasproperty
 
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestConstants.*
+import helpers.IntegrationTestModels.*
 import helpers.servicemocks.AuthStub
 import models.DateModel
 import models.common.OverseasPropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 

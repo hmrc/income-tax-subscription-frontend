@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import models.common.PropertyModel
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import views.html.agent.tasklist.ukproperty.PropertyCheckYourAnswers
@@ -37,7 +37,7 @@ class PropertyCheckYourAnswersController @Inject()(identify: IdentifierAction,
                                                   (implicit cc: MessagesControllerComponents, ec: ExecutionContext)
   extends SignUpBaseController {
 
-  def show(isEditMode: Boolean, isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
+  def show(isGlobalEdit: Boolean): Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     withProperty(request.reference) { property =>
       Future.successful(Ok(view(
         viewModel = property,

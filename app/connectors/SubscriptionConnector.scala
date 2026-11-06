@@ -17,7 +17,7 @@
 package connectors
 
 import config.AppConfig
-import connectors.httpparser.GetSubscriptionResponseHttpParser._
+import connectors.httpparser.GetSubscriptionResponseHttpParser.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 

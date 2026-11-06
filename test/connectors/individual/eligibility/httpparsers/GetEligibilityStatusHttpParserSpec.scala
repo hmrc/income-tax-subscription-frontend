@@ -18,7 +18,7 @@ package connectors.individual.eligibility.httpparsers
 
 import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser.GetEligibilityStatusHttpReads
 import org.scalatest.EitherValues
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsError, Json}
 import uk.gov.hmrc.http.HttpResponse
 import utilities.HttpResult.HttpConnectorError

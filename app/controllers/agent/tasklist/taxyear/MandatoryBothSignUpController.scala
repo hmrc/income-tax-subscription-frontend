@@ -26,7 +26,6 @@ import services.*
 import views.html.agent.tasklist.taxyear.MandatoryBothSignUp
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBothSignUp,
@@ -34,8 +33,7 @@ class MandatoryBothSignUpController @Inject()(mandatoryBothSignUp: MandatoryBoth
                                               journeyRefiner: ConfirmedClientJourneyRefiner,
                                               accountingPeriodService: AccountingPeriodService)
                                              (val appConfig: AppConfig)
-                                             (implicit mcc: MessagesControllerComponents,
-                                              ec: ExecutionContext) extends SignUpBaseController {
+                                             (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def view(implicit request: ConfirmedClientRequest[_]): Html =
     mandatoryBothSignUp(

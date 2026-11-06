@@ -21,14 +21,12 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.IntegrationTestConstants.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import models.common.AccountingYearModel
-import models.{Current, Next}
-import play.api.http.Status.*
-import models.*
 import models.agent.JourneyStep.SignUp
-import models.status.MandationStatus.Voluntary
-import models.status.MandationStatus.Mandated
+import models.common.AccountingYearModel
+import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
+import models.*
+import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.SelectedTaxYear
@@ -55,7 +53,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
           OK,
-          Json.toJson(Some(AccountingYearModel(Current, confirmed = false, editable = true)))
+          Json.toJson(Some(AccountingYearModel(Current)))
         )
 
         val res = IncomeTaxSubscriptionFrontend.whenDoYouWantToStart()
@@ -87,7 +85,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
           OK,
-          Json.toJson(Some(AccountingYearModel(Next, confirmed = false, editable = true)))
+          Json.toJson(Some(AccountingYearModel(Next)))
         )
 
         val res = IncomeTaxSubscriptionFrontend.whenDoYouWantToStart()
@@ -190,7 +188,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
     }
   }
 
-  s"POST ${controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.submit(editMode = false).url}" when {
+  s"POST ${controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.submit().url}" when {
     "the user is unauthorised" must {
       "redirect to the login page" in {
         AuthStub.stubUnauthorised()

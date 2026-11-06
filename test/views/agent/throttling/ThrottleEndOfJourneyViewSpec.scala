@@ -16,13 +16,14 @@
 
 package views.agent.throttling
 
-import messagelookup.individual.MessageLookup.{ThrottleEndofJourneyAgent => messages}
+import messagelookup.individual.MessageLookup.ThrottleEndofJourneyAgent as messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.ViewSpec
 import views.html.agent.throttling.ThrottleEndOfJourney
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

@@ -16,9 +16,9 @@
 
 package audit
 
-import models.audits.ClientMatchingAuditing._
+import models.audits.ClientMatchingAuditing.*
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
@@ -27,8 +27,8 @@ import services.AuditingService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import utilities.UnitTestTrait
-import utilities.agent.TestConstants._
-import utilities.agent.TestModels._
+import utilities.agent.TestConstants.*
+import utilities.agent.TestModels.*
 
 import scala.concurrent.ExecutionContext
 

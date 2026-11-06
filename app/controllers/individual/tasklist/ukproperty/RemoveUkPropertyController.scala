@@ -16,9 +16,9 @@
 
 package controllers.individual.tasklist.ukproperty
 
+import connectors.IncomeTaxSubscriptionConnector
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
-import connectors.IncomeTaxSubscriptionConnector
 import forms.individual.business.RemoveUkPropertyForm
 import models.{No, Yes, YesNo}
 import play.api.data.Form

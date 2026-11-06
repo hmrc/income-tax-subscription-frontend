@@ -24,7 +24,6 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ViewSpec}
-import utilities.ViewSpec
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import java.time.format.DateTimeFormatter
@@ -81,12 +80,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val addUKPropertyLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
     val addUKPropertyLinkFSEnabled: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
     val addUkPropertyLinkText: String = "Add UK property"
-    val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show().url
     val ukPropertyRemoveLink: String = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
     val foreignPropertyCardTitle: String = "Foreign property"
     val addForeignPropertyLink: String = controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateBeforeLimitController.show().url
     val addForeignPropertyLinkText: String = "Add foreign property"
-    val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+    val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show().url
     val foreignPropertyRemoveLink: String = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
 
     val propertyDateBeforeLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"

@@ -19,7 +19,7 @@ package connectors
 import config.AppConfig
 import play.api.http.Status.OK
 import services.ThrottleId
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 

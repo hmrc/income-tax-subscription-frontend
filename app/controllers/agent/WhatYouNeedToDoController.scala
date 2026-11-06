@@ -20,7 +20,6 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import play.api.mvc.*
-import services.{GetEligibilityStatusService, SubscriptionDetailsService}
 import views.html.agent.WhatYouNeedToDo
 
 import javax.inject.{Inject, Singleton}
@@ -29,9 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class WhatYouNeedToDoController @Inject()(view: WhatYouNeedToDo,
                                           identify: IdentifierAction,
-                                          journeyRefiner: ConfirmedClientJourneyRefiner,
-                                          eligibilityStatusService: GetEligibilityStatusService,
-                                          subscriptionDetailsService: SubscriptionDetailsService
+                                          journeyRefiner: ConfirmedClientJourneyRefiner
                                          )(val appConfig: AppConfig)
                                          (implicit mcc: MessagesControllerComponents, val ec: ExecutionContext)
   extends SignUpBaseController {

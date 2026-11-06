@@ -18,7 +18,7 @@ package models.status
 
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class MandationStatusModelSpec extends PlaySpec {
 

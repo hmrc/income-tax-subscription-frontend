@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{contentType, _}
+import play.api.test.Helpers.{contentType, *}
 import play.twirl.api.HtmlFormat
 import views.html.agent.matching.NotEnrolledAgentServices
 

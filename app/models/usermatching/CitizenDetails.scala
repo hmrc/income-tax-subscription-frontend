@@ -17,7 +17,7 @@
 package models.usermatching
 
 import models.ConnectorError
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class CitizenDetails(utr: Option[String], name: Option[String])
 

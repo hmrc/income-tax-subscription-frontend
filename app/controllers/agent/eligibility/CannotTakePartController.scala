@@ -19,8 +19,8 @@ package controllers.agent.eligibility
 import controllers.SignUpBaseController
 import controllers.agent.actions.{IdentifierAction, SignPostedJourneyRefiner}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import views.html.agent.eligibility.CannotTakePart
 import services.GetEligibilityStatusService
+import views.html.agent.eligibility.CannotTakePart
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

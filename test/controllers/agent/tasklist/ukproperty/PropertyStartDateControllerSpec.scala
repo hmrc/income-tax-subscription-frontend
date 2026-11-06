@@ -175,7 +175,7 @@ class PropertyStartDateControllerSpec extends ControllerSpec
           )
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+          redirectLocation(result) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
         }
         "in global edit mode" in {
           mockSavePropertyStartDate(date)(Right(PostSubscriptionDetailsSuccessResponse))

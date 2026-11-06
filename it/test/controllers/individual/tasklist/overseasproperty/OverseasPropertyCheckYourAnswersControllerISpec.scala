@@ -24,7 +24,7 @@ import helpers.agent.WiremockHelper.verifyPost
 import helpers.servicemocks.AuthStub
 import models.DateModel
 import models.common.OverseasPropertyModel
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys.OverseasProperty
 

@@ -20,7 +20,7 @@ import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateForm
-import forms.agent.OverseasPropertyStartDateForm._
+import forms.agent.OverseasPropertyStartDateForm.*
 import models.DateModel
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -64,7 +64,7 @@ class OverseasPropertyStartDateController @Inject()(identify: IdentifierAction,
         ))),
       startDate =>
         subscriptionDetailsService.saveForeignPropertyStartDate(request.reference, startDate) map {
-          case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+          case Right(_) => Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = isGlobalEdit))
           case Left(_) => throw new InternalServerException("[OverseasPropertyStartDateController][submit] - Could not save start date")
         }
     )

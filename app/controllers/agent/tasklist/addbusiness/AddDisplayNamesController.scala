@@ -19,11 +19,11 @@ package controllers.agent.tasklist.addbusiness
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
+import forms.common.DisplayNameForm
 import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.addbusiness.AddDisplayNames
-import forms.common.DisplayNameForm
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -19,7 +19,7 @@ package helpers
 import models.usermatching.UserDetailsModel
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.ws.WSResponse
-import utilities.UserMatchingSessionUtil._
+import utilities.UserMatchingSessionUtil.*
 
 trait UserMatchingIntegrationResultSupport extends SessionCookieCrumbler {
   matchers: Matchers =>

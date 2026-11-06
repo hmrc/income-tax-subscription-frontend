@@ -37,15 +37,11 @@ trait MockSignUpConfirmation extends MockitoSugar with BeforeAndAfterEach {
 
   val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
 
-  def mockView(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext: Boolean, name: String, nino: String, usingSoftware: Boolean, sessionData: SessionData): Unit = {
+  def mockView(name: String, nino: String, accountingPeriodModelForNextYear: Boolean): Unit = {
     when(mockSignUpConfirmation(
-      ArgumentMatchers.eq(mandatedCurrentYear),
-      ArgumentMatchers.eq(mandatedNextYear),
-      ArgumentMatchers.eq(taxYearSelectionIsNext),
       ArgumentMatchers.eq(Some(name)),
       ArgumentMatchers.eq(nino),
-      ArgumentMatchers.eq(if (taxYearSelectionIsNext) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear),
-      ArgumentMatchers.eq(usingSoftware),
+      ArgumentMatchers.eq(if (accountingPeriodModelForNextYear) AccountingPeriodUtil.getNextTaxYear else AccountingPeriodUtil.getCurrentTaxYear),
       ArgumentMatchers.any[LocalDate]()
     )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(HtmlFormat.empty)

@@ -18,7 +18,7 @@ package controllers
 
 import controllers.individual.ControllerBaseSpec
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 class SignOutControllerSpec extends ControllerBaseSpec {

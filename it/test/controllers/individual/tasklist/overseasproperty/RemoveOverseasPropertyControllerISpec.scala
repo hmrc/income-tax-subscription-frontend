@@ -22,7 +22,7 @@ import helpers.IntegrationTestConstants.IndividualURI
 import helpers.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
 import models.{No, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.OverseasProperty

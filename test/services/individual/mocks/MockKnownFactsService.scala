@@ -18,13 +18,13 @@ package services.individual.mocks
 
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.individual.KnownFactsService
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.UnitTestTrait
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.Future
 

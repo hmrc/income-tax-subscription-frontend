@@ -19,8 +19,8 @@ package models.audits
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{Current, Next}
+import play.api.libs.json.*
 import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json._
 import services.JsonAuditModel
 
 object SaveAndComebackAuditing {

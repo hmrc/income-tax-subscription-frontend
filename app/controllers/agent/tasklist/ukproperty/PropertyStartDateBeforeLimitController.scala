@@ -21,7 +21,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.UkPropertyStartDateBeforeLimitForm.ukPropertyStartDateBeforeLimitForm
 import models.No
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.ukproperty.PropertyStartDateBeforeLimit
@@ -64,7 +64,7 @@ class PropertyStartDateBeforeLimitController @Inject()(identify: IdentifierActio
             if (startDateBeforeLimit == No) {
               Redirect(routes.PropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
             } else {
-              Redirect(routes.PropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+              Redirect(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = isGlobalEdit))
             }
           case Left(_) =>
             throw new InternalServerException("[PropertyStartDateBeforeLimitController] - Could not save uk property start date before limit")

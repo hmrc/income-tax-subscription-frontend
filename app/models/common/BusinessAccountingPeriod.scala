@@ -16,7 +16,7 @@
 
 package models.common
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait BusinessAccountingPeriod {
   def key: String

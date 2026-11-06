@@ -16,10 +16,10 @@
 
 package controllers.individual.claimenrolment
 
-import models.individual.JourneyStep.ClaimEnrolment
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{BasicIdentifierAction, IdentifierAction}
+import models.individual.JourneyStep.ClaimEnrolment
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import play.api.mvc.*
 import services.SessionDataService

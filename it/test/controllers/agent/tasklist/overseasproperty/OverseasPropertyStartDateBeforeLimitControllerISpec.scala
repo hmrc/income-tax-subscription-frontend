@@ -193,7 +193,7 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show().url)
             )
           }
           "in global edit mode" in {
@@ -211,7 +211,7 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
             )
           }
         }

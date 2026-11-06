@@ -21,7 +21,7 @@ import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmedClientJourneyRefiner, IdentifierAction}
 import forms.agent.OverseasPropertyStartDateBeforeLimitForm.overseasPropertyStartDateBeforeLimitForm
 import models.No
-import play.api.mvc._
+import play.api.mvc.*
 import services.SubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDateBeforeLimit
@@ -64,7 +64,7 @@ class OverseasPropertyStartDateBeforeLimitController @Inject()(identify: Identif
             if (startDateBeforeLimit == No) {
               Redirect(routes.OverseasPropertyStartDateController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
             } else {
-              Redirect(routes.OverseasPropertyCheckYourAnswersController.show(editMode = isEditMode, isGlobalEdit = isGlobalEdit))
+              Redirect(routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit = isGlobalEdit))
             }
           case Left(_) =>
             throw new InternalServerException("[OverseasPropertyStartDateBeforeLimitController] - Could not save foreign property start date before limit")

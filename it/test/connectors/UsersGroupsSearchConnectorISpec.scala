@@ -21,7 +21,7 @@ import connectors.httpparser.GetUserDetailsByCredIdHttpParser.{InvalidJson, Unex
 import connectors.stubs.UsersGroupsSearchStub.*
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
-import models.individual.ObfuscatedIdentifier.{UserEmail, ObfuscatedUserId}
+import models.individual.ObfuscatedIdentifier.{ObfuscatedUserId, UserEmail}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NON_AUTHORITATIVE_INFORMATION}
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.{Assistant, User}

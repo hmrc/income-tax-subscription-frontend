@@ -19,10 +19,10 @@ package services
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
-import org.scalatest.matchers.should.Matchers._
-import play.api.test.Helpers._
+import org.scalatest.matchers.should.Matchers.*
+import play.api.test.Helpers.*
 import services.mocks.TestUserLockoutService
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 

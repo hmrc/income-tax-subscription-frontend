@@ -21,7 +21,7 @@ import messagelookup.individual.MessageLookup
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.agent.matching.ClientNoSa
 
 class NoSAControllerSpec extends ControllerBaseSpec {

@@ -24,15 +24,15 @@ import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.*
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import models.EligibilityStatus
+import models.agent.JourneyStep.SignUp
 import models.common.business.BusinessNameModel
+import models.status.MandationStatus.Voluntary
+import models.status.MandationStatusModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.libs.ws.WSResponse
 import utilities.SubscriptionDataKeys
-import models.status.MandationStatus.Voluntary
-import models.status.MandationStatusModel
-import models.EligibilityStatus
-import models.agent.JourneyStep.SignUp
 
 class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
 

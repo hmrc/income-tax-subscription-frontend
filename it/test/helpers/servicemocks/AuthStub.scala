@@ -17,9 +17,9 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import common.Constants._
-import helpers.IntegrationTestConstants._
-import play.api.http.Status._
+import common.Constants.*
+import helpers.IntegrationTestConstants.*
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 
@@ -52,12 +52,13 @@ object AuthStub extends WireMockMethods {
   }
 
   def stubEnrolled(withMtdEnrolment: Boolean = true): StubMapping = {
-    val enroloments = withMtdEnrolment match {
-      case true => Array(ninoEnrolment, utrEnrolment, mtdidEnrolment)
-      case false => Array(ninoEnrolment, utrEnrolment)
+    val enrolments = if (withMtdEnrolment) {
+      Array(ninoEnrolment, utrEnrolment, mtdidEnrolment)
+    } else {
+      Array(ninoEnrolment, utrEnrolment)
     }
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, enroloments:_*))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L250, enrolments:_*))
   }
 
   def stubUnauthorised(): StubMapping = {

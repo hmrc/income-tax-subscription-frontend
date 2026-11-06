@@ -27,7 +27,7 @@ class ClientAlreadySubscribedViewSpec extends ViewSpec {
   val action: Call = ViewSpec.testCall
   val clientAlreadySubscribed: ClientAlreadySubscribed = app.injector.instanceOf[ClientAlreadySubscribed]
 
-  lazy val page: HtmlFormat.Appendable = clientAlreadySubscribed(action)(request, implicitly)
+  lazy val page: HtmlFormat.Appendable = clientAlreadySubscribed()(request, implicitly)
 
   "The Client Already Enrolled view" should {
     val testPage = TestView(

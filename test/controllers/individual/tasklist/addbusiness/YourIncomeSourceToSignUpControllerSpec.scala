@@ -20,7 +20,7 @@ import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscription
 import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.mocks.MockSignUpJourneyRefiner
 import models.DateModel
-import models.common.business._
+import models.common.business.*
 import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when

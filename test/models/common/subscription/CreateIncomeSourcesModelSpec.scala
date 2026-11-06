@@ -16,22 +16,14 @@
 
 package models.common.subscription
 
-import models.DateModel
-import models.common.AccountingPeriodModel
-import models.common.business._
-import org.scalatest.matchers.must.{Matchers => MustMatchers}
+import models.{Current, DateModel}
+import models.common.{AccountingPeriodModel, AccountingYearModel}
+import models.common.business.*
+import org.scalatest.matchers.must.Matchers as MustMatchers
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
+import services.GetCompleteDetailsService.{CompleteDetails, IncomeSources, SoleTraderBusiness, SoleTraderBusinesses as CompleteDetailsSoleTraderBusinesses}
 import utilities.individual.TestConstants.testNino
-import services.GetCompleteDetailsService.{
-  CompleteDetails,
-  IncomeSources,
-  SoleTraderBusiness,
-  SoleTraderBusinesses as CompleteDetailsSoleTraderBusinesses
-}
-
-import models.common.AccountingYearModel
-import models.Current
 
 import java.time.LocalDate
 import scala.language.implicitConversions

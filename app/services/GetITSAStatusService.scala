@@ -26,8 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetITSAStatusService @Inject()(getITSAStatusConnector: GetITSAStatusConnector,
-                                     ninoService: NinoService,
-                                     sessionDataService: SessionDataService)
+                                     ninoService: NinoService)
                                     (implicit ec: ExecutionContext) {
 
   def getITSAStatus(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Option[GetITSAStatusModel]] = {

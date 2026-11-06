@@ -16,10 +16,13 @@
 
 package services
 
+import common.Constants.ITSASessionKeys
 import config.{AppConfig, MockConfig}
 import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, SoleTraderBusinesses as StoredSoleTraderBusinesses}
-import models.{Current, DateModel, EligibilityStatus, Next, SessionData, SubscriptionData}
+import models.status.MandationStatus.{Mandated, Voluntary}
+import models.status.MandationStatusModel
+import models.*
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -33,9 +36,6 @@ import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
 import utilities.SubscriptionDataKeys.{OverseasProperty, Property, SelectedTaxYear, SoleTraderBusinessesKey}
-import common.Constants.ITSASessionKeys
-import models.status.MandationStatus.{Mandated, Voluntary}
-import models.status.MandationStatusModel
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global

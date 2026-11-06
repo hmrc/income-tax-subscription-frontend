@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class EligibilityStatus(eligibleCurrentYear: Boolean, eligibleNextYear: Boolean, exemptionReason: Option[String]) {
   val eligibleNextYearOnly: Boolean = !eligibleCurrentYear && eligibleNextYear

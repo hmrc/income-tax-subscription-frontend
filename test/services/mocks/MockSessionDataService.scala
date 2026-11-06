@@ -29,7 +29,6 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.Future
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
@@ -128,7 +127,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockSaveJourneyState(): Unit = {
-    when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)))
   }
 

@@ -18,7 +18,7 @@ package testonly.controllers
 
 import connectors.usermatching.CitizenDetailsConnector
 import models.usermatching.CitizenDetails
-import play.api.mvc._
+import play.api.mvc.*
 import services.SessionDataService
 import testonly.connectors.ResetDataConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController

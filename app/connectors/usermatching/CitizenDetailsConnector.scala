@@ -17,7 +17,7 @@
 package connectors.usermatching
 
 import config.AppConfig
-import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
+import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 

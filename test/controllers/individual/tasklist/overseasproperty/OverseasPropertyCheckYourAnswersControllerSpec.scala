@@ -50,7 +50,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
           isGlobalEdit = false
         )
 
-        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = false)(request)
+        val result: Future[Result] = controller.show(isGlobalEdit = false)(request)
         status(result) mustBe OK
       }
 
@@ -64,7 +64,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
           isGlobalEdit = false
         )
 
-        val result: Future[Result] = controller.show(isEditMode = true, isGlobalEdit = false)(request)
+        val result: Future[Result] = controller.show(isGlobalEdit = false)(request)
         status(result) mustBe OK
       }
 
@@ -78,7 +78,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
           isGlobalEdit = true
         )
 
-        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = true)(request)
+        val result: Future[Result] = controller.show(isGlobalEdit = true)(request)
         status(result) mustBe OK
       }
 
@@ -92,7 +92,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
           isGlobalEdit = true
         )
 
-        val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = true)(request)
+        val result: Future[Result] = controller.show(isGlobalEdit = true)(request)
         status(result) mustBe OK
       }
     }
@@ -107,7 +107,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
         isGlobalEdit = false
       )
 
-      val result: Future[Result] = controller.show(isEditMode = false, isGlobalEdit = false)(request)
+      val result: Future[Result] = controller.show(isGlobalEdit = false)(request)
 
       status(result) mustBe OK
     }
@@ -115,7 +115,7 @@ class OverseasPropertyCheckYourAnswersControllerSpec extends ControllerSpec
     "throw an exception if cannot retrieve overseas property details" in withController { controller =>
       mockFetchOverseasProperty(None)
 
-      intercept[InternalServerException](await(controller.show(isEditMode = false, isGlobalEdit = false)(request)))
+      intercept[InternalServerException](await(controller.show(isGlobalEdit = false)(request)))
         .message mustBe "[OverseasPropertyCheckYourAnswersController] - Could not retrieve property details"
     }
   }
