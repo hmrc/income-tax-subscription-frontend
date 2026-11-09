@@ -21,7 +21,7 @@
         mainTemplate: PrincipalMainTemplate,
         signOutButton: SignOutButton
 )
-@(postAction: Call)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(title = Messages("cannot-use-service.title")) {
 

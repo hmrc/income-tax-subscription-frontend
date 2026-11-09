@@ -43,12 +43,12 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
   "what year to sign up" must {
     "have the correct template details" when {
       "the page has no back link" in new TemplateViewTest(
-        view = page(editMode = false, clientName = fullName, clientNino = nino),
+        view = page(clientName = fullName, clientNino = nino),
         isAgent = true,
         title = NextYearMandatorySignUp.heading,
       )
       "the page has a back link + error" in new TemplateViewTest(
-        view = page(editMode = false, hasError = true),
+        view = page(hasError = true),
         isAgent = true,
         title = NextYearMandatorySignUp.heading,
         error = Some(testFormError)
@@ -136,21 +136,19 @@ class NextYearMandatorySignUpViewSpec extends ViewSpec {
     }
   }
 
-  private def page(editMode: Boolean, clientName: String = fullName, clientNino: String = nino, hasError: Boolean = false): Html =
+  private def page(clientName: String = fullName, clientNino: String = nino, hasError: Boolean = false): Html =
     nextYearMandatorySignUp(
       if (hasError) AccountingYearForm.accountingYearForm.withError(testFormError) else AccountingYearForm.accountingYearForm,
       postAction = testCall,
       clientName,
       clientNino,
-      endYearOfCurrentTaxPeriod = taxYearEnd,
-      isEditMode = editMode,
+      endYearOfCurrentTaxPeriod = taxYearEnd
     )
 
-  private def document(editMode: Boolean = false,
-                       clientName: String = fullName,
+  private def document(clientName: String = fullName,
                        clientNino: String = nino,
                        hasError: Boolean = false): Document =
-    Jsoup.parse(page(editMode = editMode, clientName, clientNino, hasError).body)
+    Jsoup.parse(page(clientName, clientNino, hasError).body)
 
   private object NextYearMandatorySignUp {
     val heading: String = s"Your client must use Making Tax Digital for Income Tax next tax year, $taxYearEnd to ${taxYearEnd + 1}"

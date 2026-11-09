@@ -16,7 +16,6 @@
 
 package controllers.individual.tasklist
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import models.audits.SaveAndComebackAuditing
@@ -37,8 +36,7 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
                                         subscriptionDetailsService: SubscriptionDetailsService)
                                        (auditingService: AuditingService,
                                         identify: IdentifierAction,
-                                        refine: SignUpJourneyRefiner,
-                                        appConfig: AppConfig)
+                                        refine: SignUpJourneyRefiner)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
 
@@ -46,13 +44,13 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
     subscriptionDetailsService.fetchLastUpdatedTimestamp(request.reference) flatMap {
       case Some(timestamp) =>
         location.fold(
-          Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl)))
+          Future.successful(Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime))))
         )(location => {
           for {
             saveAndComebackAuditData <- retrieveAuditData(request.request.utr, request.reference, request.nino, location)
             _ <- auditingService.audit(saveAndComebackAuditData)
           } yield {
-            Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime), signInUrl))
+            Ok(progressSavedView(cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime)))
           }
         })
       case None => throw new InternalServerException("[ProgressSavedController][show] - The last updated timestamp cannot be retrieved")
@@ -80,6 +78,4 @@ class ProgressSavedController @Inject()(progressSavedView: ProgressSaved,
       )
     }
   }
-
-  val signInUrl: String = appConfig.ggLoginUrl
 }

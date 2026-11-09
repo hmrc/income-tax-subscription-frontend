@@ -35,7 +35,7 @@ trait MockNextYearMandatorySignUp extends PlaySpec with MockitoSugar with Before
   }
 
   def mockView(): Unit = {
-    when(nextYearMandatorySignUp(any(), any(), any(), any(), any(), any())(any(), any()))
+    when(nextYearMandatorySignUp(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(HtmlFormat.empty)
   }
 

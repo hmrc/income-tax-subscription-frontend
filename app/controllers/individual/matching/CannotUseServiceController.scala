@@ -31,8 +31,6 @@ class CannotUseServiceController @Inject()(cannotUseServiceView: CannotUseServic
                                            mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = identify { implicit request =>
-      Ok(cannotUseServiceView(
-        postAction = controllers.individual.matching.routes.CannotUseServiceController.show()
-      ))
+      Ok(cannotUseServiceView())
   }
 }

@@ -185,6 +185,11 @@ trait MockSubscriptionDetailsService extends PlaySpec with MockitoSugar with Bef
     }
   }
 
+  def mockFetchPrePopFlag(flag: Option[Boolean]): Unit = {
+    when(mockSubscriptionDetailsService.fetchPrePopFlag(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(flag))
+  }
+
   def verifyFetchPrePopFlag(): Unit = {
     verify(mockSubscriptionDetailsService).fetchPrePopFlag(ArgumentMatchers.any())(ArgumentMatchers.any())
   }

@@ -21,12 +21,17 @@ import controllers.individual.ControllerBaseSpec
 import controllers.individual.actions.PreSignUpJourneyRefiner
 import controllers.individual.actions.mocks.MockIdentifierAction
 import controllers.individual.resolvers.{AlreadyEnrolledResolver, MockAlreadySignedUpResolver}
+import models.EligibilityStatus
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.verify
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.SessionDataService
+import services.PrePopDataService.PrePopResult.{PrePopFailure, PrePopSuccess}
 import services.mocks.*
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -77,5 +82,33 @@ class HomeControllerSpec extends ControllerBaseSpec
     val result = testHomeController().index()(FakeRequest())
     status(result) mustBe SEE_OTHER
     redirectLocation(result) mustBe Some(resolverUrl)
+  }
+
+  "Eligible users without a subscription" should {
+    "be redirected to sign up after pre-populating their income sources" in {
+      setupMockGetSubscriptionNotFound(nino)
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+      mockPrePopIncomeSources(PrePopSuccess)
+
+      val result = testHomeController().index()(FakeRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.CheckIRSAEnrolmentController.show.url)
+      verify(mockPrePopDataService).prePopIncomeSources(
+        ArgumentMatchers.eq(testReference),
+        ArgumentMatchers.eq(nino)
+      )(ArgumentMatchers.any())
+    }
+
+    "return an internal server exception when pre-population fails" in {
+      setupMockGetSubscriptionNotFound(nino)
+      mockGetEligibilityStatus(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None))
+      mockPrePopIncomeSources(PrePopFailure("failure"))
+
+      val result = testHomeController().index()(FakeRequest())
+
+      intercept[InternalServerException](await(result)).message mustBe
+        "[HomeController][handleNoSubscriptionFound] - Failure occurred when pre-populating income source details. Error: failure"
+    }
   }
 }

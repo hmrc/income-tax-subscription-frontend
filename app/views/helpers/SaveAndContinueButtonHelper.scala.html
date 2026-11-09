@@ -40,12 +40,12 @@
         buttonText = saveAndContinueText.getOrElse(messages("base.save-and-continue"))
     )
 
-    @saveAndReturnReference.map { location =>
-      @buttonHelper(
-        buttonText = messages("base.save-and-come-back-later"),
-        classes = Some("govuk-button govuk-button--secondary"),
-        href = Some(href)
-      )
+    @if(saveAndReturnReference.isDefined) {
+        @buttonHelper(
+            buttonText = messages("base.save-and-come-back-later"),
+            classes = Some("govuk-button govuk-button--secondary"),
+            href = Some(href)
+        )
     }
 
 </div>

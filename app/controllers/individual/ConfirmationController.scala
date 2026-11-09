@@ -16,8 +16,6 @@
 
 package controllers.individual
 
-import common.Constants.ITSASessionKeys
-import connectors.individual.PreferencesFrontendConnector
 import controllers.SignUpBaseController
 import controllers.individual.actions.{ConfirmationJourneyRefiner, IdentifierAction}
 import models.Next
@@ -32,7 +30,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ConfirmationController @Inject()(identify: IdentifierAction,
                                        journeyRefiner: ConfirmationJourneyRefiner,
-                                       preferencesFrontendConnector: PreferencesFrontendConnector,
                                        subscriptionDetailsService: SubscriptionDetailsService,
                                        signedUpDateService: SignedUpDateService,
                                        view: SignUpConfirmation)
@@ -43,18 +40,12 @@ class ConfirmationController @Inject()(identify: IdentifierAction,
   def show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     for {
       signedUpDate <- signedUpDateService.getSignedUpDate(request.sessionData)
-      preference <- preferencesFrontendConnector.getOptedInStatus
       selectedTaxYear <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {
       val taxYearSelectionIsNext = selectedTaxYear.map(_.accountingYear).contains(Next)
 
       Ok(view(
-        mandatedCurrentYear = request.mandationStatus.currentYearStatus.isMandated,
         taxYearSelectionIsNext = taxYearSelectionIsNext,
-        individualUserNameMaybe = request.session.get(ITSASessionKeys.FULLNAME),
-        individualUserNino = request.nino,
-        preference = preference,
-        usingSoftwareStatus = request.usingSoftware,
         signedUpDate = signedUpDate
       ))
     }

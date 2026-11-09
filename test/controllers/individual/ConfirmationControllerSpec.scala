@@ -17,11 +17,10 @@
 package controllers.individual
 
 import common.Constants.ITSASessionKeys.FULLNAME
-import connectors.individual.PreferencesFrontendConnector
 import controllers.ControllerSpec
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
 import models.common.AccountingYearModel
-import models.{Current, Next, SessionData}
+import models.{Current, SessionData}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.Result
@@ -40,19 +39,12 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
 
   "show" must {
     "return OK with the page content" when {
-      "the user signed up for the current tax year" when {
-        "the user has a paperless preference" in {
+      "the user signed up for the current tax year"in {
           mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
           when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
             .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
           when(mockSignUpConfirmation(
             ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(Some(true)),
-            ArgumentMatchers.eq(true),
             ArgumentMatchers.any[LocalDate]()
           )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
 
@@ -60,111 +52,6 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
 
           status(result) mustBe OK
           contentType(result) mustBe Some(HTML)
-        }
-        "the user has a paper preference" in {
-          mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
-          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
-            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
-          when(mockSignUpConfirmation(
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(Some(false)),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate]()
-          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-        "no preference could be retrieved" in {
-          mockFetchSelectedTaxYear(Some(AccountingYearModel(Current)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
-          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
-            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
-
-          when(mockSignUpConfirmation(
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(None),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate]()
-          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-      }
-      "the user signed up for the next tax year" when {
-        "the user has a paperless preference" in {
-          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(true)))
-          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
-            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
-          when(mockSignUpConfirmation(
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(Some(true)),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate]()
-          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-        "the user has a paper preference" in {
-          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(Some(false)))
-          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
-            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
-          when(mockSignUpConfirmation(
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(Some(false)),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate]()
-          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-        "no preference could be retrieved" in {
-          mockFetchSelectedTaxYear(Some(AccountingYearModel(Next)))
-          when(mockPreferencesFrontendConnector.getOptedInStatus(ArgumentMatchers.any())).thenReturn(Future.successful(None))
-          when(mockSignedUpDateService.getSignedUpDate(ArgumentMatchers.any[SessionData]())(ArgumentMatchers.any[HeaderCarrier]()))
-            .thenReturn(Future.successful(LocalDate.of(2026, 1, 13)))
-
-          when(mockSignUpConfirmation(
-            ArgumentMatchers.eq(false),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.eq(Some("FirstName LastName")),
-            ArgumentMatchers.eq(nino),
-            ArgumentMatchers.eq(None),
-            ArgumentMatchers.eq(true),
-            ArgumentMatchers.any[LocalDate]()
-          )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(HtmlFormat.empty)
-
-          val result: Future[Result] = TestConfirmationController.show()(request.withSession(FULLNAME -> "FirstName LastName"))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
       }
     }
   }
@@ -178,7 +65,6 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
     }
   }
 
-  lazy val mockPreferencesFrontendConnector: PreferencesFrontendConnector = mock[PreferencesFrontendConnector]
   lazy val mockSignUpConfirmation: SignUpConfirmation = mock[SignUpConfirmation]
   lazy val mockSignedUpDateService: SignedUpDateService = mock[SignedUpDateService]
   implicit val mockImplicitDateFormatter: ImplicitDateFormatterImpl = mock[ImplicitDateFormatterImpl]
@@ -186,14 +72,12 @@ class ConfirmationControllerSpec extends ControllerSpec with MockConfirmationJou
   override def beforeEach(): Unit = {
     reset(mockSignUpConfirmation)
     reset(mockSignedUpDateService)
-    reset(mockPreferencesFrontendConnector)
     super.beforeEach()
   }
 
   object TestConfirmationController extends ConfirmationController(
     fakeIdentifierAction,
     fakeConfirmationJourneyRefiner,
-    mockPreferencesFrontendConnector,
     mockSubscriptionDetailsService,
     mockSignedUpDateService,
     mockSignUpConfirmation

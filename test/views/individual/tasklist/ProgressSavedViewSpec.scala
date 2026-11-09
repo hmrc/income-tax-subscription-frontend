@@ -65,7 +65,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     }
   }
 
-  private def page(expirationDate: String) = progressSavedView(expirationDate, "sign-in")
+  private def page(expirationDate: String) = progressSavedView(expirationDate)
 
   private def document(expirationDate: String = "Monday, 20 October 2021") = Jsoup.parse(page(expirationDate).body)
 }
