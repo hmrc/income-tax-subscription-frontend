@@ -50,10 +50,9 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       "there are no income sources added" in new Setup {
 
         mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
-        mockFetchPrePopFlag(Some(true))
         mockFetchSelectedTaxYear(None)
 
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true, taxYearSelection = false)
+        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelection = false)
 
         val result: Result = await(controller.show()(subscriptionRequest))
 
@@ -67,7 +66,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
           Some(testUkProperty),
           Some(testForeignProperty)
         ))
-        mockFetchPrePopFlag(Some(true))
         mockFetchSelectedTaxYear(None)
 
         mockYourIncomeSourceToSignUpView(
@@ -79,7 +77,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
             ukProperty = Some(testUkProperty),
             foreignProperty = Some(testForeignProperty)
           ),
-          isPrePopped = true,
           taxYearSelection = false
         )
 
@@ -87,44 +84,6 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
-      }
-      "there is a PrePop flag" in new Setup {
-        mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
-        mockFetchPrePopFlag(Some(true))
-        mockFetchSelectedTaxYear(None)
-
-        mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = true, taxYearSelection = false)
-
-        val result: Result = await(controller.show()(subscriptionRequest))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-      "there is no PrePop flag" when {
-        "fetching the flag returns false" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
-          mockFetchPrePopFlag(Some(false))
-          mockFetchSelectedTaxYear(None)
-
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false, taxYearSelection = false)
-
-          val result: Result = await(controller.show()(subscriptionRequest))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
-        "fetching the flag returns none" in new Setup {
-          mockFetchAllIncomeSources(IncomeSources(Seq.empty, None, None))
-          mockFetchPrePopFlag(None)
-          mockFetchSelectedTaxYear(None)
-
-          mockYourIncomeSourceToSignUpView(IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopped = false, taxYearSelection = false)
-
-          val result: Result = await(controller.show()(subscriptionRequest))
-
-          status(result) mustBe OK
-          contentType(result) mustBe Some(HTML)
-        }
       }
     }
   }
@@ -219,11 +178,10 @@ class YourIncomeSourceToSignUpControllerSpec extends ControllerBaseSpec
       mockSubscriptionDetailsService
     )(appConfig)
 
-    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, isPrePopped: Boolean, taxYearSelection: Boolean): Unit = {
+    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, taxYearSelection: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.eq(incomeSources),
-        ArgumentMatchers.eq(isPrePopped),
         ArgumentMatchers.eq(taxYearSelection)
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)

@@ -37,7 +37,7 @@
     govukInsetText: GovukInsetText
 )
 
-@(postAction: Call, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, incomeSources: IncomeSources, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
 
 @heading = @{
     messages("your-income-source.heading")

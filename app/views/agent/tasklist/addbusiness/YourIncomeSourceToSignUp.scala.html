@@ -39,7 +39,7 @@
     implicitDateFormatter: ImplicitDateFormatter
 )
 
-@(postAction: Call, clientDetails: ClientDetails, incomeSources: IncomeSources, prepopulated: Boolean, taxYearSelectionIsNext : Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, clientDetails: ClientDetails, incomeSources: IncomeSources, taxYearSelectionIsNext : Boolean)(implicit request: Request[_], messages: Messages)
 
 @import implicitDateFormatter.LongDate
 

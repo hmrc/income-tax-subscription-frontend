@@ -98,37 +98,27 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a final paragraph" when {
-      "the income sources were prepopulated and the income sources have not been confirmed" in new ViewTest(
-        incomeSources = completeIncomeSources,
-        prepopulated = true
+      "the income sources have not been confirmed" in new ViewTest(
+        incomeSources = completeIncomeSources
       ) {
         document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe AgentIncomeSource.beforeYouContinue
       }
-      "the income sources were prepopulated and the income sources are missing data items" in new ViewTest(
-        incomeSources = incompleteIncomeSources,
-        prepopulated = true
+      "the income sources are missing data items" in new ViewTest(
+        incomeSources = incompleteIncomeSources
       ) {
         document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe AgentIncomeSource.beforeYouContinue
       }
     }
     "have no final paragraph" when {
-      "the income sources were prepopulated, and they were completed and confirmed" in new ViewTest(
-        incomeSources = completeAndConfirmedIncomeSources,
-        prepopulated = true
+      "the income sources were completed and confirmed" in new ViewTest(
+        incomeSources = completeAndConfirmedIncomeSources
       ) {
         document.mainContent.selectOptionalNth("p", 8) mustBe None
       }
-      "the income sources were prepopulated, but they were subsequently removed" in new ViewTest(
-        incomeSources = noIncomeSources,
-        prepopulated = true
+      "the income sources were removed" in new ViewTest(
+        incomeSources = noIncomeSources
       ) {
         document.mainContent.selectOptionalNth("p", 10) mustBe None
-      }
-      "the income sources weren't prepopulated" in new ViewTest(
-        incomeSources = completeIncomeSources,
-        prepopulated = false
-      ) {
-        document.mainContent.selectOptionalNth("p", 8) mustBe None
       }
     }
 
@@ -920,18 +910,17 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   lazy val incompleteUKProperty: Option[PropertyModel] = Some(PropertyModel(startDateBeforeLimit = Some(false)))
   lazy val incompleteForeignProperty: Option[OverseasPropertyModel] = Some(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false, taxYearSelectionIsNext: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelectionIsNext: Boolean = false): Html = {
     incomeSourceView(
       postAction = testCall,
       clientDetails = clientDetails,
       incomeSources = incomeSources,
-      prepopulated = prepopulated,
       taxYearSelectionIsNext = taxYearSelectionIsNext
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), prepopulated: Boolean = false, taxYearSelectionIsNext: Boolean = false) {
-    def document: Document = Jsoup.parse(view(incomeSources, prepopulated).body)
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelectionIsNext: Boolean = false) {
+    def document: Document = Jsoup.parse(view(incomeSources).body)
   }
 
   lazy val noIncomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)

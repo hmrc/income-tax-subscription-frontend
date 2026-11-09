@@ -47,14 +47,12 @@ class YourIncomeSourceToSignUpController @Inject()(view: YourIncomeSourceToSignU
     for {
       incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(request.reference)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      prePopFlag <- subscriptionDetailsService.fetchPrePopFlag(request.reference)
     } yield {
       val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       Ok(view(
         postAction = routes.YourIncomeSourceToSignUpController.submit,
         clientDetails = request.clientDetails,
         incomeSources = incomeSources,
-        prepopulated = prePopFlag.contains(true),
         taxYearSelectionIsNext = isNextYear
       ))
     }

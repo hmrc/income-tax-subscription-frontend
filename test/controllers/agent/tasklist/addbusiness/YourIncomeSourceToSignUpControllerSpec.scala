@@ -48,12 +48,11 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
   )
 
   "show" should {
-    "return OK and provide the view with the fetched income sources and a false prepopulated flag" when {
-      "fetching the pre pop flag returned no data" in new Setup {
+    "return OK and provide the view " when {
+      "the income sources are fetched" in new Setup {
         mockFetchAllIncomeSources(incomeSources = incomeSources)
-        mockFetchPrePopFlag(flag = None)
         mockFetchSelectedTaxYear(None)
-        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false, taxYearSelectionIsNext = false)
+        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, taxYearSelectionIsNext = false)
 
         val result: Result = await(controller.show()(subscriptionRequestWithName))
 
@@ -61,33 +60,6 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         contentType(result) mustBe Some(HTML)
       }
     }
-    "return OK and provide the view with the fetched income sources and a false prepopulated flag" when {
-      "fetching the pre pop flag returned a false flag" in new Setup {
-        mockFetchAllIncomeSources(incomeSources = incomeSources)
-        mockFetchPrePopFlag(flag = Some(false))
-        mockFetchSelectedTaxYear(None)
-        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = false, taxYearSelectionIsNext = false)
-
-        val result: Result = await(controller.show()(subscriptionRequestWithName))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-    }
-    "return OK and provide the view with the fetched income sources and a true prepopulated flag" when {
-      "fetching the pre pop flag returned a true flag" in new Setup {
-        mockFetchAllIncomeSources(incomeSources = incomeSources)
-        mockFetchPrePopFlag(flag = Some(true))
-        mockFetchSelectedTaxYear(None)
-        mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, prepopulated = true, taxYearSelectionIsNext = false)
-
-        val result: Result = await(controller.show()(subscriptionRequestWithName))
-
-        status(result) mustBe OK
-        contentType(result) mustBe Some(HTML)
-      }
-    }
-
   }
 
   "submit" should {
@@ -173,12 +145,11 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
       mockSubscriptionDetailsService
     )(appConfig)
 
-    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, prepopulated: Boolean, taxYearSelectionIsNext: Boolean): Unit = {
+    def mockYourIncomeSourceToSignUpView(incomeSources: IncomeSources, taxYearSelectionIsNext: Boolean): Unit = {
       when(yourIncomeSourceToSignUpView(
         ArgumentMatchers.eq(routes.YourIncomeSourceToSignUpController.submit),
         ArgumentMatchers.any(),
         ArgumentMatchers.eq(incomeSources),
-        ArgumentMatchers.eq(prepopulated),
         ArgumentMatchers.eq(taxYearSelectionIsNext)
       )(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(HtmlFormat.empty)
