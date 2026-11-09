@@ -32,10 +32,10 @@ class ClientDetailsJourneyRefiner @Inject()(implicit val executionContext: Execu
     request.sessionData.fetchJourneyStep match {
       case Some(ClientDetails | ConfirmedClient | SignPosted) =>
         Future.successful(Right(request))
-      case None =>
-        Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+      case _ =>
+        Future.successful(Left(Redirect(controllers.agent.routes.AddAnotherClientController.addAnother())))
     }
   }
 

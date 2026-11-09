@@ -16,7 +16,7 @@
 
 package controllers.agent.actions
 
-import models.agent.JourneyStep.{ClientDetails, Confirmation, ConfirmedClient, SignPosted}
+import models.agent.JourneyStep.{Confirmation, SignPosted}
 import models.requests.agent.{IdentifierRequest, SignPostedRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -44,10 +44,10 @@ class SignPostedJourneyRefiner @Inject()(clientDetailsRetrieval: ClientDetailsRe
             clientDetails = clientDetails
           ))
         }
-      case _@(None | Some(ConfirmedClient | ClientDetails)) =>
-        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.agent.routes.ConfirmationController.show)))
+      case _ =>
+        Future.successful(Left(Redirect(controllers.agent.matching.routes.CannotGoBackToPreviousClientController.show)))
     }
   }
 }

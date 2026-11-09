@@ -39,7 +39,7 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
         )))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case _@(None | Some(PreSignUp | SignUp)) =>
+      case _ =>
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }

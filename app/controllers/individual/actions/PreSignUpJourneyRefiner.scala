@@ -51,7 +51,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
         Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case None =>
+      case _ =>
         sessionDataService.saveJourneyStep(PreSignUp).map { _ => Left(
           Redirect(controllers.individual.matching.routes.HomeController.index)
         )}

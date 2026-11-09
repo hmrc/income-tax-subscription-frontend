@@ -63,7 +63,7 @@ class ConfirmationJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieva
             sessionData = sessionData
           ))
         }
-      case _@(None | Some(PreSignUp | SignUp | ClaimEnrolment)) =>
+      case _ =>
         Future.successful(Left(NotFound))
     }
   }

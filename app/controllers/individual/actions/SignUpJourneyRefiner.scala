@@ -58,7 +58,7 @@ class SignUpJourneyRefiner @Inject()(referenceRetrieval: ReferenceRetrieval)
         Future.successful(Left(Redirect(controllers.individual.claimenrolment.routes.AddMTDITOverviewController.show(
           origin = request.sessionData.fetchClaimEnrolmentOrigin.map(_.key)
         ))))
-      case _@(None | Some(PreSignUp)) =>
+      case _ =>
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }
