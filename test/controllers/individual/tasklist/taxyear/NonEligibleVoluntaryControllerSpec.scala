@@ -26,8 +26,6 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLocation, status}
 import play.twirl.api.HtmlFormat
-import services.individual.mocks.MockAuthService
-import services.mocks.MockAuditingService
 import views.html.individual.tasklist.taxyear.NonEligibleVoluntary
 
 import scala.concurrent.Future

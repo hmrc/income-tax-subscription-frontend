@@ -139,7 +139,7 @@ class ConfirmedClientJourneyRefinerSpec extends PlaySpec
           request = identifierRequest(Some(JourneyStep.ConfirmedClient), SessionData(Map(
             ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(SubmissionStatus(InProgress))
           ))),
-          block = { (confirmedClientRequest: ConfirmedClientRequest[_]) =>
+          block = { (_: ConfirmedClientRequest[_]) =>
             Future.successful(Results.Ok)
           }
         )

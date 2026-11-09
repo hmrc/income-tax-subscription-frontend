@@ -26,10 +26,7 @@ import play.api.mvc.{BodyParsers, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.*
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.EmptyRetrieval
 
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -43,9 +40,9 @@ class BasicIdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with B
   "BasicIdentifierAction" when {
     "authorising" must {
       "execute the request" in {
-        mockAuthorise[Unit](EmptyPredicate, EmptyRetrieval)(())
+        mockAuthorise[Unit]()(())
 
-        val result: Future[Result] = basicIdentifierAction { request =>
+        val result: Future[Result] = basicIdentifierAction { _ =>
           Results.Ok
         }(FakeRequest())
 
@@ -54,7 +51,7 @@ class BasicIdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with B
     }
     "authorisation throws an AuthorisationException" must {
       "redirect the user to login" in {
-        mockAuthoriseFailure[Unit](EmptyPredicate, EmptyRetrieval) {
+        mockAuthoriseFailure[Unit]() {
           BearerTokenExpired()
         }
 
@@ -69,6 +66,4 @@ class BasicIdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with B
     }
   }
 
-  private def random() =
-    UUID.randomUUID().toString
 }

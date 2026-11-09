@@ -19,7 +19,6 @@ package controllers.individual.actions
 import common.Constants.ITSASessionKeys
 import models.No.NO
 import models.Yes.YES
-import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary

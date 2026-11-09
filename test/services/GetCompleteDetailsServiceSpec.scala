@@ -155,7 +155,7 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
 
   private def buildSubscriptionData(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                                     ukProperty: Option[PropertyModel] = None,
-                                    foreignProperty: Option[OverseasPropertyModel] = None,
+                                    foreignProperty: Option[OverseasPropertyModel],
                                     selectedTaxYear: Option[AccountingYearModel] = None): SubscriptionData = {
     implicit val encryptedFormat: OFormat[StoredSoleTraderBusinesses] = StoredSoleTraderBusinesses.encryptedFormat
 

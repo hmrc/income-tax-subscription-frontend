@@ -42,7 +42,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   // use this function if we want to match on the UserDetailsModel used in the parameter
   val setupMockMatchUser: UserDetailsModel => ((Int, JsValue)) => Unit =
-    (userDetailsModel: UserDetailsModel) => (setupMockMatchUser(None) _).tupled
+    (_: UserDetailsModel) => (setupMockMatchUser(None) _).tupled
 
   // use this function if we don't care about what UserDetailsModel is used in the parameter
   val setupMatchUser: ((Int, JsValue)) => Unit =

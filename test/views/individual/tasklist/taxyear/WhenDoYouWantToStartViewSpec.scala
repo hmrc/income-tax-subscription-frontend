@@ -25,7 +25,7 @@ import org.jsoup.select.Elements
 import play.api.data.FormError
 import play.twirl.api.Html
 import services.AccountingPeriodService
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Hint, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utilities.ViewSpec
 import views.html.individual.tasklist.taxyear.WhenDoYouWantToStart

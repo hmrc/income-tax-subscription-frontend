@@ -17,7 +17,6 @@
 package services
 
 import common.Constants.ITSASessionKeys
-import connectors.httpparser.SaveSessionDataHttpParser
 import connectors.httpparser.SaveSessionDataHttpParser.UnexpectedStatusFailure
 import controllers.individual.actions.mocks.MockConfirmationJourneyRefiner
 import models.SessionData

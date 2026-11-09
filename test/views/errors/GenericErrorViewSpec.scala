@@ -17,10 +17,10 @@
 package views.errors
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import utilities.ViewSpec
-import views.html.errors.{ContactHMRC, GenericError}
+import views.html.errors.GenericError
 
 class GenericErrorViewSpec extends ViewSpec {
 

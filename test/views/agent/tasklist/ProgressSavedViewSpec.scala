@@ -17,7 +17,6 @@
 package views.agent.tasklist
 
 import org.jsoup.Jsoup
-import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ProgressSaved
 

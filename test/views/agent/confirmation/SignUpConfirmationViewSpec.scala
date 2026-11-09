@@ -45,29 +45,20 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean,
-           mandatedNextYear: Boolean,
-           selectedTaxYearIsNext: Boolean,
-           userNameMaybe: Option[String],
-           usingSoftwareStatus: Boolean,
+  def page(userNameMaybe: Option[String],
            signedUpDate: LocalDate): Html =
     signUpConfirmation(userNameMaybe,
       testNino,
       testAccountingPeriodModel,
       signedUpDate)
 
-  def document(eligibleNextYearOnly: Boolean,
-               mandatedCurrentYear: Boolean,
-               mandatedNextYear: Boolean,
-               selectedTaxYearIsNext: Boolean,
-               userNameMaybe: Option[String] = Some(testName),
-               usingSoftwareStatus: Boolean,
+  def document(userNameMaybe: Option[String] = Some(testName),
                signedUpDate: LocalDate): Document =
-    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, usingSoftwareStatus, signedUpDate).body)
+    Jsoup.parse(page(userNameMaybe, signedUpDate).body)
 
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
-      view = page(true, true, true, None, true, LocalDate.now),
+      view = page(None, LocalDate.now),
       title = SignUpConfirmationMessages.title,
       isAgent = true,
       hasBackLink = false
@@ -76,12 +67,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and for current year. Content identical across all scenarios" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false,
-        mandatedCurrentYear = false,
-        mandatedNextYear = false,
-        selectedTaxYearIsNext = false,
-        usingSoftwareStatus = false,
-        signedUpDate = LocalDate.now()).mainContent
+      def mainContent: Element = document( signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {

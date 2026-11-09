@@ -21,7 +21,6 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.twirl.api.HtmlFormat
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.ProgressSaved
 
 trait MockProgressSaved extends MockitoSugar with BeforeAndAfterEach {

@@ -30,7 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
@@ -45,7 +45,6 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
-  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   override def beforeEach(): Unit = {
     reset(mockSessionDataService)
@@ -140,7 +139,7 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
     ).thenReturn(Future.successful(failureCount))
   }
 
-  def mockSaveFailedClientMatching(failureCount: Int)(result: SaveSessionDataResponse): Unit = {
+  def mockSaveFailedClientMatching()(result: SaveSessionDataResponse): Unit = {
     when(
       mockSessionDataService.saveFailedClientMatching(
         ArgumentMatchers.anyInt()

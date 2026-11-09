@@ -33,7 +33,7 @@ import play.api.test.Helpers.{await, *}
 import play.twirl.api.HtmlFormat
 import services.agent.*
 import services.mocks.*
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
 import utilities.UserMatchingTestSupport
 import utilities.agent.TestConstants.{testMTDID, testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
@@ -193,7 +193,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
               mockFetchFailedClientMatching(Some(1))
               setupIncrementNotLockedOut(testARN, 1, 3)
-              mockSaveFailedClientMatching(2)(Right(SaveSessionDataSuccessResponse))
+              mockSaveFailedClientMatching()(Right(SaveSessionDataSuccessResponse))
 
               val result: Future[Result] = controller.submit()(builtRequest)
 

@@ -101,7 +101,7 @@ class AlreadySignedUpViewSpec extends ViewSpec {
             main(false).select("#line3")
             fail()
           } catch {
-            case e: Exception =>
+            case _: Exception =>
           }
         }
       }

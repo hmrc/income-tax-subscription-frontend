@@ -42,7 +42,7 @@ object DataMap {
 
     val alwaysFailInvalid: Invalid = Invalid("always fail")
 
-    def alwaysFail[T]: Constraint[T] = constraint[T]((t: T) => alwaysFailInvalid)
+    def alwaysFail[T]: Constraint[T] = constraint[T](_ => alwaysFailInvalid)
 
   }
 

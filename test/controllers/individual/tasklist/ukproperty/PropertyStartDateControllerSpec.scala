@@ -25,7 +25,7 @@ import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyStartDate
 

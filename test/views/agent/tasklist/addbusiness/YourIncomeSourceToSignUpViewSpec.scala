@@ -89,9 +89,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     }
 
     "have a third heading and  paragraph" when {
-      "user signing up for current year" in new ViewTest(
-        taxYearSelectionIsNext = true
-      ) {
+      "user signing up for current year" in new ViewTest() {
         document.mainContent.selectNth("h2", 2).text mustBe AgentIncomeSource.lead2Heading
         document.mainContent.selectNth("p", 2).text mustBe AgentIncomeSource.lead2
       }
@@ -919,7 +917,7 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelectionIsNext: Boolean = false) {
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None)) {
     def document: Document = Jsoup.parse(view(incomeSources).body)
   }
 

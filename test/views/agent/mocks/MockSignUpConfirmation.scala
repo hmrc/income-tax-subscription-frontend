@@ -16,7 +16,6 @@
 
 package views.agent.mocks
 
-import models.SessionData
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}

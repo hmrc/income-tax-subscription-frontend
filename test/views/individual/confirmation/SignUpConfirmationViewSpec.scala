@@ -60,7 +60,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and for current year. Content identical across all scenarios" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(selectedTaxYearIsNext = false, signedUpDate = LocalDate.now()).mainContent
+      def mainContent(): Element = document(selectedTaxYearIsNext = false, signedUpDate = LocalDate.now()).mainContent
 
       "has a header panel" which {
         "contains the panel heading" in {

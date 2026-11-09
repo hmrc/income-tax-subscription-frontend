@@ -57,7 +57,7 @@ class OptedOutSpec extends ViewSpec {
         document(false).mainContent.selectNth("p", 2)
         fail()
       } catch {
-        case e: Exception =>
+        case _: Exception =>
       }
     }
   }

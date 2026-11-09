@@ -240,7 +240,7 @@ class IRSACredentialViewSpec extends ViewSpec {
   }
 
   private def page(
-                    hasError: Boolean = false,
+                    hasError: Boolean,
                     currentCredential: ObfuscatedIdentifier,
                     saCredential: ObfuscatedIdentifier
                   ): Html = {

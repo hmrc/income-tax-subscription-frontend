@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,14 +37,14 @@ trait MockAuth extends PlaySpec with MockitoSugar with BeforeAndAfterEach {
 
   val mockAuth: AuthConnector = mock[AuthConnector]
 
-  def mockAuthorise[T](predicate: Predicate, retrieval: Retrieval[T])(result: T): Unit =
+  def mockAuthorise[T](predicate: Predicate = EmptyPredicate)(result: T): Unit =
     when(mockAuth.authorise[T](
       ArgumentMatchers.eq(predicate),
       ArgumentMatchers.any[Retrieval[T]]
     )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
       .thenReturn(Future.successful(result))
 
-  def mockAuthoriseFailure[T](predicate: Predicate, retrieval: Retrieval[T])(throwable: Throwable): Unit =
+  def mockAuthoriseFailure[T]()(throwable: Throwable): Unit =
     when(mockAuth.authorise[T](
       ArgumentMatchers.any(),
       ArgumentMatchers.any()
