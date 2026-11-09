@@ -103,14 +103,6 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       else Left(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
   }.recoverWith { case _ => Future.successful(Left(UnexpectedFailure)) }
 
-  //TODO: Do we actually need this method?
-//  private implicit class Util[A, B](first: Future[Either[A, B]]) {
-//    def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =
-//      first.flatMap {
-//        case Right(v) => next(v)
-//        case left => Future.successful(left)
-//      }
-//  }
 
   def orchestrateAgentQualification(clientDetails: UserDetailsModel, agentReferenceNumber: String)
                                    (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
