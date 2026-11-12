@@ -17,6 +17,7 @@
 package controllers.individual.tasklist.taxyear
 
 import controllers.SignUpBaseController
+import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 import forms.individual.business.AccountingYearForm
 import models.AccountingYear
 import models.common.AccountingYearModel
@@ -26,7 +27,6 @@ import play.twirl.api.Html
 import services.*
 import uk.gov.hmrc.http.InternalServerException
 import views.html.individual.tasklist.taxyear.WhenDoYouWantToStart
-import controllers.individual.actions.{IdentifierAction, SignUpJourneyRefiner}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

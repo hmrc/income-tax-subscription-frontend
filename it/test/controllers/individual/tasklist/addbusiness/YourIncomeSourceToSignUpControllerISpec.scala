@@ -24,8 +24,8 @@ import helpers.IntegrationTestConstants.IndividualURI.apaHandOffControllerUrI
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino, testUtr}
 import helpers.IntegrationTestModels.*
 import helpers.servicemocks.AuthStub
-import models.common.business.BusinessNameModel
 import models.EligibilityStatus
+import models.common.business.BusinessNameModel
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
 import play.api.http.Status.*

@@ -37,7 +37,7 @@
     govukInsetText: GovukInsetText
 )
 
-@(postAction: Call, incomeSources: IncomeSources, isPrePopulated: Boolean, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
+@(postAction: Call, incomeSources: IncomeSources, taxYearSelection : Boolean)(implicit request: Request[_], messages: Messages)
 
 @heading = @{
     messages("your-income-source.heading")
@@ -255,7 +255,7 @@
                     actions = maybeStatusTagAction(
                         isComplete = ukProperty.isComplete,
                         isConfirmed = ukProperty.confirmed,
-                        href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+                        href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show().url
                     )
                 )),
                 card = Some(Card(
@@ -267,7 +267,7 @@
                         items = maybeIncomeSourceChangeAction(
                             isComplete = ukProperty.isComplete,
                             isConfirmed = ukProperty.confirmed,
-                            href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url,
+                            href = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show().url,
                         ) ++ Seq(ActionItem(
                             href = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url,
                             content = Text(messages("base.remove"))
@@ -311,7 +311,7 @@
                     actions = maybeStatusTagAction(
                         isComplete = foreignProperty.isComplete,
                         isConfirmed = foreignProperty.confirmed,
-                        href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                        href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show().url
                     )
                 )),
                 card = Some(Card(
@@ -323,7 +323,7 @@
                         items = maybeIncomeSourceChangeAction(
                             isComplete = foreignProperty.isComplete,
                             isConfirmed = foreignProperty.confirmed,
-                            href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+                            href = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show().url
                         ) ++ Seq(ActionItem(
                             href = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url,
                             content = Text(messages("base.remove"))

@@ -16,15 +16,13 @@
 
 package controllers.agent.matching
 
-import models.agent.JourneyStep.{SignPosted, SignUp}
-import common.Constants.ITSASessionKeys
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.agent.actions.IdentifierAction
 import controllers.utils.ReferenceRetrieval
 import models.EligibilityStatus
-import models.agent.JourneyStep
+import models.agent.JourneyStep.{SignPosted, SignUp}
 import models.audits.EligibilityAuditing.EligibilityAuditModel
 import models.requests.agent.IdentifierRequest
 import models.status.MandationStatus.{Mandated, Voluntary}

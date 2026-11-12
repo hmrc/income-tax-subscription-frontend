@@ -18,13 +18,12 @@ package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
 import models.No.NO
-import models.{JourneyStep, SessionData}
 import models.Yes.YES
-import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ConfirmationRequest, IdentifierRequest}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.{JourneyStep, SessionData}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.JsString

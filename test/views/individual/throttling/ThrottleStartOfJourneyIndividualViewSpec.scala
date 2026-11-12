@@ -16,7 +16,7 @@
 
 package views.individual.throttling
 
-import messagelookup.individual.MessageLookup.{ThrottleStartOfJourneyIndividual => messages}
+import messagelookup.individual.MessageLookup.ThrottleStartOfJourneyIndividual as messages
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call

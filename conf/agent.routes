@@ -100,11 +100,11 @@ GET         /keep-alive                                         controllers.agen
 GET         /timeout                                            controllers.agent.SessionTimeoutController.timeout
 
 
-GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+GET         /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.show(isGlobalEdit: Boolean ?= false)
 POST        /business/uk-property-check-your-answers             controllers.agent.tasklist.ukproperty.PropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 
-GET         /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(editMode: Boolean ?= false, isGlobalEdit: Boolean ?= false)
+GET         /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit: Boolean ?= false)
 POST        /business/overseas-property-check-your-answers       controllers.agent.tasklist.overseasproperty.OverseasPropertyCheckYourAnswersController.submit(isGlobalEdit: Boolean ?= false)
 
 GET         /business/progress-saved                            controllers.agent.tasklist.ProgressSavedController.show(location: Option[String] ?= None)

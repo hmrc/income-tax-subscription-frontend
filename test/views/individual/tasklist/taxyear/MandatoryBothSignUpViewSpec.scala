@@ -34,7 +34,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
   "Tax Year Selection Mandatory Both" must {
 
     "have the correct template details" in new TemplateViewTest(
-      view = page(editMode = false),
+      view = page(),
       isAgent = false,
       title = MandatoryBothSignUpMessages.heading
     )
@@ -57,14 +57,14 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
     val paragraph: String = s"As your total annual income from self-employment or property is over £50,000, you must use Making Tax Digital for Income Tax from ${taxYearEnd - 1} to $taxYearEnd."
   }
 
-  private def page(editMode: Boolean): Html = {
+  private def page(): Html = {
     mandatoryBothSignUp(
       postAction = testCall,
       endYearOfCurrentTaxPeriod = taxYearEnd
     )
   }
 
-  private def document(editMode: Boolean = false): Document =
-    Jsoup.parse(page(editMode = editMode).body)
+  private def document(): Document =
+    Jsoup.parse(page().body)
 
 }

@@ -17,7 +17,7 @@
 package connectors.agent.mocks
 
 import connectors.agent.AgentServicesConnector
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import utilities.UnitTestTrait

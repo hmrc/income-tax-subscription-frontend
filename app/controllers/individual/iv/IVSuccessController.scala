@@ -16,11 +16,11 @@
 
 package controllers.individual.iv
 
-import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import models.audits.IVOutcomeSuccessAuditing.IVOutcomeSuccessAuditModel
+import models.individual.JourneyStep.ClaimEnrolment
 import play.api.mvc.*
 import services.{AuditingService, NinoService}
 

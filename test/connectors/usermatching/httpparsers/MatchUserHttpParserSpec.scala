@@ -20,10 +20,10 @@ import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpRead
 import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsError, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpResponse
-import utilities.TestModels._
-import utilities.individual.TestConstants._
+import utilities.TestModels.*
+import utilities.individual.TestConstants.*
 
 class MatchUserHttpParserSpec extends PlaySpec {
 

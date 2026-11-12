@@ -38,7 +38,6 @@ import utilities.UserMatchingTestSupport
 import utilities.agent.TestConstants.{testMTDID, testNino, testUtr}
 import utilities.agent.{TestConstants, TestModels}
 import views.html.agent.matching.CheckYourClientDetails
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
@@ -194,7 +193,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
               mockFetchFailedClientMatching(Some(1))
               setupIncrementNotLockedOut(testARN, 1, 3)
-              mockSaveFailedClientMatching(2)(Right(SaveSessionDataSuccessResponse))
+              mockSaveFailedClientMatching()(Right(SaveSessionDataSuccessResponse))
 
               val result: Future[Result] = controller.submit()(builtRequest)
 
@@ -303,7 +302,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
             verify(mockSessionDataService)
               .saveJourneyStep(
                 ArgumentMatchers.eq(JourneyStep.SignPosted)
-              )(any(), any())
+              )(any())
 
             verify(mockSessionDataService)
               .deleteFailedClientMatching(any())

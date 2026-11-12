@@ -16,7 +16,7 @@
 
 package connectors.subscriptiondata
 
-import connectors.httpparser.PostSubscriptionDetailsHttpParser._
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.*
 import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}

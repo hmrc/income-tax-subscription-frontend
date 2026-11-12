@@ -21,8 +21,8 @@ import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnecto
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
-import models.individual.JourneyStep.SignUp
 import models.common.AccountingYearModel
+import models.individual.JourneyStep.SignUp
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
 import models.{Current, EligibilityStatus, Next}
@@ -45,7 +45,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
           OK,
-          Json.toJson(Some(AccountingYearModel(Current, confirmed = false, editable = true)))
+          Json.toJson(Some(AccountingYearModel(Current)))
         )
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
@@ -77,7 +77,7 @@ class WhenDoYouWantToStartControllerISpec extends ComponentSpecBase {
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(
           SelectedTaxYear,
           OK,
-          Json.toJson(Some(AccountingYearModel(Next, confirmed = false, editable = true)))
+          Json.toJson(Some(AccountingYearModel(Next)))
         )
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),

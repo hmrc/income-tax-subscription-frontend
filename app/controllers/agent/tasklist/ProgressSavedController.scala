@@ -51,16 +51,12 @@ class ProgressSavedController @Inject()(identify: IdentifierAction,
             _ <- auditingService.audit(saveAndComebackAuditData)
           } yield {
             Ok(view(
-              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
-              signInUrl = appConfig.ggLoginUrl,
-              clientDetails = request.clientDetails
+              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime)
             ))
           }
           case None =>
             Future.successful(Ok(view(
-              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime),
-              signInUrl = appConfig.ggLoginUrl,
-              clientDetails = request.clientDetails
+              expirationDate = cacheExpiryDateProvider.expiryDateOf(timestamp.dateTime)
             )))
         }
       case None =>

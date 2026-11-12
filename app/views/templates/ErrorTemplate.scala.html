@@ -24,8 +24,7 @@
 @(
   pageTitle: String,
   heading: String,
-  message: String,
-  scriptElem: Option[Html] = None
+  message: String
 )(implicit request: RequestHeader, messages: Messages)
 
 @isAgent = @{request.path.contains("/client")}

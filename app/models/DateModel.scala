@@ -17,7 +17,7 @@
 package models
 
 import com.ibm.icu.text.SimpleDateFormat
-import models.DateModel._
+import models.DateModel.*
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 

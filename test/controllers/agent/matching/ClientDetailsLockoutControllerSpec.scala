@@ -18,12 +18,12 @@ package controllers.agent.matching
 
 import controllers.agent.AgentControllerBaseSpec
 import controllers.agent.actions.mocks.MockIdentifierAction
-import messagelookup.agent.MessageLookup.{ClientDetailsLockout => messages}
+import messagelookup.agent.MessageLookup.ClientDetailsLockout as messages
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.mocks.MockUserLockoutService
 import uk.gov.hmrc.http.InternalServerException
 import views.html.agent.matching.ClientDetailsLockout

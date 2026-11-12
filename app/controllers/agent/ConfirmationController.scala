@@ -18,8 +18,8 @@ package controllers.agent
 
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ConfirmationJourneyRefiner, IdentifierAction}
+import models.Next
 import models.common.AccountingPeriodModel
-import models.{Next, Yes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.*
 import uk.gov.hmrc.http.InternalServerException
@@ -34,19 +34,15 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
                                        identify: IdentifierAction,
                                        journeyRefiner: ConfirmationJourneyRefiner,
                                        subscriptionDetailsService: SubscriptionDetailsService,
-                                       signedUpDateService: SignedUpDateService,
-                                       mandationStatusService: MandationStatusService)
+                                       signedUpDateService: SignedUpDateService)
                                       (implicit ec: ExecutionContext,
                                        cc: MessagesControllerComponents,
                                        implicitDateFormatter: ImplicitDateFormatterImpl) extends SignUpBaseController {
 
   val show: Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    val sessionData = request.request.sessionData
     for {
       signedupDate <- signedUpDateService.getSignedUpDate(request.sessionData)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
-      mandationStatus <- mandationStatusService.getMandationStatus(sessionData)
-      softwareStatus = sessionData.fetchSoftwareStatus
     } yield {
       val isNextYear: Boolean = taxYearSelection.map(_.accountingYear).contains(Next)
       val accountingPeriodModel: AccountingPeriodModel = if (isNextYear) {
@@ -56,13 +52,9 @@ class ConfirmationController @Inject()(view: SignUpConfirmation,
       }
 
       Ok(view(
-        mandatedCurrentYear = mandationStatus.currentYearStatus.isMandated,
-        mandatedNextYear = mandationStatus.nextYearStatus.isMandated,
-        taxYearSelectionIsNext = isNextYear,
         userNameMaybe = Some(request.clientDetails.name),
         individualUserNino = request.clientDetails.formattedNino,
         accountingPeriodModel = accountingPeriodModel,
-        usingSoftwareStatus = softwareStatus.contains(Yes),
         signedUpDate = signedupDate
       ))
     }

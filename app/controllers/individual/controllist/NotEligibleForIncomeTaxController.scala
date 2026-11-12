@@ -16,7 +16,6 @@
 
 package controllers.individual.controllist
 
-import config.AppConfig
 import controllers.SignUpBaseController
 import controllers.individual.actions.IdentifierAction
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

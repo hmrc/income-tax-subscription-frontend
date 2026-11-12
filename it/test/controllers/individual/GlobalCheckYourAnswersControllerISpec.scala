@@ -28,9 +28,9 @@ import helpers.WiremockHelper.verifyPost
 import helpers.servicemocks.{AuthStub, ChannelPreferencesStub, TaxEnrolmentsStub}
 import models.*
 import models.SubmissionStatus.{handledError, otherError, success}
-import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.common.business.{BusinessNameModel, SelfEmploymentData}
 import models.common.subscription.{CreateIncomeSourcesModel, SignUpRequestModel}
+import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.sps.SPSPayload
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel

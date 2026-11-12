@@ -17,7 +17,6 @@
 package views.agent.tasklist
 
 import org.jsoup.Jsoup
-import utilities.UserMatchingSessionUtil.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.ProgressSaved
 
@@ -78,7 +77,7 @@ class ProgressSavedViewSpec extends ViewSpec {
     }
   }
 
-  private def page(expirationDate: String) = progressSavedView(expirationDate, "sign-in", ClientDetails("FirstName LastName", "ZZ111111Z"))
+  private def page(expirationDate: String) = progressSavedView(expirationDate)
 
   private def document(expirationDate: String = "Monday, 20 October 2021") = Jsoup.parse(page(expirationDate).body)
 }

@@ -39,7 +39,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
   "Tax Year Selection Mandatory Both" must {
 
     "have the correct template details" in new TemplateViewTest(
-      view = page(clientName = fullName, clientNino = nino),
+      view = page(),
       isAgent = true,
       title = MandatoryBothSignUpMessages.heading
     )
@@ -78,7 +78,7 @@ class MandatoryBothSignUpViewSpec extends ViewSpec {
   private object MandatoryBothSignUpMessages {
     val heading = "Your client must use Making Tax Digital for Income Tax now"
     val caption: String = fullName + " - " + nino
-    val paragraph: String = s"As your client’s total annual income from self-employment or property is over £50,000, they must use Making Tax Digital for Income Tax for the tax year ${taxYearPrevious} to $taxYearEnd and beyond."
+    val paragraph: String = s"As your client’s total annual income from self-employment or property is over £50,000, they must use Making Tax Digital for Income Tax for the tax year $taxYearPrevious to $taxYearEnd and beyond."
     val signUpAnotherClient = "You can check if you can sign up another client."
     val continue: String = "Continue to sign up this client"
     val signUpAnotherH = "If you do not want to sign up this client now"

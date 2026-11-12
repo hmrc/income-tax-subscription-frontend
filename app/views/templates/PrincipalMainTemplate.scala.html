@@ -23,7 +23,7 @@
         implicit appConfig: AppConfig
 )
 
-@(title: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
+@(title: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 @prefixedTitle = @{
     optForm match {
@@ -39,7 +39,6 @@
     optForm = optForm,
     hasBackLink = hasBackLink,
     showSignOutLink = showSignOutLink,
-    fullWidth = fullWidth,
     additionalScripts = additionalScripts,
     hasWelsh = hasWelsh,
     userResearchUrl = userResearchUrl,

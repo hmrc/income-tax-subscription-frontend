@@ -16,16 +16,16 @@
 
 package services
 
+import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import models.*
-import models.common.{AccountingYearModel, SoleTraderBusiness, SoleTraderBusinesses}
 import models.common.business.{BusinessNameModel, SelfEmploymentData}
+import models.common.{AccountingYearModel, SoleTraderBusiness, SoleTraderBusinesses}
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.{Format, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption

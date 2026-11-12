@@ -16,10 +16,12 @@
 
 package controllers.agent
 
+import _root_.common.Constants.ITSASessionKeys
 import config.{AppConfig, MockConfig}
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmedClientJourneyRefiner, MockIdentifierAction}
 import models.*
+import models.Yes.YES
 import models.common.AccountingYearModel
 import models.status.MandationStatus.{Mandated, Voluntary}
 import org.mockito.ArgumentMatchers
@@ -32,8 +34,6 @@ import play.api.test.Helpers.{HTML, contentType, defaultAwaitTimeout, redirectLo
 import play.twirl.api.HtmlFormat
 import services.mocks.*
 import views.html.agent.WhatYouNeedToDo
-import _root_.common.Constants.ITSASessionKeys
-import models.Yes.YES
 
 import scala.concurrent.Future
 
@@ -51,9 +51,7 @@ class AgentWhatYouNeedToDoControllerSpec
   object TestWhatYouNeedToDoController extends WhatYouNeedToDoController(
     mock[WhatYouNeedToDo],
     fakeIdentifierAction,
-    fakeConfirmedClientJourneyRefiner,
-    mockGetEligibilityStatusService,
-    mockSubscriptionDetailsService
+    fakeConfirmedClientJourneyRefiner
   )(appConfig)
 
   trait Setup {
@@ -61,9 +59,7 @@ class AgentWhatYouNeedToDoControllerSpec
     val controller: WhatYouNeedToDoController = new WhatYouNeedToDoController(
       whatYouNeedToDo,
       fakeIdentifierAction,
-      fakeConfirmedClientJourneyRefiner,
-      mockGetEligibilityStatusService,
-      mockSubscriptionDetailsService
+      fakeConfirmedClientJourneyRefiner
     )(appConfig)
   }
 

@@ -21,7 +21,6 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.twirl.api.HtmlFormat
-import utilities.UserMatchingSessionUtil.ClientDetails
 import views.html.agent.tasklist.ProgressSaved
 
 trait MockProgressSaved extends MockitoSugar with BeforeAndAfterEach {
@@ -34,11 +33,9 @@ trait MockProgressSaved extends MockitoSugar with BeforeAndAfterEach {
 
   val mockView: ProgressSaved = mock[ProgressSaved]
 
-  def mockProgressSaved(expirationDate: String, clientDetails: ClientDetails): Unit = {
+  def mockProgressSaved(expirationDate: String): Unit = {
     when(mockView(
-      expirationDate = ArgumentMatchers.eq(expirationDate),
-      signInUrl = ArgumentMatchers.any(),
-      clientDetails = ArgumentMatchers.eq(clientDetails)
+      expirationDate = ArgumentMatchers.eq(expirationDate)
     )(ArgumentMatchers.any(), ArgumentMatchers.any())) thenReturn HtmlFormat.empty
   }
 

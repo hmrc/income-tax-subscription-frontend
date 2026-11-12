@@ -23,14 +23,12 @@ import play.api.mvc.*
 import views.html.agent.UsingSoftware
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class UsingSoftwareController @Inject()(view: UsingSoftware,
                                         identify: IdentifierAction)
                                        (val appConfig: AppConfig)
-                                       (implicit ec: ExecutionContext,
-                                        mcc: MessagesControllerComponents) extends SignUpBaseController {
+                                       (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show: Action[AnyContent] = identify { implicit request =>
     Ok(view(

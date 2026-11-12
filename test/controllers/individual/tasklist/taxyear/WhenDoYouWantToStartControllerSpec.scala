@@ -21,16 +21,16 @@ import config.featureswitch.FeatureSwitching
 import connectors.httpparser.PostSubscriptionDetailsHttpParser
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsSuccessResponse
 import controllers.individual.ControllerBaseSpec
+import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
 import forms.individual.business.AccountingYearForm
 import models.common.AccountingYearModel
 import models.{AccountingYear, Current, Next}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
-import views.individual.mocks._
-import services.mocks._
-import controllers.individual.actions.mocks.{MockIdentifierAction, MockSignUpJourneyRefiner}
+import play.api.test.Helpers.*
+import services.mocks.*
+import views.individual.mocks.*
 
 import scala.concurrent.Future
 

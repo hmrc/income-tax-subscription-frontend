@@ -18,7 +18,7 @@ package models
 
 import models.Current.CURRENT
 import models.Next.NEXT
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait AccountingYear
 

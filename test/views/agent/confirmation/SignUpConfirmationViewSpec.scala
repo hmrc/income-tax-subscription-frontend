@@ -45,33 +45,20 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean,
-           mandatedNextYear: Boolean,
-           selectedTaxYearIsNext: Boolean,
-           userNameMaybe: Option[String],
-           usingSoftwareStatus: Boolean,
+  def page(userNameMaybe: Option[String],
            signedUpDate: LocalDate): Html =
-    signUpConfirmation(mandatedCurrentYear,
-      mandatedNextYear,
-      selectedTaxYearIsNext,
-      userNameMaybe,
+    signUpConfirmation(userNameMaybe,
       testNino,
       testAccountingPeriodModel,
-      usingSoftwareStatus,
       signedUpDate)
 
-  def document(eligibleNextYearOnly: Boolean,
-               mandatedCurrentYear: Boolean,
-               mandatedNextYear: Boolean,
-               selectedTaxYearIsNext: Boolean,
-               userNameMaybe: Option[String] = Some(testName),
-               usingSoftwareStatus: Boolean,
+  def document(userNameMaybe: Option[String] = Some(testName),
                signedUpDate: LocalDate): Document =
-    Jsoup.parse(page(mandatedCurrentYear, mandatedNextYear, selectedTaxYearIsNext, userNameMaybe, usingSoftwareStatus, signedUpDate).body)
+    Jsoup.parse(page(userNameMaybe, signedUpDate).body)
 
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
-      view = page(true, true, true, None, true, LocalDate.now),
+      view = page(None, LocalDate.now),
       title = SignUpConfirmationMessages.title,
       isAgent = true,
       hasBackLink = false
@@ -80,12 +67,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and for current year. Content identical across all scenarios" should {
-      def mainContent: Element = document(eligibleNextYearOnly = false,
-        mandatedCurrentYear = false,
-        mandatedNextYear = false,
-        selectedTaxYearIsNext = false,
-        usingSoftwareStatus = false,
-        signedUpDate = LocalDate.now()).mainContent
+      def mainContent: Element = document( signedUpDate = LocalDate.now()).mainContent
 
       "have a header panel" which {
         "contains the panel heading" in {
@@ -196,7 +178,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
       s"Today’s date: $date"
     }
 
-    val nextYear = AccountingPeriodUtil.getNextTaxEndYear - 1
+    val nextYear: Int = AccountingPeriodUtil.getNextTaxEndYear - 1
 
     val nextStepsHeading = "Your next steps"
     val paraOne = "To make sure your client is ready to use Making Tax Digital for Income Tax, you must now:"
@@ -215,7 +197,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
-    val surveyLink = appConfig.feedbackFrontendAgentRedirectUrl
+    val surveyLink: String = appConfig.feedbackFrontendAgentRedirectUrl
 
     val signUpAnotherClient = "Sign up another client"
   }

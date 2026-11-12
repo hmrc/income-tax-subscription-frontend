@@ -17,7 +17,6 @@
 package controllers.individual.actions
 
 import controllers.individual.resolvers.AlreadyEnrolledResolver
-import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{IdentifierRequest, PreSignUpRequest}
 import play.api.mvc.Results.Redirect
@@ -41,7 +40,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
     request.sessionData.fetchJourneyStep match {
       case Some(PreSignUp | ClaimEnrolment) =>
         request.mtditid match {
-          case Some(mtditid) =>
+          case Some(_) =>
             resolver.resolve(nino = request.nino, sessionData = request.sessionData) map { call =>
               Left(Redirect(call))
             }
@@ -52,7 +51,7 @@ class PreSignUpJourneyRefiner @Inject(resolver: AlreadyEnrolledResolver,
         Future.successful(Right(PreSignUpRequest(request, request.nino, request.utr)))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case None =>
+      case _ =>
         sessionDataService.saveJourneyStep(PreSignUp).map { _ => Left(
           Redirect(controllers.individual.matching.routes.HomeController.index)
         )}

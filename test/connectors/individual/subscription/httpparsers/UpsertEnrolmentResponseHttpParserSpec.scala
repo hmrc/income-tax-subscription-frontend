@@ -18,7 +18,7 @@ package connectors.individual.subscription.httpparsers
 
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess, UpsertEnrolmentResponseHttpReads}
 import org.scalatest.EitherValues
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import utilities.UnitTestTrait

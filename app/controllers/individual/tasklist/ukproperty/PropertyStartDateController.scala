@@ -60,7 +60,7 @@ class PropertyStartDateController @Inject()(view: PropertyStartDate,
       },
       startDate =>
         subscriptionDetailsService.savePropertyStartDate(request.reference, startDate) map {
-          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit))
+          case Right(_) => Redirect(routes.PropertyCheckYourAnswersController.show(isGlobalEdit))
           case Left(_) => throw new InternalServerException("[PropertyStartDateController][submit] - Could not save start date")
         }
     )

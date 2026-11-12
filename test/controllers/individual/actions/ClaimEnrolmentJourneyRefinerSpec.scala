@@ -17,10 +17,9 @@
 package controllers.individual.actions
 
 import common.Constants.ITSASessionKeys
-import models.{JourneyStep, SessionData}
-import models.individual.JourneyStep
 import models.individual.JourneyStep.{ClaimEnrolment, Confirmation, PreSignUp, SignUp}
 import models.requests.individual.{ClaimEnrolmentRequest, IdentifierRequest}
+import models.{JourneyStep, SessionData}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.JsString

@@ -16,11 +16,11 @@
 
 package models.audits
 
-import models.{Current, EligibilityStatus}
 import models.audits.ITSASignUpSubmissionRequestAuditing.ITSASignUpSubmissionRequestAuditModel
 import models.common.AccountingYearModel
 import models.common.business.{Address, Country}
 import models.status.{MandationStatus, MandationStatusModel}
+import models.{Current, EligibilityStatus}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsObject, Json}

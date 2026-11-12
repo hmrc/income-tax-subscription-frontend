@@ -17,9 +17,9 @@
 package controllers.agent.actions
 
 import common.Constants.ITSASessionKeys
-import models.{JourneyStep, SessionData}
 import models.agent.JourneyStep
 import models.requests.agent.{ConfirmedClientRequest, IdentifierRequest}
+import models.{JourneyStep, SessionData}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{NOT_FOUND, OK, SEE_OTHER}
 import play.api.libs.json.JsString

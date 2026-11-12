@@ -34,11 +34,10 @@
     languageUtils: LanguageUtils,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     appConfig: AppConfig,
-    ul: UnorderedList,
-    govukTable : GovukTable
+    ul: UnorderedList
 )
 
-@(mandatedCurrentYear: Boolean, mandatedNextYear: Boolean, taxYearSelectionIsNext : Boolean, userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel, usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
+@(userNameMaybe: Option[String], individualUserNino: String, accountingPeriodModel: AccountingPeriodModel, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
 @agentMainTemplate(title = messages("agent.sign-up-confirmation.title"), hasBackLink = false, userResearchUrl = Some(messages("agent.sign-up-confirmation.feedback.link"))) {
 

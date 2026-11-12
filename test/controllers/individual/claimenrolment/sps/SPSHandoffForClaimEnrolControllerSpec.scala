@@ -22,8 +22,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import services.individual.mocks.{MockApplicationCrypto, MockAuthService}
-import services.mocks.MockAuditingService
+import services.individual.mocks.MockApplicationCrypto
 
 import scala.concurrent.Future
 

@@ -16,8 +16,6 @@
 
 package models.usermatching
 
-import org.scalatest.matchers.must.Matchers.*
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.should.Matchers.shouldBe
 import utilities.UnitTestTrait
 
@@ -29,7 +27,7 @@ class CitizenDetailsTest extends UnitTestTrait {
 
   "CitizenDetailsSuccess" must {
     "construct no name for no names" in {
-      CitizenDetails.buildFullName(None, None) shouldBe (None)
+      CitizenDetails.buildFullName(None, None) shouldBe None
     }
     "construct a name for first name only" in {
       CitizenDetails.buildFullName(firstName, None) shouldBe firstName

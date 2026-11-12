@@ -168,7 +168,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return UnApprovedAgent if the agent does not have prior relationship with the client" in {
 
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = false)
-      setupGetSubscription(nino = testNino)
+      setupGetSubscription()
 
       val result = call(testClientDetails, request(Some(testClientDetails)))
 

@@ -16,7 +16,7 @@
 
 package helpers.servicemocks
 
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, Json}
 
 object CitizenDetailsStub extends WireMockMethods {

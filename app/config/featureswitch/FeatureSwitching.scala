@@ -33,7 +33,7 @@ trait FeatureSwitching {
     lazy val systemProperty = sys.props.get(featureSwitch.name)
     lazy val configProperty = appConfig.configuration.getOptional[String](featureSwitch.name)
     lazy val configEnabled = featureSwitch match {
-      case switch: DatedFeatureSwitch =>
+      case _: DatedFeatureSwitch =>
         Try {
           (systemProperty orElse configProperty).map(LocalDate.parse) match {
             case Some(date) => !LocalDate.now().isBefore(date)

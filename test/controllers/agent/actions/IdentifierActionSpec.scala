@@ -31,8 +31,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import services.SessionDataService
 import uk.gov.hmrc.auth.core.*
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 
 import java.util.UUID
@@ -64,7 +62,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
   "IdentifierAction" when {
     "authorising an agent with an agent reference number" must {
       "create an identifier request with the agent reference number and continue the request" in {
-        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+        mockAuthorise()(
           new~(Some(AffinityGroup.Agent), Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier(key = "AgentReferenceNumber", "test-arn")), state = "Activated"))))
         )
 
@@ -79,7 +77,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising an agent without an agent reference number" must {
       "return a redirect to the not enrolled for agent services page" in {
-        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+        mockAuthorise()(
           new~(Some(AffinityGroup.Agent), Enrolments(Set.empty))
         )
 
@@ -93,7 +91,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "authorising a non agent" must {
       "return a redirect to the not enrolled for agent services page" in {
-        mockAuthorise(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments)(
+        mockAuthorise()(
           new~(Some(AffinityGroup.Individual), Enrolments(Set(Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier(key = "AgentReferenceNumber", "test-arn")), state = "Activated"))))
         )
 
@@ -107,7 +105,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     }
     "an AuthorisationException is thrown from auth" must {
       "return a redirect to login" in {
-        mockAuthoriseFailure(EmptyPredicate, Retrievals.affinityGroup and Retrievals.allEnrolments) {
+        mockAuthoriseFailure() {
           BearerTokenExpired()
         }
 

@@ -60,7 +60,7 @@ trait MockSubscriptionService extends UnitTestTrait with MockitoSugar with Befor
   def setupMockGetSubscriptionException(nino: String): Unit =
     mockGetSubscription(nino)(Future.failed(testException))
 
-  def setupGetSubscription(nino:String):Unit= {
+  def setupGetSubscription():Unit= {
     when(mockSubscriptionService.getSubscription(
       ArgumentMatchers.eq(testNino)
     )(ArgumentMatchers.any()))

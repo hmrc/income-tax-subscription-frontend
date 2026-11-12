@@ -17,13 +17,13 @@
 package controllers.individual.claimenrolment
 
 import _root_.common.Constants.ITSASessionKeys
-import models.individual.JourneyStep.ClaimEnrolment
 import common.Constants.ITSASessionKeys.JourneyStateKey
 import connectors.stubs.SessionDataConnectorStub
 import connectors.stubs.SessionDataConnectorStub.stubSaveJourneyState
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import models.individual.JourneyStep.ClaimEnrolment
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.individual.claimenrolment.ClaimEnrolmentOrigin.*
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}

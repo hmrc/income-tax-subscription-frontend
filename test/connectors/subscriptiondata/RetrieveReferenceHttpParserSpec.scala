@@ -16,7 +16,7 @@
 
 package connectors.subscriptiondata
 
-import connectors.httpparser.RetrieveReferenceHttpParser._
+import connectors.httpparser.RetrieveReferenceHttpParser.*
 import org.scalatest.EitherValues
 import play.api.http.Status.CREATED
 import play.api.libs.json.Json

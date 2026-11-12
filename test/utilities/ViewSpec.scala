@@ -1198,7 +1198,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
         signOutButton.attr("role") mustBe "button"
         signOutButton.text() mustBe text
         optOrigin match {
-          case Some(origin) => signOutButton.attr("href") mustBe SignOutController.signOut.url
+          case Some(_) => signOutButton.attr("href") mustBe SignOutController.signOut.url
           case _ => None
         }
       }
@@ -1206,7 +1206,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
     def mustHaveSignOutLink(text: String, optOrigin: Option[String] = None): Unit = {
       val id = "sign-out"
       optOrigin match {
-        case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
+        case Some(_) => mustHaveALink(id, text, SignOutController.signOut.url)
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
             Option(element.getElementById(id)) match {
@@ -1231,7 +1231,7 @@ trait ViewSpec extends UnitTestTrait with Matchers with GuiceOneAppPerSuite with
     def mustHaveSignOutLinkGovUk(text: String, optOrigin: Option[String] = None): Unit = {
       val id = "sign-out-button"
       optOrigin match {
-        case Some(origin) => mustHaveALink(id, text, SignOutController.signOut.url)
+        case Some(_) => mustHaveALink(id, text, SignOutController.signOut.url)
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
             Option(element.getElementById(id)) match {

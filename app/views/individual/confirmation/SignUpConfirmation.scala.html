@@ -29,11 +29,10 @@
     govukPanel: GovukPanel,
     hmrcNewTabLinkHelper: HmrcNewTabLinkHelper,
     ul: UnorderedList,
-    govukTable: GovukTable,
     appConfig: AppConfig
 )
 
-@(mandatedCurrentYear: Boolean, taxYearSelectionIsNext: Boolean, individualUserNameMaybe: Option[String], individualUserNino: String, preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
+@(taxYearSelectionIsNext: Boolean, signedUpDate: LocalDate)(implicit request: Request[_], messages: Messages, implicitDateFormatter: ImplicitDateFormatterImpl)
 
 @principalMainTemplate(title = messages("sign-up-confirmation.title"), hasBackLink = false, userResearchUrl = Some(messages("individual.sign-up-confirmation.feedback.link"))) {
 

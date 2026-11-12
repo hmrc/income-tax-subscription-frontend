@@ -86,12 +86,6 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
     confirmed = true
   ))
 
-  "signInUrl" should {
-    "return the sign in url" in withController { (controller, _) =>
-      controller.signInUrl mustBe "/gg/sign-in"
-    }
-  }
-
   "Show" should {
     "return status OK and render the correct expiry date" when {
       "the location parameter is not provided" in withController { (controller, mockedView) =>
@@ -103,7 +97,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"))(any(), any())
       }
 
       "the location parameter is provided" in withController { (controller, mockedView) =>
@@ -121,7 +115,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
         contentType(result) mustBe Some(HTML)
         charset(result) mustBe Some(Codec.utf_8.charset)
 
-        verify(mockedView).apply(meq("Monday, 20 October 2021"), any())(any(), any())
+        verify(mockedView).apply(meq("Monday, 20 October 2021"))(any(), any())
 
         verifyAudit(SaveAndComeBackAuditModel(
           userType = SaveAndComebackAuditing.individualUserType,
@@ -149,7 +143,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
   private def withController(testCode: (ProgressSavedController, ProgressSaved) => Any): Unit = {
     val progressSavedView = mock[ProgressSaved]
 
-    when(progressSavedView(meq("Monday, 20 October 2021"), any())(any(), any()))
+    when(progressSavedView(meq("Monday, 20 October 2021"))(any(), any()))
       .thenReturn(HtmlFormat.empty)
 
     val cacheExpiryDateProvider = mock[CacheExpiryDateProvider]
@@ -169,8 +163,7 @@ class ProgressSavedControllerSpec extends ControllerBaseSpec
     )(
       mockAuditingService,
       fakeIdentifierAction,
-      fakeSignUpJourneyRefiner,
-      appConfig
+      fakeSignUpJourneyRefiner
     )
 
     testCode(controller, progressSavedView)

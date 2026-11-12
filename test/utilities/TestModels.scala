@@ -16,9 +16,9 @@
 
 package utilities
 
-import models._
-import models.common._
-import models.common.business._
+import models.*
+import models.common.*
+import models.common.business.*
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.{testFirstName, testLastName, testNino, testUtr}
@@ -27,11 +27,11 @@ import java.time.LocalDate
 
 object TestModels {
 
-  val testStartDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.startDate
-  val testEndDateThisYear = AccountingPeriodUtil.getCurrentTaxYear.endDate
+  val testStartDateThisYear: DateModel = AccountingPeriodUtil.getCurrentTaxYear.startDate
+  val testEndDateThisYear: DateModel = AccountingPeriodUtil.getCurrentTaxYear.endDate
 
-  val testStartDateNextYear = AccountingPeriodUtil.getNextTaxYear.startDate
-  val testEndDateNextYear = AccountingPeriodUtil.getNextTaxYear.endDate
+  val testStartDateNextYear: DateModel = AccountingPeriodUtil.getNextTaxYear.startDate
+  val testEndDateNextYear: DateModel = AccountingPeriodUtil.getNextTaxYear.endDate
 
   val testAccountingPeriodThisYear: AccountingPeriodModel = testAccountingPeriod(testStartDateThisYear, testEndDateThisYear)
   val testAccountingPeriodNextYear: AccountingPeriodModel = testAccountingPeriod(testStartDateNextYear, testEndDateNextYear)
@@ -45,7 +45,7 @@ object TestModels {
   val testBusinessStartDate = BusinessStartDate(DateModel("05", "04", "2018"))
   val testId = "testId"
 
-  val testValidStartDate = DateModel.dateConvert(LocalDate.now.minusYears(3))
+  val testValidStartDate: DateModel = DateModel.dateConvert(LocalDate.now.minusYears(3))
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDateThisYear)
 

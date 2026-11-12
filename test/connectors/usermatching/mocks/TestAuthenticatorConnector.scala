@@ -18,14 +18,14 @@ package connectors.usermatching.mocks
 
 import auth.MockHttp
 import connectors.usermatching.AuthenticatorConnector
-import models.usermatching._
+import models.usermatching.*
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.TestModels._
+import utilities.TestModels.*
 import utilities.UnitTestTrait
 import utilities.individual.TestConstants
 import utilities.individual.TestConstants.testException
@@ -42,7 +42,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   // use this function if we want to match on the UserDetailsModel used in the parameter
   val setupMockMatchUser: UserDetailsModel => ((Int, JsValue)) => Unit =
-    (userDetailsModel: UserDetailsModel) => (setupMockMatchUser(None) _).tupled
+    (_: UserDetailsModel) => (setupMockMatchUser(None) _).tupled
 
   // use this function if we don't care about what UserDetailsModel is used in the parameter
   val setupMatchUser: ((Int, JsValue)) => Unit =

@@ -19,11 +19,11 @@ package controllers.individual.tasklist.overseasproperty
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub
 import forms.individual.business.ForeignPropertyStartDateBeforeLimitForm
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import helpers.servicemocks.AuthStub
 import models.common.OverseasPropertyModel
 import models.{No, Yes}
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
 
@@ -259,7 +259,7 @@ class ForeignPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBa
 
             result must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url)
+              redirectURI(routes.OverseasPropertyCheckYourAnswersController.show().url)
             )
           }
           "in global edit mode" in {

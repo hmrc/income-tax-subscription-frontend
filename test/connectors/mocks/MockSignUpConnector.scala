@@ -20,7 +20,7 @@ import connectors.SignUpConnector
 import connectors.httpparser.SignUpResponseHttpParser.SignUpResponse
 import models.AccountingYear
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 

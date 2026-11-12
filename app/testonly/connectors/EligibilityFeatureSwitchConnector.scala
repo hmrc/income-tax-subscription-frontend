@@ -18,10 +18,10 @@ package testonly.connectors
 
 import config.AppConfig
 import play.api.libs.json.Json
-import testonly.models.FeatureSwitchSetting
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.client.HttpClientV2
 import play.api.libs.ws.writeableOf_JsValue
+import testonly.models.FeatureSwitchSetting
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject

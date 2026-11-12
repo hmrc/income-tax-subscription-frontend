@@ -51,8 +51,7 @@ class NextYearMandatorySignUpController @Inject()(nextYearMandatorySignUp: NextY
       postAction = controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.submit(editMode = isEditMode),
       clientName = request.clientDetails.name,
       clientNino = request.clientDetails.formattedNino,
-      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear,
-      isEditMode = isEditMode
+      endYearOfCurrentTaxPeriod = accountingPeriodService.currentTaxYear
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>

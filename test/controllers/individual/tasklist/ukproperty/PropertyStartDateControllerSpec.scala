@@ -25,7 +25,7 @@ import models.DateModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.*
-import services.mocks.{MockAuditingService, MockReferenceRetrieval, MockSessionDataService, MockSubscriptionDetailsService}
+import services.mocks.MockSubscriptionDetailsService
 import uk.gov.hmrc.http.InternalServerException
 import views.individual.mocks.MockPropertyStartDate
 
@@ -129,7 +129,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = false))
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show().url)
       }
     }
 
@@ -140,7 +140,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = true))
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
       }
     }
 
@@ -151,7 +151,7 @@ class PropertyStartDateControllerSpec extends ControllerBaseSpec
         val goodRequest = await(callSubmit(isEditMode = true, isGlobalEdit = true))
 
         status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url
+        redirectLocation(goodRequest) mustBe Some(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url
         )
       }
     }

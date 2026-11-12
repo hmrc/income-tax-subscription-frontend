@@ -31,7 +31,7 @@ class CannotUseServiceViewSpec extends ViewSpec {
 
   val cannotUseServiceView: CannotUseService = app.injector.instanceOf[CannotUseService]
 
-  lazy val page: HtmlFormat.Appendable = cannotUseServiceView(action)(request, implicitly)
+  lazy val page: HtmlFormat.Appendable = cannotUseServiceView()(request, implicitly)
   lazy val document: Document = Jsoup.parse(page.body)
 
   "The Cannot Use Service view" should {

@@ -120,7 +120,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
 
   lazy val signUpJourneyRefiner: SignUpJourneyRefiner = new SignUpJourneyRefiner(mockReferenceRetrieval)
 
-  def requestWithSession(maybeJourneyStep: Option[JourneyStep]): FakeRequest[_] = {
+  def requestWithSession(): FakeRequest[_] = {
     FakeRequest()
   }
 
@@ -134,7 +134,7 @@ class SignUpJourneyRefinerSpec extends PlaySpec with MockReferenceRetrieval with
     }
 
     IdentifierRequest(
-      request = requestWithSession(journeyStep),
+      request = requestWithSession(),
       mtditid = mtditid,
       nino = nino,
       utr = None,

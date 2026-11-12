@@ -16,7 +16,7 @@
 
 package helpers.servicemocks
 
-import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestConstants.*
 import models.usermatching.LockedOut
 import play.api.http.Status
 

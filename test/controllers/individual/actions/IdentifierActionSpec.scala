@@ -33,8 +33,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout, redirectLocation, stat
 import services.mocks.{MockAuditingService, MockSessionDataService}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.InternalServerException
 
@@ -70,7 +68,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -91,7 +89,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Organisation), enrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -112,7 +110,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           ITSASessionKeys.UTR -> JsString(testUtr)
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -133,7 +131,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -154,7 +152,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L500), Some(testNino)), Some(testCredentials))
         )
 
@@ -172,7 +170,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorising an individual user who has CL250, without a nino" must {
       "throw an InternalServerException as the user should have a nino in this scenario" in {
         mockGetAllSessionData()
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L250), None), Some(testCredentials))
         )
 
@@ -190,7 +188,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(User)), ConfidenceLevel.L200), Some(testNino)), Some(testCredentials))
         )
 
@@ -218,7 +216,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Individual), emptyEnrolments), Some(Assistant)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -240,7 +238,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
           random() -> JsString(random())
         ))
         mockGetAllSessionData(sessionData)
-        mockAuthorise(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials)(
+        mockAuthorise()(
           new~(new~(new~(new~(new~(Some(Agent), emptyEnrolments), Some(User)), ConfidenceLevel.L250), Some(testNino)), Some(testCredentials))
         )
 
@@ -259,7 +257,7 @@ class IdentifierActionSpec extends PlaySpec with GuiceOneAppPerSuite with Before
     "authorisation throws an AuthorisationException" must {
       "redirect the user to login" in {
         mockGetAllSessionData()
-        mockAuthoriseFailure(EmptyPredicate, affinityGroup and allEnrolments and credentialRole and confidenceLevel and nino and credentials) {
+        mockAuthoriseFailure() {
           BearerTokenExpired()
         }
 

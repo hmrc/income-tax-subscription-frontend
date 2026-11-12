@@ -18,10 +18,10 @@ package controllers.individual.iv
 
 import _root_.common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
-import models.individual.JourneyStep.ClaimEnrolment
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{IndividualURI, basGatewaySignIn}
 import helpers.servicemocks.AuthStub
+import models.individual.JourneyStep.ClaimEnrolment
 import play.api.http.Status.*
 import play.api.libs.json.JsString
 

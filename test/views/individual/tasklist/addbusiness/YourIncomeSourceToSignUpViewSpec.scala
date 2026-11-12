@@ -24,7 +24,6 @@ import org.jsoup.nodes.{Document, Element}
 import play.api.mvc.Call
 import play.twirl.api.Html
 import utilities.{AccountingPeriodUtil, ViewSpec}
-import utilities.ViewSpec
 import views.html.individual.tasklist.addbusiness.YourIncomeSourceToSignUp
 
 import java.time.format.DateTimeFormatter
@@ -81,12 +80,12 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
     val addUKPropertyLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateController.show().url
     val addUKPropertyLinkFSEnabled: String = controllers.individual.tasklist.ukproperty.routes.PropertyStartDateBeforeLimitController.show().url
     val addUkPropertyLinkText: String = "Add UK property"
-    val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show(editMode = true).url
+    val ukPropertyChangeLink: String = controllers.individual.tasklist.ukproperty.routes.PropertyCheckYourAnswersController.show().url
     val ukPropertyRemoveLink: String = controllers.individual.tasklist.ukproperty.routes.RemoveUkPropertyController.show.url
     val foreignPropertyCardTitle: String = "Foreign property"
     val addForeignPropertyLink: String = controllers.individual.tasklist.overseasproperty.routes.ForeignPropertyStartDateBeforeLimitController.show().url
     val addForeignPropertyLinkText: String = "Add foreign property"
-    val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show(editMode = true).url
+    val foreignPropertyChangeLink: String = controllers.individual.tasklist.overseasproperty.routes.OverseasPropertyCheckYourAnswersController.show().url
     val foreignPropertyRemoveLink: String = controllers.individual.tasklist.overseasproperty.routes.RemoveOverseasPropertyController.show.url
 
     val propertyDateBeforeLimit = s"Before 6 April ${AccountingPeriodUtil.getStartDateLimit.getYear}"
@@ -144,17 +143,16 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
   val olderThanLimitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit.minusDays(1))
   val limitDate: DateModel = DateModel.dateConvert(AccountingPeriodUtil.getStartDateLimit)
 
-  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false): Html = {
+  def view(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelection: Boolean = false): Html = {
     incomeSource(
       postAction = testCall,
       incomeSources = incomeSources,
-      isPrePopulated = isPrePopulated,
       taxYearSelection = taxYearSelection
     )
   }
 
-  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), isPrePopulated: Boolean = false, taxYearSelection: Boolean = false) {
-    def document: Document = Jsoup.parse(view(incomeSources, isPrePopulated, taxYearSelection).body)
+  class ViewTest(incomeSources: IncomeSources = IncomeSources(Seq.empty[SelfEmploymentData], None, None), taxYearSelection: Boolean = false) {
+    def document: Document = Jsoup.parse(view(incomeSources, taxYearSelection).body)
   }
 
   "YourIncomeSourceToSignUp" should {
@@ -277,10 +275,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         link.attr("href") mustBe IndividualIncomeSource.addForeignPropertyLink
       }
 
-      "not have a second paragraph" when {
-        "data has been pre-populated" in new ViewTest(noIncomeSources, isPrePopulated = true) {
+      "not have a second paragraph" in new ViewTest(noIncomeSources) {
           document.mainContent.selectOptionalNth("p", 9) mustBe None
-        }
       }
     }
 
@@ -470,10 +466,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
       }
 
-      "have a second paragraph" when {
-        "data has been pre-populated and not checked by the user" in new ViewTest(incompleteIncomeSources, isPrePopulated = true) {
+      "have a second paragraph" in new ViewTest(incompleteIncomeSources) {
           document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
-        }
       }
     }
 
@@ -759,10 +753,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
 
       }
 
-      "have a second paragraph" when {
-        "data has been pre-populated" in new ViewTest(completeIncomeSources, isPrePopulated = true) {
+      "have a second paragraph" in new ViewTest(completeIncomeSources) {
           document.mainContent.selectNth(".govuk-inset-text", 2).text mustBe IndividualIncomeSource.incomeSourcesPara2
-        }
       }
     }
 
@@ -906,10 +898,8 @@ class YourIncomeSourceToSignUpViewSpec extends ViewSpec {
         }
       }
 
-      "not have a second paragraph" when {
-        "data has been pre-populated" in new ViewTest(completeAndConfirmedIncomeSources, isPrePopulated = true) {
+      "not have a second paragraph"  in new ViewTest(completeAndConfirmedIncomeSources) {
           document.mainContent.selectOptionally("p:nth-of-type(6)") mustBe None
-        }
       }
     }
   }

@@ -15,11 +15,7 @@
  */
 
 import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
-
-import scala.sys.process._
 
 lazy val scoverageSettings = {
   import scoverage.ScoverageKeys

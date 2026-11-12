@@ -44,14 +44,12 @@ class YourIncomeSourceToSignUpController @Inject()(identify: IdentifierAction,
   def show: Action[AnyContent] = (identify andThen journeyRefiner) async { implicit request =>
     for {
       incomeSources <- subscriptionDetailsService.fetchAllIncomeSources(request.reference)
-      maybePrePop <- subscriptionDetailsService.fetchPrePopFlag(request.reference)
       taxYearSelection <- subscriptionDetailsService.fetchSelectedTaxYear(request.reference)
     } yield {
       val isCurrent: Boolean = taxYearSelection.map(_.accountingYear).contains(Current)
       Ok(view(
         postAction = routes.YourIncomeSourceToSignUpController.submit,
         incomeSources,
-        maybePrePop.contains(true),
         taxYearSelection = isCurrent
       ))
     }

@@ -32,7 +32,7 @@
     implicit contactFrontendConfig: ContactFrontendConfig
 )
 
-@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, fullWidth: Boolean = false, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, timeoutUrl: Option[String], userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+@(title: String, serviceName: Option[String], serviceUrl: String, optForm: Option[Form[_]] = None, hasBackLink: Boolean = true, showSignOutLink: Boolean = true, additionalScripts: Option[Html] = None, hasWelsh: Boolean = true, timeoutUrl: Option[String], userResearchUrl: Option[String] = None)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @hmrcStandardPage(HmrcStandardPageParams(
     serviceURLs = ServiceURLs(

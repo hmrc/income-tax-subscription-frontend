@@ -25,8 +25,6 @@ import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import models.common.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import org.scalatestplus.play.PlaySpec
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,7 +54,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
 
           val enrolmentKey = testEnrolmentKey(useCompositeKey)
           mockUpsertEnrolmentSuccess(enrolmentKey, testEnrolmentVerifiers)
-          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), Some(testGroupId)))
+          mockAuthorise()(new~(Some(testCredentials), Some(testGroupId)))
           mockAllocateEnrolmentSuccess(testGroupId, enrolmentKey, testEnrolmentRequest)
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)
@@ -74,7 +72,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
           val key = testEnrolmentKey(false)
 
           mockUpsertEnrolmentSuccess(key, testEnrolmentVerifiers)
-          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), Some(testGroupId)))
+          mockAuthorise()(new~(Some(testCredentials), Some(testGroupId)))
           mockAllocateEnrolmentSuccess(testGroupId, key, testEnrolmentRequest)
           mockAdminAllocateEnrolmentSuccess(testGroupId, key, testCredentialId)
 
@@ -108,7 +106,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       "is a NoGroupIdFailure" when {
         "there is no group id returned from auth" in {
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
-          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), None))
+          mockAuthorise()(new~(Some(testCredentials), None))
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)
 
@@ -121,7 +119,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       "is a NoCredentialsFailure" when {
         "there is no credential returned from auth" in {
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
-          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(None, Some(testGroupId)))
+          mockAuthorise()(new~(None, Some(testGroupId)))
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)
 
@@ -134,7 +132,7 @@ class UpsertAndAllocateEnrolmentServiceSpec extends PlaySpec with MockTaxEnrolme
       "is an AllocateEnrolmentFailure" when {
         "there is a failure allocating the enrolment" in {
           mockUpsertEnrolmentSuccess(testEnrolmentKey(false), testEnrolmentVerifiers)
-          mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(testCredentials), Some(testGroupId)))
+          mockAuthorise()(new~(Some(testCredentials), Some(testGroupId)))
           mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey(false), testEnrolmentRequest)
 
           val result = TestUpsertAndAllocateEnrolmentService.upsertAndAllocate(testMTDITID, testNino, testUtr)

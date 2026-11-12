@@ -17,8 +17,8 @@
 package forms.validation.utils
 
 
-import play.api.data.Forms._
-import play.api.data._
+import play.api.data.*
+import play.api.data.Forms.*
 
 object MappingUtil {
   

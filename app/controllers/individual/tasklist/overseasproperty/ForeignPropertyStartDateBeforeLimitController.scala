@@ -56,7 +56,7 @@ class ForeignPropertyStartDateBeforeLimitController @Inject()(subscriptionDetail
         case Yes =>
           saveAnswerAndRedirect(
             answer = Yes,
-            call = routes.OverseasPropertyCheckYourAnswersController.show(isEditMode, isGlobalEdit)
+            call = routes.OverseasPropertyCheckYourAnswersController.show(isGlobalEdit)
           )
         case No =>
           saveAnswerAndRedirect(

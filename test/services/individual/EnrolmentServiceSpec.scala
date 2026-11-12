@@ -22,14 +22,12 @@ import config.featureswitch.FeatureSwitch.DistributedKnownFactsPattern
 import config.featureswitch.FeatureSwitching
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import org.mockito.Mockito.reset
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.individual.TestConstants._
+import utilities.individual.TestConstants.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -51,7 +49,7 @@ class EnrolmentServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolm
     "return a success from the EnrolmentStoreConnector" in {
       Seq(false, true).foreach { useAdminAllocate =>
         reset(mockTaxEnrolmentsConnector)
-        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+        mockAuthorise()(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
         mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
         mockAdminAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testCredId)
 
@@ -68,14 +66,14 @@ class EnrolmentServiceSpec extends PlaySpec with ScalaFutures with MockTaxEnrolm
     }
 
     "return a failure from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+      mockAuthorise()(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
     }
 
     "pass through the exception if the EnrolmentStoreConnector fails" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
+      mockAuthorise()(new~(Some(Credentials(testCredId, "")), Some(testGroupId)))
       mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result.failed)(_ mustBe testException)

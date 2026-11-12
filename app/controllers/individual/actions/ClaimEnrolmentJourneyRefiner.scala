@@ -16,8 +16,6 @@
 
 package controllers.individual.actions
 
-import common.Constants.ITSASessionKeys
-import models.individual.JourneyStep
 import models.individual.JourneyStep.*
 import models.requests.individual.{ClaimEnrolmentRequest, IdentifierRequest}
 import play.api.mvc.Results.Redirect
@@ -41,7 +39,7 @@ class ClaimEnrolmentJourneyRefiner @Inject()(implicit val executionContext: Exec
         )))
       case Some(Confirmation) =>
         Future.successful(Left(Redirect(controllers.individual.routes.ConfirmationController.show)))
-      case state@(None | Some(PreSignUp | SignUp)) =>
+      case _ =>
         Future.successful(Left(Redirect(controllers.individual.matching.routes.HomeController.index)))
     }
   }

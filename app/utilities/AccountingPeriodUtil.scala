@@ -16,8 +16,8 @@
 
 package utilities
 
-import models.{AccountingYear, Current, DateModel, Next}
 import models.common.AccountingPeriodModel
+import models.{AccountingYear, Current, DateModel, Next}
 
 import java.time.LocalDate
 import java.time.Month.{APRIL, JANUARY}

@@ -20,7 +20,7 @@ import connectors.agent.httpparsers.AssignEnrolmentToUserHttpParser.{EnrolmentAs
 import connectors.agent.mocks.MockEnrolmentStoreProxyConnector
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.agent.AssignEnrolmentToUserService
 import services.agent.AssignEnrolmentToUserService.{EnrolmentAssignedToUsers, EnrolmentAssignmentFailed}
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,7 +16,6 @@
 
 package controllers.individual
 
-import models.individual.JourneyStep.{ClaimEnrolment, SignUp}
 import common.Constants.ITSASessionKeys
 import org.apache.pekko.actor.ActorSystem
 import org.mockito.Mockito

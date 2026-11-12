@@ -16,7 +16,7 @@
 
 package connectors.subscriptiondata
 
-import connectors.httpparser.DeleteSubscriptionDetailsHttpParser._
+import connectors.httpparser.DeleteSubscriptionDetailsHttpParser.*
 import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, OK}

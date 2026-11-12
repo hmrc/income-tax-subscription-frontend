@@ -21,7 +21,7 @@ import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.{UnitTestTrait, UserMatchingSessionUtil}
@@ -45,7 +45,7 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
           "return an AuthorisationException" in {
             Mockito.reset(mockAuthService)
 
-            val exception = new InvalidBearerToken()
+            val exception = InvalidBearerToken()
             mockAuthUnauthorised(exception)
 
             intercept[AuthorisationException](await(result)) mustBe exception

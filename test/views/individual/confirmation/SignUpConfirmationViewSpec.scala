@@ -41,21 +41,17 @@ class SignUpConfirmationViewSpec extends ViewSpec {
   private val endDate: DateModel = DateModel(getRandomDate, "4", "2011")
   val testAccountingPeriodModel: AccountingPeriodModel = AccountingPeriodModel(startDate, endDate)
 
-  def page(mandatedCurrentYear: Boolean, selectedTaxYearIsNext: Boolean, userNameMaybe: Option[String], preference: Option[Boolean], usingSoftwareStatus: Boolean, signedUpDate: LocalDate): Html =
-    signUpConfirmation(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, testNino, preference, usingSoftwareStatus, signedUpDate)
+  def page(selectedTaxYearIsNext: Boolean, signedUpDate: LocalDate): Html =
+    signUpConfirmation(selectedTaxYearIsNext, signedUpDate)
 
-  def document(mandatedCurrentYear: Boolean,
-               selectedTaxYearIsNext: Boolean,
-               userNameMaybe: Option[String] = Some(testName),
-               preference: Option[Boolean] = None,
-               usingSoftwareStatus: Boolean,
+  def document(selectedTaxYearIsNext: Boolean,
                signedUpDate: LocalDate): Document = {
-    Jsoup.parse(page(mandatedCurrentYear, selectedTaxYearIsNext, userNameMaybe, preference, usingSoftwareStatus, signedUpDate).body)
+    Jsoup.parse(page(selectedTaxYearIsNext, signedUpDate).body)
   }
 
   "SignUpConfirmation" must {
     "use the correct template" in new TemplateViewTest(
-      view = page(true, true, None, None, true, LocalDate.now),
+      view = page(true, LocalDate.now),
       title = SignUpConfirmationMessages.title,
       isAgent = false,
       hasBackLink = false
@@ -64,7 +60,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
   "The sign up confirmation view" when {
     "the user has software and for current year. Content identical across all scenarios" should {
-      def mainContent(preference: Option[Boolean] = None): Element = document(mandatedCurrentYear = false, selectedTaxYearIsNext = false, preference = preference, usingSoftwareStatus = true, signedUpDate = LocalDate.now()).mainContent
+      def mainContent(): Element = document(selectedTaxYearIsNext = false, signedUpDate = LocalDate.now()).mainContent
 
       "has a header panel" which {
         "contains the panel heading" in {
@@ -125,7 +121,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
         mainContent().select(".govuk-body").select("p").get(5).text() mustBe SignUpConfirmationMessages.paraThree
       }
 
-      "contains bullet list for dealines" which {
+      "contains bullet list for deadlines" which {
         def bulletList: Element = mainContent().selectNth("ul", 2)
 
         "has a first item" in {
@@ -195,7 +191,7 @@ class SignUpConfirmationViewSpec extends ViewSpec {
 
     val surveyText = "What do you think of this service (opens in new tab)"
     val surveyTextEnd = " (takes 30 seconds)"
-    val surveyLink = appConfig.feedbackFrontendRedirectUrl
+    val surveyLink: String = appConfig.feedbackFrontendRedirectUrl
 
   }
 

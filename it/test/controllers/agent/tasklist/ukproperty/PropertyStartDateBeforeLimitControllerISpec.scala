@@ -193,7 +193,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.PropertyCheckYourAnswersController.show(editMode = true).url)
+              redirectURI(routes.PropertyCheckYourAnswersController.show().url)
             )
           }
           "in global edit mode" in {
@@ -211,7 +211,7 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
 
             res must have(
               httpStatus(SEE_OTHER),
-              redirectURI(routes.PropertyCheckYourAnswersController.show(editMode = true, isGlobalEdit = true).url)
+              redirectURI(routes.PropertyCheckYourAnswersController.show(isGlobalEdit = true).url)
             )
           }
         }

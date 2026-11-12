@@ -16,7 +16,7 @@
 
 package models.common.subscription
 
-import models.common.business._
+import models.common.business.*
 import models.common.{AccountingPeriodModel, AccountingYearModel}
 import models.{Current, DateModel, Next}
 import play.api.libs.json.{Json, OFormat}

@@ -29,9 +29,7 @@ class ClientAlreadySubscribedController @Inject()(identify: IdentifierAction,
                                                  (implicit mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   val show: Action[AnyContent] = identify { implicit request =>
-    Ok(clientAlreadySubscribed(
-      postAction = controllers.agent.matching.routes.ClientAlreadySubscribedController.submit
-    ))
+    Ok(clientAlreadySubscribed())
   }
 
   val submit: Action[AnyContent] = identify { _ =>

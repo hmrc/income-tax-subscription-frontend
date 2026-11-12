@@ -40,7 +40,7 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
     "return the opt back in route" when {
       "the user has an annual status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-        mockGetITSAStatusSuccess(testNino)(Some(Annual))
+        mockGetITSAStatusSuccess()(Some(Annual))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.handoffs.routes.OptedOutController.show.url
@@ -49,21 +49,21 @@ class AlreadyEnrolledResolverSpec extends PlaySpec with MockSubscriptionConnecto
     "return the already enrolled route" when {
       "the user is already signed up with a channel of confirmed triggered migrated with no status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-        mockGetITSAStatusSuccess(testNino)(None)
+        mockGetITSAStatusSuccess()(None)
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.handoffs.routes.AlreadySignedUpController.show.url
       }
       "the user is already signed up with a channel of confirmed triggered migrated with a non annual status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(HmrcLedConfirmed))))))
-        mockGetITSAStatusSuccess(testNino)(Some(MTDMandated))
+        mockGetITSAStatusSuccess()(Some(MTDMandated))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.handoffs.routes.AlreadySignedUpController.show.url
       }
       "the user is already signed up with a channel of customer sign up with a non annual status" in {
         setupMockGetSubscription(testNino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDITID, Some(CustomerLed))))))
-        mockGetITSAStatusSuccess(testNino)(Some(MTDVoluntary))
+        mockGetITSAStatusSuccess()(Some(MTDVoluntary))
 
         await(TestAlreadyEnrolledResolver.resolve(testNino, testSessionData)).url mustBe
           controllers.individual.handoffs.routes.AlreadySignedUpController.show.url

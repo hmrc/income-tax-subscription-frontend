@@ -16,12 +16,12 @@
 
 package controllers.individual.matching
 
-import models.individual.JourneyStep.SignUp
 import config.AppConfig
 import connectors.UsersGroupsSearchConnector
 import connectors.agent.EnrolmentStoreProxyConnector
 import controllers.individual.CheckIRSAEnrolmentBaseController
 import controllers.individual.actions.IdentifierAction
+import models.individual.JourneyStep.SignUp
 import models.requests.individual.IdentifierRequest
 import models.status.MandationStatus.{Mandated, Voluntary}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
