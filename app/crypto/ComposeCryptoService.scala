@@ -17,43 +17,21 @@
 package crypto
 
 import play.api.Configuration
-import scala.jdk.CollectionConverters.*
-import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.crypto.SymmetricCryptoFactory.*
+import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ComposeCryptoService @Inject()(configuration: Configuration) {
+class ComposeCryptoService @Inject()(configuration: Configuration, applicationCrypto: ApplicationCrypto) {
 
   private val config = configuration.underlying
+  
+  private val previousJsonCrypto = applicationCrypto.JsonCrypto
+  private val newJsonCrypto = aesGcmCryptoFromConfig("json.encryption.gcm", config)
 
-  private def stringList(path: String): Seq[String] =
-    if (config.hasPath(path)) config.getStringList(path).asScala.toSeq else Seq.empty
-
-  private val currentLegacyAesKey = config.getString("json.encryption.key")
-  private val previousLegacyAesKeys = stringList("json.encryption.previousKeys")
-
-  private val currentAesGcmKey = config.getString("json.encryption.gcm.key")
-  private val previousAesGcmKeys = stringList("json.encryption.gcm.previousKeys")
-
-  private val legacyCrypto = composeCrypto(
-    aesCrypto(currentLegacyAesKey),
-    previousLegacyAesKeys.map(aesCrypto)
-  )
-
-  private val gcmCrypto = composeCrypto(
-    aesGcmCrypto(currentAesGcmKey),
-    previousAesGcmKeys.map(aesGcmCrypto)
-  )
-
-  val legacyCryptoWithFallback: Encrypter & Decrypter = composeCrypto(
-    aesCrypto(currentLegacyAesKey),
-    previousLegacyAesKeys.map(aesCrypto) ++ Seq(gcmCrypto)
-  )
-
-  val gcmCryptoWithFallback: Encrypter & Decrypter = composeCrypto(
-    aesGcmCrypto(currentAesGcmKey),
-    previousAesGcmKeys.map(aesGcmCrypto) ++ Seq(legacyCrypto)
+  val composedJsonCrypto: Encrypter & Decrypter = composeCrypto(
+    newJsonCrypto,
+    Seq(previousJsonCrypto)
   )
 }
