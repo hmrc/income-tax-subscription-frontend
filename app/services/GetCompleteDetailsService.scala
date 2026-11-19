@@ -16,6 +16,7 @@
 
 package services
 
+import crypto.ComposeCryptoService
 import models.common.business.{Address, SelfEmploymentData}
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.{DateModel, SessionData}
@@ -23,7 +24,7 @@ import play.api.libs.json.Format
 import services.GetCompleteDetailsService.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.http.HeaderCarrier
 import utilities.AccountingPeriodUtil
 
@@ -34,10 +35,10 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class GetCompleteDetailsService @Inject()(subscriptionDetailsService: SubscriptionDetailsService,
-                                          applicationCrypto: ApplicationCrypto)
+                                          composeCryptoService: ComposeCryptoService)
                                          (implicit ec: ExecutionContext) {
 
-  implicit val jsonCrypto: Encrypter with Decrypter = applicationCrypto.JsonCrypto
+  implicit val jsonCrypto: Encrypter with Decrypter = composeCryptoService.composedJsonCrypto
 
   implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 

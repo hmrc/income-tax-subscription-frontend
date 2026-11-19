@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys.*
 import config.AppConfig
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import connectors.stubs.SessionDataConnectorStub.stubGetAllSessionData
+import crypto.ComposeCryptoService
 import forms.individual.*
 import forms.individual.business.*
 import helpers.IntegrationTestConstants.*
@@ -45,7 +46,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.TwirlHelperImports.twirlJavaCollectionToScala
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import utilities.UUIDProvider
 
 import java.time.LocalDate
@@ -120,7 +121,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
     .overrides(inject.bind[UUIDProvider].to(fakeUUIDProvider))
     .build()
 
-  implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+  implicit lazy val crypto: Encrypter with Decrypter = app.injector.instanceOf[ComposeCryptoService].composedJsonCrypto
 
   implicit lazy val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 

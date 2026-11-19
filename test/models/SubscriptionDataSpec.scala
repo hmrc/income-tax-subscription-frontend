@@ -17,6 +17,7 @@
 package models
 
 import _root_.common.Constants.ITSASessionKeys
+import crypto.ComposeCryptoService
 import models.EligibilityStatus
 import models.common.business.SelfEmploymentData
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
@@ -27,14 +28,14 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.{Format, JsValue, Json, OFormat}
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import utilities.SubscriptionDataKeys.{OverseasProperty, Property, SelectedTaxYear, SoleTraderBusinessesKey}
 
 class SubscriptionDataSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  private val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
+  private val crypto: ComposeCryptoService = app.injector.instanceOf[ComposeCryptoService]
 
-  implicit private val jsonCrypto: Encrypter with Decrypter = crypto.JsonCrypto
+  implicit private val jsonCrypto: Encrypter with Decrypter = crypto.composedJsonCrypto
   implicit private val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
   implicit private val soleTraderBusinessesFormat: OFormat[SoleTraderBusinesses] = SoleTraderBusinesses.encryptedFormat
 
@@ -154,4 +155,3 @@ class SubscriptionDataSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
   }
 }
-

@@ -25,6 +25,7 @@ import helpers.agent.servicemocks.AuthStub
 import helpers.servicemocks.PrePopStub
 import models.EligibilityStatus
 import models.agent.JourneyStep.UserMatching
+import models.common.SoleTraderBusinesses
 import models.common.business.*
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.{MandationStatus, MandationStatusModel}
@@ -104,6 +105,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
           )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
         }
       }
       "CY is eligible and voluntary, CY+1 is eligible and mandated" should {
@@ -120,6 +122,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NextYearMandatorySignUpController.show().url)
           )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
         }
       }
 
@@ -137,6 +140,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.MandatoryBothSignUpController.show.url)
           )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
         }
       }
 
@@ -154,6 +158,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleVoluntaryController.show.url)
           )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
         }
       }
 
@@ -171,6 +176,7 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(controllers.agent.tasklist.taxyear.routes.NonEligibleMandatedController.show.url)
           )
+          IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
         }
       }
     }
@@ -236,21 +242,21 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
     )
     IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
     IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
-    IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(
-      selfEmployments = Seq(SelfEmploymentData(
-        id = "test-uuid",
-        startDateBeforeLimit = Some(true),
-        businessName = Some(BusinessNameModel("ABC")),
-        businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
-        businessAddress = Some(BusinessAddressModel(Address(
-          lines = Seq(
-            "1 long road"
-          ),
-          postcode = Some("ZZ1 1ZZ"),
-          country = None
-        )))
-      ))
-    )
+    IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
   }
+
+  private val prePopBusinesses = SoleTraderBusinesses(
+    Seq(SelfEmploymentData(
+      id = "test-uuid",
+      startDateBeforeLimit = Some(true),
+      businessName = Some(BusinessNameModel("ABC")),
+      businessTradeName = Some(BusinessTradeNameModel("Plumbing")),
+      businessAddress = Some(BusinessAddressModel(Address(
+        lines = Seq("1 long road"),
+        postcode = Some("ZZ1 1ZZ"),
+        country = None
+      )))
+    ).toSoleTraderBusiness)
+  )
 
 }

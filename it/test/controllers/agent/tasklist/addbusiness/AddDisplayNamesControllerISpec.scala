@@ -28,7 +28,6 @@ import models.common.SoleTraderBusinesses
 import models.common.business.BusinessNameModel
 import play.api.http.Status.*
 import play.api.libs.json.JsString
-import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 class AddDisplayNamesControllerISpec extends ComponentSpecBase {
 
@@ -71,9 +70,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       stubJourney()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
       val expectedBusinesses = businessesWithDisplayNames(Seq("First business", "Second business"))
-      IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails(SoleTraderBusinessesKey, expectedBusinesses)(
-        SoleTraderBusinesses.encryptedFormat(sensitiveFormat)
-      )
+      IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
       IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
       val result = IncomeTaxSubscriptionFrontend.post(path, ClientData.basicClientData)(
@@ -87,9 +84,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
         httpStatus(SEE_OTHER),
         redirectURI(globalCheckYourAnswersURI)
       )
-      IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails(SoleTraderBusinessesKey, expectedBusinesses, Some(1))(
-        SoleTraderBusinesses.encryptedFormat(sensitiveFormat)
-      )
+      IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(expectedBusinesses)
     }
 
     "reject duplicate display names" in {
@@ -104,11 +99,10 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       )
 
       result must have(httpStatus(BAD_REQUEST))
-      IncomeTaxSubscriptionConnectorStub.verifySaveSubscriptionDetails(
-        SoleTraderBusinessesKey,
+      IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(
         businessesWithDisplayNames(Seq("Same business", "Same business")),
-        Some(0)
-      )(SoleTraderBusinesses.encryptedFormat(sensitiveFormat))
+        count = 0
+      )
     }
   }
 }

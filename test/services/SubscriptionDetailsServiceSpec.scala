@@ -17,6 +17,7 @@
 package services
 
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.{PostSubscriptionDetailsSuccessResponse, UnexpectedStatusFailure}
+import crypto.ComposeCryptoService
 import models.*
 import models.common.business.{BusinessNameModel, SelfEmploymentData}
 import models.common.{AccountingYearModel, SoleTraderBusiness, SoleTraderBusinesses}
@@ -28,6 +29,7 @@ import play.api.libs.json.{Format, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.{MockGetEligibilityStatusService, MockIncomeTaxSubscriptionConnector, MockMandationStatusService, MockSessionDataService}
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.SymmetricCryptoFactory.aesGcmCryptoFromConfig
 import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
 import utilities.{AccountingPeriodUtil, SubscriptionDataKeys}
@@ -43,9 +45,9 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
 
   val newTest: Map[String, String] = test ++ Some("" -> "")
 
-  val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
+  val crypto: ComposeCryptoService = app.injector.instanceOf[ComposeCryptoService]
 
-  implicit val jsonCrypto: Encrypter with Decrypter = crypto.JsonCrypto
+  implicit val jsonCrypto: Encrypter with Decrypter = crypto.composedJsonCrypto
 
   implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
@@ -58,6 +60,30 @@ class SubscriptionDetailsServiceSpec extends PlaySpec
   )
 
   val testReference = "test-reference"
+
+  "subscription JSON encryption" should {
+    "write AES-GCM values readable by the new cipher" in {
+      val value = SensitiveString("Business one")
+      val encrypted = subscriptionDetailsService.sensitiveFormat.writes(value)
+      val gcmFormat = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)(
+        implicitly[Format[String]],
+        aesGcmCryptoFromConfig("json.encryption.gcm", app.configuration.underlying)
+      )
+
+      gcmFormat.reads(encrypted).get mustBe value
+      subscriptionDetailsService.sensitiveFormat.reads(encrypted).get mustBe value
+    }
+
+    "read existing AES-encrypted values" in {
+      val value = SensitiveString("Business one")
+      val legacyFormat = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)(
+        implicitly[Format[String]],
+        app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+      )
+
+      subscriptionDetailsService.sensitiveFormat.reads(legacyFormat.writes(value)).get mustBe value
+    }
+  }
 
   "mock Subscription Details service" should {
     "return next year when the ELIGIBLE_NEXT_YEAR_ONLY session variable is set" in {

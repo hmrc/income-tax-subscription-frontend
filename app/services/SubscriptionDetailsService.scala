@@ -20,13 +20,14 @@ import connectors.IncomeTaxSubscriptionConnector
 import connectors.httpparser.PostSubscriptionDetailsHttpParser.PostSubscriptionDetailsResponse
 import connectors.httpparser.RetrieveReferenceHttpParser.RetrieveReferenceResponse
 import connectors.httpparser.{DeleteSubscriptionDetailsHttpParser, PostSubscriptionDetailsHttpParser}
+import crypto.ComposeCryptoService
 import models.*
 import models.common.*
 import models.common.business.*
 import play.api.libs.json.Format
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
-import uk.gov.hmrc.crypto.{ApplicationCrypto, Decrypter, Encrypter}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.*
@@ -41,10 +42,10 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
                                            mandationStatusService: MandationStatusService,
                                            eligibilityStatusService: GetEligibilityStatusService,
                                            sessionDataService: SessionDataService,
-                                           applicationCrypto: ApplicationCrypto)
+                                           composeCryptoService: ComposeCryptoService)
                                           (implicit ec: ExecutionContext) {
 
-  implicit val jsonCrypto: Encrypter with Decrypter = applicationCrypto.JsonCrypto
+  implicit val jsonCrypto: Encrypter with Decrypter = composeCryptoService.composedJsonCrypto
 
   implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
