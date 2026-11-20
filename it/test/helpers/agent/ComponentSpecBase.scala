@@ -29,7 +29,7 @@ import helpers.IntegrationTestConstants.*
 import helpers.agent.WiremockHelper.*
 import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
-import helpers.{IntegrationTestModels, UserMatchingIntegrationRequestSupport}
+import helpers.IntegrationTestModels
 import models.*
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.Element
@@ -195,7 +195,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     )
   }
 
-  object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
+  object IncomeTaxSubscriptionFrontend {
     val csrfToken: String = UUID.randomUUID().toString
 
     def defaultCookies(withJourneyStateSignUp: Boolean = true): Map[String, String] = Map.empty
@@ -290,7 +290,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
       get("/resolve-confirmed-client")
 
     def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map().addUserDetails(storedSubmission))(
+      post("/client-details", Map())(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsForm, cd)
         )
@@ -364,7 +364,6 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
     def confirmClient(): WSResponse =
       get(
         uri = "/confirm-client",
-        additionalCookies = Map.empty[String, String].addUserDetails(Some(IntegrationTestModels.testClientDetails)),
         withJourneyStateSignUp = false
       )
 
@@ -375,8 +374,8 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues
         case _ => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
       post("/confirm-client",
-        additionalCookies = failedAttemptCounter
-          .addUserDetails(storedUserDetails), withJourneyStateSignUp = false)(Map.empty)
+        additionalCookies = failedAttemptCounter,
+        withJourneyStateSignUp = false)(Map.empty)
     }
 
     def businessIncomeSource(sessionData: Map[String, String] = Map.empty): WSResponse =

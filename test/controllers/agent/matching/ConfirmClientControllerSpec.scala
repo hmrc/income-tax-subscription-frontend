@@ -213,6 +213,7 @@ class ConfirmClientControllerSpec extends ControllerSpec
             "the agent has been locked out" in withController { controller =>
               setupMockNotLockedOut(testARN)
               mockOrchestrateAgentQualificationFailure(testARN, NoClientMatched)
+              mockDeleteUserDetails(Right(DeleteSessionDataSuccessResponse))
               mockFetchFailedClientMatching(Some(2))
               setupIncrementLockedOut(testARN, 2, 3)
               mockDeleteFailedClientMatching(Right(DeleteSessionDataSuccessResponse))

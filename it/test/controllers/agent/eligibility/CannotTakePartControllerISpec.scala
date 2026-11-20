@@ -19,6 +19,7 @@ package controllers.agent.eligibility
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
@@ -37,7 +38,8 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookie
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
       ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None)),
-      ITSASessionKeys.JourneyStateKey -> JsString(journeyState)
+      ITSASessionKeys.JourneyStateKey -> JsString(journeyState),
+      ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)

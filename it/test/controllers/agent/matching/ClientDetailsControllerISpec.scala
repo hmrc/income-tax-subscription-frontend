@@ -19,17 +19,18 @@ package controllers.agent.matching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testARN, testNino, testUtr}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
-import helpers.{IntegrationTestModels, UserMatchingIntegrationResultSupport}
+import helpers.IntegrationTestModels
 import models.agent.JourneyStep.UserMatching
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.libs.ws.WSResponse
 
-class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
+class ClientDetailsControllerISpec extends ComponentSpecBase {
 
   "GET /client-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {
@@ -38,7 +39,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
 
       if (agentLocked) AgentLockoutStub.stubAgentIsLocked(testARN)
@@ -102,7 +104,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -135,8 +138,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + messages("agent.client-details.title") + serviceNameGovUk)
         )
-
-        res.verifyStoredUserDetailsIs(None)
       }
     }
 
@@ -153,6 +154,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           ITSASessionKeys.JourneyStateKey -> JsString(UserMatching.key)
         ))
         SessionDataConnectorStub.stubDeleteAllSessionData(OK)
+        SessionDataConnectorStub.stubDeleteSessionData(ITSASessionKeys.UserDetailsKey)(OK)
+        SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.UserDetailsKey, clientDetails)(OK)
         SessionDataConnectorStub.stubSaveSessionData(ITSASessionKeys.EMAIL_PASSED, true)(OK)
         SessionDataConnectorStub.stubSaveJourneyState()(OK)
 
@@ -164,8 +167,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmClientController.show().url)
         )
-
-        res.verifyStoredUserDetailsIs(Some(clientDetails))
       }
     }
 
@@ -193,8 +194,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmClientController.show().url)
         )
-
-        res.verifyStoredUserDetailsIs(Some(clientDetails))
       }
     }
 
@@ -224,8 +223,6 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
           httpStatus(SEE_OTHER),
           redirectURI(routes.ConfirmClientController.show().url)
         )
-
-        res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
       }
     }
   }

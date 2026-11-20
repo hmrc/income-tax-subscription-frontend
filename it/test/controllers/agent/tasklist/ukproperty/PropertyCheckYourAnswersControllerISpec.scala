@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.IncomeTaxSubscriptionConnectorStub.subscriptionUri
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.WiremockHelper.verifyPost
 import helpers.agent.servicemocks.AuthStub
@@ -40,7 +41,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
 
       When("GET business/uk-property-check-your-answers is called")
@@ -67,7 +69,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST business/uk-property-check-your-answers is called")
@@ -91,7 +94,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST business/uk-property-check-your-answers is called")
@@ -115,7 +119,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
 
       When("POST business/uk-property-check-your-answers is called")
@@ -139,7 +144,8 @@ class PropertyCheckYourAnswersControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
 
       When("POST business/uk-property-check-your-answers is called")

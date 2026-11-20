@@ -33,7 +33,6 @@ import play.twirl.api.Html
 import services.*
 import services.agent.*
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 import views.html.agent.matching.CheckYourClientDetails
 
 import javax.inject.{Inject, Singleton}
@@ -53,7 +52,7 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
 
   def show(): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withLockOutCheck {
-      request.fetchUserDetails match {
+      request.sessionData.fetchUserDetails match {
         case Some(clientDetails) => Future.successful(Ok(view(clientDetails)))
         case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
       }
@@ -106,8 +105,8 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
   }
 
   private def withClientDetails(f: UserDetailsModel => Future[Result])
-                               (implicit request: Request[AnyContent]): Future[Result] = {
-    request.fetchUserDetails match {
+                               (implicit request: IdentifierRequest[_]): Future[Result] = {
+    request.sessionData.fetchUserDetails match {
       case Some(clientDetails) => f(clientDetails)
       case None => Future.successful(Redirect(routes.ClientDetailsController.show()))
     }
@@ -131,7 +130,6 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             failureReason = Some("failed-client-match-no-lock-out")
           ))
 
-
           sessionDataService.saveFailedClientMatching(newCount).map {
             case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
             case Left(_) => throw new InternalServerException("handleFailedClientMatch - failure when saving failed client matching")
@@ -148,10 +146,15 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             failureReason = Some("failed-client-match-locked-out")
           ))
 
-          sessionDataService.deleteFailedClientMatching().map {
-            case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show).clearAllUserDetails
-            case Left(_) => throw new InternalServerException("handleFailedClientMatch - failure when deleting failed client matching")
+          for {
+            delFailedClientMatching <- sessionDataService.deleteFailedClientMatching()
+            delUserDetails <- sessionDataService.deleteUserDetails()
+          } yield (delFailedClientMatching, delUserDetails) match {
+            case (Right(_), Right(_)) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
+            case (Left(_), _) => throw new InternalServerException("handleFailedClientMatch - failure when deleting failed client matching")
+            case (_, Left(_)) => throw new InternalServerException("handleDeleteUserDetails - failure when deleting user details")
           }
+
         case _ => throw new InternalServerException("ConfirmClientController.lockUser failure")
       }
     }
@@ -174,7 +177,6 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             case Right(_) =>
               sessionDataService.saveMTDITID(mtditid) flatMap {
                 case Right(_) =>
-
                   resolver.resolve(
                     sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
                     channel = reason
@@ -183,7 +185,6 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
                       case Right(_) => result
                       case Left(_) => throw new InternalServerException("handleClientAlreadySubscribed - failed ")
                     }
-
                   }
 
                 case Left(_) =>

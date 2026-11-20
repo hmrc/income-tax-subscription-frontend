@@ -44,7 +44,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
       ITSASessionKeys.UTR -> JsString(testUtr),
-      ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+      ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+      ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
     ))
     IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
     IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -74,7 +75,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
             eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
           )),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -101,7 +103,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(
             eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None
           )),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When(s"GET ${routes.YourIncomeSourceToSignUpController.show.url} is called")
@@ -151,7 +154,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -225,7 +229,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -247,7 +252,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel.copy(confirmed = false)))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel))
@@ -269,7 +275,8 @@ class YourIncomeSourceToSignUpControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK, Json.toJson(testFullPropertyModel))
           IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.OverseasProperty, OK, Json.toJson(testFullOverseasPropertyModel.copy(confirmed = false)))

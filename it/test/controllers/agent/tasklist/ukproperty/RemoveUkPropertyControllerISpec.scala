@@ -19,6 +19,7 @@ package controllers.agent.tasklist.ukproperty
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino, testUtr}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.SignUp
@@ -50,7 +51,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, OK,
         Json.toJson(PropertyModel()))
@@ -71,7 +73,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.Property, NO_CONTENT,
         Json.toJson(PropertyModel()))
@@ -107,7 +110,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(Property)
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetails(SubscriptionDataKeys.IncomeSourceConfirmation)
@@ -131,7 +135,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST client/business/remove-uk-property-business is called")
@@ -154,7 +159,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST /business/remove-uk-property-business is called")
@@ -176,7 +182,8 @@ class RemoveUkPropertyControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteSubscriptionDetailsFailure(Property)
 

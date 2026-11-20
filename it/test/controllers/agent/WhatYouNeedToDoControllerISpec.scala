@@ -19,7 +19,7 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
-import helpers.IntegrationTestModels.testAccountingYearCurrent
+import helpers.IntegrationTestModels.{testAccountingYearCurrent, testUserDetails}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.EligibilityStatus
@@ -56,7 +56,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
         ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
@@ -91,7 +92,8 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
       ))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")

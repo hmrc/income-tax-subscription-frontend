@@ -42,7 +42,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("GET /overseas-property-commencement-date is called")
@@ -65,7 +66,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("GET /overseas-property-commencement-date is called")
@@ -94,7 +96,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
 
           When("POST /overseas-property-start-date is called")
@@ -121,7 +124,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
 
           When("POST /overseas-property-start-date is called")
@@ -144,7 +148,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -166,7 +171,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -188,7 +194,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST /overseas-property-start-date is called")
@@ -212,7 +219,8 @@ class OverseasPropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         When("POST /overseas-property-start-date is called")

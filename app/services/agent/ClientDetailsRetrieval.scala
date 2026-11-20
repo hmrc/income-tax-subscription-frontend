@@ -17,10 +17,11 @@
 package services.agent
 
 import models.SessionData
-import play.api.mvc.Request
+import models.requests.agent.IdentifierRequest
+import play.api.mvc.{AnyContent, Request}
 import services.NinoService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.{ClientDetails, UserMatchingSessionRequestUtil}
+import utilities.UserMatchingSessionUtil.ClientDetails
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,10 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ClientDetailsRetrieval @Inject()(ninoService: NinoService)(implicit ec: ExecutionContext) {
 
-  def getClientDetails(sessionData: SessionData)(implicit request: Request[_], hc: HeaderCarrier): Future[ClientDetails] = {
+  def getClientDetails(sessionData: SessionData)(implicit request: IdentifierRequest[_], hc: HeaderCarrier): Future[ClientDetails] = {
     ninoService.getNino(sessionData) map { nino =>
-      request.fetchClientName match {
-        case Some(name) => ClientDetails(name, nino)
+      sessionData.fetchUserDetails match {
+        case Some(result) => ClientDetails(s"${result.firstName} ${result.lastName}", nino)
         case None => throw new InternalServerException("[ClientDetailsRetrieval][getClientDetails] - Unable to retrieve name from session")
       }
     }
