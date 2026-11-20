@@ -16,6 +16,7 @@
 
 package controllers.agent.matching
 
+import models.agent.JourneyStep.{SignPosted, SignUp}
 import common.Constants.ITSASessionKeys.FailedClientMatching
 import config.AppConfig
 import controllers.SignUpBaseController
@@ -31,7 +32,6 @@ import services.*
 import services.PrePopDataService.PrePopResult
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utilities.UserMatchingSessionUtil.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -110,7 +110,6 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
     sessionDataService.saveJourneyStep(SignPosted).map { _ =>
       Redirect(controllers.agent.eligibility.routes.CannotTakePartController.show)
         .removingFromSession(FailedClientMatching)
-        .clearUserDetailsExceptName
     }
   }
 

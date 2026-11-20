@@ -25,7 +25,7 @@ import models.Yes.YES
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.*
 import play.api.libs.json.{JsBoolean, JsString}
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{AnyContent, Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.MockSessionDataService
@@ -51,10 +51,11 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
           ITSASessionKeys.EMAIL_PASSED -> JsBoolean(true)
         ))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteUserDetails(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
         mockSaveJourneyState()
 
-        val res = await(service.clearAgentSession(testCall, sessionData))
+        val res: Result = await(service.clearAgentSession(testCall, sessionData))
         res.header.status mustBe SEE_OTHER
       }
       "clearing session with email not passed but consent passed" in new Setup {
@@ -62,10 +63,11 @@ class SessionClearingServiceSpec extends PlaySpec with MockSessionDataService {
           ITSASessionKeys.CAPTURE_CONSENT -> JsString(YES)
         ))
         mockDeleteSessionAll(Right(DeleteSessionDataSuccessResponse))
+        mockDeleteUserDetails(Right(DeleteSessionDataSuccessResponse))
         mockSaveEmailPassed(true)(Right(SaveSessionDataSuccessResponse))
         mockSaveJourneyState()
 
-        val res = await(service.clearAgentSession(testCall, sessionData))
+        val res: Result = await(service.clearAgentSession(testCall, sessionData))
         res.header.status mustBe SEE_OTHER
       }
     }

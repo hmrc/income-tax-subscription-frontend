@@ -16,82 +16,10 @@
 
 package utilities
 
-import models.DateModel
-import models.usermatching.UserDetailsModel
-import play.api.mvc.{AnyContent, Request, Result}
-
 import scala.util.matching.Regex
 
 object UserMatchingSessionUtil {
-
-  val firstName = "FirstName"
-  val lastName = "LastName"
-  val dobD = "DOBD"
-  val dobM = "DOBM"
-  val dobY = "DOBY"
-  val nino = "MatchingNino"
-
-  implicit class UserMatchingSessionResultUtil(result: Result) {
-    def saveUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]): Result =
-      result.addingToSession(
-        firstName -> userDetails.firstName,
-        lastName -> userDetails.lastName,
-        // this is stored seperately in order to preserve the user's exact input, otherwise leading zeros may be lost
-        dobD -> userDetails.dateOfBirth.day,
-        dobM -> userDetails.dateOfBirth.month,
-        dobY -> userDetails.dateOfBirth.year,
-        nino -> userDetails.nino
-      )
-
-    def clearAllUserDetails(implicit request: Request[_]): Result =
-      result.removingFromSession(
-        firstName,
-        lastName,
-        dobD,
-        dobM,
-        dobY,
-        nino
-      )
-
-    def clearUserDetailsExceptName(implicit request: Request[AnyContent]): Result =
-      result.removingFromSession(
-        dobD,
-        dobM,
-        dobY,
-        nino
-      )
-
-    def clearUserName(implicit request: Request[AnyContent]): Result =
-      result.removingFromSession(
-        firstName,
-        lastName
-      )
-  }
-
-  implicit class UserMatchingSessionRequestUtil(request: Request[_]) {
-    def fetchUserDetails: Option[UserDetailsModel] =
-      (request.session.get(firstName),
-        request.session.get(lastName),
-        request.session.get(dobD),
-        request.session.get(dobM),
-        request.session.get(dobY),
-        request.session.get(nino)) match {
-        case (Some(f), Some(l), Some(dd), Some(dm), Some(dy), Some(n)) =>
-          Some(UserDetailsModel(firstName = f, lastName = l, nino = n, dateOfBirth = DateModel(dd, dm, dy)))
-        case _ => None
-      }
-
-    def fetchClientName: Option[String] =
-      (request.session.get(firstName),
-        request.session.get(lastName)) match {
-        case (Some(f), Some(l)) =>
-          Some(f + " " + l)
-        case _ => None
-      }
-
-  }
-
-
+  
   case class ClientDetails(name: String, nino: String) {
 
     private val ninoRegex: Regex = """^([a-zA-Z]{2})\s*(\d{2})\s*(\d{2})\s*(\d{2})\s*([a-zA-Z])$""".r
@@ -101,7 +29,5 @@ object UserMatchingSessionUtil {
         s"$startLetters $firstDigits $secondDigits $thirdDigits $finalLetter"
       case other => other
     }
-
   }
-
 }

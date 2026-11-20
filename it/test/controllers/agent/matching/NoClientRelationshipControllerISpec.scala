@@ -19,13 +19,14 @@ package controllers.agent.matching
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.{SignPosted, UserMatching}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 import play.api.libs.ws.WSResponse
 
 class NoClientRelationshipControllerISpec extends ComponentSpecBase {
@@ -35,7 +36,8 @@ class NoClientRelationshipControllerISpec extends ComponentSpecBase {
 
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
-      ITSASessionKeys.JourneyStateKey -> JsString(journeyState)
+      ITSASessionKeys.JourneyStateKey -> JsString(journeyState),
+      ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.getNoClientRelationship()

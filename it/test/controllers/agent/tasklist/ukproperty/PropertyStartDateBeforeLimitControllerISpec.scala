@@ -20,6 +20,7 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import forms.agent.UkPropertyStartDateBeforeLimitForm
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testUtr}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.SignUp
@@ -59,7 +60,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
@@ -78,7 +80,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
@@ -95,7 +98,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
 
           val res = IncomeTaxSubscriptionFrontend.ukPropertyStartDateBeforeLimit()
@@ -130,7 +134,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
         ))
 
         val res = IncomeTaxSubscriptionFrontend.submitUkPropertyStartDateBeforeLimit()(None)
@@ -147,7 +152,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
           ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(Property)
 
@@ -166,7 +172,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -184,7 +191,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -202,7 +210,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -224,7 +233,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -243,7 +253,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -262,7 +273,8 @@ class PropertyStartDateBeforeLimitControllerISpec extends ComponentSpecBase {
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)

@@ -155,7 +155,7 @@ trait ComponentSpecBase extends AnyWordSpecLike with Matchers with OptionValues 
       .futureValue
   }
 
-  object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
+  object IncomeTaxSubscriptionFrontend {
     val csrfToken: String = UUID.randomUUID().toString
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty, includeSPSEntityId: Boolean = true, includeState: Boolean = true): WSResponse = {
