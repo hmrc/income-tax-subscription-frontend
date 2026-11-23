@@ -58,6 +58,10 @@ case class SubscriptionData(data: Map[String, JsValue]) {
     }
   }
 
+  def hasNewEncryptionFlag: Boolean = {
+    data.contains("newEncryption")
+  }
+
 }
 
 

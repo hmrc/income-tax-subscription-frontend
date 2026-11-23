@@ -298,4 +298,12 @@ class SubscriptionDetailsService @Inject()(incomeTaxSubscriptionConnector: Incom
     }
   }
 
+  def saveNewEncryptionFlag(reference: String)(implicit hc: HeaderCarrier): Future[PostSubscriptionDetailsResponse] = {
+    incomeTaxSubscriptionConnector.saveSubscriptionDetails(
+      reference = reference,
+      id = "newEncryption",
+      data = true
+    )
+  }
+
 }
