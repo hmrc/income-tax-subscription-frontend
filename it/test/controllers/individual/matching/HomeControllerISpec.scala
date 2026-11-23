@@ -26,7 +26,7 @@ import helpers.servicemocks.*
 import helpers.servicemocks.GetITSAStatusStub.stubGetITSAStatus
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import models.common.business.{Address, Country, SelfEmploymentData}
-import models.common.{OverseasPropertyModel, PropertyModel}
+import models.common.{OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
 import models.individual.JourneyStep.PreSignUp
 import models.prepop.{PrePopData, PrePopSelfEmployment}
 import models.status.GetITSAStatus.NoStatus
@@ -182,7 +182,7 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         PrePopStub.stubGetPrePop(testNino)(OK, Json.toJson(fullPrePopData))
         IncomeTaxSubscriptionConnectorStub.stubSavePrePopFlag()
 
-        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinessDetails(selfEmploymentDetails)
+        IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
         IncomeTaxSubscriptionConnectorStub.stubSaveProperty(PropertyModel())
         IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel())
         IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -192,6 +192,9 @@ class HomeControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
         res must have(
           httpStatus(SEE_OTHER),
           redirectURI(routes.CheckIRSAEnrolmentController.show.url)
+        )
+        IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(
+          SoleTraderBusinesses(selfEmploymentDetails.map(_.toSoleTraderBusiness))
         )
       }
     }

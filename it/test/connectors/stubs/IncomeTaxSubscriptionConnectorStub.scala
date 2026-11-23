@@ -22,12 +22,13 @@ import helpers.WiremockHelper
 import helpers.servicemocks.WireMockMethods
 import models.common.business.SelfEmploymentData
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, SoleTraderBusinesses}
+import org.scalatest.matchers.must.Matchers
 import play.api.http.Status
 import play.api.libs.json.*
 import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import utilities.SubscriptionDataKeys.*
 
-object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
+object IncomeTaxSubscriptionConnectorStub extends WireMockMethods with Matchers {
 
   implicit val SubscriptionDetailsFormat: OFormat[SubscriptionData] = Json.format[SubscriptionData]
 
@@ -103,6 +104,20 @@ object IncomeTaxSubscriptionConnectorStub extends WireMockMethods {
   def stubSaveSubscriptionDetails[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
     when(method = POST, uri = subscriptionUri(id), Json.toJson(body))
       .thenReturn(Status.OK)
+  }
+
+  def stubSaveSoleTraderBusinesses(): Unit = {
+    when(method = POST, uri = subscriptionUri(SoleTraderBusinessesKey)).thenReturn(Status.OK)
+  }
+
+  def verifySaveSoleTraderBusinesses(expected: SoleTraderBusinesses, count: Int = 1)
+                                   (implicit sensitiveFormat: Format[SensitiveString]): Unit = {
+    val requests = WireMock.findAll(WireMock.postRequestedFor(WireMock.urlEqualTo(subscriptionUri(SoleTraderBusinessesKey))))
+    requests.size() mustBe count
+    // AES-GCM uses a fresh nonce, so compare decrypted models rather than ciphertext.
+    requests.forEach { request =>
+      Json.parse(request.getBodyAsString).as[SoleTraderBusinesses](SoleTraderBusinesses.encryptedFormat) mustBe expected
+    }
   }
 
   def stubSaveSubscriptionDetailsFailure(id: String): Unit = {

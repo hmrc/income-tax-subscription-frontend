@@ -18,6 +18,7 @@ package services
 
 import common.Constants.ITSASessionKeys
 import config.{AppConfig, MockConfig}
+import crypto.ComposeCryptoService
 import models.common.business.*
 import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel, SoleTraderBusinesses as StoredSoleTraderBusinesses}
 import models.status.MandationStatus.{Mandated, Voluntary}
@@ -44,14 +45,14 @@ import scala.concurrent.Future
 class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOneAppPerSuite with MockSubscriptionDetailsService {
 
   val appConfig: AppConfig = MockConfig
-  val crypto: ApplicationCrypto = app.injector.instanceOf[ApplicationCrypto]
-  implicit val jsonCrypto: Encrypter with Decrypter = crypto.JsonCrypto
+  val crypto: ComposeCryptoService = app.injector.instanceOf[ComposeCryptoService]
+  implicit val jsonCrypto: Encrypter with Decrypter = crypto.composedJsonCrypto
   implicit val sensitiveFormat: Format[SensitiveString] = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)
 
   trait Setup {
     val service: GetCompleteDetailsService = new GetCompleteDetailsService(
       subscriptionDetailsService = mockSubscriptionDetailsService,
-      applicationCrypto = crypto
+      composeCryptoService = crypto
     )
   }
 
@@ -156,8 +157,9 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
   private def buildSubscriptionData(selfEmployments: Seq[SelfEmploymentData] = Seq.empty,
                                     ukProperty: Option[PropertyModel] = None,
                                     foreignProperty: Option[OverseasPropertyModel],
-                                    selectedTaxYear: Option[AccountingYearModel] = None): SubscriptionData = {
-    implicit val encryptedFormat: OFormat[StoredSoleTraderBusinesses] = StoredSoleTraderBusinesses.encryptedFormat
+                                    selectedTaxYear: Option[AccountingYearModel] = None,
+                                    encryptionFormat: Format[SensitiveString] = sensitiveFormat): SubscriptionData = {
+    implicit val encryptedFormat: OFormat[StoredSoleTraderBusinesses] = StoredSoleTraderBusinesses.encryptedFormat(encryptionFormat)
 
     val entries: Seq[(String, JsValue)] = Seq(
       Option.when(selfEmployments.nonEmpty)(
@@ -172,6 +174,22 @@ class GetCompleteDetailsServiceSpec extends PlaySpec with Matchers with GuiceOne
   }
 
   "getCompleteSignUpDetails" must {
+    "return complete details from legacy AES-encrypted subscription data" in new Setup {
+      val legacyFormat = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)(
+        implicitly[Format[String]],
+        app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+      )
+      mockGetAllSubscriptionData(Some(buildSubscriptionData(
+        selfEmployments = Seq(selfEmployment),
+        ukProperty = Some(ukProperty),
+        foreignProperty = Some(foreignProperty),
+        selectedTaxYear = Some(accountingYear),
+        encryptionFormat = legacyFormat
+      )))
+
+      await(service.getCompleteSignUpDetails("reference", sessionData)(hc)) mustBe Right(completeDetails)
+    }
+
     "return a complete details model" when {
       "all fetches were successful and are full + confirmed data sets" in new Setup {
         mockGetAllSubscriptionData(Some(buildSubscriptionData(
