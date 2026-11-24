@@ -17,6 +17,7 @@
 package services
 
 import crypto.ComposeCryptoService
+import models.SubscriptionData
 import models.common.business.SelfEmploymentData
 import play.api.libs.json.Format
 import services.MigrateEncryptedDataService.{MigrateEncryptedDataResponse, MigrationNotRequired, SuccessfullyMigratedEncryptedData}
@@ -24,6 +25,7 @@ import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 import uk.gov.hmrc.crypto.json.JsonEncryption
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import utilities.SubscriptionDataKeys.SoleTraderBusinessesKey
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,21 +41,25 @@ class MigrateEncryptedDataService @Inject()(crypto: ComposeCryptoService,
 
   def migrateEncryptedData(reference: String)
                           (implicit hc: HeaderCarrier): Future[MigrateEncryptedDataResponse] = {
-    subscriptionDetailsService.getAllSubscriptionData(reference).flatMap {
+    subscriptionDetailsService.getAllSubscriptionData(reference).flatMap(migrateBusinesses(reference, _))
+  }
+
+  private def migrateBusinesses(reference: String, subscriptionData: Option[SubscriptionData])
+                               (implicit hc: HeaderCarrier): Future[MigrateEncryptedDataResponse] = {
+    subscriptionData match {
       case Some(subscriptionData) if subscriptionData.hasNewEncryptionFlag =>
         Future.successful(MigrationNotRequired)
       case Some(subscriptionData) =>
-        for {
-          _ <- migrateBusinesses(reference, subscriptionData.fetchAllSelfEmployments)
-          result <- saveNewEncryptionFlag(reference, SuccessfullyMigratedEncryptedData)
-        } yield result
+        subscriptionData.data.get(SoleTraderBusinessesKey)
+          .fold(Future.unit)(_ => saveBusinesses(reference, subscriptionData.fetchAllSelfEmployments))
+          .flatMap(_ => saveNewEncryptionFlag(reference, SuccessfullyMigratedEncryptedData))
       case None =>
         saveNewEncryptionFlag(reference, MigrationNotRequired)
     }
   }
 
-  private def migrateBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
-                               (implicit hc: HeaderCarrier): Future[Unit] = {
+  private def saveBusinesses(reference: String, selfEmploymentData: Seq[SelfEmploymentData])
+                            (implicit hc: HeaderCarrier): Future[Unit] = {
     subscriptionDetailsService.saveBusinessesFromSelfEmploymentData(reference, selfEmploymentData).map {
       case Right(_) => ()
       case Left(_) => throw new InternalServerException("Failed to save newly encrypted self employment data")

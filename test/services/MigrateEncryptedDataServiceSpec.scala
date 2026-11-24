@@ -132,13 +132,15 @@ class MigrateEncryptedDataServiceSpec extends PlaySpec with GuiceOneAppPerSuite 
       verifyNoMoreInteractions(mockSubscriptionDetailsService)
     }
 
-    "migrate an empty business list when subscription data has no businesses" in {
+    "save only the flag when subscription data has no businesses" in {
       mockGetAllSubscriptionData(Some(SubscriptionData(Map.empty)))
-      mockSaveBusinesses(Seq.empty)(Right(PostSubscriptionDetailsSuccessResponse))
       mockSaveFlag(Right(PostSubscriptionDetailsSuccessResponse))
 
       await(service.migrateEncryptedData(reference)) mustBe SuccessfullyMigratedEncryptedData
-      verifySaveBusinesses(Seq.empty)
+
+      verify(mockSubscriptionDetailsService).getAllSubscriptionData(reference)(hc)
+      verify(mockSubscriptionDetailsService).saveNewEncryptionFlag(reference)(hc)
+      verifyNoMoreInteractions(mockSubscriptionDetailsService)
     }
 
     "save only the new encryption flag when subscription data is absent" in {
