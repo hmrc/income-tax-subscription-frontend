@@ -17,12 +17,15 @@
 package controllers.agent.matching
 
 import common.Constants.ITSASessionKeys
+import com.github.tomakehurst.wiremock.client.WireMock
 import config.MockConfig.appConfig.ggLoginUrl
 import config.featureswitch.FeatureSwitch.ThrottlingFeature
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
+import helpers.WiremockHelper
 import helpers.servicemocks.PrePopStub
+import helpers.IntegrationTestModels.testBusiness
 import models.EligibilityStatus
 import models.agent.JourneyStep.UserMatching
 import models.common.SoleTraderBusinesses
@@ -30,10 +33,14 @@ import models.common.business.*
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.{MandationStatus, MandationStatusModel}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NO_CONTENT, OK, SEE_OTHER}
-import play.api.libs.json.{JsBoolean, JsString, Json}
+import play.api.libs.json.{Format, JsBoolean, JsString, Json}
 import services.AgentStartOfJourneyThrottle
 import utilities.SubscriptionDataKeys
 import utilities.agent.TestConstants.{testNino, testUtr}
+import uk.gov.hmrc.crypto.ApplicationCrypto
+import uk.gov.hmrc.crypto.SymmetricCryptoFactory.aesGcmCryptoFromConfig
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
+import uk.gov.hmrc.crypto.json.JsonEncryption
 
 class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
 
@@ -106,6 +113,106 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
             redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
           )
           IncomeTaxSubscriptionConnectorStub.verifySaveSoleTraderBusinesses(prePopBusinesses)
+        }
+      }
+      // TEMPORARY TESTS: Remove these encryption-migration scenarios after the migration period is complete.
+      "the client has legacy-encrypted businesses and no new encryption flag" should {
+        "read the legacy data, save it with the new encryption, then save the flag before continuing" in {
+          AuthStub.stubAuthSuccess()
+          stubFullSession()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+            OK,
+            Json.obj(SubscriptionDataKeys.SoleTraderBusinessesKey -> legacyEncryptedBusinesses)
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
+          IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean]("newEncryption", true)
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+          WiremockHelper.verifyGet(IncomeTaxSubscriptionConnectorStub.allSubscriptionDataUri(), Some(1))
+          WiremockHelper.verifyPost(
+            IncomeTaxSubscriptionConnectorStub.subscriptionUri("newEncryption"),
+            Some("true"),
+            Some(1)
+          )
+          verifyBusinessesSavedWithAesGcm(legacyBusinesses)
+        }
+      }
+
+      "the client already has the new encryption flag" should {
+        "not rewrite the businesses or save the flag again" in {
+          AuthStub.stubAuthSuccess()
+          stubFullSession()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+            OK,
+            Json.obj(
+              SubscriptionDataKeys.SoleTraderBusinessesKey -> gcmEncryptedBusinesses,
+              "newEncryption" -> JsBoolean(true)
+            )
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+          WiremockHelper.verifyGet(IncomeTaxSubscriptionConnectorStub.allSubscriptionDataUri(), Some(1))
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri(SubscriptionDataKeys.SoleTraderBusinessesKey), count = Some(0))
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri("newEncryption"), count = Some(0))
+        }
+      }
+
+      "the client has other subscription data but no encrypted businesses" should {
+        "save the flag without creating an empty businesses record" in {
+          AuthStub.stubAuthSuccess()
+          stubFullSession()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+            OK,
+            Json.obj(SubscriptionDataKeys.PrePopFlag -> JsBoolean(true))
+          )
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean]("newEncryption", true)
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri("newEncryption"), Some("true"), Some(1))
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri(SubscriptionDataKeys.SoleTraderBusinessesKey), count = Some(0))
+        }
+      }
+
+      "the client has no subscription data" should {
+        "save the new encryption flag without writing an empty businesses record" in {
+          AuthStub.stubAuthSuccess()
+          stubFullSession()
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(NO_CONTENT)
+          IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, OK, JsBoolean(true))
+          IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean]("newEncryption", true)
+
+          val res = IncomeTaxSubscriptionFrontend.getConfirmedClientResolver()
+
+          res must have(
+            httpStatus(SEE_OTHER),
+            redirectURI(controllers.agent.tasklist.taxyear.routes.WhenDoYouWantToStartController.show().url)
+          )
+          WiremockHelper.verifyGet(IncomeTaxSubscriptionConnectorStub.allSubscriptionDataUri(), Some(1))
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri("newEncryption"), Some("true"), Some(1))
+          WiremockHelper.verifyPost(IncomeTaxSubscriptionConnectorStub.subscriptionUri(SubscriptionDataKeys.SoleTraderBusinessesKey), count = Some(0))
         }
       }
       "CY is eligible and voluntary, CY+1 is eligible and mandated" should {
@@ -185,6 +292,10 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
       "there was an error returned from the pre-pop connection" in {
         AuthStub.stubAuthSuccess()
         stubFullSession()
+        IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+          OK,
+          Json.obj("newEncryption" -> JsBoolean(true))
+        )
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.EligibilityInterruptPassed, NO_CONTENT)
         IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
         PrePopStub.stubGetPrePop(testNino)(
@@ -217,6 +328,10 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
   }
 
   def stubFullPrePop(): Unit = {
+    IncomeTaxSubscriptionConnectorStub.stubGetAllSubscriptionDetails(
+      OK,
+      Json.obj("newEncryption" -> JsBoolean(true))
+    )
     IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SubscriptionDataKeys.PrePopFlag, NO_CONTENT)
     PrePopStub.stubGetPrePop(testNino)(
       status = OK,
@@ -243,6 +358,42 @@ class ConfirmedClientResolverControllerISpec extends ComponentSpecBase {
     IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
     IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetails[Boolean](SubscriptionDataKeys.PrePopFlag, true)
     IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
+  }
+
+  private lazy val legacySensitiveFormat: Format[SensitiveString] = {
+    JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)(
+      implicitly[Format[String]],
+      app.injector.instanceOf[ApplicationCrypto].JsonCrypto
+    )
+  }
+
+  private val legacyBusinessesModel = SoleTraderBusinesses(Seq(
+    testBusiness("legacy-business").copy(
+      businessName = Some(BusinessNameModel("Legacy business")),
+      businessDisplayName = Some("Legacy display name")
+    ).toSoleTraderBusiness
+  ))
+
+  private def legacyEncryptedBusinesses =
+    Json.toJson(legacyBusinessesModel)(SoleTraderBusinesses.encryptedFormat(legacySensitiveFormat))
+
+  private def gcmEncryptedBusinesses =
+    Json.toJson(legacyBusinessesModel)(SoleTraderBusinesses.encryptedFormat(sensitiveFormat))
+
+  private val legacyBusinesses = legacyBusinessesModel
+
+  private def verifyBusinessesSavedWithAesGcm(expected: SoleTraderBusinesses): Unit = {
+    val requests = WireMock.findAll(WireMock.postRequestedFor(
+      WireMock.urlEqualTo(IncomeTaxSubscriptionConnectorStub.subscriptionUri(SubscriptionDataKeys.SoleTraderBusinessesKey))
+    ))
+    requests.size() mustBe 1
+
+    val gcmSensitiveFormat = JsonEncryption.sensitiveEncrypterDecrypter(SensitiveString.apply)(
+      implicitly[Format[String]],
+      aesGcmCryptoFromConfig("json.encryption.gcm", app.configuration.underlying)
+    )
+    Json.parse(requests.get(0).getBodyAsString)
+      .as[SoleTraderBusinesses](SoleTraderBusinesses.encryptedFormat(gcmSensitiveFormat)) mustBe expected
   }
 
   private val prePopBusinesses = SoleTraderBusinesses(

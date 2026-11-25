@@ -46,6 +46,7 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
                                         auditingService: AuditingService,
                                         ninoService: NinoService,
                                         utrService: UTRService,
+                                        migrateEncryptedDataService: MigrateEncryptedDataService,
                                         sessionDataService: SessionDataService,
                                         val appConfig: AppConfig)
                                        (implicit ec: ExecutionContext,
@@ -87,9 +88,11 @@ class ConfirmedClientResolver @Inject()(identify: IdentifierAction,
 
   private def handleEligibleUser(nino: String, eligibilityStatus: EligibilityStatus)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     referenceRetrieval.getReference(Some(request.arn), request.sessionData) flatMap { reference =>
-      handlePrePop(reference, nino) {
-        sessionDataService.saveJourneyStep(SignUp).flatMap { _ =>
-          goToSignUpClient(eligibilityStatus)
+      migrateEncryptedDataService.migrateEncryptedData(reference).flatMap { _ =>
+        handlePrePop(reference, nino) {
+          sessionDataService.saveJourneyStep(SignUp).flatMap { _ =>
+            goToSignUpClient(eligibilityStatus)
+          }
         }
       }
     }
