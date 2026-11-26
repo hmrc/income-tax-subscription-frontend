@@ -51,39 +51,47 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
         document().mainContent.selectNth("p", 2).text mustBe WhatYouNeedToDoMessages.p2
       }
 
-      "have a page second sub-heading" in {
-        document().mainContent.selectNth("h2", 3).text mustBe WhatYouNeedToDoMessages.h2_2
+      "have a third paragraph" in {
+        document().mainContent.selectNth("p", 3).text mustBe WhatYouNeedToDoMessages.p3
       }
 
-      "have the third paragraph" which {
-        def paragraph: Element = document().mainContent.selectNth("p", 3)
+      "have the fourth paragraph" which {
+        def paragraph: Element = document().mainContent.selectNth("p", 4)
 
         "has the correct full text" in {
-          paragraph.text mustBe WhatYouNeedToDoMessages.p3
+          paragraph.text mustBe WhatYouNeedToDoMessages.p4
         }
         "has a link within the text which opens in a new tab" in {
           def link: Element = paragraph.selectHead("a")
-          link.attr("href") mustBe WhatYouNeedToDoMessages.p3LinkHref
+          link.attr("href") mustBe WhatYouNeedToDoMessages.p4_link
           link.attr("target") mustBe "_blank"
           link.attr("rel") mustBe "noopener noreferrer"
         }
 
       }
 
-      "have the fourth paragraph" in {
-        document().mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.p4
+      "have a page second sub-heading" in {
+        document().mainContent.selectNth("h2", 3).text mustBe WhatYouNeedToDoMessages.h2_2
       }
 
       "have the fifth paragraph" in {
-        document().mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.p5
+        document().mainContent.selectNth("p", 5).text mustBe WhatYouNeedToDoMessages.p5
       }
 
       "have the sixth paragraph" in {
-        val paragraph: Element = document().mainContent.selectNth("p", 7)
-        paragraph.text mustBe WhatYouNeedToDoMessages.p6
+        document().mainContent.selectNth("p", 6).text mustBe WhatYouNeedToDoMessages.p6
+      }
+
+      "have the seventh paragraph" in {
+        document().mainContent.selectNth("p", 7).text mustBe WhatYouNeedToDoMessages.p7
+      }
+
+      "have the eighth paragraph" in {
+        val paragraph: Element = document().mainContent.selectNth("p", 8)
+        paragraph.text mustBe WhatYouNeedToDoMessages.p8
 
         val link: Element = paragraph.selectHead("a")
-        link.attr("href") mustBe WhatYouNeedToDoMessages.p6_link
+        link.attr("href") mustBe WhatYouNeedToDoMessages.p8_link
       }
 
       "have a form" which {
@@ -115,15 +123,17 @@ class WhatYouNeedToDoViewSpec extends ViewSpec {
     val title = "What penalties apply in Making Tax Digital for Income Tax"
     val heading = "What penalties apply in Making Tax Digital for Income Tax"
     val h2_1 = "If your client is required to use Making Tax Digital for Income Tax"
-    val p1 = "If your client is required to use Making Tax Digital for Income Tax from 6 April 2026, HMRC will not apply penalty points for late quarterly updates for the first tax year (2026 to 2027)."
-    val p2 = "Penalties will still apply for late tax returns or if a tax bill is paid after the due date."
+    val p1 = "If your client is required to use Making Tax Digital for Income Tax, HMRC will not apply penalty points for late quarterly updates for the first tax year. Penalties will apply for the next tax year."
+    val p2 = "For example, if your client is required to use it from 6 April 2027, they will not receive penalty points for the 2027 to 2028 tax year."
+    val p3 = "Penalties will still apply for late tax returns or if a tax bill is paid after the due date."
+    val p4 = "Read more about changes to penalties (opens in new tab)"
+    val p4_link = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
     val h2_2 = "If your client is signing up voluntarily"
-    val p3LinkHref = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
-    val p3 = "Read more about changes to penalties (opens in new tab)"
-    val p4 = "Whilst your client is a volunteer, penalties will not apply for sending quarterly updates late."
-    val p5 = "Your client can opt out of Making Tax Digital for Income Tax at any time. If they do this, the new penalties will still apply."
-    val p6 = "Read more about changes to penalties that apply if you are volunteering (opens in new tab)"
-    val p6_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
+    val p5 = "Your client is agreeing that our new penalties will apply if their tax return is submitted late, or their tax bill is paid late."
+    val p6 = "Your client can opt out of Making Tax Digital for Income Tax at any time. If they do this, the new penalties will still apply."
+    val p7 = "While your client is a volunteer, penalties will not apply for sending quarterly updates late."
+    val p8 = "Read more about changes to penalties that apply if you are volunteering (opens in new tab)"
+    val p8_link = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
     val agreeAndContinue: String = "Agree and continue"
   }
 }
