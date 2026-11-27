@@ -17,32 +17,42 @@
 package services.agent
 
 import models.SessionData
+import models.requests.agent.IdentifierRequest
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import services.mocks.MockNinoService
+import services.mocks.MockSessionDataService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
+import utilities.individual.TestConstants.testUserDetails
+import utilities.MockSensitiveStringProvider
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ClientDetailsRetrievalSpec extends PlaySpec with Matchers with MockNinoService {
+class ClientDetailsRetrievalSpec extends PlaySpec
+  with Matchers
+  with MockNinoService
+  with MockSessionDataService
+  with MockSensitiveStringProvider {
 
-  val testNino: String = "test-nino"
+  val testNino: String = testUserDetails.nino
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val request: FakeRequest[AnyContent] = FakeRequest()
 
-  val firstName: String = "FirstName"
-  val lastName: String = "LastName"
+  val firstName: String = testUserDetails.firstName
+  val lastName: String = testUserDetails.lastName
   val clientDetails: ClientDetails = ClientDetails(s"$firstName $lastName", testNino)
+  val sessionData: SessionData = mockSessionData
+  implicit val identifierRequest: IdentifierRequest[AnyContent] = IdentifierRequest(request, "", sessionData)
 
   trait Setup {
     val service: ClientDetailsRetrieval = new ClientDetailsRetrieval(
-      mockNinoService
+      mockNinoService,
+      mockSensitiveStringProvider
     )
   }
 
@@ -50,18 +60,17 @@ class ClientDetailsRetrievalSpec extends PlaySpec with Matchers with MockNinoSer
     "return client details" when {
       "the clients name is present in session" in new Setup {
         mockGetNino(testNino)
+        mockFetchUserDetails(Some(testUserDetails))
 
-        await(service.getClientDetails(SessionData())(request.withSession(
-          UserMatchingSessionUtil.firstName -> firstName,
-          UserMatchingSessionUtil.lastName -> lastName
-        ), implicitly)) mustBe clientDetails
+        await(service.getClientDetails(sessionData)(identifierRequest, implicitly)) mustBe clientDetails
       }
     }
     "return an exception" when {
       "the clients name is not present in session" in new Setup {
         mockGetNino(testNino)
+        mockFetchUserDetails(None)
 
-        intercept[InternalServerException](await(service.getClientDetails(SessionData())(request, implicitly)))
+        intercept[InternalServerException](await(service.getClientDetails(sessionData)(identifierRequest, implicitly)))
           .message mustBe "[ClientDetailsRetrieval][getClientDetails] - Unable to retrieve name from session"
       }
     }

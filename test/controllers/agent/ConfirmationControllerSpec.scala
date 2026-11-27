@@ -17,6 +17,7 @@
 package controllers.agent
 
 import common.Constants.ITSASessionKeys
+import connectors.mocks.MockSessionDataConnector
 import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockConfirmationJourneyRefiner, MockIdentifierAction}
 import models.No.NO
@@ -43,7 +44,8 @@ class ConfirmationControllerSpec extends ControllerSpec
   with MockIdentifierAction
   with MockConfirmationJourneyRefiner
   with MockSubscriptionDetailsService
-  with MockSessionDataService {
+  with MockSessionDataService
+  with MockSessionDataConnector {
 
   "show" must {
     "return OK with the page content" when {

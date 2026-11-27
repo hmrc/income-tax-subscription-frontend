@@ -22,7 +22,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import play.api.data.{Form, FormError}
 import play.api.test.FakeRequest
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.ukproperty.PropertyStartDate
 

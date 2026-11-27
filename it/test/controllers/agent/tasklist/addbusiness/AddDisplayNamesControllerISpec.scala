@@ -20,14 +20,15 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.AgentURI.globalCheckYourAnswersURI
 import helpers.IntegrationTestConstants.{testNino, testUtr}
-import helpers.IntegrationTestModels.testBusiness
+import helpers.IntegrationTestModels.{testBusiness, testUserDetails}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.SignUp
 import models.common.SoleTraderBusinesses
 import models.common.business.BusinessNameModel
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.*
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 
 class AddDisplayNamesControllerISpec extends ComponentSpecBase {
 
@@ -47,7 +48,9 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
       ITSASessionKeys.UTR -> JsString(testUtr),
-      ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+      ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+      ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+        (UserDetailsModel.encryptedFormat(sensitiveFormat))
     ))
   }
 
@@ -56,7 +59,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       stubJourney()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
 
-      val result = IncomeTaxSubscriptionFrontend.get(path, ClientData.basicClientData)
+      val result = IncomeTaxSubscriptionFrontend.get(path)
 
       result must have(
         httpStatus(OK),
@@ -73,7 +76,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       IncomeTaxSubscriptionConnectorStub.stubSaveSoleTraderBusinesses()
       IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
 
-      val result = IncomeTaxSubscriptionFrontend.post(path, ClientData.basicClientData)(
+      val result = IncomeTaxSubscriptionFrontend.post(path)(
         Map(
           "business-display-name[0]" -> Seq("First business"),
           "business-display-name[1]" -> Seq("Second business")
@@ -91,7 +94,7 @@ class AddDisplayNamesControllerISpec extends ComponentSpecBase {
       stubJourney()
       IncomeTaxSubscriptionConnectorStub.stubSoleTraderBusinessesDetails(OK, businesses)
 
-      val result = IncomeTaxSubscriptionFrontend.post(path, ClientData.basicClientData)(
+      val result = IncomeTaxSubscriptionFrontend.post(path)(
         Map(
           "business-display-name[0]" -> Seq("Same business"),
           "business-display-name[1]" -> Seq("Same business")

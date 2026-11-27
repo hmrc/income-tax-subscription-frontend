@@ -23,7 +23,6 @@ import models.{SessionData, YesNo}
 import play.api.mvc.*
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utilities.UserMatchingSessionUtil.UserMatchingSessionResultUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,8 +38,14 @@ class SessionClearingService @Inject()(sessionDataService: SessionDataService)
       _ <- saveEmailConsentCaptured(emailConsentCaptured)
       _ <- sessionDataService.saveJourneyStep(UserMatching)
     } yield {
-      Redirect(nextPage)
-        .clearAllUserDetails(request)
+      Redirect(nextPage).removingFromSession(
+        "FirstName",
+        "LastName",
+        "DOBD",
+        "DOBM",
+        "DOBY",
+        "MatchingNino"
+      )
     }
   }
 

@@ -17,7 +17,7 @@
 package models.requests.agent
 
 import play.api.mvc.WrappedRequest
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 
 case class SignPostedRequest[A](
                                  request: IdentifierRequest[A],

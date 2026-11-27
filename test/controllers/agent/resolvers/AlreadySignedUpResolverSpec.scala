@@ -17,6 +17,7 @@
 package controllers.agent.resolvers
 
 import common.Constants.hmrcAsAgent
+import connectors.mocks.MockSessionDataConnector
 import controllers.ControllerSpec
 import models.*
 import models.requests.agent.IdentifierRequest

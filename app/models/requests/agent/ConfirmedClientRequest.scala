@@ -18,7 +18,7 @@ package models.requests.agent
 
 import models.SessionData
 import play.api.mvc.WrappedRequest
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 
 case class ConfirmedClientRequest[A](
                                       request: IdentifierRequest[A],

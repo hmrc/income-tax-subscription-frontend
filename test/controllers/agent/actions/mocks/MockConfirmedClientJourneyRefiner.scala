@@ -25,7 +25,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import services.UTRService
 import services.agent.ClientDetailsRetrieval
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

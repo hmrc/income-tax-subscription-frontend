@@ -20,10 +20,12 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import forms.agent.OverseasPropertyStartDateBeforeLimitForm
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testUtr}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.SignUp
 import models.common.{OverseasPropertyModel, PropertyModel}
+import models.usermatching.UserDetailsModel
 import models.{No, Yes}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
@@ -58,7 +60,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDateBeforeLimit()
@@ -77,7 +81,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDateBeforeLimit()
@@ -94,7 +100,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           val res = IncomeTaxSubscriptionFrontend.overseasPropertyStartDateBeforeLimit()
@@ -129,7 +137,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         val res = IncomeTaxSubscriptionFrontend.submitOverseasPropertyStartDateBeforeLimit()(None)
@@ -146,7 +156,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
           IncomeTaxSubscriptionConnectorStub.stubSaveSubscriptionDetailsFailure(OverseasProperty)
 
@@ -166,7 +178,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -184,7 +198,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -202,7 +218,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(true)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -224,7 +242,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -243,7 +263,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)
@@ -262,7 +284,9 @@ class OverseasPropertyStartDateBeforeLimitControllerISpec extends ComponentSpecB
             SessionDataConnectorStub.stubGetAllSessionData(Map(
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
             IncomeTaxSubscriptionConnectorStub.stubSaveOverseasProperty(OverseasPropertyModel(startDateBeforeLimit = Some(false)))
             IncomeTaxSubscriptionConnectorStub.stubDeleteIncomeSourceConfirmation(OK)

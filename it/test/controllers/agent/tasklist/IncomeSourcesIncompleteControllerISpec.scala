@@ -19,11 +19,13 @@ package controllers.agent.tasklist
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.SignUp
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.{OK, SEE_OTHER}
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 import utilities.agent.TestConstants.testUtr
 
 class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
@@ -62,7 +64,9 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         val result = IncomeTaxSubscriptionFrontend.showIncomeSourcesIncomplete()
@@ -106,7 +110,9 @@ class IncomeSourcesIncompleteControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         val result = IncomeTaxSubscriptionFrontend.submitIncomeSourcesIncomplete()

@@ -20,18 +20,22 @@ import common.Constants.ITSASessionKeys
 import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import crypto.ComposeCryptoService
 import models.*
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
 import models.status.{GetITSAStatusModel, MandationStatusModel}
+import models.usermatching.UserDetailsModel
 import play.api.libs.json.*
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.SensitiveStringProvider
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
+class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector,
+                                   sensitiveStringProvider: SensitiveStringProvider) {
 
   def getAllSessionData()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SessionData] = {
     sessionDataConnector.getAllSessionData().map {
@@ -112,15 +116,24 @@ class SessionDataService @Inject()(sessionDataConnector: SessionDataConnector) {
     sessionDataConnector.saveSessionData(ITSASessionKeys.JourneyStateKey, state.key)
   }
 
+  def saveUserDetails(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+    sessionDataConnector.saveSessionData(ITSASessionKeys.UserDetailsKey, userDetails)(implicitly,
+      UserDetailsModel.encryptedFormat(sensitiveStringProvider.sensitiveFormat))
+  }
+
+  def deleteUserDetails(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
+    sessionDataConnector.deleteSessionData(ITSASessionKeys.UserDetailsKey)
+  }
+
   def deleteMRDITID(implicit hc: HeaderCarrier): Future[DeleteSessionDataResponse] = {
     sessionDataConnector.deleteSessionData(ITSASessionKeys.MTDITID)
   }
   
-  def saveFailedClientMatching(failureCount: Int)(implicit  hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
+  def saveFailedClientMatching(failureCount: Int)(implicit hc: HeaderCarrier): Future[SaveSessionDataResponse] = {
     sessionDataConnector.saveSessionData(ITSASessionKeys.FailedClientMatching, failureCount)
   }
-  
-  def fetchFailedClientMatching()(implicit hc: HeaderCarrier,  ec: ExecutionContext): Future[Option[Int]] = {
+
+  def fetchFailedClientMatching()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Int]] = {
     sessionDataConnector.getSessionData[Int](ITSASessionKeys.FailedClientMatching).map {
       case Right(value) => value
       case Left(_) => None

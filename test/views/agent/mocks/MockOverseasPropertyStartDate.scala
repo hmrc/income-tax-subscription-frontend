@@ -22,7 +22,7 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import views.html.agent.tasklist.overseasproperty.OverseasPropertyStartDate
 
 trait MockOverseasPropertyStartDate extends MockitoSugar with BeforeAndAfterEach {

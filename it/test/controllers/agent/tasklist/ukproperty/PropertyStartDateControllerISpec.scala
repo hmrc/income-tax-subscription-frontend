@@ -20,12 +20,13 @@ import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, testNino, testUtr}
 import helpers.IntegrationTestModels
-import helpers.IntegrationTestModels.testFullPropertyModel
+import helpers.IntegrationTestModels.{testFullPropertyModel, testUserDetails}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.DateModel
 import models.agent.JourneyStep.SignUp
 import models.common.PropertyModel
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import utilities.AccountingPeriodUtil
@@ -42,7 +43,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("GET /property-commencement-date is called")
@@ -65,7 +68,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("GET /property-commencement-date is called")
@@ -94,7 +99,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           When("POST /property-commencement-date is called")
@@ -121,7 +128,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
           SessionDataConnectorStub.stubGetAllSessionData(Map(
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           When("POST /property-commencement-date is called")
@@ -144,7 +153,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("POST /property-commencement-date is called")
@@ -166,7 +177,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("POST /property-commencement-date is called")
@@ -188,7 +201,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("POST /property-commencement-date is called")
@@ -212,7 +227,9 @@ class PropertyStartDateControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("POST /property-commencement-date is called")

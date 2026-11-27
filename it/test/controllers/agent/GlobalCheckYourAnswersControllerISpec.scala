@@ -39,6 +39,7 @@ import models.common.{AccountingYearModel, OverseasPropertyModel, PropertyModel}
 import models.sps.AgentSPSPayload
 import models.status.MandationStatus.{Mandated, Voluntary}
 import models.status.MandationStatusModel
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
 import services.agent.SignUpOrchestrationService.{BUSINESS_PARTNER_CATEGORY_ORGANISATION, ID_NOT_FOUND, MULTIPLE_BUSINESS_PARTNERS_FOUND}
@@ -99,7 +100,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("GET /client/final-check-your-answers is called")
@@ -125,7 +128,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("GET /client/final-check-your-answers is called")
@@ -149,7 +154,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         val serviceNameGovUk = " - Sign up your clients for Making Tax Digital for Income Tax - GOV.UK"
@@ -200,7 +207,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
         AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
         AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
@@ -252,7 +261,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
           ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
         AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
         AgentServicesStub.stubMTDSuppAgentRelationship(testARN, testNino, exists = false)
@@ -303,7 +314,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -357,7 +370,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -421,7 +436,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -492,7 +509,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -558,7 +577,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = true)
@@ -632,7 +653,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = false, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
@@ -688,7 +711,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
               ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
               ITSASessionKeys.NINO -> JsString(testNino),
               ITSASessionKeys.UTR -> JsString(testUtr),
-              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+              ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+              ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+                (UserDetailsModel.encryptedFormat(sensitiveFormat))
             ))
 
             AgentServicesStub.stubMTDClientRelationship(testARN, testNino, exists = false)
@@ -742,7 +767,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -779,7 +806,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -814,7 +843,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -849,7 +880,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Next))(
@@ -890,7 +923,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(INTERNAL_SERVER_ERROR)
@@ -926,7 +961,9 @@ class GlobalCheckYourAnswersControllerISpec extends ComponentSpecBase with Submi
             ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason = None)),
             ITSASessionKeys.NINO -> JsString(testNino),
             ITSASessionKeys.UTR -> JsString(testUtr),
-            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+            ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+            ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+              (UserDetailsModel.encryptedFormat(sensitiveFormat))
           ))
 
           SignUpAPIStub.stubSignUp(testSignUpModel(Current))(OK)

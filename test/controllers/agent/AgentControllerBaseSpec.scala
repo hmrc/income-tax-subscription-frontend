@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import services.agent.mocks.MockAgentAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
-import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+import utilities.{UnitTestTrait, ClientDetails}
 
 import scala.language.implicitConversions
 
@@ -79,9 +79,4 @@ trait AgentControllerBaseSpec extends UnitTestTrait with MockAgentAuthService {
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withMethod("POST")
-
-  lazy val subscriptionRequestWithName: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    UserMatchingSessionUtil.firstName -> "FirstName",
-    UserMatchingSessionUtil.lastName -> "LastName"
-  )
 }

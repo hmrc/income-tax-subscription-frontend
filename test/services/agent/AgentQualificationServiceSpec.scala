@@ -41,8 +41,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
   private val matchedClient = ApprovedAgent(testNino, Some(testUtr))
   private val unapprovedMatchedClient = UnApprovedAgent(testNino, Some(testUtr))
 
-  def request(clientDetails: Option[UserDetailsModel] = None): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest().buildRequest(clientDetails)
+  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "AgentQualificationService.matchClient" should {
 
@@ -52,7 +51,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return NoClientMatched if the client matching was unsuccessful" in {
       mockUserMatchNotFound(testClientDetails)
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Left(NoClientMatched)
 
@@ -62,7 +61,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return ApprovedAgent if the client matching was successful" in {
       mockUserMatchSuccess(testClientDetails)
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
@@ -137,7 +136,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       setupOrchestrateAgentQualificationFailure(UnexpectedFailure)
 
-      val response = await(call(testClientDetails, request(Some(testClientDetails))))
+      val response = await(call(testClientDetails, request))
 
       response mustBe Left(UnexpectedFailure)
     }
@@ -145,7 +144,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     "return NoClientMatched if the client matching was unsuccessful" in {
       setupOrchestrateAgentQualificationFailure(NoClientMatched)
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Left(NoClientMatched)
 
@@ -158,7 +157,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed(None, matchedClient.clientUtr, testMTDID))
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Left(ClientAlreadySubscribed(None, matchedClient.clientUtr, testMTDID))
 
@@ -170,7 +169,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = false)
       setupGetSubscription()
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Left(UnApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 
@@ -182,7 +181,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       setupMockGetSubscriptionNotFound(testNino)
 
-      val result = call(testClientDetails, request(Some(testClientDetails)))
+      val result = call(testClientDetails, request)
 
       await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, Some(testUtr)))
 

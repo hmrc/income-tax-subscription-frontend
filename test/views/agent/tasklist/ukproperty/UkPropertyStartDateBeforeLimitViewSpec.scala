@@ -27,7 +27,7 @@ import play.api.data.{Form, FormError}
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.ukproperty.PropertyStartDateBeforeLimit
 

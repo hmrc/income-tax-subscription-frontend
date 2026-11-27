@@ -40,6 +40,7 @@ object Constants {
     val MTDITID: String = mtdItsaEnrolmentIdentifierKey
     val RequestURI = "Request-URI"
     val FailedClientMatching = "Failed-Client-Matching"
+    val UserDetailsKey = "User-Details"
     val JourneyStateKey = "Journey-State"
     val NINO = "NINO"
     val UTR = "UTR"

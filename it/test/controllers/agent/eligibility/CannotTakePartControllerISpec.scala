@@ -19,10 +19,12 @@ package controllers.agent.eligibility
 import common.Constants.ITSASessionKeys
 import connectors.stubs.SessionDataConnectorStub
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import models.EligibilityStatus
 import models.agent.JourneyStep.{SignPosted, UserMatching}
+import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -31,13 +33,14 @@ import play.api.libs.ws.WSResponse
 
 class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookieCrumbler {
 
-  class Setup(sessionData: Map[String, String] = ClientData.clientDataWithNinoAndUTR,
-              journeyState: String = SignPosted.key) {
+  class Setup(sessionData: Map[String, String] = Map(), journeyState: String = SignPosted.key) {
     AuthStub.stubAuthSuccess()
     SessionDataConnectorStub.stubGetAllSessionData(Map(
       ITSASessionKeys.NINO -> JsString(testNino),
       ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(false,false,None)),
-      ITSASessionKeys.JourneyStateKey -> JsString(journeyState)
+      ITSASessionKeys.JourneyStateKey -> JsString(journeyState),
+      ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+        (UserDetailsModel.encryptedFormat(sensitiveFormat))
     ))
 
     val result: WSResponse = IncomeTaxSubscriptionFrontend.showCannotTakePart(sessionData)
@@ -78,7 +81,7 @@ class CannotTakePartControllerISpec extends ComponentSpecBase with SessionCookie
     }
 
     "when the back button is pressed from 'enter client details' page" should {
-      "redirect the client to 'you cannot go back to previous client' page" in new Setup(ClientData.basicClientData, UserMatching.key) {
+      "redirect the client to 'you cannot go back to previous client' page" in new Setup(journeyState = UserMatching.key) {
 
         result must have(
           httpStatus(SEE_OTHER),

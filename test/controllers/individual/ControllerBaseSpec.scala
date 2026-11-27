@@ -26,7 +26,7 @@ import play.api.test.Helpers.{POST, await, defaultAwaitTimeout}
 import services.individual.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utilities.individual.TestConstants
-import utilities.{UnitTestTrait, UserMatchingSessionUtil}
+import utilities.{UnitTestTrait, ClientDetails}
 
 import scala.language.implicitConversions
 
@@ -71,8 +71,6 @@ trait ControllerBaseSpec extends UnitTestTrait with MockAuthService {
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   lazy val subscriptionRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    UserMatchingSessionUtil.firstName -> "FirstName",
-    UserMatchingSessionUtil.lastName -> "LastName",
     ITSASessionKeys.SPSEntityId -> TestConstants.testSpsEntityId
   ).withMethod("POST")
 }

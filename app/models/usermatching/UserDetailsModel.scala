@@ -18,7 +18,9 @@ package models.usermatching
 
 import models.DateModel
 import models.usermatching.UserDetailsModel.StringNinoUtil
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
 
@@ -44,12 +46,40 @@ object UserDetailsModel {
       pattern.replaceAllIn(text, _.matched.toUpperCase)
   }
 
-  implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
-
   implicit class StringNinoUtil(string: String) {
     @inline def stripSpaces: String = string.toUpperCase().replace(" ", "")
 
     def toNinoDisplayFormat: String = string.stripSpaces.split("(?<=\\G.{2})").reduce(_ + " " + _)
+  }
+
+  def encryptedFormat(implicit sensitiveFormat: Format[SensitiveString]): OFormat[UserDetailsModel] = {
+    val reads: Reads[UserDetailsModel] = (
+      (__ \ "firstName").read[SensitiveString] and
+        (__ \ "lastName").read[SensitiveString] and
+        (__ \ "nino").read[SensitiveString] and
+        (__ \ "dateOfBirth").read[DateModel](DateModel.encryptedFormat)
+    )(
+      (firstName, lastName, nino, dateOfBirth) =>
+        UserDetailsModel.apply(firstName.decryptedValue, lastName.decryptedValue,
+          nino.decryptedValue, dateOfBirth)
+    )
+
+    val writes: OWrites[UserDetailsModel] = (
+      (__ \ "firstName").write[SensitiveString] and
+        (__ \ "lastName").write[SensitiveString] and
+        (__ \ "nino").write[SensitiveString] and
+        (__ \ "dateOfBirth").write[DateModel](DateModel.encryptedFormat)
+    )(
+      userDetailsModel =>
+        (
+          SensitiveString(userDetailsModel.firstName),
+          SensitiveString(userDetailsModel.lastName),
+          SensitiveString(userDetailsModel.nino),
+          userDetailsModel.dateOfBirth
+        )
+    )
+  
+    OFormat(reads, writes)
   }
 
 }

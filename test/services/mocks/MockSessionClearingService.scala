@@ -17,6 +17,7 @@
 package services.mocks
 
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,7 +37,7 @@ trait MockSessionClearingService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   def mockClearAgentSessionSuccess(result: Result): Unit = {
-    when(mockSessionClearingService.clearAgentSession(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+    when(mockSessionClearingService.clearAgentSession(any(), any())(any(), any()))
       .thenReturn(Future.successful(result))
   }
 

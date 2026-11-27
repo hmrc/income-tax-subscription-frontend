@@ -19,13 +19,14 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{AgentURI, basGatewaySignIn, testNino}
-import helpers.IntegrationTestModels.testAccountingYearCurrent
+import helpers.IntegrationTestModels.{testAccountingYearCurrent, testUserDetails}
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
 import models.EligibilityStatus
 import models.agent.JourneyStep.SignUp
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.libs.json.{JsString, Json}
 import utilities.SubscriptionDataKeys.SelectedTaxYear
@@ -56,7 +57,9 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
         ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(EligibilityStatus(eligibleCurrentYear = true, eligibleNextYear = true, exemptionReason= None)),
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+          (UserDetailsModel.encryptedFormat(sensitiveFormat))
       ))
       IncomeTaxSubscriptionConnectorStub.stubGetSubscriptionDetails(SelectedTaxYear, OK, Json.toJson(testAccountingYearCurrent))
 
@@ -91,7 +94,9 @@ class WhatYouNeedToDoControllerISpec extends ComponentSpecBase {
       SessionDataConnectorStub.stubGetAllSessionData(Map(
         ITSASessionKeys.NINO -> JsString(testNino),
         ITSASessionKeys.UTR -> JsString(testUtr),
-        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key)
+        ITSASessionKeys.JourneyStateKey -> JsString(SignUp.key),
+        ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+          (UserDetailsModel.encryptedFormat(sensitiveFormat))
       ))
 
       When(s"POST ${routes.WhatYouNeedToDoController.submit.url} is called")

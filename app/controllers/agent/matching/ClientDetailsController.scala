@@ -19,14 +19,15 @@ package controllers.agent.matching
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import forms.agent.ClientDetailsForm.clientDetailsForm
+import services.SessionDataService
 import models.audits.SignupStartedAuditing
 import models.requests.agent.IdentifierRequest
-import models.usermatching.NotLockedOut
+import models.usermatching.{NotLockedOut, UserDetailsModel}
 import play.api.mvc.*
 import services.{AuditingService, SessionClearingService, UserLockoutService}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
+import utilities.SensitiveStringProvider
 import views.html.agent.matching.ClientDetails
 
 import javax.inject.{Inject, Singleton}
@@ -38,13 +39,16 @@ class ClientDetailsController @Inject()(view: ClientDetails,
                                         journeyRefiner: ClientDetailsJourneyRefiner,
                                         lockoutService: UserLockoutService,
                                         auditingService: AuditingService,
-                                        sessionClearingService: SessionClearingService)
+                                        sessionClearingService: SessionClearingService,
+                                        sessionDataService: SessionDataService,
+                                        sensitiveStringProvider: SensitiveStringProvider)
                                        (implicit cc: MessagesControllerComponents, ec: ExecutionContext) extends SignUpBaseController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     handleLockOut {
       Future.successful(Ok(view(
-        clientDetailsForm = clientDetailsForm.fill(request.fetchUserDetails),
+        clientDetailsForm = clientDetailsForm.fill(request.sessionData.fetchUserDetails
+          (implicitly, UserDetailsModel.encryptedFormat(sensitiveStringProvider.sensitiveFormat))),
         postAction = routes.ClientDetailsController.submit(editMode = isEditMode),
         isEditMode = isEditMode
       )))
@@ -52,7 +56,6 @@ class ClientDetailsController @Inject()(view: ClientDetails,
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
-    val sessionData = request.sessionData
     handleLockOut {
       clientDetailsForm.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +66,8 @@ class ClientDetailsController @Inject()(view: ClientDetails,
           ))),
         clientDetails => {
           startAgentSignupAudit(request.arn, clientDetails.nino)
-          sessionClearingService.clearAgentSession(routes.ConfirmClientController.show(), sessionData).map(_.saveUserDetails(clientDetails))
+            sessionClearingService.clearAgentSession(routes.ConfirmClientController.show(), request.sessionData)
+              .flatMap(result => sessionDataService.saveUserDetails(clientDetails).map(_ => result))
         }
       )
     }
