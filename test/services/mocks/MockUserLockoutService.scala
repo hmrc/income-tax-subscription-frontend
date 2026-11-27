@@ -27,12 +27,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.*
 import services.{LockoutUpdate, UserLockoutService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utilities.UserMatchingTestSupport
 import utilities.individual.TestConstants.{testException, testLockoutResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUserLockoutService extends MockitoSugar with BeforeAndAfterEach with UserMatchingTestSupport {
+trait MockUserLockoutService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite with Matchers =>
 
   val mockUserLockoutService: UserLockoutService = mock[UserLockoutService]

@@ -19,7 +19,9 @@ package models
 import com.ibm.icu.text.SimpleDateFormat
 import models.DateModel.*
 import play.api.i18n.Messages
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
+import uk.gov.hmrc.crypto.Sensitive.SensitiveString
 
 import java.time.format.{DateTimeFormatter, ResolverStyle}
 import java.time.{LocalDate, ZoneId}
@@ -66,4 +68,30 @@ object DateModel {
   def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
 
   implicit val format: OFormat[DateModel] = Json.format[DateModel]
+  
+  def encryptedFormat(implicit sensitiveFormat: Format[SensitiveString]): OFormat[DateModel] = {
+    val reads: Reads[DateModel] = (
+      (__ \ "day").read[SensitiveString] and
+        (__ \ "month").read[SensitiveString] and
+        (__ \ "year").read[SensitiveString]
+    )(
+      (day, month, year) =>
+        DateModel.apply(day.decryptedValue, month.decryptedValue, year.decryptedValue)
+    )
+
+    val writes: OWrites[DateModel] = (
+      (__ \ "day").write[SensitiveString] and
+        (__ \ "month").write[SensitiveString] and
+        (__ \ "year").write[SensitiveString]
+    )(
+      dateModel =>
+        (
+          SensitiveString(dateModel.day),
+          SensitiveString(dateModel.month),
+          SensitiveString(dateModel.year)
+        )
+    )
+
+    OFormat(reads, writes)
+  }
 }

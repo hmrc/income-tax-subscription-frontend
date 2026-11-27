@@ -27,7 +27,7 @@ import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import services.mocks.{MockClientDetailsRetrieval, MockReferenceRetrieval, MockUTRService}
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -54,7 +54,7 @@ class YourIncomeSourceToSignUpControllerSpec extends AgentControllerBaseSpec
         mockFetchSelectedTaxYear(None)
         mockYourIncomeSourceToSignUpView(incomeSources = incomeSources, taxYearSelectionIsNext = false)
 
-        val result: Result = await(controller.show()(subscriptionRequestWithName))
+        val result: Result = await(controller.show()(subscriptionRequest))
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)

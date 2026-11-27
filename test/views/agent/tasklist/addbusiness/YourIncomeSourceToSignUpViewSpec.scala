@@ -22,7 +22,7 @@ import models.common.{IncomeSources, OverseasPropertyModel, PropertyModel}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import utilities.{AccountingPeriodUtil, ViewSpec}
 import views.html.agent.tasklist.addbusiness.YourIncomeSourceToSignUp
 

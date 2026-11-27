@@ -21,6 +21,7 @@ import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataResponse,
 import controllers.SignUpBaseController
 import controllers.agent.actions.{ClientDetailsJourneyRefiner, IdentifierAction}
 import controllers.agent.resolvers.AlreadySignedUpResolver
+import crypto.ComposeCryptoService
 import models.Channel
 import models.agent.JourneyStep
 import models.audits.EligibilityAuditing.EligibilityAuditModel
@@ -33,7 +34,7 @@ import play.twirl.api.Html
 import services.*
 import services.agent.*
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
+import utilities.SensitiveStringProvider
 import views.html.agent.matching.CheckYourClientDetails
 
 import javax.inject.{Inject, Singleton}
@@ -47,13 +48,15 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
                                         agentQualificationService: AgentQualificationService,
                                         sessionDataService: SessionDataService,
                                         resolver: AlreadySignedUpResolver,
-                                        lockOutService: UserLockoutService)
+                                        lockOutService: UserLockoutService,
+                                        sensitiveStringProvider: SensitiveStringProvider)
                                        (implicit ec: ExecutionContext,
                                         mcc: MessagesControllerComponents) extends SignUpBaseController {
 
   def show(): Action[AnyContent] = (identify andThen journeyRefiner).async { implicit request =>
     withLockOutCheck {
-      request.fetchUserDetails match {
+      request.sessionData.fetchUserDetails
+        (implicitly, UserDetailsModel.encryptedFormat(sensitiveStringProvider.sensitiveFormat)) match {
         case Some(clientDetails) => Future.successful(Ok(view(clientDetails)))
         case _ => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show()))
       }
@@ -106,8 +109,9 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
   }
 
   private def withClientDetails(f: UserDetailsModel => Future[Result])
-                               (implicit request: Request[AnyContent]): Future[Result] = {
-    request.fetchUserDetails match {
+                               (implicit request: IdentifierRequest[_]): Future[Result] = {
+    request.sessionData.fetchUserDetails
+      (implicitly, UserDetailsModel.encryptedFormat(sensitiveStringProvider.sensitiveFormat)) match {
       case Some(clientDetails) => f(clientDetails)
       case None => Future.successful(Redirect(routes.ClientDetailsController.show()))
     }
@@ -115,7 +119,6 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
 
   private def handleFailedClientMatch(clientDetails: UserDetailsModel)
                                      (implicit request: IdentifierRequest[_]): Future[Result] = {
-
     getCurrentFailureCount().flatMap { currentFailureCount =>
 
       lockOutService.incrementLockout(request.arn, currentFailureCount).flatMap {
@@ -130,7 +133,6 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             eligibility = "ineligible",
             failureReason = Some("failed-client-match-no-lock-out")
           ))
-
 
           sessionDataService.saveFailedClientMatching(newCount).map {
             case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsErrorController.show)
@@ -148,10 +150,15 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             failureReason = Some("failed-client-match-locked-out")
           ))
 
-          sessionDataService.deleteFailedClientMatching().map {
-            case Right(_) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show).clearAllUserDetails
-            case Left(_) => throw new InternalServerException("handleFailedClientMatch - failure when deleting failed client matching")
+          for {
+            delFailedClientMatching <- sessionDataService.deleteFailedClientMatching()
+            delUserDetails <- sessionDataService.deleteUserDetails()
+          } yield (delFailedClientMatching, delUserDetails) match {
+            case (Right(_), Right(_)) => Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show)
+            case (Left(_), _) => throw new InternalServerException("handleFailedClientMatch - failure when deleting failed client matching")
+            case (_, Left(_)) => throw new InternalServerException("handleDeleteUserDetails - failure when deleting user details")
           }
+
         case _ => throw new InternalServerException("ConfirmClientController.lockUser failure")
       }
     }
@@ -174,16 +181,15 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
             case Right(_) =>
               sessionDataService.saveMTDITID(mtditid) flatMap {
                 case Right(_) =>
-
                   resolver.resolve(
-                    sessionData = request.sessionData.copy(data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
+                    sessionData = request.sessionData.copy(
+                      data = request.sessionData.data + (ITSASessionKeys.NINO -> Json.toJson(clientDetails.nino))),
                     channel = reason
                   ).flatMap { result =>
                     sessionDataService.deleteFailedClientMatching().map {
                       case Right(_) => result
                       case Left(_) => throw new InternalServerException("handleClientAlreadySubscribed - failed ")
                     }
-
                   }
 
                 case Left(_) =>
@@ -265,11 +271,8 @@ class ConfirmClientController @Inject()(identify: IdentifierAction,
 
     private def handleApprovedAgent(nino: String, utr: String, clientDetails: UserDetailsModel)
                                    (implicit request: IdentifierRequest[_]): Future[Result] = {
-
       getCurrentFailureCount().flatMap { currentFailureCount =>
-
         auditDetailsEntered(clientDetails, currentFailureCount, lockedOut = false)
-
         sessionDataService.saveNino(nino).flatMap {
           case Right(_) =>
             sessionDataService.saveUTR(utr).flatMap {

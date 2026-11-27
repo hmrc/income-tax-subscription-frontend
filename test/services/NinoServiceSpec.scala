@@ -39,8 +39,7 @@ class NinoServiceSpec extends PlaySpec with Matchers with MockAuthService with M
 
   trait Setup {
     val service: NinoService = new NinoService(
-      mockAuthService,
-      mockSessionDataService
+      mockAuthService, mockSessionDataService
     )
   }
 

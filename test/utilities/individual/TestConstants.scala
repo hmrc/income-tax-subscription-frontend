@@ -21,8 +21,9 @@ import common.Constants.mtdItsaEnrolmentName
 import connectors.individual.httpparsers.AllocateEnrolmentResponseHttpParser.{EnrolFailure, EnrolSuccess}
 import connectors.individual.httpparsers.UpsertEnrolmentResponseHttpParser.{KnownFactsFailure, KnownFactsSuccess}
 import models.common.subscription.*
-import models.usermatching.LockedOut
+import models.usermatching.{LockedOut, UserDetailsModel}
 import uk.gov.hmrc.domain.*
+import models.DateModel
 
 import java.net.URLEncoder
 import java.time.OffsetDateTime
@@ -42,6 +43,9 @@ object TestConstants {
 
   val testFirstName = "Test"
   val testLastName = "Name"
+  val dateOfBirth: DateModel = DateModel("01", "01", "1980")
+
+  val testUserDetails: UserDetailsModel = UserDetailsModel(testFirstName, testLastName, testNino, dateOfBirth)
 
   val testCredentialId: String = UUID.randomUUID().toString
   val testCredentialId2: String = UUID.randomUUID().toString

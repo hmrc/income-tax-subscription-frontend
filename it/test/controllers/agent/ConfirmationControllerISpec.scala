@@ -19,16 +19,17 @@ package controllers.agent
 import common.Constants.ITSASessionKeys
 import connectors.stubs.{IncomeTaxSubscriptionConnectorStub, SessionDataConnectorStub}
 import helpers.IntegrationTestConstants.{basGatewaySignIn, testNino}
+import helpers.IntegrationTestModels.testUserDetails
 import helpers.agent.ComponentSpecBase
 import helpers.agent.ComponentSpecBase.reference
 import helpers.agent.servicemocks.AuthStub
 import models.agent.JourneyStep.{Confirmation, ConfirmedClient}
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.usermatching.UserDetailsModel
 import models.{EligibilityStatus, Yes, YesNo}
 import play.api.http.Status.*
 import play.api.libs.json.{JsString, Json}
-import utilities.SubscriptionDataKeys
 import utilities.SubscriptionDataKeys.*
 import utilities.agent.TestConstants.testUtr
 
@@ -63,7 +64,9 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
           ITSASessionKeys.HAS_SOFTWARE -> Json.toJson(testOption),
           ITSASessionKeys.UTR -> JsString(testUtr),
           ITSASessionKeys.SIGNED_UP_DATE -> Json.toJson(LocalDate.now),
-          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
 
         When("I call GET /confirmation")
@@ -115,7 +118,9 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(OK)
 
@@ -133,7 +138,9 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         SessionDataConnectorStub.stubGetAllSessionData(Map(
           ITSASessionKeys.NINO -> JsString(testNino),
           ITSASessionKeys.UTR -> JsString(testUtr),
-          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key)
+          ITSASessionKeys.JourneyStateKey -> JsString(Confirmation.key),
+          ITSASessionKeys.UserDetailsKey -> Json.toJson(testUserDetails)
+            (UserDetailsModel.encryptedFormat(sensitiveFormat))
         ))
         IncomeTaxSubscriptionConnectorStub.stubDeleteAllSubscriptionDetails(reference)(INTERNAL_SERVER_ERROR)
 

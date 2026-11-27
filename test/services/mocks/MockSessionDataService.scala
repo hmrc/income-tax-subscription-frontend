@@ -16,11 +16,14 @@
 
 package services.mocks
 
+import config.MockConfig.hc
 import connectors.httpparser.DeleteSessionDataHttpParser.DeleteSessionDataResponse
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataResponse
 import connectors.httpparser.SaveSessionDataHttpParser
-import connectors.httpparser.SaveSessionDataHttpParser.SaveSessionDataResponse
+import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataResponse, SaveSessionDataSuccessResponse}
+import crypto.ComposeCryptoService
 import models.status.{GetITSAStatusModel, MandationStatusModel}
+import models.usermatching.UserDetailsModel
 import models.{EligibilityStatus, SessionData, YesNo}
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +33,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.{SessionDataService, Throttle}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   suite: Suite =>
@@ -45,9 +48,12 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   }
 
   val mockSessionDataService: SessionDataService = mock[SessionDataService]
+  val mockSessionData: SessionData = mock[SessionData]
+  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   override def beforeEach(): Unit = {
     reset(mockSessionDataService)
+    reset(mockSessionData)
     mockGetAllSessionData()
     super.beforeEach()
   }
@@ -128,6 +134,21 @@ trait MockSessionDataService extends MockitoSugar with BeforeAndAfterEach {
   def mockSaveJourneyState(): Unit = {
     when(mockSessionDataService.saveJourneyStep(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)))
+  }
+
+  def mockSaveUserDetails(): Unit = {
+    when(mockSessionDataService.saveUserDetails(any())(any()))
+      .thenReturn(Future.successful(Right(SaveSessionDataSuccessResponse)))
+  }
+
+  def mockDeleteUserDetails(result: DeleteSessionDataResponse): Unit = {
+    when(mockSessionDataService.deleteUserDetails(any()))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockFetchUserDetails(result: Option[UserDetailsModel]): Unit = {
+    when(mockSessionData.fetchUserDetails(any(), any()))
+      .thenReturn(result)
   }
 
   def mockFetchFailedClientMatching(failureCount: Option[Int]): Unit = {

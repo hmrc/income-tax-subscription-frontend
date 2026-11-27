@@ -20,7 +20,9 @@ import _root_.common.Constants.ITSASessionKeys
 import models.agent.{JourneyStep => AgentJourneyStep}
 import models.individual.{JourneyStep => IndividualJourneyStep}
 import models.individual.claimenrolment.ClaimEnrolmentOrigin
+import models.requests.agent.IdentifierRequest
 import models.status.{GetITSAStatusModel, MandationStatusModel}
+import models.usermatching.UserDetailsModel
 import play.api.Logging
 import play.api.libs.json.*
 import services.Throttle
@@ -28,7 +30,8 @@ import uk.gov.hmrc.http.InternalServerException
 
 import java.time.LocalDate
 
-case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
+case class SessionData(data: Map[String, JsValue] = Map())
+  extends Logging {
 
   implicit class JsObject(value: JsValue) {
     def toObject[T](implicit reads: Reads[T]): T = {
@@ -93,6 +96,29 @@ case class SessionData(data: Map[String, JsValue] = Map()) extends Logging {
 
   def fetchSubmissionStatus: Option[SubmissionStatus] = {
     data.get(ITSASessionKeys.SUBMISSION_STATUS).map(_.toObject[SubmissionStatus])
+  }
+
+  // TODO: Temporary function to accommodate existing users' journeys. Can be removed once complete
+  private def fetchUserDetailsCookie(implicit request: IdentifierRequest[_]): Option[UserDetailsModel] = {
+    (request.session.get("FirstName"),
+      request.session.get("LastName"),
+      request.session.get("DOBD"),
+      request.session.get("DOBM"),
+      request.session.get("DOBY"),
+      request.session.get("MatchingNino")) match {
+      case (Some(f), Some(l), Some(dd), Some(dm), Some(dy), Some(n)) =>
+        Some(UserDetailsModel(firstName = f, lastName = l, nino = n, dateOfBirth = DateModel(dd, dm, dy)))
+      case _ => None
+    }
+  }
+
+  def fetchUserDetails(implicit request: IdentifierRequest[_], userDetailsEncryption: OFormat[UserDetailsModel]): Option[UserDetailsModel] = {
+    data.get(ITSASessionKeys.UserDetailsKey).map(_.toObject[UserDetailsModel](userDetailsEncryption)).orElse {
+      fetchUserDetailsCookie map { result =>
+        logger.warn("Retrieved user details from cookie session")
+        result
+      }
+    }
   }
 
   def fetchJourneyStep: Option[JourneyStep] = {

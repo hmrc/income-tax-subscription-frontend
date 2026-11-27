@@ -21,7 +21,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
 import services.agent.ClientDetailsRetrieval
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import utilities.agent.TestConstants.testNino
 
 import scala.concurrent.Future

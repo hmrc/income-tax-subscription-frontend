@@ -21,14 +21,15 @@ import controllers.ControllerSpec
 import controllers.agent.actions.mocks.{MockClientDetailsJourneyRefiner, MockIdentifierAction}
 import forms.agent.ClientDetailsForm
 import models.audits.SignupStartedAuditing
+import utilities.MockSensitiveStringProvider
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{MessagesControllerComponents, Result}
-import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, session, status, stubMessagesControllerComponents}
+import play.api.test.Helpers.{HTML, await, contentType, defaultAwaitTimeout, redirectLocation, status, stubMessagesControllerComponents}
 import services.mocks.*
 import uk.gov.hmrc.http.InternalServerException
-import utilities.UserMatchingSessionUtil.{dobD, dobM, dobY, firstName, lastName, nino}
+import utilities.TestModels.testUserDetails
 import views.agent.matching.mocks.MockClientDetails
 
 import scala.concurrent.Future
@@ -39,7 +40,9 @@ class ClientDetailsControllerSpec extends ControllerSpec
   with MockClientDetailsJourneyRefiner
   with MockUserLockoutService
   with MockAuditingService
-  with MockSessionClearingService {
+  with MockSessionClearingService
+  with MockSessionDataService
+  with MockSensitiveStringProvider {
 
   implicit val appConfig: AppConfig = mock[AppConfig]
 
@@ -70,14 +73,7 @@ class ClientDetailsControllerSpec extends ControllerSpec
           isEditMode = true
         )
 
-        val result: Future[Result] = TestClientDetailsController.show(true)(request.withSession(
-          firstName -> "FirstName",
-          lastName -> "LastName",
-          dobD -> "1",
-          dobM -> "2",
-          dobY -> "1980",
-          nino -> "ZZ111111Z"
-        ))
+        val result: Future[Result] = TestClientDetailsController.show(true)(request)
 
         status(result) mustBe OK
         contentType(result) mustBe Some(HTML)
@@ -104,38 +100,29 @@ class ClientDetailsControllerSpec extends ControllerSpec
   }
 
   "submit" must {
-    "redirect to the confirm client page adding the client details to session" when {
+    "redirect to the confirm client page adding the client details" when {
       "the user is not locked out, is not in edit mode and has no validation errors" in {
         setupMockNotLockedOut(testARN)
+        mockGetAllSessionData()
         mockClearAgentSessionSuccess(Redirect(routes.ConfirmClientController.show()))
+        mockSaveUserDetails()
 
-        val result: Future[Result] = TestClientDetailsController.submit(false)(
-          request.withMethod("POST").withFormUrlEncodedBody(
-            ClientDetailsForm.clientFirstName -> "FirstName",
-            ClientDetailsForm.clientLastName -> "LastName",
-            s"${ClientDetailsForm.clientDateOfBirth}-dateDay" -> "1",
-            s"${ClientDetailsForm.clientDateOfBirth}-dateMonth" -> "2",
-            s"${ClientDetailsForm.clientDateOfBirth}-dateYear" -> "1980",
-            ClientDetailsForm.clientNino -> "AA000011D"
-          )
-        )
+        val result: Future[Result] = TestClientDetailsController.submit(false)(request.withMethod("POST").withFormUrlEncodedBody(
+          ClientDetailsForm.clientFirstName -> testUserDetails.firstName,
+          ClientDetailsForm.clientLastName -> testUserDetails.lastName,
+          s"${ClientDetailsForm.clientDateOfBirth}-dateDay" -> testUserDetails.dateOfBirth.day,
+          s"${ClientDetailsForm.clientDateOfBirth}-dateMonth" -> testUserDetails.dateOfBirth.month,
+          s"${ClientDetailsForm.clientDateOfBirth}-dateYear" -> testUserDetails.dateOfBirth.year,
+          ClientDetailsForm.clientNino -> testUserDetails.nino
+        ))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.ConfirmClientController.show().url)
 
-        val sessionMap: Map[String, String] = session(result).data
-
-        sessionMap.get(firstName) mustBe Some("FirstName")
-        sessionMap.get(lastName) mustBe Some("LastName")
-        sessionMap.get(dobD) mustBe Some("1")
-        sessionMap.get(dobM) mustBe Some("2")
-        sessionMap.get(dobY) mustBe Some("1980")
-        sessionMap.get(nino) mustBe Some("AA000011D")
-
         verifyAudit(SignupStartedAuditing.SignupStartedAuditModel(
           agentReferenceNumber = Some(testARN),
           utr = None,
-          nino = Some("AA000011D")
+          nino = Some(testUserDetails.nino)
         ))
       }
     }
@@ -199,7 +186,9 @@ class ClientDetailsControllerSpec extends ControllerSpec
     fakeClientDetailsJourneyRefiner,
     mockUserLockoutService,
     mockAuditingService,
-    mockSessionClearingService
+    mockSessionClearingService,
+    mockSessionDataService,
+    mockSensitiveStringProvider
   )
 
 }

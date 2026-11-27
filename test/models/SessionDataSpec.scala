@@ -20,15 +20,17 @@ import _root_.common.Constants.ITSASessionKeys
 import models.SubmissionStatus.inProgress
 import models.status.MandationStatus.Voluntary
 import models.status.MandationStatusModel
+import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import services.IndividualStartOfJourneyThrottle
+import utilities.MockSensitiveStringProvider
 
-class SessionDataSpec extends PlaySpec {
+class SessionDataSpec extends PlaySpec with MockSensitiveStringProvider {
 
   private val reference = "A/1234-B"
   private val throttle = IndividualStartOfJourneyThrottle
-  private val msndationStatus = MandationStatusModel(Voluntary, Voluntary)
+  private val mandationStatus = MandationStatusModel(Voluntary, Voluntary)
   private val eligibilityStatus = EligibilityStatus(false, false, None)
   private val nino = "AB012345C"
   private val utr = "0123456789"
@@ -36,18 +38,25 @@ class SessionDataSpec extends PlaySpec {
   private val consentStatus = Yes
   private val emailPassed = true
   private val submissionStatus = inProgress
+  private val userDetails = UserDetailsModel(
+    firstName = "FirstName",
+    lastName = "LastName",
+    nino = nino,
+    dateOfBirth = DateModel(day = "01", month = "01", year = "1960"))
 
   private val sessionData = SessionData(Map(
     ITSASessionKeys.REFERENCE -> JsString(reference),
     ITSASessionKeys.throttlePassed(throttle) -> JsBoolean(true),
-    ITSASessionKeys.MANDATION_STATUS -> Json.toJson(msndationStatus),
+    ITSASessionKeys.MANDATION_STATUS -> Json.toJson(mandationStatus),
     ITSASessionKeys.ELIGIBILITY_STATUS -> Json.toJson(eligibilityStatus),
     ITSASessionKeys.NINO -> JsString(nino),
     ITSASessionKeys.UTR -> JsString(utr),
     ITSASessionKeys.HAS_SOFTWARE -> JsString(softwareStatus.toString),
     ITSASessionKeys.CAPTURE_CONSENT -> JsString(consentStatus.toString),
     ITSASessionKeys.EMAIL_PASSED -> JsBoolean(emailPassed),
-    ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(submissionStatus)
+    ITSASessionKeys.SUBMISSION_STATUS -> Json.toJson(submissionStatus),
+    ITSASessionKeys.UserDetailsKey -> Json.toJsObject(userDetails)
+      (UserDetailsModel.encryptedFormat(mockSensitiveStringProvider.sensitiveFormat))
   ))
 
   "fetchReference" in {
@@ -59,7 +68,7 @@ class SessionDataSpec extends PlaySpec {
   }
 
   "fetchMandationStatus" in {
-    sessionData.fetchMandationStatus mustBe Some(msndationStatus)
+    sessionData.fetchMandationStatus mustBe Some(mandationStatus)
   }
 
   "fetchEligibilityStatus" in {

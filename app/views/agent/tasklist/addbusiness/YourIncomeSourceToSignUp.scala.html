@@ -18,7 +18,7 @@
 @import models.common._
 @import models.common.business._
 @import utilities.AccountingPeriodUtil
-@import utilities.UserMatchingSessionUtil.ClientDetails
+@import utilities.ClientDetails.ClientDetails
 @import views.html.templates.AgentMainTemplate
 @import views.html.helpers.{SaveAndContinueButtonHelper, PageHeadingHelper, UnorderedList}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTag
@@ -112,7 +112,7 @@
     }
 }
 
-@maybeIncomeSourceChangeAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Seq[ActionItem] = @{
+@maybeIncomeSourceChangeAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None) = @{
     if(isComplete && isConfirmed) {
         Seq(ActionItem(
             href = href,
@@ -140,7 +140,7 @@
     }
 }
 
-@maybeStatusTagAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None): Option[Actions] = @{
+@maybeStatusTagAction(isComplete: Boolean, isConfirmed: Boolean, href: String, visuallyHidden: Option[String] = None) = @{
     if (isComplete && isConfirmed) {
         None
     } else {
@@ -151,9 +151,9 @@
                     content = if(isComplete && !isConfirmed) {
                         Text(messages("base.confirm-details"))
                     } else if(isComplete) {
-                            Text(messages("base.check-details"))
+                        Text(messages("base.check-details"))
                     } else {
-                            Text(messages("base.add-details"))
+                        Text(messages("base.add-details"))
                     },
                     visuallyHiddenText = visuallyHidden
                 )

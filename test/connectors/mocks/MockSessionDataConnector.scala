@@ -20,6 +20,7 @@ import connectors.SessionDataConnector
 import connectors.httpparser.DeleteSessionDataHttpParser.{DeleteSessionDataFailure, DeleteSessionDataSuccess}
 import connectors.httpparser.GetSessionDataHttpParser.GetSessionDataFailure
 import connectors.httpparser.SaveSessionDataHttpParser.{SaveSessionDataFailure, SaveSessionDataSuccess}
+import crypto.ComposeCryptoService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{BeforeAndAfterEach, Suite}

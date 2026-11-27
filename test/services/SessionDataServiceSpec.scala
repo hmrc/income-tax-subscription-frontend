@@ -19,7 +19,7 @@ package services
 import common.Constants.ITSASessionKeys
 import connectors.httpparser.{DeleteSessionDataHttpParser, SaveSessionDataHttpParser}
 import connectors.mocks.MockSessionDataConnector
-import models.SessionData
+import models.{SessionData, SubmissionStatus}
 import models.SubmissionStatus.inProgress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,24 +28,25 @@ import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.JsString
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
+import utilities.MockSensitiveStringProvider
 
 import scala.concurrent.Future
 
-class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
+class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector with MockSensitiveStringProvider {
 
   trait Setup {
-    val service: SessionDataService = new SessionDataService(mockSessionDataConnector)
+    val service: SessionDataService = new SessionDataService(mockSessionDataConnector, mockSensitiveStringProvider)
   }
 
   val testReference: String = "test-reference"
-  val testSubmissopnStatus = inProgress
+  val testSubmissionStatus: SubmissionStatus = inProgress
 
   private val sessionData = SessionData(Map(
     ITSASessionKeys.REFERENCE -> JsString(testReference)
   ))
 
   when(mockSessionDataConnector.getAllSessionData()(any(), any())).thenReturn(
-    Future.successful(Right(Some(sessionData.data)))
+    Future.successful(Right(Some(sessionData)))
   )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -104,16 +105,17 @@ class SessionDataServiceSpec extends PlaySpec with MockSessionDataConnector {
   "saveSubmissionStatus" must {
     "return a success response" when {
       "the connector returns a success response" in new Setup {
-        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissopnStatus)(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse))
+        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissionStatus)(Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse))
 
-        await(service.saveSubmissionStatus(testSubmissopnStatus)) mustBe Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)
+        await(service.saveSubmissionStatus(testSubmissionStatus)) mustBe Right(SaveSessionDataHttpParser.SaveSessionDataSuccessResponse)
       }
     }
     "return a failure response" when {
       "the connector returns a failure response" in new Setup {
-        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissopnStatus)(Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
+        mockSaveSessionData(ITSASessionKeys.SUBMISSION_STATUS, testSubmissionStatus)
+          (Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR)))
 
-        await(service.saveSubmissionStatus(testSubmissopnStatus)) mustBe Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
+        await(service.saveSubmissionStatus(testSubmissionStatus)) mustBe Left(SaveSessionDataHttpParser.UnexpectedStatusFailure(INTERNAL_SERVER_ERROR))
       }
     }
   }

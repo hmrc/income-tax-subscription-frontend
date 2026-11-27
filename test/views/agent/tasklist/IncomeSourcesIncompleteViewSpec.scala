@@ -19,7 +19,7 @@ package views.agent.tasklist
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
-import utilities.UserMatchingSessionUtil.ClientDetails
+import utilities.ClientDetails.ClientDetails
 import utilities.ViewSpec
 import views.html.agent.tasklist.IncomeSourcesIncomplete
 

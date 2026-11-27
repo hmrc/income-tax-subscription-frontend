@@ -20,6 +20,7 @@ import models.*
 import models.common.AccountingPeriodModel
 import models.common.business.*
 import models.common.subscription.{OverseasProperty, SoleTraderBusinesses, UkProperty}
+import models.usermatching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.*
 import utilities.AccountingPeriodUtil
@@ -70,6 +71,8 @@ object IntegrationTestConstants {
   private val testBusinessTradeName = BusinessTradeNameModel("test trade")
   private val testStartDate = AccountingPeriodUtil.getCurrentTaxYear.startDate
   private val testEndDate = AccountingPeriodUtil.getCurrentTaxYear.endDate
+
+//  val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, dateOfBirth)
 
   val testAccountingPeriod: AccountingPeriodModel = testAccountingPeriod(testStartDate, testEndDate)
 
